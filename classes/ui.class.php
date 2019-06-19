@@ -632,7 +632,7 @@ class CAppUI {
 			$this->msgNo = 0;
 		}
 		return (($msg) ? ('<table cellspacing="0" cellpadding="1" border="0"><tr>'
-		                  . '<td>' . $img . '</td><td class="' . $class . '">' . $msg . '</td>'
+		                  . '<td class="' . $class . '">' . $msg . '</td>'
 		                  . '</tr></table>')
 		        : '');
 	}

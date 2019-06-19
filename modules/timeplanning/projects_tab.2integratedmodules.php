@@ -13,6 +13,17 @@ if ($tab != "") {
 }else{
     $_SESSION["gqs_tab"]=1;
 }
+
+//Control to highlight menu selection
+if($_GET["targetScreenOnProject"]!=""){ //Allow user to define page it wants to see.
+    $path=$_GET["targetScreenOnProject"];
+}else{ //normal page navegation by project planning menus
+    $path = $_POST["user_choosen_feature"]!="" ? $_POST["user_choosen_feature"] : $_SESSION["user_choosen_feature"];
+}
+if($path==""){
+    $path="/modules/dotproject_plus/projects_tab.planning_and_monitoring.php";//deafult page 
+}
+$_SESSION["user_choosen_feature"]=$path;
 ?>
 
 <script>
@@ -29,7 +40,7 @@ if ($tab != "") {
   <div style="width:100%; height: 22px;vertical-align: middle;">
         <div style="width:100%;height: 5px">&nbsp;</div><!-- div just to create a space before menu links -->
         <a href="#" onclick="document.gqs_feature_menu.user_choosen_feature.value='/modules/dotproject_plus/projects_tab.planning_and_monitoring.php';submitMenuForm();" style="<?php echo $_SESSION["user_choosen_feature"]=="/modules/dotproject_plus/projects_tab.planning_and_monitoring.php" ? "font-weight: bold;font-size:14px": "" ?>" >
-            <?php echo $AppUI->_("Tasks",UI_OUTPUT_HTML) ?>
+            <?php echo $AppUI->_("LBL_ATIVIDADE",UI_OUTPUT_HTML) ?>
         </a>
          &nbsp;|&nbsp;
          <a href="#" onclick="document.gqs_feature_menu.user_choosen_feature.value='/modules/monitoringandcontrol/view/view.6LBLCRONOGRAMA.php';submitMenuForm();" style="<?php echo $_SESSION["user_choosen_feature"]=="/modules/monitoringandcontrol/view/view.6LBLCRONOGRAMA.php" ? "font-weight: bold;font-size:14px": "" ?>">
@@ -204,19 +215,6 @@ if ($tab != "") {
 </form> 
 <a name="gqs_anchor"></a>
 <?php
-$path = $_POST["user_choosen_feature"];
-if ($path != "") {
-    $_SESSION["user_choosen_feature"] = $path;
-} else {
-    $path = $_SESSION["user_choosen_feature"];
-}
-//Allow user to define page it wants to see.
-if($_GET["targetScreenOnProject"]!=""){
-    $path=$_GET["targetScreenOnProject"];
-}
-if($path==""){
-    $path="/modules/dotproject_plus/projects_tab.planning_and_monitoring.php";//deafult page 
-}
 if (file_exists(DP_BASE_DIR . $path) && $path != "") {
     include (DP_BASE_DIR . $path);
 }

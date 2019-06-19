@@ -23,7 +23,8 @@ $userEx = $q->loadResult();
 // If userName already exists quit with error and do nothing
 if ($userEx) {
     $AppUI->setMsg('already exists. Try another username.', UI_MSG_ERROR, true);
-    $AppUI->redirect($redirectPath);
+    echo $AppUI->getMsg();
+    exit();
 } else {
     $companyObj = new CCompany();
     $companyObj->load($companyId);
@@ -62,6 +63,7 @@ if ($userEx) {
 
     $msg = $AppUI->_("Human Resource") . " " . $AppUI->_("added");
     $AppUI->setMsg($msg, UI_MSG_OK, true);
-    $AppUI->redirect($redirectPath);
+    echo $AppUI->getMsg();
+    exit();
 }
 ?>

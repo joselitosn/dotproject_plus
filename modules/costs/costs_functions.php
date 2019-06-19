@@ -65,9 +65,12 @@ function diasemana($data) {
 
     echo "$diasemana";
 }
-
-function diferencaMeses($d1, $d2) {
-    return diffDate($d1, $d2, "M");
+//$tipo: 0 - estimativa de custos; $tipo: 1 - dura��o baseline de custos: muda o arredondamento ceil ou floor
+function diferencaMeses($d1, $d2,$tipo) {
+    //forçar sempre do dia 1 do mes, pois o que importa é a diferença dos meses, e não dos dias
+    $d1 = substr($d1,0,7)."-01";
+    $d2 = substr($d2,0,7)."-02";//do dia 1 ao dia 2, assim sempre fecha o mês
+    return diffDate($d1, $d2, $tipo, "M");
 }
 
 function existsResource($projectId, $cost_human_resource_id, $cost_human_resource_role_id) {
@@ -143,7 +146,7 @@ function insertCostValues($project) {
         //update all cost entries per human resource
         foreach ($humanCost as $row) {
             $key = $row["cost_human_resource_id"] . " - " . $row["cost_human_resource_role_id"];
-            $value = ($array[$key] * $row["cost_quantity"]) * diferencaMeses(substr($row["cost_date_begin"], 0, -9), substr($row["cost_date_end"], 0, -9));
+            $value = ($array[$key] * $row["cost_quantity"]) * diferencaMeses(substr($row["cost_date_begin"], 0, -9), substr($row["cost_date_end"], 0, -9),0);
             $q->clear();
             $q->addTable("costs");
             $q->addUpdate("cost_value_unitary", $array[$key]);
@@ -386,7 +389,7 @@ function insertBudget($project, $subTotal) {
     }
 }
 
-function diffDate($d1, $d2, $type = "", $sep = "-") {
+function diffDate($d1, $d2,$tipo_arredondamento, $type = "", $sep = "-") {
     $d1 = explode($sep, $d1);
     $d2 = explode($sep, $d2);
     switch ($type) {
@@ -408,8 +411,14 @@ function diffDate($d1, $d2, $type = "", $sep = "-") {
         default:
             $X = 1;
     }
-    $dif = floor(((mktime(0, 0, 0, $d2[1], $d2[2], (int) $d2[0])) - (mktime(0, 0, 0, $d1[1], $d1[2], (int) $d1[0]))) / $X);
-    //$dif = ceil(((mktime(0, 0, 0, $d2[1], $d2[2], (int) $d2[0])) - (mktime(0, 0, 0, $d1[1], $d1[2], (int) $d1[0]))) / $X); //using ceil to calc month amonths    
+    $dif=((mktime(0, 0, 0, $d2[1], $d2[2], (int) $d2[0])) - (mktime(0, 0, 0, $d1[1], $d1[2], (int) $d1[0]))) / $X;
+    if($tipo_arredondamento==1){
+	$dif=floor($dif);
+    }else{
+	$dif=ceil($dif);
+	}
+    //$dif = //floor(((mktime(0, 0, 0, $d2[1], $d2[2], (int) $d2[0])) - (mktime(0, 0, 0, $d1[1], $d1[2], (int) $d1[0]))) / $X);
+   // $dif = ceil(); //using ceil to calc month amonths    
     $result = $dif == 0 ? 1 : $dif;
     return $result;
 }
@@ -462,7 +471,8 @@ function costsBudget($meses, $c, $row, $mStartProject, $mEndProject, $mtz, $mont
     $yearEnd = substr($row["cost_date_end"], 0, -15);
     $key = $yearStart . "_" . $monthStart;
     $startIndex = $monthsYearsIndex[$key];
-    $diffMonths = diferencaMeses(substr($row["cost_date_begin"], 0, -9), substr($row["cost_date_end"], 0, -9));
+    $diffMonths = diferencaMeses(substr($row["cost_date_begin"], 0, -9), substr($row["cost_date_end"], 0, -9),1);
+  
     if ($diffMonths < 0) {
         $diffMonths = 0;
     } else if ($diffMonths >= count($monthsYearsIndex)) {
@@ -472,14 +482,14 @@ function costsBudget($meses, $c, $row, $mStartProject, $mEndProject, $mtz, $mont
         $mStartProject++;
         if ($i == $startIndex) {
             if ($monthStart == $monthEnd && $yearEnd == $yearStart) { //exception for resources which lasts just a month
-                echo "<td style=\"text-align:right\">";
+                echo "<td style=\"text-align:right;width:1%;\">";
                 $mtz[$c][$k] = $row["cost_value_total"];
                 echo formatCellContent(number_format($mtz[$c][$k], 2, ",", "."));
                 echo "</td>";
             } else {
                 $k = $i;
                 for ($j = 0; $j <= $diffMonths; $j++) {
-                    echo "<td style=\"text-align:right\">";
+                    echo "<td style=\"text-align:right;width:1%;\">";
                     $mtz[$c][$k] = $row["cost_value_total"] / ($diffMonths + 1);
                     echo formatCellContent(number_format($mtz[$c][$k], 2, ",", "."));
                     echo "</td>";
@@ -488,7 +498,7 @@ function costsBudget($meses, $c, $row, $mStartProject, $mEndProject, $mtz, $mont
                 $i = $k - 1;
             }
         } else {
-            echo "<td style=\"text-align:right\">";
+            echo "<td style=\"text-align:right;width:1%;\">";
             $mtz[$c][$i] = 0;
             echo formatCellContent(number_format(0, 2, ",", "."));
             echo "</td>";
@@ -504,19 +514,20 @@ function costsContingency($meses, $c, $row, $mStartProject, $mEndProject, $mtz, 
     $yearEnd = substr($row["budget_reserve_final_month"], 0, -15);
     $key = $yearStart . "_" . $monthStart;
     $startIndex = $monthsYearsIndex[$key];
-    $diffMonths = diferencaMeses(substr($row["budget_reserve_inicial_month"], 0, -9), substr($row["budget_reserve_final_month"], 0, -9));
-
+    $d1=substr($row["budget_reserve_inicial_month"], 0, -9);    
+    $diffMonths = diferencaMeses(substr($row["budget_reserve_inicial_month"], 0, -9), substr($row["budget_reserve_final_month"], 0, -9),0);
+    
     if ($diffMonths < 0) {
         $diffMonths = 0;
     } else if ($diffMonths >= count($monthsYearsIndex)) {
         $diffMonths = count($monthsYearsIndex) - 1; // this case the resource dates are longer than project dates, it will be limited by project dates.
     }
-
+    
     for ($i = 0; $i <= $meses; $i++) {
         $mStartProject++;
         if ($i == $startIndex) {
             if ($monthStart == $monthEnd && $yearEnd == $yearStart) { //exception for resources which lasts just a month
-                echo "<td style=\"text-align:right\">";
+                echo "<td style=\"text-align:right;width:1%;\">";
 		$k = $i;
                 $mtz[$c][$k] = $row["budget_reserve_financial_impact"];
                 echo formatCellContent(number_format($mtz[$c][$k], 2, ",", "."));
@@ -524,7 +535,7 @@ function costsContingency($meses, $c, $row, $mStartProject, $mEndProject, $mtz, 
             } else {
                 $k = $i;
                 for ($j = 0; $j <= $diffMonths; $j++) {
-                    echo "<td style=\"text-align:right\">";
+                    echo "<td style=\"text-align:right;width:1%;\">";
                     $mtz[$c][$k] = $row["budget_reserve_financial_impact"] / ($diffMonths + 1);
                     echo formatCellContent(number_format($mtz[$c][$k], 2, ",", "."));
                     echo "</td>";
@@ -533,7 +544,7 @@ function costsContingency($meses, $c, $row, $mStartProject, $mEndProject, $mtz, 
                 $i = $k - 1;
             }
         } else {
-            echo "<td style=\"text-align:right\">";
+            echo "<td style=\"text-align:right;width:1%;\">";
             $mtz[$c][$i] = 0;
             echo formatCellContent(number_format(0, 2, ",", "."));
             echo "</td>";

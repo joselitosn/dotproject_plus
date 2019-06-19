@@ -126,8 +126,9 @@
     }
 
     function rightClickMenuShowScopeDeclaration() {
-        var url = replaceAll("#gqs_anchor", "", window.location.href);
-        window.location = url + "&show_external_page=/modules/timeplanning/view/scope_declaration.php";
+        // var url = replaceAll("#gqs_anchor", "", window.location.href);
+
+        window.location = window.location.href + "&show_external_page=/modules/timeplanning/view/scope_declaration.php";
     }
 
     function rightClickMenuEditActivity() {
@@ -300,13 +301,14 @@
         if (parseInt(document.getElementById("activities_count").value) == 0) {
             window.alert(mensagem_1);
         } else {
-            var url = replaceAll("#gqs_anchor", "", window.location.href);
-            window.location = url + "&show_external_page=/modules/timeplanning/view/projects_mdp.php";
+            // console.info(window.location.href);
+            // var url = replaceAll("#gqs_anchor", "", );
+            window.location = window.location.href + "&show_external_page=/modules/timeplanning/view/projects_mdp.php";
         }
     }
 
     function showWBSDictionary() {
-        var url = replaceAll("#gqs_anchor", "", window.location.href);
+        var url = window.location.href;
         window.location = url + "&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php";
     }
 
@@ -796,69 +798,62 @@ if ($_GET["show_external_page"] != "") {
     ?>
     </script>
     <?php
-    $currentPage = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "index.php") + 9);
+        $currentPage = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "index.php") + 9);
     ?>
     <br />
-    <div style="text-align:right">
-        <form name="select_human_resource_filter_form" action="<?php echo $currentPage ?>" method="post">
-            <span style="color:#000000"><?php echo $AppUI->_("LBL_FILTER"); ?>:</span>
-            <select id="project_resources_filter" name="project_resources_filter" onchange="filterActivitiesByUser()"> <!-- Filter to select activities for just a resource -->
-                <option <?php echo $_POST["project_resources_filter"] == "" ? "selected" : "" ?>   value=""><?php echo $AppUI->_("All"); ?></option>
+
+
+
+
+
+
+
+    <!-- Filter section -->
+    <div class="row">
+        <div class="col-md-12">
+            <form name="select_human_resource_filter_form" action="<?php echo $currentPage ?>" method="post">
+                <div class="form-group row">
+                    <div class="col-sm-3">
+                        <select id="project_resources_filter" 
+                            name="project_resources_filter" 
+                            onchange="filterActivitiesByUser()" 
+                            class="form-control form-control-sm">
+                            <option <?=$_POST["project_resources_filter"] == "" ? "selected" : "" ?>   value=""><?=$AppUI->_("All"); ?></option>
+                            <?php
+                                foreach ($records as $record) {
+                            ?>
+                                <option <?=$_POST["project_resources_filter"] == $record[1] ? "selected" : "" ?> value="<?=$record[1] ?>"> 
+                                    <?=$record[3] ?>
+                                </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="col-sm-9 text-right">
+                        <input class="btn btn-secondary btn-sm" type="button" value="<?php echo $AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING") ?>" onclick="viewSequenceActivities()" />
+                        <input class="btn btn-secondary btn-sm" type="button" value="<?php echo $AppUI->_("LBL_NEED_FOR_TRAINING") ?>" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';" /> 
+                        <input class="btn btn-secondary btn-sm" type="button" value="<?php echo $AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS") ?>" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php#gqs_anchor';" />   
+                    </div>
+                </div>
                 <?php
-                foreach ($records as $record) {
-                    ?>
-                    <option <?php echo $_POST["project_resources_filter"] == $record[1] ? "selected" : "" ?> value="<?php echo $record[1] ?>"> 
-                    <?php echo $record[3] ?>
-                    </option>
-                    <?php
-                }
+                    //verify if the is some activity defined in the entire project
+                    $q = new DBQuery();
+                    $q->addQuery("t.task_id");
+                    $q->addTable("tasks", "t");
+                    $q->addWhere("t.task_project=" . $project_id);
+                    $sql = $q->prepare();
+                    $records = db_loadList($sql);
+                    $activitiesCount = count($records);
                 ?>
-            </select>
-
-            <?php
-            //verify if the is some activity defined in the entire project
-            $q = new DBQuery();
-            $q->addQuery("t.task_id");
-            $q->addTable("tasks", "t");
-            $q->addWhere("t.task_project=" . $project_id);
-            $sql = $q->prepare();
-            $records = db_loadList($sql);
-            $activitiesCount = count($records);
-            ?>
-            <input type="hidden" name="activities_count" id="activities_count" value="<?php echo $activitiesCount ?>" />
-            <input class="button" type="button" value="<?php echo $AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING") ?>" onclick="viewSequenceActivities()" /> <!-- Link to screen for sequencing activities -->
-           <!-- <input class="button" type="button" value="<?php echo $AppUI->_("LBL_WBS_DICTIONARY") ?>" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php#gqs_anchor';" /> -->
-            <input class="button" type="button" value="<?php echo $AppUI->_("LBL_NEED_FOR_TRAINING") ?>" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';" /> 
-            <input class="button" type="button" value="<?php echo $AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS") ?>" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php#gqs_anchor';" />   
-        </form>
+                <input type="hidden" name="activities_count" id="activities_count" value="<?php echo $activitiesCount ?>" />
+            </form>
+        </div>
     </div>
-    <br/>
 
-    <div id="estimation_form_error_message"> </div>
-    <span style="color:red">*</span>&nbsp;<span style="color:#000000"> <?php echo $AppUI->_("LBL_RIGHT_CLICK_ADD_ACTIVITY"); ?> </span>
-    <table id="tb_eap"  class="tbl" align="center" width="100%" border="0" onmouseover="setContextDisabled(false)" onmouseout="setContextDisabled(true)">
-        <tr>
-            <th style="width:40%" colspan="2">
-                <?php echo $AppUI->_("LBL_ACTIVITY"); ?>
-            </th>
-            <th nowrap>
-                <?php echo $AppUI->_("LBL_BEGIN"); ?>
-            </th>
-            <th nowrap>
-                <?php echo $AppUI->_("LBL_END"); ?>
-            </th>
-            <th nowrap>
-                <?php echo $AppUI->_("LBL_DURATION"); ?>
-            </th>
-            <th nowrap>
-                <?php echo $AppUI->_("Human Resources"); ?>
-            </th>
-            <th nowrap>
-    <?php echo $AppUI->_("Status"); ?>
-            </th>
-        </tr>
+    <div id="estimation_form_error_message"> </div> <!-- TODO remover caso desnecessário -->
 
-        <?php
+    <?php 
         $project = new CProject();
         $project->load($project_id);
         $company_id = $project->project_company;
@@ -866,7 +861,15 @@ if ($_GET["show_external_page"] != "") {
         $items = $controllerWBSItem->getWBSItems($project_id);
 
         if (count($items) == 0) {
-            ?>
+    ?>
+
+            <button type="button" 
+                class="btn btn-primary btn-sm float-md-right" 
+                title="<?php echo $AppUI->_("LBL_CLICK") . ' ' . $AppUI->_("LBL_HERE") . ' ' . $AppUI->_("LBL_CREATE_NEW_WBS_ITEM")?>"
+                data-toggle="modal"
+                data-target="#newWBSItemModal">
+                <i class="far fa-plus-square"></i>
+            </button>
             <tr>
                 <td colspan="9" onmouseover="setContextDisabled(false)">
                     * <?php echo $AppUI->_("LBL_CLICK") ?> <a href="#" onclick="createFirstWBSItem()"><b><u><?php echo $AppUI->_("LBL_HERE") ?></u></b></a> <?php echo $AppUI->_("LBL_CREATE_NEW_WBS_ITEM") ?>
@@ -882,212 +885,641 @@ if ($_GET["show_external_page"] != "") {
                 </td>
             </tr>
 
-            <?php
+    <?php
+        // WBS TREE DECLARATION
         } else {
-            $wbs_items_order = 0;
-            ?>
-            <script>
-                var wbsHasActivity = new Array();//stores WBS item id, and a boolean informing if it have or not activities
-            </script>
-            <?php
-            foreach ($items as $item) {
-                $id = $item->getId();
-                $name = $item->getName();
-                $identation = $item->getIdentation();
-                $number = $item->getNumber();
-                /* verify if wbs item is leaf: above item
-                 * 1. Above Item less identation and below more identation
-                 * 2. First and last: no above and no below
-                 * 3. Last item: no below
-                 */
 
-                $i = $wbs_items_order;
-                $is_leaf = "0";
-                if ($i == 0 && count($items) == 1) { // there is just an item
-                    $is_leaf = "1";
-                } else if ($i == (count($items) - 1)) { //is the last item
-                    $is_leaf = "1";
-                } else if (($i > 0 && $i < (count($items) - 1)) && (strlen($items[$i + 1]->getIdentation()) <= strlen($identation))) { // is not the first and not the last and is a leaf
-                    $is_leaf = "1";
+            function createTree($i, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id) {
+                $tree = array();
+                foreach($i as $node) {
+                    createIndex($node->getNumber(), $tree, $node);
                 }
+                $dom = new DOMDocument('1.0');
+                $mainCard = $dom->createElement('div');
+                $dom->appendChild(createHtml($tree, $mainCard, $dom, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id));
+                echo $dom->saveHTML();
+            }
+             
+             
+            function createIndex($number, &$tree, $obj) {
+                $index = strpos($number, '.');
+                if (!$index) {
+                    $tree[$number] = $obj->toArray();
+                    $tree[$number]['parent'] = substr($obj->getNumber(), 0, strlen($obj->getNumber())-2);
+                    return;
+                }
+                $newNumber = substr($number, $index+1);
+                if (!($newNumber == '' || $newNumber == null)) {
+                    return createIndex($newNumber, $tree[substr($number, 0, $index)], $obj);
+                }
+            }
+            
+            function createHtml($tree, $mainCard, $dom, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id) {
+                foreach($tree as $branch) {
+                    if (is_array($branch)) {
+                        $isLeaf = (bool)$branch['isLeaf'];
+                        $numberOfTasks = '';
+                        if ($isLeaf) {
+                            $eapItem = new WBSItemEstimation();
+                            $id = $branch['id'];
+                            $eapItem->load($id);
+                            $tasks = 0;
+                            $ControllerWBSItemActivityRelationship = new ControllerWBSItemActivityRelationship();
+                            $tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($id);
+                            $numberOfTasks = ((bool)$branch['isLeaf']) ? ' (' . sizeof($tasks) . ')' : '';
+                        }
+                        $innerCard = strlen($branch['number']) > 1 ? ' inner-card' : '';
+                        $card = $dom->createElement('div');
+                        $cardClass = $dom->createAttribute('class');
+                        $cardClass->value = 'card' . $innerCard;
+                        $card->appendChild($cardClass);
 
-                $wbs_items_order++;
-                $order = $wbs_items_order;
-                //update the sort order and is leaf attributes of WBS items.
-                $q = new DBQuery();
-                $q->addTable("project_eap_items");
-                $q->addUpdate("sort_order", $order);
-                $q->addUpdate("is_leaf", $is_leaf);
-                $q->addWhere("id= $id");
-                $q->exec();
-                ?>
+                        $cardBody = $dom->createElement('div');
+                        $cardBodyId = $dom->createAttribute('id');
+                        $cardBodyId->value = $branch['number'];
+                        $cardBody->appendChild($cardBodyId);
+                        $cardBodyClass = $dom->createAttribute('class');
+                        $cardBodyClass->value = 'card-body';
+                        $cardBody->appendChild($cardBodyClass);
 
-                <!-- define forms for wbs actions -->
-                <form name="new_wbs_item_<?php echo $id ?>" id="new_wbs_item_<?php echo $id ?>" method="post" action="?m=dotproject_plus">
-                    <input name="dosql" type="hidden" value="do_new_wbs_item" />
-                    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                    <input type="hidden" name="parent_id" value="<?php echo $id; ?>" />
-                    <!-- The order is increased in 1 and the identation is increased to characterize the new item is a child of the current one -->
-                    <input type="hidden" name="sort_order" value="<?php echo ($order); ?>" />    
-                    <input type="hidden" id="number_parent" name="number_parent" value="<?php echo $number; ?>" />   
-                    <input type="hidden" id="identation_field" name="identation_field" value="<?php echo $identation; ?>&nbsp;&nbsp;&nbsp;" />
-                    <input type="hidden" id="number_field_<?php echo $id ?>" name="number_field_<?php echo $id ?>" />
-                    <input type="hidden" id="leaf_field_<?php echo $id ?>" name="leaf_field_<?php echo $id ?>" />
-                </form>
+                        $cardRow = $dom->createElement('div');
+                        $cardRowClass = $dom->createAttribute('class');
+                        $cardRowClass->value = 'row';
+                        $cardRow->appendChild($cardRowClass);
 
-                <form name="new_activity_for_wbs_<?php echo $id ?>" id="new_activity_for_wbs_<?php echo $id ?>" method="post" action="?m=dotproject_plus">
-                    <input name="dosql" type="hidden" value="do_new_activity" />
-                    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                    <input type="hidden" name="wbs_item_id" value="<?php echo $id; ?>" />
-                    <input type="hidden" name="wbs_item_is_leaf_id_<?php echo $id ?>" id="wbs_item_is_leaf_id_<?php echo $id ?>" value="<?php echo $is_leaf; ?>" />
-                </form>
+                        $carCol8 = $dom->createElement('div');
+                        $carCol8Class = $dom->createAttribute('class');
+                        $carCol8Class->value = 'col-md-8';
+                        $carCol8->appendChild($carCol8Class);
 
-                <form name="delete_wbs_<?php echo $id ?>" id="delete_wbs_<?php echo $id ?>" method="post" action="?m=dotproject_plus">
-                    <input name="dosql" type="hidden" value="do_delete_wbs_item" />
-                    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                    <input type="hidden" name="wbs_item_id" value="<?php echo $id; ?>" />
-                    <input type="hidden" name="wbs_item_name" value="<?php echo $name; ?>" />
-                </form>
-
-                <form name="sort_wbs_<?php echo $id ?>" id="sort_wbs_<?php echo $id ?>" method="post" action="?m=dotproject_plus">
-                    <input name="dosql" type="hidden" value="do_save_wbs_order" />
-                    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                    <input type="hidden" name="wbs_id" value="<?php echo $id ?>" />
-                    <input type="hidden" name="direction" value="0" />
-                    <input type="hidden" name="wbs_order" value="<?php echo $order ?>" />
-                </form>
-
-                <?php
-                if ($is_leaf == "1") {
-                    $eapItem = new WBSItemEstimation();
-                    $eapItem->load($id);
-                    //start: code to filter workpakage activities
-                    $tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($id);
-                    $hasActivities=sizeof($tasks)>0?true:false;
-                    ?>
-                    <tr id="row_<?php echo $id ?>"  ondblclick="expandControlWorkpackageActivities(<?php echo $id ?>)" style="cursor:pointer">                       
-
-                        <td style="background-color: #E8E8E8;height:  35px;min-width:50px; " colspan="7">
-                            <span id="read_workpackage_id_<?php echo $id ?>">
-                                <span id="identation_<?php echo $id ?>" style="color: #E8E8E8"><?php echo $identation; ?></span>
-                                <!-- To enlarge the identation space -->
-                <?php echo strlen($identation) > 0 ? "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" : ""; ?>
-                                <span style="position: absolute;margin-top: -8px;">
-                                    <img src="./modules/dotproject_plus/images/sort_icon_up.bmp" onclick="sortWBSItem(-1, '<?php echo $id ?>');" id="sort_icon_<?php echo $id ?>" style="cursor:pointer;" />
-                                    <br />
-                                    <img src="./modules/dotproject_plus/images/sort_icon_down.bmp" onclick="sortWBSItem(1, '<?php echo $id ?>');" id="sort_icon_<?php echo $id ?>" style="cursor:pointer;" />                                  
-                                </span>
-                                <span style="margin-left: 21px" id="div_numbering_<?php echo $id ?>">
-                                <?php echo $number ?>
-                                </span>
-                <?php echo $name ?>
-                                  &nbsp;
-                                <span style="display:<?php echo $hasActivities?"inline":"none" ?>" >
-                                    (<?php echo sizeof($tasks) ?>)
-                                    &nbsp;&nbsp;&nbsp;
-                                    <img src="./modules/dotproject_plus/images/icone_seta.png" onclick="collapseActivities(<?php echo $id ?>)" id="collapse_icon_<?php echo $id ?>" style="cursor:pointer;display:none" />
-                                    <img src="./modules/dotproject_plus/images/icone_seta_cima.png" onclick="expandActivities(<?php echo $id ?>)" id="expand_icon_<?php echo $id ?>" style="cursor:pointer" />
-                                </span>
-                                 </span>
-                            <span id="edit_workpackage_id_<?php echo $id ?>" style="display:none">
-                                <form name="save_wbs_<?php echo $id ?>" id="save_wbs_<?php echo $id ?>" method="post" action="?m=dotproject_plus">
-                                    <input name="dosql" type="hidden" value="do_save_wbs" />
-                                    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                                    <input type="hidden" name="wbs_item_id" value="<?php echo $id; ?>" />
-                                    <input type="hidden" id="identation_field_<?php echo $id ?>" name="identation_field_<?php echo $id ?>" value="<?php echo $identation; ?>" />
-                                    <input type="hidden" id="number_field_<?php echo $id ?>_unique" name="number_field_<?php echo $id ?>" value="<?php echo $number ?>" />
-                                    <input type="hidden" id="leaf_field_<?php echo $id ?>_unique" name="leaf_field_<?php echo $id ?>" value="<?php echo $is_leaf ?>" />
-                                    <input type="hidden" name="wbs_item_order_<?php echo $id ?>" value="<?php echo $order; ?>" />
-                                    <?php echo $AppUI->_("LBL_DESCRICAO") ?>: <input type="text"  class="text" value="<?php echo $name ?>" id="wbs_item_description_<?php echo $id ?>" name="wbs_item_description_<?php echo $id ?>" size="35" maxlength="50"  />
-                                    &nbsp;
-                                    <?php echo $AppUI->_("LBL_TAMANHO") ?>: <input type="text"  class="text" value="<?php echo $eapItem->getSize() ?>" maxlength="10" size="15"  name="estimated_size_<?php echo $id ?>" />
-                                    &nbsp;
-                <?php echo $AppUI->_("LBL_UNITY") ?>:<input type="text" class="text" name="estimated_size_unit_<?php echo $id ?>"  maxlength="30" size="25"  value="<?php echo $eapItem->getSizeUnit() ?>"  />
-                                    <span style="text-align: right;width:100%">
-                                        <input class="button" type="button" value="<?php echo $AppUI->_("LBL_SAVE"); ?>" onclick="saveWBSItem(<?php echo $id ?>)" />
-                                        <input class="button"type="button" value="<?php echo ucfirst($AppUI->_("LBL_CANCEL")); ?>" onclick="cancelSaveWBSItem(<?php echo $id ?>)" />                  
-                                    </span>
-                                </form>
-                            </span>
-                        </td>
-                     
-                    <script>
-                        wbsHasActivity[<?php echo $id ?>] = <?php echo sizeof($tasks) > 0 ? "true" : "false" ?>;
-                    </script>
-                    <?php
-                    if ($activitiesCount == 0 && !$showFirstActivityCreation) {
-                        $showFirstActivityCreation = true;
+                        $h5 = $dom->createElement('h5', $branch['number'] . ' ' . $branch['name'] . $numberOfTasks);
+                        $carCol8->appendChild($h5);
                         
-                        ?>
-                        <tr>
-                            <td colspan="9" onmouseover="setContextDisabled(false)" id="new_activity_wbs_item_id_<?php echo $id ?>">
-                                <span style="color:red">*</span> <?php echo $AppUI->_("LBL_RIGHT_CLICK_NEW_ACTIVITY"); ?>
-                                <!-- createFirstActivity(<?php echo $id ?>) -->
-                                <form name="new_first_activity_for_an_wbs_id_<?php echo $id ?>" id="new_first_activity_for_an_wbs_id_<?php echo $id ?>" method="post" action="?m=dotproject_plus">
-                                    <input name="dosql" type="hidden" value="do_new_activity" />
-                                    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                                    <input type="hidden" name="wbs_item_id" value="<?php echo $id ?>" />
-                                </form>
-                            </td>
-                        </tr>
-                        <?php
-                    } else {
-                        foreach ($tasks as $obj) {
-                            $task_id = $obj->task_id;
-                            $taskDescription = $obj->task_name;
-                            $projectTaskEstimation = new ProjectTaskEstimation();
-                            $projectTaskEstimation->load($task_id);
+                        $carCol4 = $dom->createElement('div');
+                        $carCol4Class = $dom->createAttribute('class');
+                        $carCol4Class->value = 'col-md-4 text-right';
+                        $carCol4->appendChild($carCol4Class);
 
-                            //duration and start/end dates.
-                            $obj = new CTask();
-                            $obj->load($task_id);
-                            $startDateTxt = "";
-                            $endDateTxt = "";
-                            if (isset($obj->task_start_date) && isset($obj->task_end_date)) {
-                                $startDateTxt = date("d/m/Y", strtotime($obj->task_start_date));
-                                $endDateTxt = date("d/m/Y", strtotime($obj->task_end_date));
-                            }
-                            $duration = "";
-                            if ($projectTaskEstimation->getDuration() != "") {
-                                $duration = "" . $projectTaskEstimation->getDuration() . " " . $AppUI->_("LBL_PROJECT_DAYS_MULT");
-                            }
+                        // // Button new WBS item
+                        // $btnWbs = $dom->createElement('button');
+                        // $btnWbsClass = $dom->createAttribute('class');
+                        // $btnWbsClass->value = 'btn btn-primary btn-sm';
+                        // $btnWbsToggle = $dom->createAttribute('data-toggle');
+                        // $btnWbsToggle->value = 'modal';
+                        // $btnWbsTarget = $dom->createAttribute('data-target');
+                        // $btnWbsTarget->value = '#newWBSItemModal';
+                        // $btnWbsTitle = $dom->createAttribute('title');
+                        // $btnWbsTitle->value = 'Criar Item EAP';
+                        // $btnWbs->appendChild($btnWbsClass);
+                        // $btnWbs->appendChild($btnWbsToggle);
+                        // $btnWbs->appendChild($btnWbsTarget);
+                        // $btnWbs->appendChild($btnWbsTitle);
+                        // $icon = $dom->createElement('i');
+                        // $iconClass = $dom->createAttribute('class');
+                        // $iconClass->value = 'far fa-plus-square';
+                        // $icon->appendChild($iconClass);
+                        // $btnWbs->appendChild($icon);
+                        // $carCol4->appendChild($btnWbs);
 
-                            if ($taskDescription != "") { //start: build line for task
-                                // Get estimate roles if have some
-                                $estimatedRolesTxt = "";
-                                foreach ($projectTaskEstimation->getRoles() as $role) {
-                                    $roleId = $role->getRoleId();
-                                    $roleName = $roles[$roleId];
-                                    $roleQuantity = $role->getQuantity();
-                                    $estimatedRolesTxt .= $roleName . " (" . $roleQuantity . ") <br />";
+                        // // Button new task
+                        // if ($isLeaf) {
+                        //     $btnTask = $dom->createElement('button');
+                        //     $btnTaskClass = $dom->createAttribute('class');
+                        //     $btnTaskClass->value = 'btn btn-secondary btn-sm';
+                        //     $btnTaskToggle = $dom->createAttribute('data-toggle');
+                        //     $btnTaskToggle->value = 'modal';
+                        //     $btnTaskTarget = $dom->createAttribute('data-target');
+                        //     $btnTaskTarget->value = '#newTaskModal';
+                        //     $btnTaskTitle = $dom->createAttribute('title');
+                        //     $btnTaskTitle->value = 'Nova Atividade';
+                        //     $btnTask->appendChild($btnTaskClass);
+                        //     $btnTask->appendChild($btnTaskToggle);
+                        //     $btnTask->appendChild($btnTaskTarget);
+                        //     $btnTask->appendChild($btnTaskTitle);
+                        //     $icon = $dom->createElement('i');
+                        //     $iconClass = $dom->createAttribute('class');
+                        //     $iconClass->value = 'far fa-plus-square';
+                        //     $icon->appendChild($iconClass);
+                        //     $btnTask->appendChild($icon);
+                        //     $carCol4->appendChild($btnTask);
+                        // }
+
+                        // // Button edit WBS item
+                        // $btnWbsEdit = $dom->createElement('button');
+                        // $btnWbsEditClass = $dom->createAttribute('class');
+                        // $btnWbsEditClass->value = 'btn btn-secondary btn-sm';
+                        // $btnWbsEditToggle = $dom->createAttribute('data-toggle');
+                        // $btnWbsEditToggle->value = 'modal';
+                        // $btnWbsEditTarget = $dom->createAttribute('data-target');
+                        // $btnWbsEditTarget->value = '#newTaskModal';
+                        // $btnWbsEditTitle = $dom->createAttribute('title');
+                        // $btnWbsEditTitle->value = 'Alterar Item EAP';
+                        // $btnWbsEdit->appendChild($btnWbsEditClass);
+                        // $btnWbsEdit->appendChild($btnWbsEditToggle);
+                        // $btnWbsEdit->appendChild($btnWbsEditTarget);
+                        // $btnWbsEdit->appendChild($btnWbsEditTitle);
+                        // $icon = $dom->createElement('i');
+                        // $iconClass = $dom->createAttribute('class');
+                        // $iconClass->value = 'far fa-edit';
+                        // $icon->appendChild($iconClass);
+                        // $btnWbsEdit->appendChild($icon);
+                        // $carCol4->appendChild($btnWbsEdit);
+
+                        // // Button delete WBS item
+                        // $btnWbsDel = $dom->createElement('button');
+                        // $btnWbsDelClass = $dom->createAttribute('class');
+                        // $btnWbsDelClass->value = 'btn btn-danger btn-sm';
+                        // $btnWbsDelTitle = $dom->createAttribute('title');
+                        // $btnWbsDelTitle->value = 'Excluir Item EAP';
+                        // $btnWbsDelClick = $dom->createAttribute('onclick');
+                        // $btnWbsDelClick->value = 'wbs.delete('.$branch['id'].')';
+                        // $btnWbsDel->appendChild($btnWbsDelClass);
+                        // $btnWbsDel->appendChild($btnWbsDelTitle);
+                        // $btnWbsDel->appendChild($btnWbsDelClick);
+                        // $icon = $dom->createElement('i');
+                        // $iconClass = $dom->createAttribute('class');
+                        // $iconClass->value = 'far fa-trash-alt';
+                        // $icon->appendChild($iconClass);
+                        // $btnWbsDel->appendChild($icon);
+                        // $carCol4->appendChild($btnWbsDel);
+
+                        // // Button scope declaration
+                        // $btnWbsScopeDec = $dom->createElement('button');
+                        // $btnWbsScopeDecClass = $dom->createAttribute('class');
+                        // $btnWbsScopeDecClass->value = 'btn btn-secondary btn-sm';
+                        // $btnWbsScopeDecTitle = $dom->createAttribute('title');
+                        // $btnWbsScopeDecTitle->value = 'Declaração do escopo';
+                        // $btnWbsScopeDecClick = $dom->createAttribute('onclick');
+                        // $btnWbsScopeDecClick->value = 'rightClickMenuShowScopeDeclaration()';
+                        // $btnWbsScopeDec->appendChild($btnWbsScopeDecClass);
+                        // $btnWbsScopeDec->appendChild($btnWbsScopeDecTitle);
+                        // $btnWbsScopeDec->appendChild($btnWbsScopeDecClick);
+                        // $icon = $dom->createElement('i');
+                        // $iconClass = $dom->createAttribute('class');
+                        // $iconClass->value = 'fas fa-paste';
+                        // $icon->appendChild($iconClass);
+                        // $btnWbsScopeDec->appendChild($icon);
+                        // $carCol4->appendChild($btnWbsScopeDec);
+
+                        // // Button WBS dictionary
+                        // $btnWbsDict = $dom->createElement('button');
+                        // $btnWbsDictClass = $dom->createAttribute('class');
+                        // $btnWbsDictClass->value = 'btn btn-secondary btn-sm';
+                        // $btnWbsDictTitle = $dom->createAttribute('title');
+                        // $btnWbsDictTitle->value = 'Dicionário da EAP';
+                        // $btnWbsDictClick = $dom->createAttribute('onclick');
+                        // $btnWbsDictClick->value = 'showWBSDictionary()';
+                        // $btnWbsDict->appendChild($btnWbsDictClass);
+                        // $btnWbsDict->appendChild($btnWbsDictClass);
+                        // $btnWbsDict->appendChild($btnWbsDictClick);
+                        // $icon = $dom->createElement('i');
+                        // $iconClass = $dom->createAttribute('class');
+                        // $iconClass->value = 'fas fa-book';
+                        // $icon->appendChild($iconClass);
+                        // $btnWbsDict->appendChild($icon);
+                        
+                        // $carCol4->appendChild($btnWbsDict);
+
+
+                        // Dropdown
+                        $dropdown = $dom->createElement('div');
+                        $dropdownClass = $dom->createAttribute('class');
+                        $dropdownClass->value = 'dropdown';
+                        $dropdown->appendChild($dropdownClass);
+
+                        // Dropdown link
+                        $dropdownA = $dom->createElement('a');
+                        $dropdownAClass = $dom->createAttribute('class');
+                        $dropdownAClass->value = '';
+                        $dropdownA->appendChild($dropdownAClass);
+                        $dropdownAhref = $dom->createAttribute('href');
+                        $dropdownAhref->value = '#';
+                        $dropdownA->appendChild($dropdownAhref);
+                        $dropdownAToggle = $dom->createAttribute('data-toggle');
+                        $dropdownAToggle->value = 'dropdown';
+                        $dropdownA->appendChild($dropdownAToggle);
+                        $dropdownAId = $dom->createAttribute('id');
+                        $dropdownAId->value = '#dropdown_' . $branch['id'];
+                        $dropdownA->appendChild($dropdownAId);
+                        $icon = $dom->createElement('i');
+                        $iconClass = $dom->createAttribute('class');
+                        $iconClass->value = 'fas fa-ellipsis-v';
+                        $icon->appendChild($iconClass);
+                        $dropdownA->appendChild($icon);
+
+                        $dropdown->appendChild($dropdownA);
+
+                        // Dropdown menu
+                        $dropdownMenu = $dom->createElement('div');
+                        $dropdownMenuClass = $dom->createAttribute('class');
+                        $dropdownMenuClass->value = 'dropdown-menu dropdown-menu-right';
+                        $dropdownMenu->appendChild($dropdownMenuClass);
+                        $dropdownMenuAriaL = $dom->createAttribute('aria-labelledby');
+                        $dropdownMenuAriaL->value = 'dropdown_'.$branch['id'];
+                        $dropdownMenu->appendChild($dropdownMenuAriaL);
+                        
+                        // Dropdown item
+                        if(!$isLeaf) {
+                            $dropdownItem = $dom->createElement('a');
+                            $dropdownItemClass = $dom->createAttribute('class');
+                            $dropdownItemClass->value = 'dropdown-item';
+                            $dropdownItem->appendChild($dropdownItemClass);
+                            $dropdownItemhref = $dom->createAttribute('href');
+                            $dropdownItemhref->value = '#';
+                            $dropdownItem->appendChild($dropdownItemhref);
+                            $icon = $dom->createElement('i');
+                            $iconClass = $dom->createAttribute('class');
+                            $iconClass->value = 'far fa-plus-square';
+                            $icon->appendChild($iconClass);
+                            $dropdownItem->appendChild($icon);
+                            $dropdownItemSpan = $dom->createElement('span', ' Criar Item EAP');
+                            $dropdownItem->appendChild($dropdownItemSpan);
+                            $dropdownMenu->appendChild($dropdownItem);
+                        }
+                        
+                        // Dropdown item
+                        if($isLeaf) {
+                            $dropdownItem = $dom->createElement('a');
+                            $dropdownItemClass = $dom->createAttribute('class');
+                            $dropdownItemClass->value = 'dropdown-item';
+                            $dropdownItem->appendChild($dropdownItemClass);
+                            $dropdownItemhref = $dom->createAttribute('href');
+                            $dropdownItemhref->value = '#';
+                            $dropdownItem->appendChild($dropdownItemhref);
+                            $icon = $dom->createElement('i');
+                            $iconClass = $dom->createAttribute('class');
+                            $iconClass->value = 'far fa-plus-square';
+                            $icon->appendChild($iconClass);
+                            $dropdownItem->appendChild($icon);
+                            $dropdownItemSpan = $dom->createElement('span', ' Nova Atividade');
+                            $dropdownItem->appendChild($dropdownItemSpan);
+                            $dropdownMenu->appendChild($dropdownItem);
+                        }
+
+                        // Dropdown item
+                        $dropdownItem = $dom->createElement('a');
+                        $dropdownItemClass = $dom->createAttribute('class');
+                        $dropdownItemClass->value = 'dropdown-item';
+                        $dropdownItem->appendChild($dropdownItemClass);
+                        $dropdownItemhref = $dom->createAttribute('href');
+                        $dropdownItemhref->value = '#';
+                        $dropdownItem->appendChild($dropdownItemhref);
+                        $icon = $dom->createElement('i');
+                        $iconClass = $dom->createAttribute('class');
+                        $iconClass->value = 'far fa-edit';
+                        $icon->appendChild($iconClass);
+                        $dropdownItem->appendChild($icon);
+                        $dropdownItemSpan = $dom->createElement('span', ' Alterar Item EAP');
+                        $dropdownItem->appendChild($dropdownItemSpan);
+                        $dropdownMenu->appendChild($dropdownItem);
+
+                        // Dropdown item
+                        $dropdownItem = $dom->createElement('a');
+                        $dropdownItemClass = $dom->createAttribute('class');
+                        $dropdownItemClass->value = 'dropdown-item';
+                        $dropdownItem->appendChild($dropdownItemClass);
+                        $dropdownItemhref = $dom->createAttribute('href');
+                        $dropdownItemhref->value = '#';
+                        $dropdownItem->appendChild($dropdownItemhref);
+                        $icon = $dom->createElement('i');
+                        $iconClass = $dom->createAttribute('class');
+                        $iconClass->value = 'far fa-trash-alt';
+                        $icon->appendChild($iconClass);
+                        $dropdownItem->appendChild($icon);
+                        $dropdownItemSpan = $dom->createElement('span', ' Excluir Item EAP');
+                        $dropdownItem->appendChild($dropdownItemSpan);
+                        $dropdownMenu->appendChild($dropdownItem);
+
+                        // Divider
+                        $dropdownItem = $dom->createElement('div');
+                        $dropdownItemClass = $dom->createAttribute('class');
+                        $dropdownItemClass->value = 'dropdown-divider';
+                        $dropdownItem->appendChild($dropdownItemClass);
+                        $dropdownMenu->appendChild($dropdownItem);
+
+                        // Dropdown item
+                        $dropdownItem = $dom->createElement('a');
+                        $dropdownItemClass = $dom->createAttribute('class');
+                        $dropdownItemClass->value = 'dropdown-item';
+                        $dropdownItem->appendChild($dropdownItemClass);
+                        $dropdownItemhref = $dom->createAttribute('href');
+                        $dropdownItemhref->value = '#';
+                        $dropdownItem->appendChild($dropdownItemhref);
+                        $icon = $dom->createElement('i');
+                        $iconClass = $dom->createAttribute('class');
+                        $iconClass->value = 'fas fa-paste';
+                        $icon->appendChild($iconClass);
+                        $dropdownItem->appendChild($icon);
+                        $dropdownItemSpan = $dom->createElement('span', ' Declaração do escopo');
+                        $dropdownItem->appendChild($dropdownItemSpan);
+                        $dropdownMenu->appendChild($dropdownItem);
+
+                        // Dropdown item
+                        $dropdownItem = $dom->createElement('a');
+                        $dropdownItemClass = $dom->createAttribute('class');
+                        $dropdownItemClass->value = 'dropdown-item';
+                        $dropdownItem->appendChild($dropdownItemClass);
+                        $dropdownItemhref = $dom->createAttribute('href');
+                        $dropdownItemhref->value = '#';
+                        $dropdownItem->appendChild($dropdownItemhref);
+                        $icon = $dom->createElement('i');
+                        $iconClass = $dom->createAttribute('class');
+                        $iconClass->value = 'fas fa-book';
+                        $icon->appendChild($iconClass);
+                        $dropdownItem->appendChild($icon);
+                        $dropdownItemSpan = $dom->createElement('span', ' Dicionário da EAP');
+                        $dropdownItem->appendChild($dropdownItemSpan);
+                        $dropdownMenu->appendChild($dropdownItem);
+                        
+                        $dropdown->appendChild($dropdownMenu);
+
+                        $carCol4->appendChild($dropdown);
+
+                        // <div class="dropdown">
+                        // <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">
+                        //     Dropdown link
+                        // </a>
+
+                        // <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        //     <a class="dropdown-item" href="#">Action</a>
+                        //     <a class="dropdown-item" href="#">Another action</a>
+                        //     <a class="dropdown-item" href="#">Something else here</a>
+                        // </div>
+                        // </div>
+
+
+
+
+
+                        $cardRow->appendChild($carCol8);
+                        $cardRow->appendChild($carCol4);
+
+                        $cardBody->appendChild($cardRow);
+
+                        if ($isLeaf) {
+
+                            foreach($tasks as $task) {
+                                $task_id = $task->task_id;
+                                $taskDescription = $task->task_name;
+                                $projectTaskEstimation = new ProjectTaskEstimation();
+                                $projectTaskEstimation->load($task_id);
+    
+                                //duration and start/end dates.
+                                $obj = new CTask();
+                                $obj->load($task_id);
+                                $startDateTxt = "";
+                                $endDateTxt = "";
+                                if (isset($obj->task_start_date) && isset($obj->task_end_date)) {
+                                    $startDateTxt = date("d/m/Y", strtotime($obj->task_start_date));
+                                    $endDateTxt = date("d/m/Y", strtotime($obj->task_end_date));
                                 }
+                                $duration = "";
+                                if ($projectTaskEstimation->getDuration() != "") {
+                                    $duration = "" . $projectTaskEstimation->getDuration() . " dia(s)";
+                                }
+
+                                $taskCard = $dom->createElement('div');
+                                $taskCardClass = $dom->createAttribute('class');
+                                $taskCardClass->value = 'card inner-card';
+                                $taskCard->appendChild($taskCardClass);
+
+                                $taskCardBody = $dom->createElement('div');
+                                $taskCardBodyId = $dom->createAttribute('id');
+                                $taskCardBodyId->value = $branch['number'];
+                                $taskCardBody->appendChild($taskCardBodyId);
+                                $taskCardBodyClass = $dom->createAttribute('class');
+                                $taskCardBodyClass->value = 'card-body';
+                                $taskCardBody->appendChild($taskCardBodyClass);
+
+                                $taskCardRow = $dom->createElement('div');
+                                $taskCardRowClass = $dom->createAttribute('class');
+                                $taskCardRowClass->value = 'row';
+                                $taskCardRow->appendChild($taskCardRowClass);
+
+                                $carCol8 = $dom->createElement('div');
+                                $carCol8Class = $dom->createAttribute('class');
+                                $carCol8Class->value = 'col-md-10';
+                                $carCol8->appendChild($carCol8Class);
+
+                                switch ($obj->task_percent_complete) {
+                                    case 0:
+                                        $activityStatus = $dom->createElement('span', 'Iniciada'); 
+                                        $activityStatusClass = $dom->createAttribute('class');
+                                        $activityStatusClass->value = 'badge badge-primary';
+                                        $activityStatus->appendChild($activityStatusClass);
+                                        break;
+                                    case 100:
+                                        $activityStatus = $dom->createElement('span', 'Finalizada'); 
+                                        $activityStatusClass = $dom->createAttribute('class');
+                                        $activityStatusClass->value = 'badge badge-success';
+                                        $activityStatus->appendChild($activityStatusClass);
+                                        break;
+                                    default:
+                                        $activityStatus = $dom->createElement('span', 'Não iniciada'); 
+                                        $activityStatusClass = $dom->createAttribute('class');
+                                        $activityStatusClass->value = 'badge badge-info';
+                                        $activityStatus->appendChild($activityStatusClass);
+                                        break;
+                                }
+                                // Responsável
+                                $query = new DBQuery();
+                                $query->addTable("users", "u");
+                                $query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
+                                $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
+                                $query->addWhere("u.user_id = " . $obj->task_owner);
+                                $res = & $query->exec();
+                                $user_name = '';
+                                for ($res; !$res->EOF; $res->MoveNext()) {
+                                    $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
+                                }
+                                
+                                $h6 = $dom->createElement('h6', 'A.' . $activitiesIdsForDisplay[$task_id] . ' ' . $taskDescription . ' ');
+                                $h6Class = $dom->createAttribute('class');
+                                $h6Class->value = 'link';
+                                $h6->appendChild($h6Class);
+                                $h6Toggle = $dom->createAttribute('data-toggle');
+                                $h6Toggle->value = 'collapse';
+                                $h6->appendChild($h6Toggle);
+                                $h6Target = $dom->createAttribute('data-target');
+                                $h6Target->value = '#card_'.$task_id;
+                                $h6->appendChild($h6Target);
+                                
+                                $icon = $dom->createElement('i', '&nbsp;');
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'fas fa-caret-down';
+                                $icon->appendChild($iconClass);
+                                $h6->appendChild($icon);
+                                $carCol8->appendChild($h6);
+                                
+                                $h6->appendChild($activityStatus);
+
+                                // Responsável
+                                $span = $dom->createElement('span', 'Responsável: ' . $user_name); 
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'responsible';
+                                $span->appendChild($spanClass);
+                                $h6->appendChild($span);                                
+
+                                // Período
+                                $span = $dom->createElement('span', ' | Período: ' . $startDateTxt . ' até ' . $endDateTxt); 
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'task-date';
+                                $span->appendChild($spanClass);
+                                $h6->appendChild($span);
+                                
+                                $carCol4 = $dom->createElement('div');
+                                $carCol4Class = $dom->createAttribute('class');
+                                $carCol4Class->value = 'col-md-2 text-right';
+                                $carCol4->appendChild($carCol4Class);
+
+                                // Button edit task
+                                // $btnTaskEdit = $dom->createElement('button');
+                                // $btnTaskEditClass = $dom->createAttribute('class');
+                                // $btnTaskEditClass->value = 'btn btn-secondary btn-sm';
+                                // $btnTaskEditToggle = $dom->createAttribute('data-toggle');
+                                // $btnTaskEditToggle->value = 'modal';
+                                // $btnTaskEditTarget = $dom->createAttribute('data-target');
+                                // $btnTaskEditTarget->value = '#newTaskModal';
+                                // $btnTaskEditTitle = $dom->createAttribute('title');
+                                // $btnTaskEditTitle->value = 'Alterar Atividade';
+                                // $btnTaskEdit->appendChild($btnTaskEditClass);
+                                // $btnTaskEdit->appendChild($btnTaskEditToggle);
+                                // $btnTaskEdit->appendChild($btnTaskEditTarget);
+                                // $btnTaskEdit->appendChild($btnTaskEditTitle);
+                                $icon = $dom->createElement('i');
+                                $icon = $dom->createElement('i');
+                                $iconTitle = $dom->createAttribute('title');
+                                $iconTitle->value = 'Alterar Atividade';
+                                $icon->appendChild($iconTitle);
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'far fa-edit link';
+                                $icon->appendChild($iconClass);
+                                $iconToggle = $dom->createAttribute('data-toggle');
+                                $iconToggle->value = 'modal';
+                                $icon->appendChild($iconToggle);
+                                $iconTarget = $dom->createAttribute('data-target');
+                                $iconTarget->value = '#newTaskModal';
+                                $icon->appendChild($iconTarget);
+                                // $btnTaskEdit->appendChild($icon);
+                                $carCol4->appendChild($icon);
+
+                                // Button delete task
+                                // $btnTaskDel = $dom->createElement('button');
+                                // $btnTaskDelClass = $dom->createAttribute('class');
+                                // $btnTaskDelClass->value = 'btn btn-danger btn-sm';
+                                // $btnTaskDelTitle = $dom->createAttribute('title');
+                                // $btnTaskDelTitle->value = 'Excluir Atividade';
+                                // $btnTaskDelClick = $dom->createAttribute('onclick');
+                                // $btnTaskDelClick->value = 'tasks.delete('.$task_id.')';
+                                // $btnTaskDel->appendChild($btnTaskDelClass);
+                                // $btnTaskDel->appendChild($btnTaskDelTitle);
+                                // $btnTaskDel->appendChild($btnTaskDelClick);
+                                $icon = $dom->createElement('i');
+                                $iconTitle = $dom->createAttribute('title');
+                                $iconTitle->value = 'Excluir Atividade';
+                                $icon->appendChild($iconTitle);
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'far fa-trash-alt link';
+                                $icon->appendChild($iconClass);
+                                $iconClick = $dom->createAttribute('onclick');
+                                $iconClick->value = 'tasks.delete('.$task_id.')';
+                                $icon->appendChild($iconClick);
+                                // $btnTaskDel->appendChild($icon);
+                                $carCol4->appendChild($icon);
+
+                                ?>
+                                <form action="?m=dotproject_plus" method="POST" id="formDeleteActivity_<?=$task_id?>">
+                                    <input type="hidden" name="activity_id" value="<?=$task_id?>" />
+                                    <input type="hidden" name="project_id" value="<?=$project_id?>" />
+                                    <input type="hidden"  name="dosql" value="do_delete_activity" />
+                                </form>
+
+                                <?php
+
+                                $taskCardRow->appendChild($carCol8);
+                                $taskCardRow->appendChild($carCol4);
+
+                                $taskCardBody->appendChild($taskCardRow);
+
+                                $taskCardRow = $dom->createElement('div');
+                                $taskCardRowClass = $dom->createAttribute('class');
+                                $taskCardRowClass->value = 'row';
+                                $taskCardRow->appendChild($taskCardRowClass);
+
+                                $carCol6 = $dom->createElement('div');
+                                $carCol6Class = $dom->createAttribute('class');
+                                $carCol6Class->value = 'col-md-6';
+                                $carCol6->appendChild($carCol6Class);
+
+                                // Data início
+                                $span = $dom->createElement('span', 'Início: ' . $startDateTxt); 
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+
+                                // Data fim
+                                $span = $dom->createElement('span', 'Fim: ' . $endDateTxt); 
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+
+                                // Duração
+                                $span = $dom->createElement('span', 'Duração: ' . $duration); 
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+
+                                $taskCardRow->appendChild($carCol6);
+
+                                $carCol6 = $dom->createElement('div');
+                                $carCol6Class = $dom->createAttribute('class');
+                                $carCol6Class->value = 'col-md-6';
+                                $carCol6->appendChild($carCol6Class);
+                                $taskCardRow->appendChild($carCol6);
+
+                                // Responsável
+                                $span = $dom->createElement('span', 'Responsável: ' . $user_name); 
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+
+                                // Esforço
                                 //metric index is db key
                                 $effortMetrics = array();
-                                $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
-                                $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
-                                $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
-
-                                //Get activity RHs
-                                $q = new DBQuery();
-                                $q->addQuery("u.user_username,u.user_id");
-                                $q->addTable("project_tasks_estimated_roles", "tr");
-                                $q->addJoin("human_resource_allocation", "hr_al ", "hr_al.project_tasks_estimated_roles_id=tr.id");
-                                $q->addJoin("human_resource", "hr ", " hr_al.human_resource_id=hr.human_resource_id");
-                                $q->addJoin("users", "u", " hr.human_resource_user_id=u.user_id");
-                                $q->addWhere("tr.task_id=" . $task_id);
-                                $sql = $q->prepare();
-                                $RHrecords = db_loadList($sql);
-
-                                //Define text for read Human resources
+                                $effortMetrics[0] = 'Pessoas/Hora';
+                                $effortMetrics[1] = 'Pessoas/Minuto';
+                                $effortMetrics[2] = 'Pessoas/Dia';
+                                $effort = $projectTaskEstimation->getEffort();
+                                $mett = '';
+                                $i = 0;
+                                foreach ($effortMetrics as $metric) {
+                                    $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
+                                    if ($selected) {
+                                        $effort .= ' ' . $metric;
+                                    }
+                                    $i++;
+                                }
+                                $span = $dom->createElement('span', 'Esforço: ' . $effort . $mett); 
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+                                
+                                // Recursos humanos
                                 $estimatedRolesTxt = "";
                                 $rolesNonGrouped = $projectTaskEstimation->getRolesNonGrouped($task_id);
                                 $totalRoles = count($rolesNonGrouped);
-                                $i = 1; //It avoid the inclusion of a comma in the text to display the human resources
-                                if ($_POST["project_resources_filter"] == "") {
-                                    $hasFilteredRH = true; //control if will be some filter in based on human resource
-                                } else {
-                                    $hasFilteredRH = false;
-                                }
+                                $i = 1; //It avoids the inclusion of a comma in the text to display the human resources
+                                // if ($_POST["project_resources_filter"] == "") {
+                                //     $hasFilteredRH = true; //controls if will be some filter based on human resource
+                                // } else {
+                                //     $hasFilteredRH = false;
+                                // }
+                                
                                 foreach ($rolesNonGrouped as $role) {
                                     $role_estimated_id = $role->getQuantity(); // the quantity field is been used to store the estimated role id
                                     $allocated_hr_id = ""; //Get the allocated HR  (maybe there is just the role without allocation, in this case write the role name)          
@@ -1110,348 +1542,331 @@ if ($_GET["show_external_page"] != "") {
                                         $estimatedRolesTxt.=", ";
                                     }
                                     $i++;
-                                    if (!$hasFilteredRH && $_POST["project_resources_filter"] == $allocated_hr_id) {
-                                        $hasFilteredRH = true;
-                                    }
+                                    // TODO Ver filtro posteriormente
+                                    // if (!$hasFilteredRH && $_POST["project_resources_filter"] == $allocated_hr_id) {
+                                    //     $hasFilteredRH = true;
+                                    // }
                                 }
-
-                                if ($hasFilteredRH) {
-                                    $rowId = "wbs_id_" . $id . "_activity_id_" . $obj->task_id;
-                                    $rowDetailsId = "activity_details_id_" . $obj->task_id . "_wbs_id_" . $id;
-                                    ?>
-
-
-                                    <form name="delete_activity_<?php echo $obj->task_id ?>" id="delete_activity_<?php echo $obj->task_id ?>" method="post" action="?m=dotproject_plus">
-                                        <input name="dosql" type="hidden" value="do_delete_activity" />
-                                        <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                                        <input type="hidden" name="activity_id" value="<?php echo $obj->task_id ?>" />
-                                        <input type="hidden" name="activity_name" value="<?php echo $taskDescription ?>" />       
-                                    </form>
-
-                                    <form name="sort_activity_<?php echo $obj->task_id ?>" id="sort_activity_<?php echo $obj->task_id ?>" method="post" action="?m=dotproject_plus">
-                                        <input name="dosql" type="hidden" value="do_save_activity_order" />
-                                        <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                                        <input type="hidden" name="activity_id" value="<?php echo $obj->task_id ?>" />
-                                        <input type="hidden" name="direction" value="0" />
-                                        <input type="hidden" name="task_order" value="<?php echo $obj->task_order ?>" />
-                                    </form>
-
-                                    <form name="activity_form_<?php echo $obj->task_id ?>" id="activity_form_<?php echo $obj->task_id ?>" method="post" action="?m=dotproject_plus">
-                                        <input name="dosql" type="hidden" value="do_save_activity_estimations" />
-                                        <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                                        <input type="hidden" name="activity_id" value="<?php echo $obj->task_id ?>" />
-                                        <input type="hidden" name="tab" value="<?php echo $_GET["tab"] ?>" />
-
-                                        <tr id="<?php echo $rowId; ?>" ondblclick="showActivityDetails(<?php echo $task_id ?>,<?php echo $id ?>)" style="cursor:pointer;height:  30px">
-                                            <td style="width:200px;min-height: 30px;height: 30px" colspan="2">
-                                                <span style="color:#FFFFFF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><!-- Identation between eap items and activities -->
-                                                <span style="color:#FFFFFF"><?php echo $identation; ?></span>
-                                          
-                                                <table id="activity_sort_id_<?php echo $task_id ?>" border="0" style="display:inline-block">
-                                                    <tr>
-                                                        <td>
-                                                            <img src="./modules/dotproject_plus/images/sort_icon_up.bmp" onclick="moveRow(-1, '<?php echo $rowId; ?>', '<?php echo $rowDetailsId ?>',<?php echo $task_id ?>);" id="sort_icon_<?php echo $id ?>" style="cursor:pointer;" />                                                    
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <img src="./modules/dotproject_plus/images/sort_icon_down.bmp" onclick="moveRow(1, '<?php echo $rowId; ?>', '<?php echo $rowDetailsId ?>',<?php echo $task_id ?>);" id="sort_icon_<?php echo $id ?>" style="cursor:pointer;" />              
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                
-                                                <span style="margin-left: 21px; vertical-align: top;" id="activity_code_id_<?php echo $task_id ?>"> A.<?php echo $activitiesIdsForDisplay[$task_id] ?></span>
-                                                 
-                                                <div id="activity_description_read_id_<?php echo $task_id ?>" style="width:160px;float:right">          
-                                                        <?php echo $taskDescription ?>         
-                                                </div>
-                                                <span id="activity_description_edit_id_<?php echo $task_id ?>" style="display:none;" nowrap="nowrap">
-                                                    <input name="activity_description_id_<?php echo $task_id ?>" id="activity_description_id_<?php echo $task_id ?>" class="text" style="width:200px;margin-left: 4px;margin-bottom: 4px;" type="text" value="<?php echo $taskDescription ?>" />
-                                                </span>
-                                            </td>
-                                            <td style="text-align: center" nowrap="nowrap"> 
-                                                <span id="activity_date_start_read_id_<?php echo $task_id ?>">
-                                <?php echo $startDateTxt ?> 
-                                                </span>
-                                                <span id="activity_date_start_edit_id_<?php echo $task_id ?>" style="display:none">
-                                                    <input type="text" class="text" name="planned_start_date_activity_<?php echo $task_id ?>" id="planned_start_date_activity_<?php echo $task_id ?>" placeholder="dd/mm/yyyy" size="12" maxlength="10" value="<?php echo $startDateTxt ?>" onchange="updateActivityDateOnChange(<?php echo $task_id ?>, '/')" /> 
-                                                    <img src="./modules/timeplanning/images/img.gif" id="calendar_trigger_1_<?php echo $task_id ?>" style="cursor:pointer" onclick="displayCalendar(document.getElementById('planned_start_date_activity_<?php echo $task_id ?>'), 'dd/mm/yyyy', this)" />
-                                                </span>
-                                            </td>                           
-                                            <td style="text-align: center" nowrap="nowrap"> 
-                                                <span id="activity_date_end_read_id_<?php echo $task_id ?>">
-                                <?php echo $endDateTxt ?>
-                                                </span>
-                                                <span id="activity_date_end_edit_id_<?php echo $task_id ?>" style="display:none">
-                                                    <input type="text" class="text" name="planned_end_date_activity_<?php echo $task_id ?>" id="planned_end_date_activity_<?php echo $task_id ?>" placeholder="dd/mm/yyyy" size="12" maxlength="10" value="<?php echo $endDateTxt ?>" /> 
-                                                    <img src="./modules/timeplanning/images/img.gif" id="calendar_trigger_2_<?php echo $task_id ?>" style="cursor:pointer" onclick="displayCalendar(document.getElementById('planned_end_date_activity_<?php echo $task_id ?>'), 'dd/mm/yyyy', this)" />
-                                                </span>
-                                            </td>
-                                            <td style="text-align: center;width:100px"> <?php echo $duration ?> </td>
-                                            <td nowrap="nowrap" style="width:200px">
-                                                <span id="activity_rh_read_id_<?php echo $task_id ?>">
-                                                    <?php
-                                                    echo $estimatedRolesTxt;
-                                                    ?> 
-                                                </span>
-                                                <span id="activity_rh_edit_id_<?php echo $task_id ?>" style="display:none;">
-                                                    &nbsp;
-                                                </span>
-                                            </td>
-                                            <td style="text-align: center;width:100px">
-                                                <?php
-                                                if (!isset($_GET["execution_mode"]) && $_GET["tab"] != 2) { //tab equals 3 is the parameter 
-                                                    ?>
-                                                    <input type="hidden" name="task_percent_complete" value="<?php echo $obj->task_percent_complete ?>" />
-
-                                                    <?php
-                                                    $activity_status = "";
-                                                    switch ($obj->task_percent_complete) {
-                                                        case 0:
-                                                            $activity_status = $AppUI->_("LBL_ACTIVITY_STATUS_NOT_INITIATED");
-                                                            break;
-                                                        case 100:
-                                                            $activity_status = $AppUI->_("LBL_ACTIVITY_STATUS_CONCLUDED");
-                                                            break;
-                                                        default:
-                                                            $activity_status = $AppUI->_("LBL_ACTIVITY_STATUS_WORKING_ON_IT");
-                                                            ;
-                                                            break;
-                                                    }
-                                                    echo $activity_status;
-                                                } else {
-                                                    ?>                                              
-                                                    <select name="task_percent_complete">
-                                                        <option <?php echo $obj->task_percent_complete == 0 ? "selected" : ""; ?> value="0"><?php echo $AppUI->_("LBL_ACTIVITY_STATUS_NOT_INITIATED"); ?></option>
-                                                        <option <?php echo $obj->task_percent_complete > 0 && $obj->task_percent_complete < 100 ? "selected" : ""; ?> value="50"><?php echo $AppUI->_("LBL_ACTIVITY_STATUS_WORKING_ON_IT"); ?></option>
-                                                        <option <?php echo $obj->task_percent_complete == 100 ? "selected" : ""; ?> value="100"><?php echo $AppUI->_("LBL_ACTIVITY_STATUS_CONCLUDED"); ?></option>
-                                                    </select>
-                                                    &nbsp;
-                                                    <input class="button" type="button" value="Salvar" onclick="saveActivity(<?php echo $task_id ?>, <?php echo $id ?>)" />
-                                    <?php
-                                }
-                                ?>         
-                                            </td>
-                                        </tr> 
-                                        <tr id="<?php echo $rowDetailsId ?>" style="display:none;height: 40px " > 
-                                            <td colspan="7" style="vertical-align: top;padding: 6px;">
-                                                <table width="99%" align="center">
-                                                    <tr>
-                                                        <td nowrap="nowrap" style="vertical-align: top">
-                                                                   
-                                                            <span id="activity_responsible_edit_<?php echo $task_id ?>" style="vertical-align: top">
-                                                                <?php echo $AppUI->_("LBL_OWNER"); ?>:
-                                                                <select class="text" name="task_owner_<?php echo $obj->task_id ?>">
-                                                                    <?php
-                                                                    $query = new DBQuery();
-                                                                    $query->addTable("users", "u");
-                                                                    $query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
-                                                                    $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
-                                                                    $query->addWhere("c.contact_company = " . $company_id);
-                                                                    $query->addOrder("contact_last_name");
-                                                                    $res = & $query->exec();
-                                                                    for ($res; !$res->EOF; $res->MoveNext()) {
-                                                                        $user_id = $res->fields["user_id"];
-                                                                        $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
-                                                                        ?>
-                                                                        <option value="<?php echo $user_id; ?>" <?php echo $user_id == $obj->task_owner ? "selected" : "" ?>>
-                                                                        <?php echo $user_name; ?>
-                                                                        </option>
-                                    <?php
-                                }
-                                ?>
-                                                                </select>
-
-                                                            </span>
-                                                            <span id="activity_responsible_read_<?php echo $task_id ?>" style="vertical-align: top">
-                                                                <?php echo $AppUI->_("LBL_OWNER"); ?>:
-                                                                <?php
-                                                                $query = new DBQuery();
-                                                                $query->addTable("users", "u");
-                                                                $query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
-                                                                $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
-                                                                $query->addWhere("u.user_id = " . $obj->task_owner);
-                                                                $res = & $query->exec();
-                                                                for ($res; !$res->EOF; $res->MoveNext()) {
-                                                                    $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
-                                                                    echo $user_name;
-                                                                }
-                                                                ?>
-                                                            </span>
-                                                        </td>
-                                                        <td nowrap="nowrap" style="vertical-align: top;width:250px">
-                                                            <span id="activity_effort_edit_<?php echo $task_id ?>" style="vertical-align: top">
-                                                                    <?php echo $AppUI->_("LBL_EFFORT"); ?>:
-                                                                    <input type="text" class="text" name="planned_effort_<?php echo $task_id ?>" id="planned_effort_<?php echo $task_id ?>" value="<?php echo $projectTaskEstimation->getEffort() ?>" size="8" maxlength="8" onchange="enableDurationBasedOnEffort(<?php echo $task_id ?>);" />
-                                                                <select class="text" name="planned_effort_unit_<?php echo $task_id ?>" id="planned_effort_unit_<?php echo $task_id ?>" >
-                                                                    <?php
-                                                                    $i = 0;
-                                                                    foreach ($effortMetrics as $metric) {
-                                                                        $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
-                                                                        echo "<option value=\"$i\" $selected>$metric</option>";
-                                                                        $i++;
-                                                                    }
-                                                                    ?>
-                                                                </select>
-                                                                <br /><br />
-                                                                <div id="message_effort_for_duration_<?php echo $task_id ?>" style="font-size: 7pt;color:#777777;max-width: 200px">
-                                                                    <span style="color:red">*</span> 
-                                                                    <?php echo $AppUI->_("LBL_EFFORT_FOR_DURATION",UI_OUTPUT_HTML); ?>
-                                                                </div>
-                                                            </span>
-                                                            <span id="activity_effort_read_<?php echo $task_id ?>" style="vertical-align: top">
-                                                                <?php echo $AppUI->_("LBL_EFFORT"); ?>:
-                                                                <?php
-                                                                echo $projectTaskEstimation->getEffort();
-                                                                $i = 0;
-                                                                foreach ($effortMetrics as $metric) {
-                                                                    $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
-                                                                    if ($selected) {
-                                                                        echo " " . $metric;
-                                                                    }
-                                                                    $i++;
-                                                                }
-                                                                ?>                        
-                                                            </span>
-                                                            <script>enableDurationBasedOnEffort(<?php echo $task_id ?>);</script>
-                                                        </td>
-                                                        <td nowrap="nowrap" style="vertical-align: top">
-                                                            
-                                                            <input type="hidden" value="0" name="roles_num_<?php echo $task_id ?>" id="roles_num_<?php echo $task_id ?>" />
-                                                            <input type="hidden" value="" name="estimatedRolesExcluded_<?php echo $task_id ?>" id="estimatedRolesExcluded_<?php echo $task_id ?>" />
-                                                            <input type="hidden" value="" name="estimatedRolesExcludedIds_<?php echo $task_id ?>" id="estimatedRolesExcludedIds_<?php echo $task_id ?>" />      
-                                                            <input type="hidden" value="" name="estimatedRolesIds_<?php echo $task_id ?>" id="estimatedRolesIds_<?php echo $task_id ?>" />  
-                                                            <input type="hidden" value="" name="estimatedRolesHR_<?php echo $task_id ?>" id="estimatedRolesHR_<?php echo $task_id ?>" />
-                                                            <span id="activity_resources_edit_<?php echo $task_id ?>" style="margin-top:-6px; width:300px;vertical-align: top;" >
-                                                                
-                                                                <table cellpading="0" cellspacing="0">
-                                                                    <tr>
-                                                                        <td style="vertical-align: top" ><?php echo $AppUI->_("Resources"); ?>:</td>
-                                                                        <td style="vertical-align: top"><span  id="div_res_<?php echo $task_id ?>"></span></td>
-                                                                        <td style="text-align: left;vertical-align: bottom; ">
-                                                                            <img src="./modules/dotproject_plus/images/mais_verde.png" style="cursor:pointer;vertical-align: bottom;text-align: right;" onclick="addEstimatedRoleHR(<?php echo $task_id; ?>, '', '', 1);" />        
-                                                                        </td>
-                                                                    </tr>
-                                                                </table>
-                                                                <script>
-                                <?php
-                                $activity_has_estimated_resource = false; //to inclue an resource estimation entry, when none was created yet.
-                                foreach ($rolesNonGrouped as $role) {
-                                    $role_estimated_id = $role->getQuantity(); // the quantity field is been used to store the estimated role id
-                                    $allocated_hr_id = ""; //Get the allocated HR            
-//Get id of a possible old allocation to delete it
-                                    $q = new DBQuery();
-                                    $q->addTable("human_resource_allocation");
-                                    $q->addQuery("human_resource_id");
-                                    $q->addWhere("project_tasks_estimated_roles_id=" . $role_estimated_id);
-                                    $sql = $q->prepare();
-                                    $records = db_loadList($sql);
-                                    foreach ($records as $record) {
-                                        $allocated_hr_id = $record[0];
-                                    }
-                                    ?>
-                                                                        addEstimatedRoleHR(<?php echo $task_id ?>,<?php echo $role->getRoleId() ?>, "<?php echo $allocated_hr_id ?>",<?php echo $role->getQuantity() ?>);
-                                    <?php
-                                    $activity_has_estimated_resource = true;
-                                }
-                                if (!$activity_has_estimated_resource) {
-                                    ?>
-                                                                        addEstimatedRoleHR(<?php echo $task_id; ?>, '', '', 1);//inclues the first resource estimation entry, when none was created yet.
-                                    <?php
-                                }
-                                ?>
-                                                                </script>
-                                                            </span>  
-                                                            <!-- It is not needed to show resources in read mode because this info already is presented in the activity summary (first line). But the span below is mainteined because the  logic already programed access it. -->
-                                                            <span id="activity_resources_read_<?php echo $task_id ?>"> <?php //echo $estimatedRolesTxt;  ?> </span> 
-                                                        </td>
-                                                       
-                                                        <td nowrap="nowrap" style="vertical-align: bottom;text-align: right;width: 220px">                                                            
-                                                            <span id="activity_edit_actions_<?php echo $task_id ?>" style="text-align: right;vertical-align: top;float: right">
-                                                                <br /><br />
-                                                                <input class="button" type="button" value="<?php echo $AppUI->_("LBL_SAVE"); ?>" onclick="saveActivity(<?php echo $task_id ?>, <?php echo $id ?>)" />
-                                                                <input class="button" type="button" value="<?php echo ucfirst($AppUI->_("LBL_CANCEL")); ?>" onclick="cancelSaveActivity(<?php echo $task_id ?>, <?php echo $id ?>)"  />
-                                                            </span>                            
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </form>
-                                    <?php
-                                    //end: build line for task
-                                }
+                                $span = $dom->createElement('span', 'Recursos humanos: ' . $estimatedRolesTxt); 
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+                                
+                                $divCollapse = $dom->createElement('div'); 
+                                $divCollapseClass = $dom->createAttribute('class');
+                                $divCollapseClass->value = 'collapse';
+                                $divCollapse->appendChild($divCollapseClass);
+                                $divCollapseId = $dom->createAttribute('id');
+                                $divCollapseId->value = 'card_'.$task_id;
+                                $divCollapse->appendChild($divCollapseId);
+                                
+                                $divCollapse->appendChild($taskCardRow);
+                                $taskCardBody->appendChild($divCollapse);
+                                
+                                $taskCard->appendChild($taskCardBody);
+                                $cardBody->appendChild($taskCard);
                             }
                         }
+                        $card->appendChild($cardBody);
+
+                        $mainCard->appendChild($card);
+                        createHtml($branch, $cardBody, $dom, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id);
                     }
-                    //end: code to filter workpackages activities
-                } else {
-                    ?>
-                    <tr id="row_<?php echo $id ?>" title="non_leaf">
-
-                        <td colspan="7" style="background-color: #E8E8E8;height: 30px">    
-                            <span id="read_workpackage_id_<?php echo $id ?>">
-                                <span id="identation_<?php echo $id ?>" style="color:#E8E8E8" ><?php echo $identation; ?></span>
-                                <!-- To enlarge the identation space -->
-                <?php echo strlen($identation) > 0 ? "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" : ""; ?>
-                                <span style="position: absolute;margin-top: -8px">
-                                    <?php if ($number != 1) { ?><!-- Do not include sort icons for EAP root item -->
-                                        <img src="./modules/dotproject_plus/images/sort_icon_up.bmp" onclick="sortWBSItem(-1, '<?php echo $id ?>');" id="sort_icon_<?php echo $id ?>" style="cursor:pointer" />
-                                        <br />
-                                        <img src="./modules/dotproject_plus/images/sort_icon_down.bmp" onclick="sortWBSItem(1, '<?php echo $id ?>');" id="sort_icon_<?php echo $id ?>" style="cursor:pointer" />                                  
-                                    <?php } ?>
-                                </span>
-                                <span style="margin-left: 21px" id="div_numbering_<?php echo $id ?>">
-                <?php echo $number ?>
-                                </span>
-                <?php echo $name ?>
-                            </span>
-                            <span id="edit_workpackage_id_<?php echo $id ?>" style="display:none">
-                                <form name="save_wbs_<?php echo $id ?>" id="save_wbs_<?php echo $id ?>" method="post" action="?m=dotproject_plus">
-                                    <input name="dosql" type="hidden" value="do_save_wbs" />
-                                    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                                    <input type="hidden" name="wbs_item_id" value="<?php echo $id; ?>" />
-                                    <input type="hidden" id="identation_field_<?php echo $id ?>" name="identation_field_<?php echo $id ?>" value="<?php echo $identation; ?>" />
-                                    <input type="hidden" id="number_field_<?php echo $id ?>_unique" name="number_field_<?php echo $id ?>" value="<?php echo $number ?>" />
-                                    <input type="hidden" id="leaf_field_<?php echo $id ?>_unique" name="leaf_field_<?php echo $id ?>" value="<?php echo $is_leaf ?>" />
-                                    <input type="hidden" name="wbs_item_order_<?php echo $id ?>" value="<?php echo $order; ?>" />
-
-                <?php echo $AppUI->_("LBL_DESCRIPTION") ?>: <input type="text"  class="text" value="<?php echo $name ?>" id="wbs_item_description_<?php echo $id ?>" name="wbs_item_description_<?php echo $id ?>" size="35" maxlength="40" />
-                                    <input type="hidden"  class="text" value="0" maxlength="10" size="15"  name="estimated_size_<?php echo $id ?>" />
-                                    <input type="hidden" class="text" name="estimated_size_unit_<?php echo $id ?>"  maxlength="30" size="25"  value=""  />
-                                    <span style="text-align: right;width:100%" >
-                                        <input class="button" type="button" value="<?php echo $AppUI->_("LBL_SAVE"); ?>" onclick="saveWBSItem(<?php echo $id ?>)" />
-                                        <input class="button" type="button" value="<?php echo ucfirst($AppUI->_("LBL_CANCEL")); ?>" onclick="cancelSaveWBSItem(<?php echo $id ?>)" />                  
-                                    </span>
-                                </form>
-                            </span>   
-                        </td>
-                    </tr>
-                    <?php
                 }
+                return $mainCard;
             }
-        }
-        ?>
-    </table>
-    <script>
-        updateEAPItemsNumbers();
-    </script>
-    <br/>
-    <?php
-    if (isset($_GET["id_new_eap_item"])) {
-        ?>
-        <script>
-            showWBSItemEdit(<?php echo $_GET["id_new_eap_item"]; ?>);
-        </script>
-        <?php
-    } else if (isset($_GET["id_new_activity"])) {
-        ?>
-        <script>
-            showActivityEdit(<?php echo $_GET["id_new_activity"] ?>,<?php echo $_GET["work_package_id"] ?>);
-            //addEstimatedRoleHR(<?php echo $_GET["id_new_activity"] ?>, '', '', 1); // show HR for the new activities. Show to be unneeded.
-        </script>
 
-        <?php
+            createTree($items, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id);
+
+        }
+        $projectTaskEstimation = new ProjectTaskEstimation();
+    ?>
+
+    <!-- MODAL NEW WBS ITEM FORM -->
+    <div id="newWBSItemModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_WBS_ITEM")?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="<?=$AppUI->_("LBL_DESCRICAO")?>"><?=$AppUI->_("LBL_DESCRICAO")?></label>
+                        <input type="text" id="newWBSItem" class="form-control form-control-sm" maxlength="50" />
+
+                        <!-- Revisar e remover o desnecessário -->
+                        <input name="dosql" type="hidden" value="do_new_wbs_item" />
+                        <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
+                        <input type="hidden" name="parent_id" value="" />
+                        <input type="hidden" name="sort_order" value="1" />         
+                        <input type="hidden" id="identation_field" name="identation_field" value="" />
+                        <input type="hidden" id="number_field" name="number_field" value="1" />
+                        <input type="hidden" id="leaf_field" name="leaf_field" value="1" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="addNewWBSItem()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NEW TASK FORM -->
+    <div id="newTaskModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_ACTIVITY")?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="<?=$AppUI->_("LBL_DESCRICAO")?>"><?=$AppUI->_("LBL_DESCRICAO")?></label>
+                        <input type="text" id="taskDescription" class="form-control form-control-sm" maxlength="50" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="<?=$AppUI->_("LBL_EFFORT")?>"><?=$AppUI->_("LBL_EFFORT")?></label>
+                                <input type="text" id="taskDuration" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="empty">&nbsp;</label>
+                                <select class="form-control form-control-sm" name="planned_effort_unit" id="">
+                                    <?php
+                                        //metric index is db key
+                                        $effortMetrics = array();
+                                        $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
+                                        $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
+                                        $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
+                                        $i = 0;
+                                        foreach ($effortMetrics as $metric) {
+                                            $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
+                                            echo "<option value=\"$i\" $selected>$metric</option>";
+                                            $i++;
+                                        }
+        
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="<?=$AppUI->_("LBL_OWNER")?>"><?=$AppUI->_("LBL_OWNER")?></label>
+                        <select class="form-control form-control-sm" id="taskOwner">
+                                <?php
+                                    $query = new DBQuery();
+                                    $query->addTable("users", "u");
+                                    $query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
+                                    $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
+                                    $query->addWhere("c.contact_company = " . $company_id);
+                                    $query->addOrder("contact_last_name");
+                                    $res = & $query->exec();
+                                    for ($res; !$res->EOF; $res->MoveNext()) {
+                                        $user_id = $res->fields["user_id"];
+                                        $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
+                                ?>
+                                <option value="<?php echo $user_id; ?>">
+                                <?php echo $user_name; ?>
+                                </option>
+                            <?php
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="<?=$AppUI->_("LBL_DATA_INICIO")?>"><?=$AppUI->_("LBL_DATA_INICIO")?></label>
+                        <input type="text" class="form-control form-control-sm datepicker" id="planned_start_date_activity" placeholder="dd/mm/yyyy" /> 
+                    </div>
+                    <div class="form-group">
+                        <label for="<?=$AppUI->_("LBL_DATA_FIM")?>"><?=$AppUI->_("LBL_DATA_FIM")?></label>
+                        <input type="text" class="form-control form-control-sm datepicker" id="planned_end_date_activity" placeholder="dd/mm/yyyy" /> 
+                    </div>
+                      
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="<?=$AppUI->_("Resources")?>"><?=$AppUI->_("Resources")?></label>
+                                <select class="form-control form-control-sm" name="resourceRole" id="plannedResources" >
+                                    <?php
+                                        //metric index is db key
+                                        $effortMetrics = array();
+                                        $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
+                                        $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
+                                        $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
+        
+                                        $i = 0;
+                                        foreach ($effortMetrics as $metric) {
+                                            $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
+                                            echo "<option value=\"$i\" $selected>$metric</option>";
+                                            $i++;
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="empty">&nbsp;</label>
+                                <select class="form-control form-control-sm" name="resourceRole" id="plannedResources" >
+                                    <?php
+                                        //metric index is db key
+                                        $effortMetrics = array();
+                                        $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
+                                        $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
+                                        $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
+        
+                                        $i = 0;
+                                        foreach ($effortMetrics as $metric) {
+                                            $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
+                                            echo "<option value=\"$i\" $selected>$metric</option>";
+                                            $i++;
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="addNewWBSItem()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
     }
-}
 ?>
+
+<script>
+    $(document).ready(function() {
+        $('#planned_start_date_activity').datepicker();
+    });
+
+/**
+ * function showWBSDictionary() {
+        var url = window.location.href;
+        window.location = url + "&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php";
+    }
+
+    function rightClickMenuShowScopeDeclaration() {
+        // var url = replaceAll("#gqs_anchor", "", window.location.href);
+
+        window.location = window.location.href + "&show_external_page=/modules/timeplanning/view/scope_declaration.php";
+    }
+ */
+    var main = {
+        btnYes: "<?php echo $AppUI->_("LBL_YES", UI_OUTPUT_JS); ?>",
+        btnNo: "<?php echo $AppUI->_("LBL_NO", UI_OUTPUT_JS); ?>",
+
+        init: function() {
+
+            $('.inner-card').find('h6').on('click', function(e) {
+                if ($(this).find('i').hasClass('fa-caret-down')) {
+                    $(this).find('i').removeClass('fa-caret-down');
+                    $(this).find('i').addClass('fa-caret-up');
+                    $(this).find('.responsible').hide();
+                    $(this).find('.task-date').hide();
+                } else {
+                    $(this).find('i').removeClass('fa-caret-up');
+                    $(this).find('i').addClass('fa-caret-down');
+                    $(this).find('.responsible').show();
+                    $(this).find('.task-date').show();
+                }
+            });
+        }
+    };
+    
+    
+    var wbs = {
+        msgDelete: "<?php echo $AppUI->_("LBL_MENU_DELETE_WBS_ITEM", UI_OUTPUT_JS); ?>",
+        
+        delete: function(id) {
+            $.confirm({
+                title: wbs.msgDelete,
+                content: '',
+                buttons: {
+                    yes: {
+                        text: main.btnYes,
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=dotproject_plus",
+                                data: {
+                                    // activity_id: id,
+                                    // dosql: 'do_delete_activity'
+                                }
+                            }).done(function() {
+                                $("#card_task_" + id).remove();
+                            });
+                        },
+                    },
+                    no: {
+                        text: main.btnNo
+                    }
+                }
+            });
+        }
+    };
+    
+    var tasks = {
+
+        msgDelete: "<?php echo $AppUI->_("LBL_CONFIRM_ACTIVITY_EXCLUSION", UI_OUTPUT_JS); ?>",
+        
+        delete: function(id) {
+            $.confirm({
+                title: '',
+                content: tasks.msgDelete,
+                buttons: {
+                    yes: {
+                        text: main.btnYes,
+                        action: function () {
+                            console.log('mandando excluir');
+                            $('#formDeleteActivity_'+id).submit();
+                            
+                            // $.ajax({
+                            //     method: 'POST',
+                            //     url: "?m=dotproject_plus",
+                            //     data: {
+                            //         activity_id: id,
+                            //         dosql: 'do_delete_activity'
+                            //     }
+                            // }).done(function() {
+                            //     $("#card_task_" + id).remove();
+                            // });
+                        },
+                    },
+                    no: {
+                        text: main.btnNo
+                    }
+                }
+            });
+        },
+
+        add : function(id) {
+            $.ajax({
+                method: 'POST',
+                url: "?m=dotproject_plus",
+                data: {
+                    activity_id: id,
+                    dosql: 'do_new_activity'
+                }
+            }).done(function() {
+                $("#card_task_" + id).remove();
+            });
+        },
+    }
+
+    $(document).ready(main.init);
+</script>

@@ -1,5 +1,5 @@
 <?php 
-$projectId=isset($_GET["project_id"])? $_GET["project_id"]: "";
+$projectId=isset($_GET["project_id"])? $_GET["project_id"]: $_GET["project"];
 ?>
 <script>
     function confirmGoBack(){

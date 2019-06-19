@@ -13,6 +13,7 @@ class WBSItem {
     private $isLeaf = NULL;
     private $identation = NULL;
     private $sortOrder = NULL;
+    private $parent = NULL;
 
     public function getId() {
         return $this->id;
@@ -40,6 +41,14 @@ class WBSItem {
 
     public function getSortOrder() {
         return $this->sortOrder;
+    }
+
+    public function setParent($parent) {
+        $this->parent = $parent;
+    }
+
+    public function getParent() {
+        return $this->parent;
     }
 
     function WBSItem() {
@@ -73,12 +82,13 @@ class WBSItem {
         $q->clear();
     }
 
-    function load($idValue, $name, $identation, $number, $is_leaf) {
+    function load($idValue, $name, $identation, $number, $is_leaf, $parent = null) {
         $this->id = $idValue;
         $this->name = $name;
         $this->identation = $identation;
         $this->number = $number;
         $this->isLeaf = $is_leaf;
+        $this->parent = $parent;
     }
 
     function delete($id) {

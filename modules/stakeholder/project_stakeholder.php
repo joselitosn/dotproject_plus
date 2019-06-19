@@ -8,6 +8,7 @@ if (is_null($initiating)) {
     $initiating_id = $initiating->initiating_id;
 }
 
+if ($initiating_id != -1){
 $q = new DBQuery();
 $q->addQuery("*");
 $q->addTable("initiating_stakeholder", "stk");
@@ -56,3 +57,9 @@ $list = $q->loadList();
         </tr>
     <?php } ?>
 </table>
+<?php }else{
+    ?>
+    <?php echo $AppUI->_("LBL_PROJECT_CHARTER_MISSING_STAKEHOLDER", UI_OUTPUT_HTML); ?>
+<?php    
+}
+?>

@@ -15,6 +15,28 @@ class ControllerWBSItem {
 		$WBSItem->delete($id);
 	}
 	
+        function getWBSItemById($wbsItemId){
+            $q = new DBQuery();
+            $q->addQuery('t.id, t.item_name,t.identation,t.number,t.is_leaf,t.sort_order');
+            $q->addTable('project_eap_items', 't');
+            $q->addWhere('t.id='.$wbsItemId);
+            $sql = $q->prepare();
+            $items = db_loadList($sql);
+            $WBSItem= new WBSItem();
+            foreach ($items as $item) {
+                    $id = $item['id'];
+                    $name = $item['item_name'];
+                    $identation= $item['identation'];
+                    $number = $item['number'];
+                    $is_leaf= $item['is_leaf'];                    
+                    $WBSItem->load($id,$name,$identation,$number,$is_leaf);
+                    $WBSItem->setSortOrder($item['sort_order']);
+            }
+            return $WBSItem;
+	}
+	
+        
+        
 	function getWBSItems($projectId){
 		$list=array();
 		$q = new DBQuery();

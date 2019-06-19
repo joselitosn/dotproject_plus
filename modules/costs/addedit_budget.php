@@ -77,6 +77,8 @@ $titleBlock->show();
 
 <form name="uploadFrm" action="?m=costs" method="post">
     <input type="hidden" name="dosql" value="do_budget_aed" />
+    <input type="hidden" name="project_id" value="<?php echo $_GET["project_id"]; ?>" />
+    
     <input type="hidden" name="del" value="0" />
     <input type="hidden" name="budget_id" value="<?php echo $budget_id; ?>" />
     <table width="100%" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form" >

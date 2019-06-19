@@ -339,7 +339,7 @@ $tabBox = new CTabBox(('?m=tasks&a=addedit'
 $tabBox->add(DP_BASE_DIR.'/modules/tasks/ae_desc', 'Details');
 $tabBox->add(DP_BASE_DIR.'/modules/tasks/ae_dates', 'Dates');
 $tabBox->add(DP_BASE_DIR.'/modules/tasks/ae_depend', 'Dependencies');
-$tabBox->add(DP_BASE_DIR.'/modules/tasks/ae_resource', 'Human Resources');
+//$tabBox->add(DP_BASE_DIR.'/modules/tasks/ae_resource', 'Human Resources');
 $tabBox->loadExtras('tasks', 'addedit');
 $tabBox->show('', true);
 ?>

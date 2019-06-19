@@ -47,6 +47,14 @@ class CompanyRole {
         
     }
 
+    function storeJson($json, $companyId) {
+        $q = new DBQuery();
+        $q->addTable('company_role');
+        $q->addInsert('company_id', $companyId);
+        $q->addInsert('role_name', $json);
+        $q->exec();
+    }
+
     function store($company_id, $description, $identation, $id, $sort_order) {
         $q = new DBQuery();
         $q->addQuery('id');
@@ -80,6 +88,13 @@ class CompanyRole {
         $q = new DBQuery();
         $q->setDelete('company_role');
         $q->addWhere('id =' . $id);
+        $q->exec();
+    }
+
+    function deleteByCompanyId($companyId) {
+        $q = new DBQuery();
+        $q->setDelete('company_role');
+        $q->addWhere('company_id =' . $companyId);
         $q->exec();
     }
 

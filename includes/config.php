@@ -9,12 +9,12 @@ if (!defined('DP_BASE_DIR')) {
 ### FOR INFORMATION ON MANUAL CONFIGURATION AND FOR DOCUMENTATION SEE ./includes/config-dist.php ###
 
 $dPconfig['dbtype'] = 'mysql';
-$dPconfig['dbhost'] = 'localhost';
-$dbName=explode("\\" , $baseDir); //On linux "/" ; //On windows "\\"
-$dPconfig['dbname'] = $dbName[sizeof($dbName)-1];//"dotproject_g6";//
+$dPconfig['dbhost'] = '172.17.0.2:3306';
+$dbName=explode("/" , $baseDir); //On linux "/" ; //On windows "\\"
+$dPconfig['dbname'] = 'dot_project';//"dotproject_g6";//
 $dPconfig['dbprefix'] = 'dotp_';
 $dPconfig['dbuser'] = 'root';
-$dPconfig['dbpass'] = 'root';
+$dPconfig['dbpass'] = '123456';
 $dPconfig['dbpersist'] = false;
 $dPconfig['root_dir'] = $baseDir;
 //$dPconfig['base_url'] = $baseUrl;

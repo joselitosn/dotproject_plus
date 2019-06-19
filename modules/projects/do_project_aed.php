@@ -4,14 +4,22 @@ if (!defined('DP_BASE_DIR')) {
 }
 
 $obj = new CProject();
-$msg = '';
+$err = '';
 
-if (!$obj->bind($_POST)) {
-	$AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
-	$AppUI->redirect();
+$data = $_POST;
+
+if (isset($data['project_target_budget'])) {
+
+    $data['project_target_budget'] = str_replace('.', '', $data['project_target_budget']);
+    $data['project_target_budget'] = str_replace(',', '.', $data['project_target_budget']);
+}
+if (!$obj->bind($data)) {
+	$err = $obj->getError();
+	die($err);
 }
 
 require_once($AppUI->getSystemClass('CustomFields'));
+
 // convert dates to SQL format first
 if ($obj->project_start_date) {
 	$date = new CDate($obj->project_start_date);
@@ -31,10 +39,9 @@ if ($obj->project_actual_end_date) {
 if (!dPgetParam($_POST, "project_departments", 0)) {
 	$obj->project_departments = implode(",", dPgetCleanParam($_POST, "dept_ids", array()));
 }
-
 $del = (int)dPgetParam($_POST, 'del', 0);
 
-// prepare (and translate) the module name ready for the suffix
+ // prepare (and translate) the module name ready for the suffix
 if ($del) {
 	$project_id = (int)dPgetParam($_POST, 'project_id', 0);
 	$canDelete = $obj->canDelete($msg, $project_id);
@@ -49,18 +56,18 @@ if ($del) {
 		$AppUI->setMsg("Project deleted", UI_MSG_ALERT);
 		$AppUI->redirect("m=projects");
 	}
-} 
+}
 else {
 	if (($msg = $obj->store())) {
-		$AppUI->setMsg($msg, UI_MSG_ERROR);
+        echo $msg;
+        exit();
 	} else {
 		$isNotNew = @$_POST['project_id'];
-		
+
 		if ($importTask_projectId = (int)dPgetParam($_POST, 'import_tasks_from', '0')) {
 			$scale_project = (int)dPgetParam($_POST, 'scale_project', '0');
 			$obj->importTasks($importTask_projectId, $scale_project);
 		}
-		$AppUI->setMsg($isNotNew ? 'Project updated' : 'Project inserted', UI_MSG_OK, true);
 
  		$custom_fields = New CustomFields($m, 'addedit', $obj->project_id, 'edit');
  		$custom_fields->bind($_POST);
@@ -68,6 +75,18 @@ else {
 
 
 	}
-	$AppUI->redirect();
+//	$AppUI->redirect();
 }
+
+//    if ($importTask_projectId = (int)dPgetParam($_POST, 'import_tasks_from', '0')) {
+//        $scale_project = (int)dPgetParam($_POST, 'scale_project', '0');
+//        $obj->importTasks($importTask_projectId, $scale_project);
+//    }
+//
+//    $custom_fields = New CustomFields($m, 'addedit', $obj->project_id, 'edit');
+//    $custom_fields->bind($_POST);
+//    $sql = $custom_fields->store($obj->project_id);
+
+    echo $_POST['project_id'] != 0 ? 'Projeto atualizado' : 'Projeto adicionado';
+    exit();
 ?>

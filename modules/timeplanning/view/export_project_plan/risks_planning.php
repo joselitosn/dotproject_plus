@@ -116,23 +116,23 @@ $q->addWhere("risk_active = \"1\" $whereProject");
 $q->addOrder($orderbyy . " " . $orderdire);
 $inactiveList = $q->loadList();
 ?>
-<table class="printTable" >
-    <tr>
+<table class="printTable" width="100%" >
+    <tr style="vertical-align: top">
        <!--  <th><?php // echo $AppUI->_("LBL_ID");  ?></th> -->
-        <th><?php echo $AppUI->_("LBL_NAME",UI_OUTPUT_HTML); ?></th>
+        <th style="width: 20%"><?php echo $AppUI->_("LBL_NAME",UI_OUTPUT_HTML); ?></th>
         <!-- <th><?php //echo $AppUI->_("LBL_DESCRIPTION");  ?></th> -->
-        <th><?php echo $AppUI->_("LBL_PROBABILITY",UI_OUTPUT_HTML); ?></th>
-        <th><?php echo $AppUI->_("LBL_IMPACT",UI_OUTPUT_HTML); ?></th>
-        <th><?php echo $AppUI->_("LBL_PRIORITY",UI_OUTPUT_HTML); ?></th>
+        <th style="width: 6%;word-break: break-all;word-wrap: break-word;"><?php echo $AppUI->_("LBL_PROBABILITY",UI_OUTPUT_HTML); ?></th>
+        <th style="width: 8%;word-break: break-all;word-wrap: break-word;"><?php echo $AppUI->_("LBL_IMPACT",UI_OUTPUT_HTML); ?></th>
+        <th style="width: 8%;word-break: break-all;word-wrap: break-word;"><?php echo $AppUI->_("LBL_PRIORITY",UI_OUTPUT_HTML); ?></th>
         <!-- <th><?php //echo $AppUI->_("LBL_STATUS");  ?></th> -->
         <!-- <th><?php //echo $AppUI->_("LBL_OWNER");  ?></th> -->
         <!--
         <th><?php //echo $AppUI->_("LBL_TASK");  ?></th>
         <th><?php //echo $AppUI->_("LBL_POTENTIAL");  ?></th>
         -->
-        <th><?php echo $AppUI->_("LBL_STRATEGY",UI_OUTPUT_HTML); ?></th>
-        <th><?php echo $AppUI->_('LBL_PREVENTION_ACTIONS',UI_OUTPUT_HTML); ?></th>
-        <th><?php echo $AppUI->_('LBL_CONTINGENCY_PLAN',UI_OUTPUT_HTML); ?></th>
+        <th style="width: 8%;word-break: break-all;word-wrap: break-word;"><?php echo $AppUI->_("LBL_STRATEGY",UI_OUTPUT_HTML); ?></th>
+        <th style="width: 25%;"><?php echo $AppUI->_('LBL_PREVENTION_ACTIONS',UI_OUTPUT_HTML); ?></th>
+        <th style="width: 25%;"><?php echo $AppUI->_('LBL_CONTINGENCY_PLAN',UI_OUTPUT_HTML); ?></th>
 
     </tr>
     <?php foreach ($activeList as $row) {
@@ -143,7 +143,17 @@ $inactiveList = $q->loadList();
             <!--<td><?php //echo $row["risk_description"]  ?></td>-->
             <td><?php echo $riskProbability[$row["risk_probability"]] ?></td>
             <td><?php echo $riskImpact[$row["risk_impact"]] ?></td>
-            <td><?php echo $riskPriority[$row["risk_priority"]] ?></td>
+            <?php
+            $color="#228B22";//ForestGreen
+                    
+            if ($row["risk_priority"]==1){
+                $color="#DAA520";//GoldenRod
+            }else if($row["risk_priority"]==2){
+                $color="#B22222";//FireBrick
+            }
+            
+            ?>
+            <td style="color:<?php echo $color ?>"><?php echo $riskPriority[$row["risk_priority"]] ?></td>
             <!--<td><?php //echo $riskStatus[$row["risk_status"]]  ?></td>-->
             <?php
             /*

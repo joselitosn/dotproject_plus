@@ -8,25 +8,29 @@ $obj = new CHumanResourcesRole();
 $msg = '';
 
 if (! $obj->bind($_POST)) {
-  $AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
-  $AppUI->redirect();
+    $AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
+    echo $AppUI->getMsg();
+    exit();
 }
+
+//var_dump($obj);die;
 
 $AppUI->setMsg('Role');
 if ($del) {
-  if (($msg = $obj->delete())) {
-    $AppUI->setMsg($msg, UI_MSG_ERROR);
-    $AppUI->redirect();
-  } else {
-    $AppUI->setMsg('deleted', UI_MSG_ALERT, true);
-    $AppUI->redirect('', -1);
-  }
+    if (($msg = $obj->delete())) {
+        $AppUI->setMsg($msg, UI_MSG_ERROR);
+    } else {
+        $AppUI->setMsg('deleted', UI_MSG_ALERT, true);
+    }
+    echo $AppUI->getMsg();
+    exit();
 } else {
-  if (($msg = $obj->store())) {
-    $AppUI->setMsg($msg, UI_MSG_ERROR);
-  } else {
-    $AppUI->setMsg($_POST['human_resources_role_id'] ? 'updated' : 'added', UI_MSG_OK, true);
-  }
-  $AppUI->redirect();
+    if (($msg = $obj->store())) {
+        $AppUI->setMsg($msg, UI_MSG_ERROR);
+    } else {
+        $AppUI->setMsg($_POST['human_resources_role_id'] ? 'updated' : 'added', UI_MSG_OK, true);
+    }
+    echo $AppUI->getMsg();
+    exit();
 }
 ?>

@@ -4,32 +4,39 @@ $controllerQ = new ControllerQualityPlanning();
 $objectQ = $controllerQ->getQualityPlanningPerProject($projectId);
 $quality_planning_id = $objectQ->getId();
 ?>
+<!--
 <table class="printTable" >  
     <tr>
         <th style="font-weight: bold"><?php echo $AppUI->_("LBL_QUALITY_POLICIES", UI_OUTPUT_HTML); ?>:</th>
     </tr>
     <tr>
         <td>
-            <?php 
-               $qualityPolicies =preg_replace( "/\r|\n/", "<br />", $objectQ->getQualityPolicies() );
-               //caracteres não interpretados pelo pdf generator
-               $qualityPolicies =str_replace( "–", "-", $qualityPolicies );
-               echo $qualityPolicies;
-            ?>
+-->
+<h3>4.1 <?php echo $AppUI->_("LBL_QUALITY_POLICIES", UI_OUTPUT_HTML); ?> </h3>
+    <p class="print_p">
+        <?php 
+           $qualityPolicies=$objectQ->getQualityPolicies();
+           $qualityPolicies =str_replace( "\n", "<br />",$qualityPolicies  );
+           //$qualityPolicies =preg_replace( "/\r|\n/", "<br />",$qualityPolicies  );
+           //caracteres não interpretados pelo pdf generator
+           $qualityPolicies =str_replace( "–", "-", $qualityPolicies );
+           echo $qualityPolicies;
+        ?>
+    </p>
+<!--
         </td>
     </tr>
 </table>
-<br />
-<h3> 4.1 <?php echo $AppUI->_("LBL_QUALITY_ASSURANCE"); ?> </h3>
-<br />
+-->
+<h3> 4.2 <?php echo $AppUI->_("LBL_QUALITY_ASSURANCE", UI_OUTPUT_HTML); ?> </h3>
 <table class="printTable" > 
     
     <tr>
         
-        <th><?php echo $AppUI->_("LBL_WHAT_AUDIT"); ?></th>
-        <th><?php echo $AppUI->_("LBL_WHO_AUDIT"); ?></th> 
-        <th><?php echo $AppUI->_("LBL_WHEN_AUDIT"); ?></th> 
-        <th><?php echo $AppUI->_("LBL_HOW_AUDIT"); ?></th> 
+        <th><?php echo $AppUI->_("LBL_WHAT_AUDIT", UI_OUTPUT_HTML); ?></th>
+        <th><?php echo $AppUI->_("LBL_WHO_AUDIT", UI_OUTPUT_HTML); ?></th> 
+        <th><?php echo $AppUI->_("LBL_WHEN_AUDIT", UI_OUTPUT_HTML); ?></th> 
+        <th><?php echo $AppUI->_("LBL_HOW_AUDIT", UI_OUTPUT_HTML); ?></th> 
         
     </tr>
     <?php
@@ -61,9 +68,7 @@ $quality_planning_id = $objectQ->getId();
     }
     ?>
 </table>
-<br />
-<h3>4.2 <?php echo $AppUI->_("LBL_QUALITY_CONTROLLING", UI_OUTPUT_HTML); ?> </h3>
-<br />
+<h3>4.3 <?php echo $AppUI->_("LBL_QUALITY_CONTROLLING", UI_OUTPUT_HTML); ?> </h3>
 <table class="printTable">
     <tr>
         <th><?php echo $AppUI->_("LBL_QUALITY_REQUIREMENTS", UI_OUTPUT_HTML); ?></th>
@@ -88,8 +93,6 @@ $quality_planning_id = $objectQ->getId();
     ?>
 </table>
 
-<br />
-
 <?php
 $goals = $controllerQ->loadControlGoals($quality_planning_id);
 $i = 0;
@@ -101,46 +104,38 @@ foreach ($goals as $oid => $data) {
     $gqm_goal_point_of_view = $data[4];
     $gqm_goal_context = $data[5];
     ?>
-
-    <br />
-
-
     <table class="printTable">
         <tr>
-            <th> <?php echo ($i+1) ?>. <?php echo $AppUI->_("LBL_GOAL_OF_CONTROL"); ?></th>
+            <th colspan="2"> <?php echo ($i+1) ?>. <?php echo $AppUI->_("LBL_GOAL_OF_CONTROL", UI_OUTPUT_HTML); ?></th>
         </tr>
         <tr>
-            <td style="font-weight: bold">
+            <td style="font-weight: bold;width:50%">
                 <label for="gqm_goal_object">
-                   <?php echo $AppUI->_("LBL_GQM_GOAL_OBJECT"); ?>
+                   <?php echo $AppUI->_("LBL_GQM_GOAL_OBJECT", UI_OUTPUT_HTML); ?>
                 </label>
             </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: top">
+            <td style="width:50%">
                 <?php echo $gqm_goal_object; ?>
             </td>
         </tr>
         <tr>
             <td style="font-weight: bold">
                 <label for="gqm_goal_propose">
-                    <?php echo $AppUI->_("LBL_GQM_GOAL_PURPOSE"); ?>
+                    <?php echo $AppUI->_("LBL_GQM_GOAL_PURPOSE", UI_OUTPUT_HTML); ?>
                 </label>
             </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: top">
+
+            <td style="">
                 <?php echo $gqm_goal_propose; ?>
             </td>
         </tr>
         <tr>
             <td style="font-weight: bold">
                 <label for="gqm_goal_respect_to">
-                   <?php echo $AppUI->_("LBL_GQM_GOAL_RESPECT_TO"); ?>
+                   <?php echo $AppUI->_("LBL_GQM_GOAL_RESPECT_TO", UI_OUTPUT_HTML); ?>
                 </label>
             </td>
-        </tr>
-        <tr>
+
             <td>
                 <?php echo $gqm_goal_respect_to; ?>
             </td>
@@ -148,11 +143,10 @@ foreach ($goals as $oid => $data) {
         <tr>
             <td style="font-weight: bold">
                 <label for="gqm_goal_point_of_view">
-                     <?php echo $AppUI->_("LBL_GQM_GOAL_POINT_OF_VIEW") ?>
+                     <?php echo $AppUI->_("LBL_GQM_GOAL_POINT_OF_VIEW", UI_OUTPUT_HTML) ?>
                 </label>
             </td>
-        </tr>
-        <tr>
+ 
             <td>
                 <?php echo $gqm_goal_point_of_view; ?>
             </td>
@@ -161,17 +155,16 @@ foreach ($goals as $oid => $data) {
         <tr>
             <td style="font-weight: bold">
                 <label for="gqm_goal_context">
-                    <?php echo $AppUI->_("LBL_GQM_GOAL_CONTEXT"); ?>
+                    <?php echo $AppUI->_("LBL_GQM_GOAL_CONTEXT", UI_OUTPUT_HTML); ?>
                 </label>
             </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: top">
+ 
+            <td >
                 <?php echo $gqm_goal_context; ?>
             </td>
         </tr>
     </table>
-    <br />
+
     <?php
     $questions = $controllerQ->loadQuestions($goal_id);
     $j = 0;
@@ -183,8 +176,8 @@ foreach ($goals as $oid => $data) {
 
         <table class="printTable" >
             <tr>
-                <th style="font-weight: bold;vertical-align: top"><?php echo ($i+1).".".($j+1)  ?>. <?php echo $AppUI->_("LBL_QUESTION_OF_ANALYSIS"); ?></th>
-                <th style="font-weight: bold;vertical-align: top"><?php echo $AppUI->_("LBL_GQM_TARGET"); ?></th>
+                <th style="font-weight: bold;vertical-align: top"><?php echo ($i+1).".".($j+1)  ?>. <?php echo $AppUI->_("LBL_QUESTION_OF_ANALYSIS", UI_OUTPUT_HTML); ?></th>
+                <th style="font-weight: bold;vertical-align: top"><?php echo $AppUI->_("LBL_GQM_TARGET", UI_OUTPUT_HTML); ?></th>
             </tr>
 
             <tr>
@@ -196,14 +189,14 @@ foreach ($goals as $oid => $data) {
                 </td>
             </tr>
         </table>
-        <br />
+
         <table class="printTable" >
              <tr>
-                <th colspan="2" style="text-align: center"><?php echo $AppUI->_("LBL_GQM_METRIC"); ?>s</th>
+                <th colspan="2" style="text-align: center"><?php echo $AppUI->_("LBL_GQM_METRIC", UI_OUTPUT_HTML); ?>s</th>
             </tr>
             <tr>
                 <td style="font-weight: bold;vertical-align: top" width="50%">
-                    <?php echo $AppUI->_("LBL_GQM_METRIC"); ?>
+                    <?php echo $AppUI->_("LBL_GQM_METRIC", UI_OUTPUT_HTML); ?>
                 </td>
                 <td style="font-weight: bold;vertical-align: top" width="50%">
                     <?php echo $AppUI->_("LBL_GQM_HOW_DATA_IS_COLLECTED", UI_OUTPUT_HTML); ?>
@@ -231,12 +224,10 @@ foreach ($goals as $oid => $data) {
             }
             ?>
         </table> 
-        <br />
         <?php
         $j++;
     }
     ?>
-    <br />
     <?php
     $i++;
 }

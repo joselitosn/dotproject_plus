@@ -15,65 +15,261 @@ $query->addTable('human_resources_role', 'r');
 $query->addQuery('r.*');
 $query->addWhere('r.human_resources_role_company_id = ' . $company_id);
 $res_companies = & $query->exec();
+
+
+// TODO se não tiver roles, mostrar mensagem com opção para cadastrar
+
+if (!count($res_companies)) {
+
+} else {
+
+
+
+}
 ?>
 
-<table width="95%" align="center" border='0' cellpadding='2' cellspacing='1' class='tbl'>
-    <caption> <b><?php echo $AppUI->_("LBL_ORGANIZATION_ROLES"); ?></b> </caption>
-    <tr>
-        <th width='3%'>&nbsp;</th>
-        <th nowrap='nowrap' width='10%'>
-            <?php echo $AppUI->_('Role name'); ?>
-        </th>
-        <th nowrap='nowrap' width='29%'>
-            <?php echo $AppUI->_('Role responsability'); ?>
-        </th>
-        <th nowrap='nowrap' width='29%'>
-            <?php echo $AppUI->_('Role authority'); ?>
-        </th>
-        <th nowrap='nowrap' width='29%'>
-            <?php echo $AppUI->_('Role competence'); ?>
-        </th>
-    </tr>
+<div class="row">
+    <div class="col-md-12 text-right">
+        <div class="dropdown">
+            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-bars"></i>
+            </a>
 
-    <?php
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="javascript:void(0)" onclick="roles.new()">
+                    <i class="far fa-plus-square"></i>
+                    <?=$AppUI->_('LBL_NEW_ROLE')?>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<?php
+
+
     require_once DP_BASE_DIR . "/modules/human_resources/configuration_functions.php";
     for ($res_companies; !$res_companies->EOF; $res_companies->MoveNext()) {
         $human_resources_role_id = $res_companies->fields['human_resources_role_id'];
+
+        $obj = new CHumanResourcesRole();
+        $obj->load($human_resources_role_id);
+        $canDelete = $obj->canDelete($obj);
+
         $configured = isConfiguredRole($human_resources_role_id);
         $style = $configured ? '' : 'background-color:#ED9A9A; font-weight:bold';
-        ?>
-        <tr>
-            <td style=<?php echo $style; ?>>
-                <a href="index.php?m=human_resources&amp;a=view_role&amp;human_resources_role_id=<?php echo $human_resources_role_id; ?>&amp;company_id=<?php echo $company_id; ?>">
-                    <img src="./modules/costs/images/stock_edit-16.png" border="0" width="12" height="12">
-                </a>
-            </td>
-            <td style=<?php echo $style; ?>>
-                <?php echo $res_companies->fields['human_resources_role_name']; ?>
-            </td>
-            <td style=<?php echo $style; ?>>
-                <?php echo $res_companies->fields['human_resources_role_responsability']; ?>
-            </td>
-            <td style=<?php echo $style; ?>>
-                <?php echo $res_companies->fields['human_resources_role_authority']; ?>
-            </td>
-            <td style=<?php echo $style; ?>>
-                <?php echo $res_companies->fields['human_resources_role_competence']; ?>
-            </td>
-        </tr>
-        <?php
+    ?>
+
+        <div class="card inner-card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-11">
+                        <h5>
+                            <a id="<?=$human_resources_role_id?>" data-toggle="collapse" href="#role_details_<?=$human_resources_role_id?>">
+                                <?=$res_companies->fields['human_resources_role_name']?>
+                                <i class="fas fa-caret-down"></i>
+                            </a>
+                        </h5>
+                    </div>
+                    <div class="col-md-1 text-right">
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bars"></i>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="roles.edit(<?=$human_resources_role_id?>)">
+                                    <i class="far fa-edit"></i>
+                                    <?=$AppUI->_('LBL_UPDATE_ROLE')?>
+                                </a>
+                                <?php
+                                    if ($canDelete && $human_resources_role_id > 0) {
+                                ?>
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="roles.delete(<?=$human_resources_role_id?>)">
+                                        <i class="far fa-trash-alt"></i>
+                                        <?=$AppUI->_('LBL_DELETE_ROLE')?>
+                                    </a>
+                                <?php
+                                    }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="role_details_<?=$human_resources_role_id?>" class="collapse">
+                    <div class="row">
+                        <table class="table table-sm no-border">
+                            <tr>
+                                <th class="text-right" width="15%"><?php echo $AppUI->_("Role responsability"); ?>:</th>
+                                <td><?php echo $res_companies->fields['human_resources_role_responsability'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-right" width="15%"><?php echo $AppUI->_("Role authority"); ?>:</th>
+                                <td><?php echo $res_companies->fields['human_resources_role_authority'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-right" width="15%"><?php echo $AppUI->_("Role competence"); ?>:</th>
+                                <td><?php echo $res_companies->fields['human_resources_role_competence'] ?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+<?php
     }
     $query->clear();
-    ?>
-</table>
-<table width="95%" align="center">
-    <tr>
-        <td style="text-align: right">
-            <form action="?m=human_resources&amp;a=view_role&amp;company_id=<?php echo $company_id; ?>" method="post">
-                <input type="submit" class="button" value="<?php echo $AppUI->_('LBL_NEW_ROLE') ?>"  />
-                <?php require_once (DP_BASE_DIR . "/modules/timeplanning/view/subform_back_button_no_ask.php"); ?>
-            </form>
-            
-        </td>
-    </tr>
-</table>
+?>
+
+<div class="modal" id="addEditRoleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body role-modal">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                <button type="button" class="btn btn-primary" id="btnSaveRole" ><?=$AppUI->_('LBL_SAVE')?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var roles = {
+
+        init: function() {
+            $(document).ready(function(e) {
+                $('a[data-toggle=collapse]').on('click', roles.show);
+            });
+        },
+
+        show: function (e) {
+            const collapseRole = $(e.target);
+            $('#role_details_'+e.target.id).on('shown.bs.collapse', function () {
+                collapseRole.find('i').removeClass('fa-caret-down');
+                collapseRole.find('i').addClass('fa-caret-up');
+            });
+            $('#role_details_'+e.target.id).on('hidden.bs.collapse', function () {
+                collapseRole.find('i').removeClass('fa-caret-up');
+                collapseRole.find('i').addClass('fa-caret-down');
+            });
+        },
+
+        delete: function (id) {
+            $.confirm({
+                title: '<?=$AppUI->_("LBL_CONFIRM", UI_OUTPUT_JS); ?>',
+                content: '<?=$AppUI->_("LBL_DELETE_MSG_ROLE", UI_OUTPUT_JS); ?>',
+                buttons: {
+                    confirmar: {
+                        btnClass: 'btn-blue',
+                        action: function () {
+                            $.ajax({
+                                url: "?m=human_resources",
+                                type: "post",
+                                datatype: "json",
+                                data: {
+                                    dosql: 'do_role_aed',
+                                    del: 1,
+                                    human_resources_role_id: id,
+                                    human_resources_role_company_id: <?=$company_id?>
+                                },
+                                success: function(resposta) {
+                                    $.alert({
+                                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                        content: resposta,
+                                        onClose: function() {
+                                            window.location.reload(true);
+                                        }
+                                    });
+                                },
+                                error: function(resposta) {
+                                    $.alert({
+                                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                                    });
+                                }
+                            });
+                        }
+                    },
+                    cancelar: function () {},
+                }
+            });
+        },
+
+        new: function() {
+            $.ajax({
+                type: "get",
+                url: "?m=human_resources&template=view_role&company_id=<?=$company_id?>"
+            }).done(function(response) {
+                $(".role-modal").html(response);
+                $(".modal-title").html("<?=$AppUI->_('LBL_NEW_ROLE')?>");
+                $("#btnSaveRole").on("click", function() {
+                    roles.save();
+                })
+                $("#addEditRoleModal").modal();
+            });
+        },
+
+        edit: function (id) {
+            $.ajax({
+                type: "get",
+                url: "?m=human_resources&template=view_role&human_resources_role_id="+id+"&company_id=<?=$company_id?>"
+            }).done(function(response) {
+                $(".role-modal").html(response);
+                $(".modal-title").html("<?=$AppUI->_('LBL_NEW_ROLE')?>");
+                $("#btnSaveRole").on("click", function() {
+                    roles.save();
+                })
+                $("#addEditRoleModal").modal();
+            });
+        },
+        
+        save: function () {
+
+            var name = $("input[name=human_resources_role_name]").val();
+
+            if (!name) {
+                var msg = [];
+                if (!name) msg.push("<?=$AppUI->_('You must enter a role name', UI_OUTPUT_JS); ?>");
+                $.alert({
+                    title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
+                    content: msg.join("<br>")
+                });
+                return;
+            }
+            $.ajax({
+                url: "?m=human_resources",
+                type: "post",
+                datatype: "json",
+                data: $("form[name=editfrm]").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                    $("#addEditRoleModal").modal("hide");
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
+                }
+            });
+        }
+    }
+
+    roles.init();
+</script>

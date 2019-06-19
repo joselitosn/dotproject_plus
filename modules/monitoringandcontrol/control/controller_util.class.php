@@ -165,5 +165,6 @@ DB filelds - TABLE: 'monitoring_quality_type'
    function inverteData($data,$sep1,$sep2){	   
 	   return implode($sep2,array_reverse(explode($sep1,$data)));	  	  
 	}
+
 }
 ?>

@@ -35,7 +35,7 @@ class ControllerActivityMDP {
                 $q->addJoin('tasks_workpackages', 'tw', 't.task_id=tw.task_id');
                 $q->addJoin('project_eap_items', 'pei', 'pei.id=tw.eap_item_id');
 		$q->addWhere("t.task_project = $projectId and t.task_milestone<>1 and pei.is_leaf=1");     
-               
+                $q->addOrder("task_start_date asc");
                 
 		$sql = $q->prepare();
 		$tasks = db_loadList($sql);

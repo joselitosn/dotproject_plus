@@ -21,6 +21,11 @@ $controllerWBSItem = new ControllerWBSItem();
         $id = $item->getId();
         $name = $item->getName();
         $number = $item->getNumber();
+        //bug fix: issues with "tio chico" example (it has old data) 
+        $problemIds=array (85,86) ;
+        if( in_array($id,$problemIds)) {
+            continue;
+        }
         ?>
         <tr >
             <td>

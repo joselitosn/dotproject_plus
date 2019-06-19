@@ -66,6 +66,11 @@ if (file_exists($imageName)) {
 }
 
 require_once (DP_BASE_DIR . "/modules/timeplanning/view/export_project_plan/gantt_chart_generator.php");
+if (file_exists($imageName)) {
 $source = imagecreatefrompng($imageName);
+
 ?>
 <img src="<?php echo $imageName; ?>" align="center" />
+<?php
+}
+?>

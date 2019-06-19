@@ -6,14 +6,18 @@ if (!defined("DP_BASE_DIR")) {
 $del = dPgetParam($_POST, "del", 0);
 $obj = new CHumanResource();
 $msg = "";
-$roles_ids = dPgetParam($_POST, "roles_ids", 0);
+$roles_ids = dPgetParam($_POST, "roles");
 $companyId = dPgetParam($_POST, "company_id", 0);
-$redirectPath = "m=companies&a=view&company_id=" . $companyId;
+
+require_once (DP_BASE_DIR . "/modules/monitoringandcontrol/control/controller_resources_costs.class.php");
+$resCost = new ControllerResourcesCosts();
 
 if (!$obj->bind($_POST)) {
     $AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
-    $AppUI->redirect($redirectPath);
+    echo $AppUI->getMsg();
+    exit();
 }
+$userId = $obj->human_resource_user_id;
 
 if ($del) {
     require_once (DP_BASE_DIR . "/modules/contacts/contacts.class.php"); //for contact
@@ -21,9 +25,10 @@ if ($del) {
     $contactObj = new CContact();
     $contactObj->load(dPgetParam($_POST, "contact_id", 0));
     $userObj = new CUser();
-    $userObj->load(dPgetParam($_POST, "user_id", 0));
-    $userObj->delete();
+    $userObj->load($userId);
     $contactObj->delete();
+    $resCost->deleteAllByUserId($userId);
+    $userObj->delete();
     //delete roles estimated
     $human_resource_roles = new CHumanResourceRoles();
     $human_resource_roles->deleteAll($obj->human_resource_id);
@@ -31,22 +36,39 @@ if ($del) {
     $obj->delete();
     $msg = $AppUI->_("Human Resource") . " " . $AppUI->_("deleted");
     $AppUI->setMsg($msg, UI_MSG_OK, false);
-    $AppUI->redirect($redirectPath);
+    echo $AppUI->getMsg();
+    exit();
 } else {
+    // Inserts costs
+    $costs = dPgetParam($_POST,'costs');
+    if ($costs) {
+        $costs = json_decode($costs);
+    }
+    $resCost->deleteAllByUserId($userId);
+    if (count($costs)) {
+        foreach ($costs as $cost) {
+            $cost = json_decode(json_encode($cost), true);
+            $tx_pad = $cost['cost'];
+            $dt_begin = $cost['startDate'];
+            $dt_end = $cost['endDate'];
+            $resCost->insertCosts($tx_pad, null, $dt_begin, $dt_end, $userId);
+        }
+    }
+
     if (($msg = $obj->store())) {
         $AppUI->setMsg($msg, UI_MSG_ERROR);
     } else {
-        if ($roles_ids || $roles_ids == "") {
-            $human_resource_roles = new CHumanResourceRoles();
-            $roles_ids_array = explode(",", $roles_ids);
-            $human_resource_roles->deleteAll($obj->human_resource_id);
-            foreach ($roles_ids_array as $role_id) {
+        $human_resource_roles = new CHumanResourceRoles();
+        $human_resource_roles->deleteAll($obj->human_resource_id);
+        if(count($roles_ids)) {
+            foreach ($roles_ids as $role_id) {
                 $human_resource_roles->store($role_id, $obj->human_resource_id);
             }
         }
         $msg = $AppUI->_("Human Resource") . " " . $AppUI->_($_POST["human_resource_id"] ? "updated" : "added");
         $AppUI->setMsg($msg, UI_MSG_OK, true);
     }
-    $AppUI->redirect($redirectPath);
+    echo $AppUI->getMsg();
+    exit();
 }
 ?>

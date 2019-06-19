@@ -33,3 +33,5 @@
 "Communication"=>"Comunicação",
 "LBL_EDIT"=>"editar",
 "LBL_PROJECT_NONE" => "Nenhum",
+"LBL_EMISSOR_RECIPTORS" => "As opções de emissores e receptores da comunicação são oriundas do cadastro de stakeholders. Caso algum nome não esteja disponível revise os stakeholders do projeto.",
+"LBL_EMISSOR_RECIPTORS_AVAILABILITY" => "A seleção de emissores e receptores ficará disponível apenas após o primeiro registro da comunicação.",

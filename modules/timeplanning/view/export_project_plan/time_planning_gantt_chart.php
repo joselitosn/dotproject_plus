@@ -21,16 +21,20 @@ $urlImage=str_replace ("modules/timeplanning/view/export_project_plan", "index.p
 $ganttWidth=970;
 $imageName="temp/gantt_" .$projectId.".png";
 $localImageURL=$baseUrl. "/".$imageName;
-if($_GET["print"]!="1"){
+//if($_GET["print"]!="1"){
     if(file_exists($imageName)){
         unlink($imageName);
     }
     require_once (DP_BASE_DIR . "/modules/timeplanning/view/export_project_plan/gantt_chart_generator.php");
     //rotate image
-    $degrees = 270;
-    $source = imagecreatefrompng($imageName);
-    $rotatedImage = imagerotate($source, $degrees, 0,1);
-    imagejpeg($rotatedImage, $imageName);
-}
+    if (file_exists($imageName)) {
+        $degrees = 270;
+        $source = imagecreatefrompng($imageName);
+        $rotatedImage = imagerotate($source, $degrees, 0,1);
+        imagejpeg($rotatedImage, $imageName);
+        ?>
+        <img src="<?php echo $imageName;?>" style="max-width: 780px; max-height: 730px;" />
+        <?php
+    }
+//}
 ?>
-<img src="<?php echo $imageName;?>" style="max-width: 750px; max-height: 795px" />

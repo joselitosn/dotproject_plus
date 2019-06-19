@@ -8,7 +8,7 @@ class WBSItemActivityRelationship {
 	function WBSItemActivityRelationship (){
 	}
 	
-	function store($id,$description,$work_package,$project_id) {
+	function store($id,$description,$work_package,$project_id,$activity_order) {
 			$q = new DBQuery();
 			$obj = new CTask();
 			$q->addQuery('task_id');
@@ -48,6 +48,7 @@ class WBSItemActivityRelationship {
 			if (empty($record)){
 				$q->addInsert('eap_item_id', $work_package);
 				$q->addInsert('task_id', $obj->task_id);
+                                $q->addInsert("activity_order",$activity_order);
 			}else{
 				$q->addUpdate('eap_item_id', $work_package);
 				$q->addWhere('task_id = ' . $obj->task_id);

@@ -218,7 +218,7 @@ $canDelete = getPermission($m, 'delete');
 if (!$suppressHeaders) {
 	// output the character set header
 	if (isset($locale_char_set)) {
-		header('Content-type: text/html;charset='.$locale_char_set);
+		header('Content-type: text/html;charset=utf-8');
 	}
 }
 
@@ -239,6 +239,13 @@ if (isset($_REQUEST['dosql'])) {
 	//require('./dosql/' . $_REQUEST['dosql'] . '.php');
 	require (DP_BASE_DIR . '/modules/' . $m . '/' . ($u ? ($u.'/') : '') 
 	         . $AppUI->checkFileName($_REQUEST['dosql']) . '.php');
+}
+
+// loads some templates is template is set
+if (isset($_REQUEST['template'])) {
+    $template = $_REQUEST['template'];
+    $file = (DP_BASE_DIR . '/modules/' . $m . '/' . $template . '.php');
+    require $file;
 }
 
 // start output proper

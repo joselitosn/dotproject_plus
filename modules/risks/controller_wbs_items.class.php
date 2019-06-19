@@ -20,7 +20,7 @@ class ControllerWBSItem {
 		$q = new DBQuery();
 		$q->addQuery('t.id, t.item_name,t.identation,t.number,t.is_leaf');
 		$q->addTable('project_ear_items', 't');
-		$q->addWhere('project_id = '.$projectId .' order by sort_order');
+		$q->addWhere('project_id = '.$projectId .' order by number');
 		$sql = $q->prepare();
 		$items = db_loadList($sql);
 		foreach ($items as $item) {

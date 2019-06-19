@@ -5,22 +5,24 @@ $controllerCompanyRole = new ControllerCompanyRole();
 ?>
 <table class="printTable">
     <tr>
-        <td>
-            <ol type="disc">
+        <td style="padding-left: 10px;">
+            
                 <?php
                 $roles = $controllerCompanyRole->getCompanyRoles($companyId);
                 foreach ($roles as $role) {
                     $id = $role->getId();
                     $name = $role->getDescription();
                     $identation = $role->getIdentation();
-                    ?>
-                    <li>
-                        <?php echo $identation . $name ?>
-                    </li>
-                    <?php
+                    echo "<span style='color:white'>";
+                    for ($index=0;$index<strlen($identation)/3;$index++){
+                        echo "-";
+                    }
+                    echo "</span>";
+                    echo $name;
+                    echo "<br />";
                 }
                 ?>
-            </ol>
+            
         </td>
     </tr>
 </table>

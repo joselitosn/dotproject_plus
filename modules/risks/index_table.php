@@ -1,27 +1,20 @@
 <?php
+$project_id=$_GET["project_id"];
 $q = new DBQuery();
 $q->addQuery('*');
 $q->addTable('risks');
+$q->addWhere('risk_project='.$project_id);
 $q->addOrder('risk_id');
 $q->setLimit(100);
 $list1 = $q->loadList();
 //require_once (DP_BASE_DIR . "/modules/risks/translations.php");
+require_once DP_BASE_DIR . "/modules/risks/probability_impact_matrix_read.php";
 foreach ($list1 as $line) {
     $risk_id = $line['risk_id'];
-    $Priority;
     $risk_probability = intval($line['risk_probability']);
     $risk_impact = intval($line['risk_impact']);
-    if (($risk_impact == 0) || ($risk_probability == 2 && $risk_impact == 1) || ($risk_probability == 1 && $risk_impact == 1) || ($risk_probability == 0 && $risk_impact < 4)) {
-        $Priority = 0;
-    } else {
-        if (($risk_probability == 4 && $risk_impact == 1) || ($risk_probability == 3 && $risk_impact == 1) || ($risk_probability == 3 && $risk_impact == 2) || ($risk_probability == 2 && $risk_impact == 2) || ($risk_probability == 1 && $risk_impact == 2) || ($risk_probability == 1 && $risk_impact == 3) || ($risk_probability == 0 && $risk_impact == 4)) {
-            $Priority = 1;
-        } else {
-            if (($risk_impact == 4 && $risk_probability > 0) || ($risk_impact == 3 && $risk_probability > 1) || ($risk_probability == 4 && $risk_impact == 2)) {
-                $Priority = 2;
-            }
-        }
-    }
+
+    $Priority=$impactProbabilityMatrix[$risk_probability][$risk_impact];
     $dbprefix = dPgetConfig('dbprefix', '');
     $consulta = "UPDATE {$dbprefix}risks SET risk_priority = '$Priority' WHERE risk_id = '$risk_id'";
     $resultado = mysql_query($consulta) or die($AppUI->_("LBL_QUERY_FAIL"));
@@ -246,19 +239,12 @@ if ($projectSelected != null) {
             <td><?php echo $row['risk_description'] ?></td>
             <td><?php echo $riskProbability[$row['risk_probability']] ?></td>
             <td><?php echo $riskImpact[$row['risk_impact']] ?></td>
-            <td style="background-color:#<?php
-        if ($row['risk_priority'] == 0) {
-            echo $bgGreen;
-        } else {
-            if ($row['risk_priority'] == 1) {
-                echo $bgYellow;
-            } else {
-                if ($row['risk_priority']) {
-                    echo $bgRed;
-                }
-            }
-        }
-            ?>"><?php echo $riskPriority[$row['risk_priority']] ?></td>
+
+
+            <td style="text-align:center">
+
+            <?php echo $textExpositionFactor[ $row['risk_priority'] ] ?>
+            </td>
             <td><?php echo $riskStatus[$row['risk_status']] ?></td>
             <!--
             <?php
@@ -431,19 +417,7 @@ if ($projectSelected != null) {
             <td><?php echo $row['risk_description'] ?></td>
             <td><?php echo $riskProbability[$row['risk_probability']] ?></td>
             <td><?php echo $riskImpact[$row['risk_impact']] ?></td>
-            <td style="background-color:#<?php
-        if ($row['risk_priority'] == 0) {
-            echo $bgGreen;
-        } else {
-            if ($row['risk_priority'] == 1) {
-                echo $bgYellow;
-            } else {
-                if ($row['risk_priority']) {
-                    echo $bgRed;
-                }
-            }
-        }
-        ?>"><?php echo $riskPriority[$row['risk_priority']] ?></td>
+            <td style="text-align:center"><?php echo $riskPriority[$row['risk_priority']] ?></td>
             <td><?php echo $riskStatus[$row['risk_status']] ?></td>
             <!--
     <?php

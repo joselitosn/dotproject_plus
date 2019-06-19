@@ -83,7 +83,15 @@ class ControllerResourcesCosts{
 			$q->addWhere('cost_id=' . $id);
 			$q->exec();
 			$q->clear();	
-	}	
+	}
+
+	function deleteAllByUserId($userId) {
+        $q = new DBQuery();
+        $q->setDelete('monitoring_user_cost');
+        $q->addWhere('user_id=' . $userId);
+        $q->exec();
+        $q->clear();
+    }
 	
 
 	function updateRow($tx_pad,$use_cost,$dt_begin,$dt_end,$user_id, $id){	
@@ -174,7 +182,7 @@ class ControllerResourcesCosts{
 		$q->addWhere('user_id =' .$user_id);	
 		$q->addOrder('cost_id ASC');
 		$sql = $q->prepare();
-		$list = db_loadList($sql);		
+		$list = db_loadList($sql);
 		return $list;			
 	}
 		

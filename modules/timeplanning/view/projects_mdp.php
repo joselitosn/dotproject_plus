@@ -33,15 +33,15 @@ $controllerActivityMDP = new ControllerActivityMDP();
     foreach ($tasks as $task) {
         ?>
         <tr>
-            <td valign="top">
+            <td valign="top" width="10%">
                 A.<?php echo $activitiesIdsForDisplay[$task->getId()] ?>
             </td>
-            <td valign="top">
+            <td valign="top" width="30%">
                 <input type="hidden" value="<?php echo $task->getId() ?>" name="task_id">
                 <?php echo $task->getName(); ?>
             </td>
-            <td>
-                <table class="std" width="500">
+            <td width="30%">
+                <table class="std" width="100%" >
                     <?php
                     foreach ($task->getDependencies() as $dep_id) {
                         ?>
@@ -68,7 +68,7 @@ $controllerActivityMDP = new ControllerActivityMDP();
                     ?>
                 </table>
             </td>
-            <td valign="top" style="width:215px; max-width: 215px">
+            <td valign="top" style="width:30%; max-width: 215px">
                 <form  action="?m=timeplanning&a=view" method="post" name="activity_dependency_add_<?php echo $task->getId(); ?>">
                     <input name="dosql" type="hidden" value="do_project_activity_add_dependency" />
                     <input type="hidden" name="activity_id" value="<?php echo $task->getId(); ?>" /> 
@@ -96,7 +96,7 @@ $controllerActivityMDP = new ControllerActivityMDP();
 
 <br />
 
-<table width="95%" align="center" class="tbl" style="border: 0px">
+<table width="100%" align="center" class="tbl" style="border: 0px">
     <tr>
         <th style="text-align: center">
             <b><?php echo $AppUI->_("LBL_GANTT_SEQUENCING"); ?></b>

@@ -9,12 +9,22 @@ class ControllerCompanyRole {
 		$companyRole = new CompanyRole(); 
 		$companyRole->store($company_id,$description,$identation,$id,$sort_order) ;
 	}
+
+	function storeJson($json, $companyId) {
+        $companyRole = new CompanyRole();
+        $companyRole->storeJson($json, $companyId);
+    }
 	
 
 	function delete($id){
 		$companyRole = new CompanyRole(); 
 		$companyRole->delete($id);
 	}
+
+	function deleteByCompanyId($companyId) {
+        $companyRole = new CompanyRole();
+        $companyRole->deleteByCompanyId($companyId);
+    }
         
         function canDelete($id){
             $query = new DBQuery();

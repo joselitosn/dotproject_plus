@@ -15,13 +15,7 @@ function cal_work_day_conv($val) {
     return htmlentities($day_name, ENT_COMPAT, $locale_char_set);
 }
 
-$query = new DBQuery();
-$query->addTable("users", "u");
-$query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
-$query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
-$query->addWhere("c.contact_company = " . $companyId);
-$query->addOrder("contact_last_name");
-$res = $query->exec();
+$res =  getDetailedUsersByCompanyId($companyId);
 
 $cwd = array();
 $cwd[0] = "0";
@@ -41,24 +35,25 @@ $cwd_conv[4]="Quinta-feira";
 $cwd_conv[5]="Sexta-feira";
 $cwd_conv[6]="Sábado";
 ?>
-<table class="printTable" >
+<table class="printTable" style="table-layout:fixed" >
     <tr>
-        <th >
+        <th style="vertical-align: top" >
             <?php echo $AppUI->_("User username",UI_OUTPUT_HTML); ?>
         </th>
-        <th >
-            <?php echo $AppUI->_("User roles",UI_OUTPUT_HTML); ?>
+        <th style="vertical-align: top" >
+            <?php echo $AppUI->_("Role competence" ,UI_OUTPUT_HTML); ?>
         </th>
-        <th style="text-wrap: normal">
+        <th style="text-wrap: normal; vertical-align: top">
             <?php echo $AppUI->_("Lattes URL",UI_OUTPUT_HTML); ?>
         </th>
-        <th align="center" valign="top"> <?php echo $cwd_conv[0]; ?> </th>
-        <th align="center" valign="top"> <?php echo $cwd_conv[1]; ?> </th>
-        <th align="center" valign="top"> <?php echo $cwd_conv[2]; ?> </th>
-        <th align="center" valign="top"> <?php echo $cwd_conv[3]; ?> </th>
-        <th align="center" valign="top"> <?php echo $cwd_conv[4]; ?> </th>
-        <th align="center" valign="top"> <?php echo $cwd_conv[5]; ?> </th>
-        <th align="center" valign="top"> <?php echo $cwd_conv[6]; ?> </th>
+        
+        <th align="center" valign="top"> <?php echo $AppUI->_("LBL_SUNDAY" ,UI_OUTPUT_HTML); ?> </th>
+        <th align="center" valign="top"><?php echo $AppUI->_("LBL_MONDAY",UI_OUTPUT_HTML); ?> </th>
+        <th align="center" valign="top"> <?php echo $AppUI->_("LBL_TUESDAY",UI_OUTPUT_HTML); ?> </th>
+        <th align="center" valign="top"> <?php echo $AppUI->_("LBL_WEDNESDAY",UI_OUTPUT_HTML); ?> </th>
+        <th align="center" valign="top"> <?php echo $AppUI->_("LBL_THURSDAY",UI_OUTPUT_HTML); ?></th>
+        <th align="center" valign="top"> <?php echo $AppUI->_("LBL_FRIDAY",UI_OUTPUT_HTML); ?> </th>
+        <th align="center" valign="top"> <?php echo $AppUI->_("LBL_SATURDAY",UI_OUTPUT_HTML); ?> </th>
     </tr>
     <?php
     for ($res; !$res->EOF; $res->MoveNext()) {
@@ -99,7 +94,9 @@ $cwd_conv[6]="Sábado";
             <td>
                 <?php echo $concat_roles_names; ?>
             </td>
-            <td style="text-wrap: normal; word-break:break-all"><?php echo $obj->human_resource_lattes_url; ?></td>   
+            <td style="word-wrap: break-word; word-break:break-all; max-width: 350px" ><?php echo $obj->human_resource_lattes_url; ?></td>   
+            
+            <?php if( $obj->eventual==0){ ?>
             <td><?php echo $obj->human_resource_mon; ?></td>
             <td><?php echo $obj->human_resource_tue; ?></td>
             <td><?php echo $obj->human_resource_wed; ?></td>
@@ -107,6 +104,9 @@ $cwd_conv[6]="Sábado";
             <td><?php echo $obj->human_resource_fri; ?></td>
             <td><?php echo $obj->human_resource_sat; ?></td>
             <td><?php echo $obj->human_resource_sun; ?></td>
+            <?php }else{ ?>
+                <td colspan="7" style="text-align: center;text-transform: lowercase;font-style: italic">-- <?php echo $AppUI->_("LBL_EVENTUAL_INVOLVIMENT",UI_OUTPUT_HTML); ?> --</td>
+            <?php }?>
         </tr>
         <?php
     }

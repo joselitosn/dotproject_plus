@@ -13,6 +13,14 @@ if ($tab != "") {
 }else{
     $_SESSION["gqs_tab"] = 0;
 }
+
+//Control to highlight menu selection
+$path = $_POST["user_choosen_feature_initiating"]!=""?$_POST["user_choosen_feature_initiating"]:$_SESSION["user_choosen_feature_initiating"];
+if($path==""){
+    $path="/modules/initiating/addedit.php";//deafult page 
+}
+$_SESSION["user_choosen_feature_initiating"]=$path;
+
 ?>
 
 <style>
@@ -31,11 +39,11 @@ if ($tab != "") {
     <input type="radio" name="user_choosen_feature_initiating" value="<?php echo $_SESSION["user_choosen_feature_initiating"] ?>" checked="true" style="display:none"  />
     <div style="width:100%; height: 22px;vertical-align: middle;">
         <div style="width:100%;height: 5px">&nbsp;</div><!-- div just to create a space before menu links -->
-        <a href="#" onclick="document.gqs_feature_menu.user_choosen_feature_initiating.value='/modules/initiating/addedit.php';submitMenuForm();" style="<?php echo $_POST["user_choosen_feature_initiating"]=="/modules/initiating/addedit.php" ? "font-weight: bold;font-size:14px": "" ?>" >
+        <a href="#" onclick="document.gqs_feature_menu.user_choosen_feature_initiating.value='/modules/initiating/addedit.php';submitMenuForm();" style="<?php echo $_SESSION["user_choosen_feature_initiating"]=="/modules/initiating/addedit.php" ? "font-weight: bold;font-size:14px": "" ?>" >
             <?php echo $AppUI->_("LBL_OPEN_PROJECT_CHARTER",UI_OUTPUT_HTML) ?>
         </a>
          &nbsp;|&nbsp;
-         <a href="#" onclick="document.gqs_feature_menu.user_choosen_feature_initiating.value='/modules/stakeholder/project_stakeholder.php';submitMenuForm();" style="<?php echo $_POST["user_choosen_feature_initiating"]=="/modules/stakeholder/project_stakeholder.php" ? "font-weight: bold;font-size:14px": "" ?>">
+         <a href="#" onclick="document.gqs_feature_menu.user_choosen_feature_initiating.value='/modules/stakeholder/project_stakeholder.php';submitMenuForm();" style="<?php echo $_SESSION["user_choosen_feature_initiating"]=="/modules/stakeholder/project_stakeholder.php" ? "font-weight: bold;font-size:14px": "" ?>">
             <?php echo $AppUI->_("LBL_PROJECT_STAKEHOLDER",UI_OUTPUT_HTML); ?> 
          </a>
     </div>
@@ -67,16 +75,6 @@ if ($tab != "") {
 <br />
 <a name="gqs_anchor"></a>
 <?php
-$path = $_POST["user_choosen_feature_initiating"];
-if ($path != "") {
-    $_SESSION["user_choosen_feature_initiating"] = $path;
-} else {
-    $path = $_SESSION["user_choosen_feature_initiating"];
-}
-
-if($path==""){
-    $path="/modules/initiating/addedit.php";//deafult page 
-}
 
 if (file_exists(DP_BASE_DIR . $path) && $path != "") {
     include (DP_BASE_DIR . $path);

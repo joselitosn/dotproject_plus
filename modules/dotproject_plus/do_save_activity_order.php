@@ -10,44 +10,46 @@ $project_id = $_POST["project_id"];
 $task_id= $_POST["activity_id"];
 $task_order= $_POST["task_order"];
 $direction= $_POST["direction"];
+$wbs_item_id= $_POST["wbs_item_id"];//fazer o envio pela tela do projeto
+
 
 $q = new DBQuery();
-$q->addQuery("t.task_id, t.task_order");
-$q->addTable("tasks", "t");
-$q->addWhere("t.task_project=" . $project_id);
-$q->addOrder("t.task_order");
+$q->addQuery("task_id, activity_order");
+$q->addTable("tasks_workpackages", "t");
+$q->addWhere("eap_item_id=" . $wbs_item_id);
+$q->addOrder("activity_order");
 $sql = $q->prepare();
 $records = db_loadList($sql);
 
-//Get activities order
+
 $indexMovedTask=-1;
 $i=0;
+//Get activity order (index)
 foreach($records as $record){
     if($record[0]==$task_id){
         $indexMovedTask=$i;
     }
     $i++;
 }
-//Get activity the will be moved
-$movedActivity=$records[$indexMovedTask+$direction];
-//Set new orders
-$new_order=$movedActivity[1];
-$current_order=$task_order;
-if($current_order==$new_order){
-    $new_order+=$direction;
+$newIndex=$indexMovedTask+$direction;
+if( sizeof($records)>$newIndex && $newIndex>=0){//valid bounderies
+        
+    //switch activities
+    $temp=$records[$indexMovedTask];
+    $records[$indexMovedTask]=$records[$newIndex];
+    $records[$newIndex]= $temp;
+    //update order values
+    $i=0;
+    foreach($records as $record){
+        $q = new DBQuery();
+        $q->addTable("tasks_workpackages");							
+        $q->addUpdate('activity_order', $i);	
+        $q->addWhere('task_id = '.$record[0]);		
+        $q->exec();
+        $i++;
+    }
 }
-
-//Update new orders on database
-$obj = new CTask();
-$obj->load($task_id);
-$obj->task_order=$new_order;
-$obj->store();
-
-$obj = new CTask();
-$obj->load($movedActivity[0]);
-$obj->task_order=$current_order;
-$obj->store();
-
+    
 
 $AppUI->redirect('m=projects&a=view&project_id='.$project_id);
 ?>

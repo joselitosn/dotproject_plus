@@ -5,7 +5,6 @@ if (!defined('DP_BASE_DIR')) {
 
 include "functions.php";
 
-
 ############################################################################
 // format dates
 $df = $AppUI->getPref('SHDATEFORMAT');
@@ -108,9 +107,11 @@ $titleBlock->show();
         <input type="hidden" name="dosql" value="do_communication_aed" />
         <input type="hidden" name="del" value="0" />      
         <input type="hidden" name="project" value="<?php echo $_GET["project_id"]!=""?$_GET["project_id"]:$_GET["project"]; ?>" />  
+        <input type="hidden" name="project_id" value="<?php echo $_GET["project_id"]!=""?$_GET["project_id"]:$_GET["project"]; ?>" />  
+        
         <input type="hidden" name="communication_id" value="<?php echo $communication_id; ?>" />
         <tr>
-            <td width="100%" valign="top" align="left">
+            <td width="100%" valign="top" align="left" colspan="2">
                 <table cellspacing="1" cellpadding="2" width="60%" charset=UTF-8>
                     <!--
                     <tr><td align="left" nowrap="nowrap"><?php echo $AppUI->_("LBL_PROJECT"); ?>:</td>
@@ -134,75 +135,86 @@ $titleBlock->show();
                         </td>
                     </tr>
                      -->
-                    <tr><td align="left" nowrap="nowrap"><?php echo $AppUI->_("LBL_TITLE"); ?>:</td>
+                    <tr>
+                        <td align="left" nowrap="nowrap"><?php echo $AppUI->_("LBL_TITLE"); ?>:</td>
                         <td><input type="text" maxlength="45" size="80" name="communication_title" value="<?php echo (isset($_GET['title']) ? $_GET['title'] : @$obj->communication_title); ?>" /></td>                        
                     </tr>
-                    <tr><td align="left" nowrap="nowrap"><?php echo $AppUI->_("LBL_COMMUNICATION"); ?>:</td>
+                    <tr>
+                        <td align="left" nowrap="nowrap"><?php echo $AppUI->_("LBL_COMMUNICATION"); ?>:</td>
                         <td align="left"><textarea name="communication_information" cols="100" rows="3" class="textarea"><?php echo (isset($_GET['communication']) ? $_GET['communication'] : @$obj->communication_information); ?></textarea></td>
                     </tr>  
-                    <?php
-                    if ($communication_id!=0) {
-                        foreach ($remitters as $registros) {
-                        echo '<tr><td>'; echo $AppUI->_("LBL_ISSUING"); echo ': </td><td> <select id="issuing" name="issuing" style="min-width:150px">';
-                            foreach ($rlista as $registro) {
-                            echo '<option value="' . $registro['contact_id'] . '" ' . ($registro['contact_id'] == $registros['contact_id'] ? 'selected="selected"' : '') . '>'
-                                  . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';
-                            }
-                        echo '</select><input type="button" value="x" style="color: #aa0000; font-weight: bold" onclick="DelIssuing(' . $registros['contact_id'] . ',' . $communication_id . ')"/></td></tr>';
-                        }
-                    } else {
-                        foreach ($_SESSION['emitters'] as $registro_session) {
-                        echo '<tr><td>'; echo $AppUI->_("LBL_ISSUING"); echo ': </td><td> <select id="issuing" name="issuing" style="min-width:150px">';
-                            foreach ($rlista as $registro) {
-                            echo '<option value="' . $registro['contact_id'] . '" ' . ($registro_session == $registro['contact_id'] ? 'selected="selected"' : '') . '>'
-                                  . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';
-                            }
-                       echo '</select><input type="button" value="x" style="color: #aa0000; font-weight: bold" onclick="DelIssuing(' . $registro_session . ',' . $communication_id . ')"/></td></tr>';
-                        }
-                    }
-                    ?>
-                    <tr><td><?php echo $AppUI->_("LBL_ISSUING");?>: </td>                        
-                        <td><select id="issuing" name="issuing" style="min-width:150px" onchange="AddIssuing(this.value,<?php echo $communication_id ?>)">
-                            <option value=""><?php echo $AppUI->_("LBL_ADD")?></option>
-                    <?php
-                    foreach ($rlista as $registro) {
-                        echo '<option value="' . $registro['contact_id'] . '">' . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';
-                    }
-                    ?> </select></td>
-                    </tr>
-                    <tr><td></td><td><hr></hr></td></tr>
+                    <tr style="display: <?php echo $communication_id > 0 ? 'table-row' :'none' ?>">
+                        <td style="vertical-align: top"><?php echo $AppUI->_("LBL_ISSUING") ?></td>
+                        <td colspan="2">
+                            <select id="issuing" name="issuing" style="min-width:150px" onchange="AddIssuing(this.value,<?php echo $communication_id ?>)">
+                                <option value=""><?php echo $AppUI->_("LBL_ADD") ?></option>
+                                <?php
+                                foreach ($rlista as $registro) {
+                                    echo '<option value="' . $registro['contact_id'] . '">' . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';
+                                }
+                                ?> 
+                            </select>
+                            <?php
+                            if (sizeof($remitters) > 0) {
+                                ?>                   
+                                <table>
+                                    <?php
+                                    foreach ($remitters as $registro) {
+                                        ?>
+                                        <tr>
+                                            <td> 
+                                                <?php echo $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] ?>  
+                                            </td>
+                                            <td>
 
-                   <?php
-                   if ($communication_id!=0) {
-                        foreach ($rreceptors as $registros) {
-                        echo '<tr><td>'; echo $AppUI->_("LBL_RECEPTOR"); echo ': </td><td><select id="receptor" name="receptor" style="min-width:150px">';
-                            foreach ($rlista as $registro) {
-                            echo '<option value="' . $registro['contact_id'] . '" ' . ($registro['contact_id'] == $registros['contact_id'] ? 'selected="selected"' : '') . '>'
-                                 . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';
+                                                <input type='button' value='x' style='color: #aa0000; font-weight: bold' onclick='DelIssuing( <?php echo $registro['communication_issuing_id'] ?>,<?php echo $communication_id ?>)' />
+
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                    ?>
+                                </table>
+
+                                <?php
                             }
-                        echo '</select><input type="button" value="x" style="color: #aa0000; font-weight: bold" onclick="DelReceptor(' . $registros['contact_id'] . ',' . $communication_id . ')"/></td></tr>';
-                        }
-                   } else {
-                        foreach ($_SESSION['receptors'] as $registro_session) {
-                        echo '<tr><td>'; echo $AppUI->_("LBL_RECEPTOR"); echo ':</td><td><select id="receptor" name="receptor" style="min-width:150px">';
-                            foreach ($rlista as $registro) {
-                            echo '<option value="' . $registro['contact_id'] . '" ' . ($registro_session == $registro['contact_id'] ? 'selected="selected"' : '') . '>'
-                                  . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';
+                            ?>   
+                        </td>
+                    </tr>
+                    <tr style="display: <?php echo $communication_id > 0?'table-row':'none' ;?>">
+                        <td style="vertical-align: top">
+                            <?php echo $AppUI->_("LBL_RECEPTOR"); ?>
+                        </td>
+                        <td>
+                            <select id="receptor" name="receptor" style="min-width:150px" onchange="AddReceptor(this.value, <?php echo $communication_id ?>)">
+                                <option value=""><?php echo $AppUI->_("LBL_ADD")?></option>
+                                <?php
+                                    foreach ($rlista as $registro) {
+                                        echo '<option value="' . $registro['contact_id'] . '">' . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';
+                                        
+                                    }
+                                ?>
+                            </select>
+                            <?php
+                            if(count($rreceptors)>0){   
+                            ?>
+                            <table>
+                               <?php foreach ($rreceptors as $registro) { ?>
+                                <tr>
+                                    <td>
+                                        <?php echo $registro['contact_first_name'] . ' ' . $registro['contact_last_name']  ?>
+                                    </td>
+                                    <td>
+                                        <input type="button" value="x" style="color: #aa0000; font-weight: bold" onclick="DelReceptor(<?php echo $registro['communication_receptor_id'] ?> , <?php echo $communication_id ?>)" />
+                                    </td>
+                                </tr>
+                               <?php } ?>
+                            </table>
+                            <?php
                             }
-                        echo '</select><input type="button" value="x" style="color: #aa0000; font-weight: bold" onclick="DelReceptor(' . $registro_session . ',' . $communication_id . ')"/></td></tr>';
-                        }
-                  }
-                  ?>
-                    <tr><td><?php echo $AppUI->_("LBL_RECEPTOR")?></td>                        
-                        <td><select id="receptor" name="receptor" style="min-width:150px" onchange="AddReceptor(this.value,<?php echo $communication_id ?>)">
-                            <option value=""><?php echo $AppUI->_("LBL_ADD")?></option>
-                  <?php
-                  foreach ($rlista as $registro) {
-                  echo '<option value="' . $registro['contact_id'] . '">' . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';}
-                  ?></select></td></tr>
-                    
-                  </tr><tr><td></td><td><hr></hr></td></tr>
-                  
+                            ?>
+                        </td>
+                    </tr>
                   <tr> 
                   <td><?php echo $AppUI->_("LBL_CHANNEL")?>: </td>
                   <td><select id="channel" name="channel" style="min-width:150px">
@@ -237,6 +249,7 @@ $titleBlock->show();
                  <tr><td align="left" nowrap="nowrap"><?php echo $AppUI->_("LBL_RESTRICTIONS");?>: </td>
                      <td align="left"><textarea name="communication_restrictions" cols="100" rows="3" class="textarea"><?php echo ($communication_id == 0 ? $_GET['restrictions'] : @$obj->communication_restrictions); ?></textarea></td>
                  </tr>
+                 <tr>
                  <td align="left" nowrap="nowrap"><?php echo $AppUI->_("LBL_RESPONSIBLE");?>: </td> 
                      <td><select id="responsible" name="responsible" style="min-width:150px">
                          <option value=""><?php echo $AppUI->_("LBL_SELECT")?></option>
@@ -249,13 +262,24 @@ $titleBlock->show();
                     }
                     echo '<option value="' . $registro['contact_id'] . '" ' . ($registro['contact_id'] == $value ? 'selected="selected"' : '') . '>' . $registro['contact_first_name'] . ' ' . $registro['contact_last_name'] . '</option>';}
                   ?></select></td>
-                  <tr><td><span style="margin-left:0px"><?php echo $AppUI->_("LBL_SEND")?></span></td></tr>
+                  </tr>  
+                  
                 
             </table>
         </td>
     </tr>
     <tr>
-        <td colspan="2" align="right">
+        <td width='70%' style='line-break: strict;word-wrap: break-word'>
+            <span style='color:#F00'>*</span> <?php echo $AppUI->_("LBL_EMISSOR_RECIPTORS"); ?>
+            <br />
+            <div style="display: <?php echo $communication_id > 0?'none':'block' ;?>">
+                <span style='color:#F00'>*</span> <?php echo $AppUI->_("LBL_EMISSOR_RECIPTORS_AVAILABILITY"); ?>
+            </div>
+            
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"  align="right" >
             <input type="button" class="button" value="<?php echo ucfirst($AppUI->_("LBL_SUBMIT")); ?>" onclick="submitIt()" />
             <script> var targetScreenOnProject="/modules/communication/index_project.php";</script>
             <?php require_once (DP_BASE_DIR . "/modules/timeplanning/view/subform_back_button_project.php"); ?>         

@@ -33,3 +33,5 @@
 "Communication"=>"Communication",
 "LBL_EDIT"=>"edit",
 "LBL_PROJECT_NONE" => "None",
+"LBL_EMISSOR_RECIPTORS" => "The issuing and receptor list came from the project stakeholders.",
+"LBL_EMISSOR_RECIPTORS_AVAILABILITY" => "The issuing and receptor list became avaiable just after registering the comunication.",

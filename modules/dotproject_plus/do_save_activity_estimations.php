@@ -98,7 +98,7 @@ for ($i = 0; $i < sizeof($rolesIds); $i++) {
 }
 
 $AppUI->setMsg($AppUI->_("LBL_THE_ACTIVITY"). " ($description) ". $AppUI->_("LBL_WAS_SAVED"), UI_MSG_OK, true);
-$AppUI->redirect('m=projects&a=view&project_id=' . $project_id. ($tab!=""?"&tab=$tab":"" ));
+$AppUI->redirect('m=projects&a=view&project_id=' . $project_id);
 
 /**
  * Inputs are informed using dd/mm/yyyy style

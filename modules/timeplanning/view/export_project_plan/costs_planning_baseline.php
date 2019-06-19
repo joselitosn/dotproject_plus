@@ -1,97 +1,12 @@
 <?php
-require_once DP_BASE_DIR . "/modules/costs/costs_functions.php";
-
-$whereProject = "";
-if ($projectId != null) {
-    $whereProject = " and cost_project_id=" . $projectId;
-}
-
-$q = new DBQuery();
-// Get humans estimatives
-$q->clear();
-$q->addQuery("*");
-$q->addTable("costs");
-$q->addWhere("cost_type_id = \"0\"" . $whereProject);
-$q->addOrder("cost_description");
-$humanCost = $q->loadList();
-
-// Get not humans estimatives
-$q->clear();
-$q->addQuery("*");
-$q->addTable("costs");
-$q->addWhere("cost_type_id = \"1\"" . $whereProject);
-$q->addOrder("cost_description");
-$notHumanCost = $q->loadList();
-
-$q->clear();
-$q->addQuery("*");
-$q->addTable("budget");
-$q->addWhere("budget_project_id = " . $projectId);
-$q->addOrder("budget_id");
-$v = $q->loadList();
+require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_setup.php";
 ?>
+
 <!-- ############################## ESTIMATIVAS CUSTOS HUMANOS ############################################ -->
+<table class="printTable" style="font-size:7px !important;">
+<?php require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_initiated_header.php"; ?>
 
-<table class="printTable">
-
-    <?php
-    $q->clear();
-    $q->addQuery("project_start_date,project_end_date");
-    $q->addTable("projects");
-    $q->addWhere("project_id = \"$projectId\"");
-    $datesProject = & $q->exec();
-
-    $meses = diferencaMeses(substr($datesProject->fields["project_start_date"], 0, -9), substr($datesProject->fields["project_end_date"], 0, -9));
-    $monthStartProject = substr($datesProject->fields["project_start_date"], 5, -12);
-    $monthEndProject = substr($datesProject->fields["project_end_date"], 5, -12);
-    $monthSProject = substr($datesProject->fields["project_start_date"], 5, -12);
-    $yearStartProject = substr($datesProject->fields["project_start_date"], 0, -15);
-    $yearEndProject = substr($datesProject->fields["project_end_date"], 0, -15);
-
-    $years = $yearEndProject - $yearStartProject;
-    $tempYear = $yearStartProject;
-    //Calculates how many months exist in the firt year of the project
-    $tempMeses =0; (12 - $monthStartProject) + 1;   
-    $monthEndFirstYear=$yearStartProject==$yearEndProject?$monthEndProject:12;
-    for($i=$monthStartProject;$i<=$monthEndFirstYear;$i++){
-        $tempMeses++;
-    }
-    
-    $sumColumns;
-    $c = 0;
-    $counter = 1;
-    $sumH=0;
-    $sumNH=0;
-     //set an array with the index for each month/year
-    $monthsYearsIndex = array();
-    $index_month = $monthStartProject;
-    $index_year = $yearStartProject;
-    for ($i = 0; $i <= $meses; $i++) {
-        $monthPrefix=strlen($index_month) < 2 ? "0" : "";
-        $monthsYearsIndex[$index_year . "_" .$monthPrefix .$index_month]=$i;
-        if ($index_month == 12){
-            $index_month = 1;
-            $index_year++;
-        }
-        $index_month++;
-    }
-    ?>
-    <tr>
-        <th ><?php echo $AppUI->_("Year"); ?></th>
-        <?php
-        for ($i = 0; $i <= $years; $i++) {
-            echo "<th colspan=\"" . ($tempMeses + 1). "\">";
-            echo $tempYear;
-            echo"</th>";
-            $tempMeses = ($meses - $tempMeses) + 1;
-            $ns = $tempMeses - 12;
-            if ($ns > 0)
-                $tempMeses = 12;
-            $tempYear++;
-        }
-        ?>
-        <!-- <th>&nbsp;</th> -->
-    </tr>
+   
     <tr>
         <th  ><?php echo $AppUI->_("Item"); ?></th>
         <?php
@@ -118,10 +33,12 @@ $v = $q->loadList();
         </td>
     </tr>
 
-<?php foreach ($humanCost as $row) {
+<?php 
+    $sumH=0;
+    foreach ($humanCost as $row) {
     ?>
         <tr>
-            <td ><?php echo $row["cost_description"]; ?></td>
+            <td style="width:170px"><?php echo $row["cost_description"]; ?></td>
             <?php
             $mtz = costsBudget($meses, $c, $row, substr($datesProject->fields["project_start_date"], 5, -12), substr($datesProject->fields["project_end_date"], 5, -12), $mtz,$monthsYearsIndex);
             $c++;
@@ -154,6 +71,7 @@ $v = $q->loadList();
 
     <?php
     $c = 0;
+    $sumNH=0;
     foreach ($notHumanCost as $row) {
         ?>
         <tr>
@@ -212,16 +130,17 @@ $v = $q->loadList();
             $c++;
             ?>
 
-            <td style="text-align:right"><?php
-            $sumRowContingency = subTotalBudgetRow($meses, $c, $mtzC, $k);
-            echo formatCellContent(number_format($sumRowContingency, 2, ",", "."));
+            <td style="text-align:right">
+            <?php
+                $sumRowContingency = subTotalBudgetRow($meses, $c, $mtzC, $k);
+                echo formatCellContent(number_format($sumRowContingency, 2, ",", "."));
             ?>
             </td>
         </tr>
         <?php
         $k++;
         $sumC = $sumC + $sumRowContingency;
-        ;
+        
     }
     ?>
     <tr>

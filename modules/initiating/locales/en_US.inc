@@ -25,3 +25,5 @@
 "Authorized/Not Authorized Comments" => "Authorized/Not Authorized Comments",
 "LBL_PROJECT" => "Project",
 "initiatingsDelete"=>"Do you really want to delete this project charter?",
+"LBL_PROJECT_COMPANY" => "Company",
+"Print PDF" => "Print PDF",

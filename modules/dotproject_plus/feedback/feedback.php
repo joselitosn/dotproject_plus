@@ -6,16 +6,27 @@ class Feedback {
     private $description = "";
     private $generic=false;
     private $knowledgeArea="";
-        
-    function Feedback($id, $short,$description, $generic, $knowledgeArea){
+    private $isTriggerFiredForCurrentUser=false; //this attribute is initialized after each page refresh/load in the /modules/dotproject_plus/feedback_controller.php
+    private $descriptionForAssignment="";
+    private $isForAssignment=false;//this attribute makes faster to evaluate if it is to be evaluated or not
+    private $isTriggerDeterministic=false;
+
+    
+    function Feedback($id, $short,$description, $generic, $knowledgeArea,$isTriggerDeterministic){
         $this->id=$id;
         $this->short=$short;
         $this->description=$description;
         $this->generic=$generic;
         $this->knowledgeArea=$knowledgeArea;
+        $this->isTriggerDeterministic=$isTriggerDeterministic;
     }
     
-    function getKnowledgeArea() {
+    
+    function isTriggerDeterministic() {
+        return $this->isTriggerDeterministic;
+    }
+
+        function getKnowledgeArea() {
         return $this->knowledgeArea;
     }
 
@@ -54,6 +65,26 @@ class Feedback {
 
     function setDescription($description) {
         $this->description = $description;
+    }
+    
+    function getIsTriggerFiredForCurrentUser() {
+        return $this->isTriggerFiredForCurrentUser;
+    }
+
+    function setIsTriggerFiredForCurrentUser($isTriggerFiredForCurrentUser) {
+        $this->isTriggerFiredForCurrentUser = $isTriggerFiredForCurrentUser;
+    }
+
+    function getDescriptionForAssignment() {
+        return $this->descriptionForAssignment;
+    }
+    function setDescriptionForAssignment($descriptionForAssignment) {
+        $this->descriptionForAssignment = $descriptionForAssignment;
+        $this->isForAssignment=true;
+    }
+
+    function getIsForAssignment() {
+        return $this->isForAssignment;
     }
 }
 ?>

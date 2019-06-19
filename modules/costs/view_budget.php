@@ -2,48 +2,7 @@
 if (!defined('DP_BASE_DIR')) {
     die('You should not access this file directly.');
 }
-require_once DP_BASE_DIR . "/modules/costs/costs_functions.php";
-
-$projectSelected = intval(dPgetParam($_GET, 'project_id'));
-$q = new DBQuery();
-$q->clear();
-$q->addQuery("*");
-$q->addTable("budget");
-$q->addWhere("budget_Project_id = " . $projectSelected);
-$v = $q->exec();
-$budget_id = $v->fields["budget_id"];
-
-// check if this record has dependancies to prevent deletion
-$msg = '';
-$bud = null;
-if ((!db_loadObject($q->prepare(), $bud)) && ($budget_id > 0)) {
-    $AppUI->setMsg('Budget');
-    $AppUI->setMsg("invalidID", UI_MSG_ERROR, true);
-    $AppUI->redirect();
-}
-//INSERT NA TABELA BUDGET_RESERVE
-
-insertReserveBudget($projectSelected);
-
-$whereProject = '';
-if ($projectSelected != null) {
-    $whereProject = ' and cost_project_id=' . $projectSelected;
-}
-// Get humans estimatives
-$q->clear();
-$q->addQuery('*');
-$q->addTable('costs');
-$q->addWhere("cost_type_id = '0' $whereProject");
-$q->addOrder('cost_description');
-$humanCost = $q->loadList();
-
-// Get not humans estimatives
-$q->clear();
-$q->addQuery('*');
-$q->addTable('costs');
-$q->addWhere("cost_type_id = '1' $whereProject");
-$q->addOrder('cost_description');
-$notHumanCost = $q->loadList();
+require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_setup.php";
 ?>
 <script language="javascript">
     function submitIt() {
@@ -62,74 +21,8 @@ $notHumanCost = $q->loadList();
 <!-- ############################## ESTIMATIVAS CUSTOS HUMANOS ############################################ -->
 
 <table width="100%" border="0" cellpadding="3" cellspacing="3" class="tbl">
+    <?php require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_initiated_header.php"; ?>
 
-    <?php
-    $q->clear();
-    $q->addQuery('project_start_date,project_end_date');
-    $q->addTable('projects');
-    $q->addWhere("project_id = '$projectSelected'");
-    $datesProject = & $q->exec();
-
-    $meses = diferencaMeses(substr($datesProject->fields['project_start_date'], 0, -9), substr($datesProject->fields['project_end_date'], 0, -9));
-    $monthStartProject = substr($datesProject->fields['project_start_date'], 5, -12);
-    $monthEndProject = substr($datesProject->fields['project_end_date'], 5, -12);
-    $monthSProject = substr($datesProject->fields['project_start_date'], 5, -12);
-    $yearStartProject = substr($datesProject->fields['project_start_date'], 0, -15);
-    $yearEndProject = substr($datesProject->fields['project_end_date'], 0, -15);
-    $years = $yearEndProject - $yearStartProject;
-    $tempYear = $yearStartProject;
- 
-    //$tempMeses is the quantity of months within a year (the first year in this case). It is u´pdate for each year
-    //$meses is the absolut quantity of months
-    if ($years == 0) {
-        //$tempMeses = $monthEndProject - $monthStartProject;
-        $tempMeses=0;
-        for ($i = 0; $i <= $meses; $i++) {
-            $tempMeses++;
-        }
-    } else {
-        $tempMeses = (12 - $monthStartProject) + 1;
-    }
-   
-    
-    
-    $sumColumns;
-    $c = 0;
-    $counter = 1;
-    //set an array with the index for each month/year
-    $monthsYearsIndex = array();
-    $index_month = $monthStartProject;
-    $index_year = $yearStartProject;
-    for ($i = 0; $i <= $meses; $i++) {
-        $monthPrefix=strlen($index_month) < 2 ? "0" : "";
-        $monthsYearsIndex[$index_year . "_" .$monthPrefix .$index_month]=$i;
-        if ($index_month == 12){
-            $index_month = 1;
-            $index_year++;
-        }
-        $index_month++;
-    }
-   
-    ?>
-    
-    <tr>
-        <th nowrap='nowrap'><?php echo $AppUI->_('Year'); ?></th>
-        <?php
-        for ($i = 0; $i <= $years; $i++) {
-            ?>
-            <th nowrap="nowrap" colspan="<?php echo $tempMeses ?>">
-                <?php echo $tempYear; ?>
-            </th>
-            <?php
-            $tempMeses = ($meses - $tempMeses) + 1;
-            $ns = $tempMeses - 12;
-            if ($ns > 0)
-                $tempMeses = 12;
-            $tempYear++;
-        }
-        ?>
-        <th></th>
-    </tr>
     <tr>
         <th nowrap="nowrap" width="15%"><?php echo $AppUI->_('Item'); ?></th>
         <?php
@@ -154,7 +47,9 @@ $notHumanCost = $q->loadList();
         </td>
     </tr>
 
-    <?php foreach ($humanCost as $row) {
+    <?php 
+        $sumH=0;
+        foreach ($humanCost as $row) {
         ?>
         <tr>
             <td nowrap="nowrap"><?php echo $row['cost_description']; ?></td>
@@ -187,7 +82,9 @@ $notHumanCost = $q->loadList();
         </td>
     </tr>
 
-    <?php foreach ($notHumanCost as $row) {
+    <?php 
+    $sumNH=0;
+    foreach ($notHumanCost as $row) {
         ?>
         <tr>
             <td nowrap="nowrap" width="15%"><?php echo $row['cost_description']; ?></td>

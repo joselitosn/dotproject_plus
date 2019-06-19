@@ -41,9 +41,8 @@ $opt = array('', $AppUI->_("LBL_PROJECT_STAKEHOLDER_HIGH"), $AppUI->_("LBL_PROJE
         var f = document.uploadFrm;
         f.strategy.value = document.uploadFrm.stakeholder_strategy.value;
         var firstName=document.getElementById("first_name").value;
-        var lastName=document.getElementById("last_name").value;
-        if(firstName=="" || lastName==""){
-            window.alert("<?php echo $AppUI->_('VALIDATE_NEW_USER_FORM'); ?>.");
+        if(firstName==""){
+            window.alert("<?php echo $AppUI->_('LBL_VALIDATE_STAKEHOLDER',UI_OUTPUT_JS); ?>");
         }else{
             f.submit();
         }
@@ -108,12 +107,12 @@ $opt = array('', $AppUI->_("LBL_PROJECT_STAKEHOLDER_HIGH"), $AppUI->_("LBL_PROJE
         </tr>
         <tr>
             <td class="td_label">
-                <label><?php echo $AppUI->_("First Name"); ?>:</label>
+                <label><?php echo $AppUI->_("LBL_NAME"); ?>:</label>
             </td>
             <td>
-                <input type="text" name="first_name" id="first_name" value="<?php echo $firstName ?>" maxlength="100"  />
+                <input type="text" name="first_name" id="first_name" value="<?php echo $firstName . (strlen($lastName)>0? (' '.$lastName):'') ?>" maxlength="100"  />
             </td>
-        <tr>
+        <tr style="display: none">
             <td class="td_label">
                 <label><?php echo $AppUI->_("Last Name"); ?>:</label></td>
             <td>

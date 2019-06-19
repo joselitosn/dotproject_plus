@@ -30,8 +30,27 @@ DB filelds - TABLE: 'monitoring_quality_type'
 		$q->addTable('monitoring_baseline', 'b');	
 		$q->addWhere('b.baseline_id='.$baseline_id);
 		$sql = $q->prepare();
-		$list = db_loadList($sql);		
-		return $list;	
+		$list = db_loadList($sql);
+                return $list;	
+	}
+        
+        function getCurrentBaseline($project_id){
+		$list = array();
+		$q = new DBQuery;
+		$q->addQuery('baseline_version');
+		$q->addTable('monitoring_baseline');
+                $q->addWhere("project_id=".$project_id);
+		$q->addOrder("baseline_date desc limit 1");
+		$sql = $q->prepare();
+                //echo $sql;
+		$list = db_loadList($sql);
+                $version="1.0";
+                if (!empty($list)) {
+			foreach($list as $row){			
+                               $version= $row['baseline_version'];
+                        }
+                }
+		return $version;
 	}
 
 	function countBaseline($project_id){

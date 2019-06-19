@@ -57,7 +57,7 @@ $quality_planning_id = $object->getId();
     <input name="question_id_new_metric" type="hidden" value="" /> 
     <input name="quality_planning_id" type="hidden" value="<?php echo $object->getId() ?>" />
     <br/>
-    <table class="tbl" align="center" width="95%" style="border: 0px solid black">
+    <table class="tbl" align="center" cellpadding="10" width="95%" style="border: 0px solid black">
         <!--
         <tr>
             <th  align="center" colspan="2"><?php echo $AppUI->_("LBL_QUALITY_PLANNING"); ?></th>
@@ -115,15 +115,18 @@ $quality_planning_id = $object->getId();
         </tr>
         <tr>
             <td colspan="2">
+                <br />
                 <table width="100%" align="center">
                     <tr>
                         <td>
+                            &nbsp;
                          <input type="button" value="<?php echo $AppUI->_("LBL_QUALITY_ADD_ITEM_TO_AUDIT"); ?>" onclick="newAuditItem()" />
                         </td>
                     </tr>
                 </table>
+                <br />
                 <input name="number_audit_items" type="hidden" value="3"  /><!-- computed on page load - the count of entries on db when click to new: submission --> 
-                <table class="tbl" style="border: 0px solid black" width="100%" align="center">
+                <table class="tbl" style="border: 0px solid black;" width="100%" align="center" cellpadding="10">
                     <tr>
                         <th><?php echo $AppUI->_("LBL_WHAT_AUDIT"); ?></th>
                         <th><?php echo $AppUI->_("LBL_WHO_AUDIT"); ?></th> 
@@ -141,16 +144,16 @@ $quality_planning_id = $object->getId();
                         $when = $data[3];
                         $how = $data[4];
                         ?>
-                        <tr>
-                            <td valign="top">
+                        <tr >
+                            <td valign="top" >
                                 <input name="audit_item_id_<?php echo $i ?>" value="<?php echo $ai_id; ?>" type="hidden" />
                                 <textarea  type="text" name="what_audit_<?php echo $i ?>" style="width:97%;height: 38px;resize: none"><?php echo $what; ?></textarea>
                             </td>
-                            <td valign="top">
+                            <td valign="top" >
                                 <textarea  type="text" name="who_audit_<?php echo $i ?>" style="width:97%;height: 38px;resize: none"><?php echo $who; ?></textarea>
                             </td>
 
-                            <td valign="top">
+                            <td valign="top" >
                                 <textarea  type="text" name="when_audit_<?php echo $i ?>" style="width:97%;height: 38px;resize: none"><?php echo $when; ?></textarea>
                             </td>
 
@@ -167,6 +170,7 @@ $quality_planning_id = $object->getId();
                     ?>
                 </table>
                 <input type="hidden" name="number_audit_items" value="<?php echo $i ?>">
+                <br /><br />
             </td>  
         </tr>
 
@@ -186,10 +190,11 @@ $quality_planning_id = $object->getId();
         </tr>
         <tr>
             <td colspan="2">
-
+                <br />
+                &nbsp;
                 <input type="button" value="<?php echo $AppUI->_("LBL_QUALITY_ADD_REQUIREMENT") ?>" onclick="newRequirement();" />
                 <br /><br />
-                <table width="100%" class="tbl" style="border: 0px solid black">
+                <table width="100%" class="tbl" style="border: 0px solid black" cellpadding="10">
                     <th><?php echo $AppUI->_("LBL_QUALITY_REQUIREMENTS"); ?></th>
                     <th style="width:4%;vertical-align:top">&nbsp;</th>
                     <?php
@@ -221,7 +226,9 @@ $quality_planning_id = $object->getId();
 
         <tr>
             <td colspan="2">
+                <br />
                 <input name="number_goals" type="hidden" value="2"  />
+                &nbsp;
                 <input type="button" value="<?php echo $AppUI->_("LBL_QUALITY_ADD_GOAL"); ?>" onclick="newGoal();" />
                 <br /><br />
                 <!-- Primeiro objetivo -->
@@ -238,7 +245,7 @@ $quality_planning_id = $object->getId();
                     ?>
 
                     <input type="hidden" name="goal_id_<?php echo $i; ?>" value="<?php echo $goal_id; ?>">
-                    <table width="100%" class="tbl" style="border: 0px solid black">
+                    <table width="100%" class="tbl" style="border: 0px solid black" cellpadding="10">
                         <tr>
                             <th style="width:300px"><?php echo $AppUI->_("LBL_GOAL_OF_CONTROL"); ?></th>
                             <th><?php echo $AppUI->_("LBL_QUESTIONS_OF_ANALYSIS"); ?></th>
@@ -319,7 +326,7 @@ $quality_planning_id = $object->getId();
 
                             <!--  question of analysis -->
                             <td style="vertical-align: top">
-                                <table width="95%" align="center">
+                                <table width="95%" align="center" cellpadding="10">
                                     <tr>
                                         <td>
                                             <input type="button" value="<?php echo $AppUI->_("LBL_ADD_QUESTION_OF_ANALYSIS") ?>" onclick="newQuestion(<?php echo $goal_id; ?>)" />
@@ -329,7 +336,7 @@ $quality_planning_id = $object->getId();
 
 
 
-                                <table width="95%" align="center" class="tbl" style="border: 0px solid white">
+                                <table width="95%" align="center" class="tbl" cellpadding="10" style="border: 0px solid white">
                                     <tr>
                                         <th><?php echo $AppUI->_("LBL_QUESTION_OF_ANALYSIS"); ?></th>
                                         <th><?php echo $AppUI->_("LBL_GQM_TARGET"); ?></th>
@@ -347,10 +354,10 @@ $quality_planning_id = $object->getId();
                                         <tr>
                                             <td style="vertical-align: top">
                                                 <input type="hidden" name="question_<?php echo $i ?>_id_<?php echo $j ?>" value="<?php echo $question_id; ?>" />
-                                                <textarea name="analysis_question_<?php echo $i ?>_<?php echo $j ?>" style="width:97%;height:100%;resize: none;" ><?php echo $question ?></textarea>
+                                                <textarea name="analysis_question_<?php echo $i ?>_<?php echo $j ?>" style="width:97%;resize: none;" ><?php echo $question ?></textarea>
                                             </td>
                                             <td style="vertical-align: top">
-                                                <textarea name="analysis_question_<?php echo $i ?>_benchmark_<?php echo $j ?>" style="width:97%;height:100%;resize: none;"  ><?php echo $target ?></textarea>
+                                                <textarea name="analysis_question_<?php echo $i ?>_benchmark_<?php echo $j ?>" style="width:97%;resize: none;"  ><?php echo $target ?></textarea>
                                             </td>
                                             <td valign="top">
                                                 <table width="95%" align="center">
@@ -361,7 +368,7 @@ $quality_planning_id = $object->getId();
                                                     </tr>
                                                 </table>
 
-                                                <table width="95%" align="center" class="tbl" style="border: 0px solid black">
+                                                <table width="95%" align="center" cellpadding="10" class="tbl" style="border: 0px solid black">
                                                     <tr>
                                                         <th width="50%">
                                                             <?php echo $AppUI->_("LBL_GQM_METRIC"); ?>

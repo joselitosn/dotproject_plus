@@ -10,3 +10,5 @@
 "delete stakeholder"=>"delete stakeholder",
 "stakeholdersDelete"=>"Do you really want to delete this stakeholder?",
 "LBL_NEW_STAKEHOLDER" => "New",
+"LBL_VALIDATE_STAKEHOLDER" => "Please inform the stakeholder name",
+

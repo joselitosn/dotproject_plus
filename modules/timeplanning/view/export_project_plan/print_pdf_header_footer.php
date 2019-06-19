@@ -4,7 +4,7 @@
         position: fixed;
         left: 0;
         right: 0px;
-        color: #aaa;
+        color: silver/*#aaa*/;
         font-size: 0.9em;
     }
 
@@ -29,7 +29,7 @@
     #footer td {
         padding: 0;
         width: 50%;
-        color:#C0C0C0;
+        color:silver/*#C0C0C0*/;
     }
 
     .page-number {

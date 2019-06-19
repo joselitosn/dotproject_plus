@@ -22,6 +22,6 @@ $htmlCode=html_entity_decode($htmlCode,0);//convert HTML chars (e.g. &nbsp;) to 
 $htmlCode=str_ireplace("&Atilde;&copy;", "é", $htmlCode);
 $htmlCode=utf8_decode($htmlCode);
 $dompdf->load_html($htmlCode);
-$dompdf->render();
+//$dompdf->render();
 $dompdf->stream("project_plan.pdf");
 ?>

@@ -8,7 +8,6 @@ $q->addWhere("budget_project_id = " . $projectId);
 $q->addOrder("budget_id");
 $v = $q->exec();
 ?>
-<br/>
 <table class="printTable" >
     <tr>
         <th colspan="3">

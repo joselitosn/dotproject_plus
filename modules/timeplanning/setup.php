@@ -23,7 +23,7 @@ if (@$a == 'setup') {
 class CSetup_TimePlanning {
 
     function install() {
-        $this->installQuality();
+        //$this->installQuality();
 
         //$this->installAcquisitionExecution();
         //$this->installTimePlanning();
@@ -130,6 +130,7 @@ class CSetup_TimePlanning {
         $sql = "(
 		  task_id INT default NULL,
 		  eap_item_id INT default NULL,
+                  activity_order INT NULL DEFAULT 0, 
 		  PRIMARY KEY  (task_id),
                   CONSTRAINT fk_task_eap_item FOREIGN KEY (task_id) REFERENCES " . $q->_table_prefix . "tasks (task_id) on delete cascade on update restrict
 		)  ";
@@ -532,6 +533,36 @@ class CSetup_TimePlanning {
             ) ";
 
         $q->createTable("acquisition_planning");
+        $q->createDefinition($sql);
+        $q->exec();
+        $q->clear();
+    }
+    
+     private function installInstructionalFeedback(){
+        $q = new DBQuery();
+        $sql = "(
+            id INT NOT NULL auto_increment,
+            user_id INT default NULL,
+            feedback_id INT default NULL,
+            read_on DATETIME default NULL,
+            PRIMARY KEY  (id),
+            CONSTRAINT FK_FEEDBACK_READ_USER FOREIGN KEY (user_id) REFERENCES " . $q->_table_prefix . "users(user_id) on delete cascade,
+            ) ";
+        $q->createTable("feedback_message_read_log");
+        $q->createDefinition($sql);
+        $q->exec();
+        $q->clear();
+        
+        $q = new DBQuery();
+        $sql = "(
+            id INT NOT NULL auto_increment,
+            user_id INT default NULL,
+            feedback_id INT default NULL,
+            grade DATETIME INT NULL,
+            PRIMARY KEY  (id),
+            CONSTRAINT FK_FEEDBACK_EVALUATION_USER FOREIGN KEY (user_id) REFERENCES " . $q->_table_prefix . "users(user_id) on delete cascade,
+            ) ";
+        $q->createTable("feedback_evaluation");
         $q->createDefinition($sql);
         $q->exec();
         $q->clear();

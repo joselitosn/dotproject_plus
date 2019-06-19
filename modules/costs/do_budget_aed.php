@@ -23,7 +23,7 @@ if (!$obj->bind($_POST)) {
 	//$AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
 	//$AppUI->redirect();
 }
- $projectSelected = intval(dPgetParam($_GET, 'project_id'));
+ $projectSelected = intval(dPgetParam($_POST, 'project_id'));
 //delete the item
 if ($del) {
 	$obj->load($budget_id);

@@ -5,7 +5,7 @@ $controllerWBSItem = new ControllerWBSItem();
 ?>
 <table class="printTable">
     <tr>
-        <th width="25%"><?php echo $AppUI->_("LBL_WBS",UI_OUTPUT_HTML); ?> Item</th>
+        <th width="25%"><?php echo $AppUI->_("LBL_WBS_ITEM",UI_OUTPUT_HTML); ?></th>
         <th> <?php echo $AppUI->_("LBL_DESCRIPTION",UI_OUTPUT_HTML); ?> </th>
     </tr>
     <?php
@@ -13,7 +13,7 @@ $controllerWBSItem = new ControllerWBSItem();
     foreach ($items as $item) {
         ?>
         <tr>
-            <td>
+            <td style="text-align: left">
                 <?php echo $item->getIdentation(); ?>
                 <?php echo $item->getNumber(); ?>
                 <?php echo $item->getName(); ?>

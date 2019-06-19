@@ -174,4 +174,15 @@ function getUsersByCompanyId($company_id) {
 	$query->clear();
 	return db_loadList($sql);
 }
+
+function getDetailedUsersByCompanyId($company_id){
+    $query = new DBQuery();
+    $query->addTable("users", "u");
+    $query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
+    $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
+    $query->addWhere("c.contact_company = " . $company_id ." and user_username not like 'Grupo%'");
+    $query->addOrder("contact_last_name");
+    $res = & $query->exec();
+    return $res;
+}
 ?>

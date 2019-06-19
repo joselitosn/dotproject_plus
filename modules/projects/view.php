@@ -1,4 +1,16 @@
 <?php
+
+// Constants definition
+    const TAB_TASKS = 0;
+    const TAB_SCHEDULE = 1;
+    const TAB_COSTS = 2;
+    const TAB_RISKS = 3;
+    const TAB_QUALITY = 4;
+    const TAB_COMUNICATION = 5;
+    const TAB_AQUISITIONS = 6;
+    const TAB_STAKEHOLDERS = 7;
+    const TAB_PROJECT_PLANING = 8;
+
 /* PROJECTS $Id: view.php 6048 2010-10-06 10:01:39Z ajdonnison $ */
 if (!defined('DP_BASE_DIR')) {
     die('You should not access this file directly.');
@@ -150,74 +162,7 @@ $end_date = (intval($obj->project_end_date) ? new CDate($obj->project_end_date) 
 $actual_end_date = (intval($criticalTasks[0]['task_end_date']) ? new CDate($criticalTasks[0]['task_end_date']) : null);
 $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:red; font-weight:bold"' : '');
 
-/*
-  //setup the title block
-  $titleBlock = new CTitleBlock('View Project', 'applet3-48.png', $m, "$m.$a");
-
-  //patch 2.12.04 text to search entry box
-  if (isset($_POST['searchtext'])) {
-  $AppUI->setState('searchtext', $_POST['searchtext']);
-  }
-
-
-  $search_text = (($AppUI->getState('searchtext')) ? $AppUI->getState('searchtext') : '');
-  $titleBlock->addCell($AppUI->_('Search') . ':');
-  $titleBlock->addCell(('<input type="text" class="text" SIZE="10" name="searchtext"'
-  . ' onchange="javascript:document.searchfilter.submit();" value="' . $search_text . '"'
-  . 'title="' . $AppUI->_('Search in name and description fields')
-  . '"/><!--<input type="submit" class="button" value=">" title="'
-  . $AppUI->_('Search in name and description fields') . '"/>-->'), '', ('<form action="?m=projects&amp;a=view&amp;project_id=' . $project_id
-  . '" method="post" id="searchfilter">'), '</form>');
-
-  if ($canAuthorTask) {
-  $titleBlock->addCell();
-  $titleBlock->addCell(('<input type="submit" class="button" value="' . $AppUI->_('new task')
-  . '" />'), '', ('<form action="?m=tasks&amp;a=addedit&amp;task_project='
-  . $project_id . '" method="post">'), '</form>');
-  }
-  if ($canEdit) {
-  $titleBlock->addCell();
-  $titleBlock->addCell(('<input type="submit" class="button" value="' . $AppUI->_('new event')
-  . '" />'), '', ('<form action="?m=calendar&amp;a=addedit&amp;event_project='
-  . $project_id . '" method="post">'), '</form>');
-
-  $titleBlock->addCell();
-  $titleBlock->addCell(('<input type="submit" class="button" value="' . $AppUI->_('new file')
-  . '" />'), '', ('<form action="?m=files&amp;a=addedit&amp;project_id='
-  . $project_id . '" method="post">'), '</form>');
-  }
-
-
-  $titleBlock->addCrumb('?m=projects', 'projects list');
-  if ($canEdit) {
-  $titleBlock->addCrumb(('?m=projects&amp;a=addedit&amp;project_id=' . $project_id), 'edit this project');
-  if ($canDelete) {
-  $titleBlock->addCrumbDelete('delete project', $canDelete, $msg);
-  }
-  $titleBlock->addCrumb('?m=tasks&amp;a=organize&amp;project_id=' . $project_id, 'organize tasks');
-  }
-
-  $titleBlock->addCrumb('?m=projects&a=addedit&project_id=' . $project_id, 'Editar');
-  $titleBlock->addCrumb('?m=projects&a=reports&project_id=' . $project_id, 'Relatório');
-  $titleBlock->show();
- */
 ?>
-
-
-<script type="text/javascript" language="javascript">
-<?php
-//security improvement:
-//some javascript functions may not appear on client side in case of user not having write permissions
-//else users would be able to arbitrarily run 'bad' functions
-if ($canEdit) {
-    ?>
-            function delIt() {
-                if (confirm("<?php echo ($AppUI->_('doDelete', UI_OUTPUT_JS) . ' ' . $AppUI->_('Project', UI_OUTPUT_JS) . '?'); ?>")) {
-                    document.frmDelete.submit();
-                }
-            }
-<?php } ?>
-</script>
 
 <form name="frmDelete" action="./index.php?m=projects" method="post">
     <input type="hidden" name="dosql" value="do_project_aed" />
@@ -225,332 +170,204 @@ if ($canEdit) {
     <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
 </form>
 
+<!-- start main section - left project menu and EAP and tasks tree -->
 
-<script>
-    function showProjectForm(){
-        var table=document.getElementById("table_project_form");
-        var img=document.getElementById("img_expand_form");
-        if($("#project_form_container").css("display")=="none"){ /*table.style.display=="none"*/
-            //table.style.display="table";
-            $("#project_form_container").slideToggle();
-            img.src="./modules/dotproject_plus/images/icone_seta_cima.png";
-        }else{
-            $("#project_form_container").slideToggle();
-            //table.style.display="none";
-            img.src="./modules/dotproject_plus/images/icone_seta.png";
+<!-- Sidebar -->
+<nav id="sidebar">
+    <div class="sidebar-header">
+        <h5 class="text-right">
+            <i id="sidebarCollapse" class="mouse-cursor-pointer fas fa-angle-double-left" style="margin-top: 20px;"></i>
+        </h5>
+    </div>
+    <?php
+        if (!isset($_GET["tab"])) {
+            $tab = 1;
+            $_SESSION["user_choosen_feature"] = "/modules/dotproject_plus/projects_tab.planning_and_monitoring.php";
+        } else {
+            $tab = $_GET["tab"];
+            $_SESSION["user_choosen_feature"] = $_POST["user_choosen_feature"];
         }
-    }
-</script>
-<div style="background-color: #D8D8D8">
-    <br />
-    <!-- New form -->
-    <table align="center" width="95%">
-        <tr>
-            <td style="font-size: 14px;font-weight: bold;cursor:pointer;" onclick="showProjectForm()" >
-                <?php echo $obj->project_name ?> &nbsp;<img src='./modules/dotproject_plus/images/icone_seta_cima.png' id="img_expand_form" />
-            </td>
-            <td style="text-align: right">
-                <input type="button" onclick="window.location='index.php?m=projects&a=addedit&project_id=<?php echo $project_id ?>';" value="<?php echo ucfirst($AppUI->_("LBL_EDIT")); ?>" class="button" />
-                <input type="button" onclick="window.location='index.php?m=projects&a=reports&project_id=<?php echo $project_id ?>';" value="<?php echo $AppUI->_("LBL_REPORT"); ?>" class="button" />
-                <?php if($canDelete){ ?>
-                <input type="button" onclick="delIt()" value="<?php echo $AppUI->_("LBL_EXCLUSION"); ?>" class="button" />
-                <?php } ?>
-            </td>
-        </tr>  
-    </table>
-    <br />
-    <div id="project_form_container">
-        <table  border="0" cellpadding="4" cellspacing="0" align="center" width="95%" class="std" id="table_project_form">
 
-        <tr>
-            <td class="label_dpp" style="width: 80px"><?php echo $AppUI->_("LBL_NOME"); ?>:</td>
-            <td ><?php echo $obj->project_name ?></td>
-            <td class="label_dpp" style="width: 120px;"><?php echo $AppUI->_('Start Date'); ?>:</td>
-            <td><?php echo $start_date ? $start_date->format($df) : '-'; ?></td>
-            <td class="label_dpp" style="width: 150px"><?php echo $AppUI->_('Target End Date'); ?>:</td>
-            <td><?php echo $end_date ? $end_date->format($df) : '-'; ?></td>
-        </tr>
-        <tr>
-            <td class="label_dpp"><?php echo $AppUI->_('Company'); ?>:</td>
-            <td><?php echo '<a href="?m=companies&amp;a=view&amp;company_id=' . $obj->project_company . '">' . htmlspecialchars($obj->company_name, ENT_QUOTES) . "</a>"; ?></td>
-            <td class="label_dpp"> <?php echo $AppUI->_('Status'); ?>:</td>
-            <td><?php echo $AppUI->_($pstatus[$obj->project_status]); ?></td>   
-            <td class="label_dpp"><?php echo $AppUI->_('Priority'); ?>:</td>
-            <td><?php echo $AppUI->_($projectPriority[$obj->project_priority]); ?></td>
-        </tr>
+        if (!isset($_GET["subtab"])) {
+            $subtab = 0;
+        } else {
+            $subtab = $_GET["subtab"];
+        }
+    ?>
 
-        <tr> 
-            <td class="label_dpp"><?php echo $AppUI->_("LBL_OWNER"); ?>:</td>
-            <td><?php echo $obj->user_name; ?></td>
+    <ul class="list-unstyled components">
+        <li class="<?=$tab == 0 ? 'active' : '' ?>">
+            <a href="#iniciacaoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <?=$AppUI->_("1initiation", UI_OUTPUT_HTML);?>
+            </a>
+            <ul class="collapse list-unstyled" id="iniciacaoSubmenu">
+                <li class="<?=$subtab == 0 ? 'active' : '' ?>">
+                    <a href="javascript:void(0)">
+                        <?=$AppUI->_("LBL_OPEN_PROJECT_CHARTER",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li class="<?=$subtab == 1 ? 'active' : '' ?>">
+                    <a href="javascript:void(0)">
+                        <?=$AppUI->_("LBL_PROJECT_STAKEHOLDER",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="<?=$tab == 1 ? 'active' : '' ?>">
+            <a href="#pmSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <?=$AppUI->_("Planning and monitoring", UI_OUTPUT_HTML);?>
+            </a>
+            <ul class="collapse list-unstyled<?=$tab == 1 ? ' show' : ' hide'?>" id="pmSubmenu">
+                <li class="<?=$tab == 1 && $subtab == 0 ? 'active' : '' ?>">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=0">
+                        <?=$AppUI->_("Tasks",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li class="<?=$tab == 1 && $subtab == 1 ? 'active' : '' ?>">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=1">
+                        <?=$AppUI->_("6LBLCRONOGRAMA",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li class="<?=$tab == 1 && $subtab == 2 ? 'active' : '' ?>">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=2">
+                        <?=$AppUI->_("5LBLCUSTO",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li class="<?=$tab == 1 && $subtab == 3 ? 'active' : '' ?>">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=3">
+                        <?=$AppUI->_("LBL_PROJECT_RISKS",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li class="<?=$tab == 1 && $subtab == 4 ? 'active' : '' ?>">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=4">
+                        <?=$AppUI->_("7LBLQUALIDADE",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li class="<?=$tab == 1 && $subtab == 5 ? 'active' : '' ?>">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=5">
+                        <?=$AppUI->_("LBL_PROJECT_COMMUNICATION",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li class="<?=$tab == 1 && $subtab == 6 ? 'active' : '' ?>">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=6">
+                        <?=$AppUI->_("LBL_PROJECT_ACQUISITIONS",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li class="<?=$tab == 1 && $subtab == 7 ? 'active' : '' ?>">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=7">
+                        <?=$AppUI->_("Stakeholder",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+                <li>
+                    <a href="modules/timeplanning/view/export_project_plan/export.php?project_id=<?php echo $project_id; ?>&print=0" target = "_blank">
+                        <?=$AppUI->_("LBL_PROJECT_PLAN",UI_OUTPUT_HTML)?>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="<?=$tab == 2 ? 'active' : '' ?>">
+            <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=2">
+                <?=$AppUI->_("3execution", UI_OUTPUT_HTML);?>
+            </a>
+        </li>
+        <li class="<?=$tab == 3 ? 'active' : '' ?>">
+            <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=3">
+                <?=$AppUI->_("5closing", UI_OUTPUT_HTML);?>
+            </a>
+        </li>
+    </ul>
+</nav>
 
-            <td class="label_dpp"><?php echo $AppUI->_('Scheduled Hours'); ?>:</td>
-            <td><?php echo $total_hours ?></td>
+<!-- Page Content -->
+<div id="content">
+    <fieldset>
+        <legend><?=$AppUI->_('Company')?></legend>
+        <div class="alert alert-primary" role="alert">
+            <a class="alert-link" id="projectDetailsLink" data-toggle="collapse" href="#project_details">
+                <?php echo $obj->project_name ?>
+                <i class="fas fa-caret-down"></i>
+            </a>
+            <div id="project_details" class="collapse">
+                <table class="table table-sm project-details">
+                    <tr>
+                        <th style="text-align:right"><?php echo $AppUI->_("LBL_NOME"); ?>:</th>
+                        <td ><?php echo $obj->project_name ?></td>
+                        <th style="text-align:right"><?php echo $AppUI->_('Start Date'); ?>:</th>
+                        <td><?php echo $start_date ? $start_date->format($df) : '-'; ?></td>
+                        <th style="text-align:right"><?php echo $AppUI->_('Target End Date'); ?>:</th>
+                        <td><?php echo $end_date ? $end_date->format($df) : '-'; ?></td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:right"><?php echo $AppUI->_('Company'); ?>:</th>
+                        <td><?php echo '<a href="?m=companies&amp;a=view&amp;company_id=' . $obj->project_company . '">' . htmlspecialchars($obj->company_name, ENT_QUOTES) . "</a>"; ?></td>
+                        <th style="text-align:right"><?php echo $AppUI->_('Status'); ?>:</th>
+                        <td><?php echo $AppUI->_($pstatus[$obj->project_status]); ?></td>
+                        <th style="text-align:right"><?php echo $AppUI->_('Priority'); ?>:</th>
+                        <td><?php echo $AppUI->_($projectPriority[$obj->project_priority]); ?></td>
+                    </tr>
 
-            <td class="label_dpp"><?php echo $AppUI->_('Target Budget'); ?>(<?php echo $dPconfig['currency_symbol'] ?>):</td>
-            <td> <?php echo number_format(@$obj->project_target_budget, 2, ',', '.'); ?></td>
-        </tr>
-    </table>
-   </div>
-        <br />
-</div>
-<!-- old form -->
-<table border="0" cellpadding="4" cellspacing="0" width="100%" class="std" style="display: none">
-    <tr>
-        <td style="border: outset #d1d1cd 1px;background-color:#<?php echo $obj->project_color_identifier; ?>" colspan="2">
-            <?php echo ('<span style="color:' . bestColor($obj->project_color_identifier) . '; font-weight:bold">' . $obj->project_name . '</span>'); ?>
-        </td>
-    </tr>
+                    <tr>
+                        <th style="text-align:right"><?php echo $AppUI->_("LBL_OWNER"); ?>:</th>
+                        <td><?php echo $obj->user_name; ?></td>
 
-    <tr>
-        <td width="50%" valign="top">
-            <strong><?php echo $AppUI->_('Details'); ?></strong>
-            <table cellspacing="1" cellpadding="2" border="0" width="100%">
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Company'); ?>:</td>
-                    <td class="hilite" width="100%"><?php
-            echo (((getPermission('companies', 'view', $obj->project_company)) ? ('<a href="?m=companies&amp;a=view&amp;company_id=' . $obj->project_company . '">') : '')
-            . htmlspecialchars($obj->company_name, ENT_QUOTES)
-            . ((getPermission('companies', 'view', $obj->project_company)) ? '</a>' : ''));
-            ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Internal Company'); ?>:</td>
-                    <td class="hilite" width="100%"><?php
-                        echo (((getPermission('companies', 'view', $obj->project_company_internal)) ? ('<a href="?m=companies&amp;a=view&amp;company_id=' . $obj->project_company_internal . '">') : '')
-                        . htmlspecialchars($obj->company_name_internal, ENT_QUOTES)
-                        . ((getPermission('companies', 'view', $obj->project_company_internal)) ? '</a>' : ''));
-            ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Short Name'); ?>:</td>
-                    <td class="hilite"><?php echo htmlspecialchars(@$obj->project_short_name, ENT_QUOTES); ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Start Date'); ?>:</td>
-                    <td class="hilite"><?php echo $start_date ? $start_date->format($df) : '-'; ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Target End Date'); ?>:</td>
-                    <td class="hilite"><?php echo $end_date ? $end_date->format($df) : '-'; ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Actual End Date'); ?>:</td>
-                    <td class="hilite"><?php
-                        if ($project_id > 0) {
-                            echo (($actual_end_date) ? ('<a href="?m=tasks&amp;a=view&amp;task_id=' . $criticalTasks[0]['task_id'] . '">'
-                                    . '<span ' . $style . '>' . $actual_end_date->format($df) . '</span></a>') : '-');
-                        } else {
-                            echo $AppUI->_('Dynamically calculated');
-                        }
-            ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Target Budget'); ?>:</td>
-                    <td class="hilite"><?php echo $dPconfig['currency_symbol'] ?><?php echo @$obj->project_target_budget; ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Project Owner'); ?>:</td>
-                    <td class="hilite"><?php echo $obj->user_name; ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('URL'); ?>:</td>
-                    <td class="hilite"><a href="<?php echo @$obj->project_url; ?>" target="_new"><?php echo @$obj->project_url; ?></A></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Staging URL'); ?>:</td>
-                    <td class="hilite"><a href="<?php echo @$obj->project_demo_url; ?>" target="_new"><?php echo @$obj->project_demo_url; ?></a></td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <?php
-                        require_once($AppUI->getSystemClass('CustomFields'));
-                        $custom_fields = New CustomFields($m, $a, $obj->project_id, "view");
-                        $custom_fields->printHTML();
-                        ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <strong><?php echo $AppUI->_('Description'); ?></strong><br />
-                        <table cellspacing="0" cellpadding="2" border="0" width="100%">
-                            <tr>
-                                <td class="hilite">
-                                    <?php echo str_replace(chr(10), "<br>", $obj->project_description); ?>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        </td>
-        <td width="50%" rowspan="9" valign="top">
-            <strong><?php echo $AppUI->_('Summary'); ?></strong><br />
-            <table cellspacing="1" cellpadding="2" border="0" width="100%">
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Status'); ?>:</td>
-                    <td class="hilite" width="100%"><?php echo $AppUI->_($pstatus[$obj->project_status]); ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Priority'); ?>:</td>
-                    <td class="hilite" width="100%" style="background-color:<?php echo $projectPriorityColor[$obj->project_priority] ?>"><?php echo $AppUI->_($projectPriority[$obj->project_priority]); ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Type'); ?>:</td>
-                    <td class="hilite" width="100%"><?php echo $AppUI->_($ptype[$obj->project_type]); ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Progress'); ?>:</td>
-                    <td class="hilite" width="100%"><?php printf('%.1f%%', $obj->project_percent_complete); ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Worked Hours'); ?>:</td>
-                    <td class="hilite" width="100%"><?php echo $worked_hours ?></td>
-                </tr>	
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Scheduled Hours'); ?>:</td>
-                    <td class="hilite" width="100%"><?php echo $total_hours ?></td>
-                </tr>
-                <tr>
-                    <td align="left" nowrap><?php echo $AppUI->_('Project Hours'); ?>:</td>
-                    <td class="hilite" width="100%"><?php echo $total_project_hours ?></td>
-                </tr>				
+                        <th style="text-align:right"><?php echo $AppUI->_('Scheduled Hours'); ?>:</th>
+                        <td><?php echo $total_hours ?></td>
+
+                        <th style="text-align:right"><?php echo $AppUI->_('Target Budget'); ?>(<?php echo $dPconfig['currency_symbol'] ?>):</th>
+                        <td> <?php echo number_format(@$obj->project_target_budget, 2, ',', '.'); ?></td>
+                    </tr>
+                </table>
+                <button type="button" class="btn btn-secondary btn-sm">
+                    <?php echo ucfirst($AppUI->_("LBL_EDIT")); ?>
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm">
+                    <?php echo $AppUI->_("LBL_REPORT"); ?>
+                </button>
                 <?php
-                $q->addTable('departments', 'a');
-                $q->addTable('project_departments', 'b');
-                $q->addQuery('a.dept_id, a.dept_name, a.dept_phone');
-                $q->addWhere('a.dept_id = b.department_id AND b.project_id = ' . $project_id);
-                $depts = $q->loadHashList('dept_id');
-                $q->clear();
-                if (count($depts) > 0) {
+                if($canDelete) { // Precisa pedir confirmação antes de excluir... echo ($AppUI->_('doDelete', UI_OUTPUT_JS) . ' ' . $AppUI->_('Project', UI_OUTPUT_JS)
                     ?>
-                    <tr>
-                        <td><strong><?php echo $AppUI->_('Departments'); ?></strong></td>
-                    </tr>
-                    <tr>
-                        <td colspan='3' class="hilite">
-                            <?php
-                            foreach ($depts as $dept_id => $dept_info) {
-                                echo ('<div>' . $dept_info['dept_name']);
-                                if ($dept_info['dept_phone'] != '') {
-                                    echo ('(' . $dept_info['dept_phone'] . ')');
-                                }
-                                echo '</div>';
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                    <?php
-                }
-
-                $q->addTable('contacts', 'a');
-                $q->addTable('project_contacts', 'b');
-                $q->addJoin('departments', 'c', 'a.contact_department = c.dept_id', 'left outer');
-                $q->addQuery('a.contact_id, a.contact_first_name, a.contact_last_name, '
-                        . 'a.contact_email, a.contact_phone, c.dept_name');
-                $q->addWhere('a.contact_id = b.contact_id AND b.project_id = ' . $project_id
-                        . ' AND (contact_owner = ' . $AppUI->user_id . ' OR contact_private=0)');
-                $contacts = $q->loadHashList('contact_id');
-                $q->clear();
-                if (count($contacts) > 0) {
-                    ?>
-                    <tr>
-                        <td><strong><?php echo $AppUI->_('Contacts'); ?></strong></td>
-                    </tr>
-                    <tr>
-                        <td colspan="3" class="hilite">
-                            <table cellspacing="1" cellpadding="2" border="0" width="100%" class="tbl">
-                                <tr>
-                                    <th><?php echo ($AppUI->_('Name')); ?></th>
-                                    <th><?php echo ($AppUI->_('Email')); ?></th>
-                                    <th><?php echo ($AppUI->_('Phone')); ?></th>
-                                    <th><?php echo ($AppUI->_('Department')); ?></th>
-                                </tr>
-                                <?php
-                                foreach ($contacts as $contact_id => $contact_data) {
-                                    $canEdit = getPermission('contacts', 'edit', $contact_id);
-                                    ?>
-                                    <tr>
-                                        <td class='hilite'><?php
-                            echo ((($canEdit) ? ('<a href="index.php?m=contacts&amp;a=view&amp;contact_id='
-                                    . $contact_id . '">') : '')
-                            . ($contact_data['contact_first_name'] . ' ' . $contact_data['contact_last_name'])
-                            . (($canEdit) ? '</a>' : ''));
-                                    ?>
-                                        </td>
-                                        <td class="hilite">
-                                            <a href="mailto:<?php echo $contact_data['contact_email']; ?>">
-                                                <?php echo $contact_data['contact_email']; ?>
-                                            </a>
-                                        </td>
-                                        <td class="hilite"><?php echo $contact_data['contact_phone']; ?></td>
-                                        <td class="hilite"><?php echo $contact_data['dept_name']; ?></td>
-                                    </tr>
-                                    <?php
-                                }
-                                ?>
-                            </table>
-                        </td>
-                    </tr>
+                    <button type="button" class="btn btn-danger btn-sm">
+                        <?php echo $AppUI->_("LBL_EXCLUSION"); ?>
+                    </button>
                     <?php
                 }
                 ?>
-            </table>
-        </td>
-    </tr>
-</table>
-<br />
-<table width="95%" align="center">
-    <tr>
-        <td>
-            <?php
-//set default
-            if (!isset($_GET["tab"])) {
-                $tab = 1;
-                $_SESSION["user_choosen_feature"] = "/modules/dotproject_plus/projects_tab.planning_and_monitoring.php";
-            } else {
-                $_SESSION["user_choosen_feature"] = $_POST["user_choosen_feature"];
+
+            </div>
+        </div>
+        <?php
+        if ($tab == 1) {
+            switch ($subtab) {
+                case TAB_TASKS :
+                    require_once DP_BASE_DIR . '/modules/dotproject_plus/projects_tab.planning_and_monitoring.php';
+                    break;
+                case TAB_SCHEDULE :
+                    require_once DP_BASE_DIR . '/modules/monitoringandcontrol/view/view.6LBLCRONOGRAMA.php';
+                    break;
+                case TAB_COSTS :
+                    require_once DP_BASE_DIR . '/modules/costs/view_costs.php';
+                    break;
+                case TAB_RISKS :
+                    require_once DP_BASE_DIR . '/modules/risks/projects_risks.php';
+                    break;
+                case TAB_QUALITY :
+                    require_once DP_BASE_DIR . '/modules/timeplanning/view/quality/project_quality_planning.php';
+                    break;
+                case TAB_COMUNICATION :
+                    require_once DP_BASE_DIR . '/modules/communication/index_project.php';
+                    break;
+                case TAB_AQUISITIONS :
+                    require_once DP_BASE_DIR . '/modules/timeplanning/view/acquisition/acquisition_planning.php';
+                    break;
+                case TAB_STAKEHOLDERS :
+                    require_once DP_BASE_DIR . '/modules/stakeholder/project_stakeholder.php';
+                    break;
+
             }
+        }
+        // TODO controlar a view exibida pelo variavel $tab
+        ?>
+    </fieldset>
+</div>
 
-            $tabBox = new CTabBox(('?m=projects&amp;a=view&amp;project_id=' . $project_id), '', $tab);
-            $query_string = ('?m=projects&amp;a=view&amp;project_id=' . $project_id);
-            /*
-              //tabbed information boxes
-              //Note that we now control these based upon module requirements.
-              $canAccessTask = getPermission('tasks', 'access');
-              $canAccessTaskLog = getPermission('task_log', 'access');
-              $showEditCheckbox = false;
-
-              if ($canAccessTask) {
-              $tabBox->add(DP_BASE_DIR.'/modules/tasks/tasks', 'Tasks');
-              $tabBox->add(DP_BASE_DIR.'/modules/tasks/tasks', 'Tasks (Inactive)');
-              }
-              if (getPermission('forums', 'access')) {
-              $tabBox->add(DP_BASE_DIR.'/modules/projects/vw_forums', 'Forums');
-              }
-              /*
-              if (getPermission('files', 'access')) {
-              $tabBox->add(DP_BASE_DIR.'/modules/projects/vw_files', 'Files');
-              }
-             */
-            /*
-              if ($canAccessTask) {
-              $tabBox->add(DP_BASE_DIR.'/modules/tasks/viewgantt', 'Gantt Chart');
-              if ($canAccessTaskLog) {
-              $tabBox->add(DP_BASE_DIR.'/modules/projects/vw_logs', 'Task Logs');
-              }
-              }
-
-              $tabBox->loadExtras($m);
-              $f = 'all';
-              $min_view = true;
-             */
-            $tabBox->add(DP_BASE_DIR . "/modules/timeplanning/projects_tab.1initiation", $AppUI->_("1initiation", UI_OUTPUT_HTML));
-            $tabBox->add(DP_BASE_DIR . "/modules/timeplanning/projects_tab.2integratedmodules", $AppUI->_("Planning and monitoring", UI_OUTPUT_HTML));
-            $tabBox->add(DP_BASE_DIR . "/modules/dotproject_plus/projects_tab.execution", $AppUI->_("3execution", UI_OUTPUT_HTML));
-            $tabBox->add(DP_BASE_DIR . "/modules/timeplanning/projects_tab.5closing", $AppUI->_("5closing", UI_OUTPUT_HTML));
-            $tabBox->show();
-            ?>
-        </td>
-    </tr>
-</table>
+<script type="text/javascript" src="../../style/dotproject_plus/js/view.js"></script>

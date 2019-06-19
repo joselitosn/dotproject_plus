@@ -44,9 +44,11 @@ class CInitiating extends CDpObject {
         return $status;
     }
 
-    function CInitiating() {
-		$this->CDpObject('initiating', 'initiating_id');
+	
+	function __construct() {
+		parent::__construct('initiating', 'initiating_id');
 	}
+	
  
 	function check() {
 	// ensure the integrity of some variables
@@ -55,7 +57,7 @@ class CInitiating extends CDpObject {
 		return NULL; // object is ok
 	}
 
-	function delete() {
+	function delete($oid = NULL, $history_desc = '', $history_proj = 0) {
 		global $dPconfig;
 		$this->_message = "deleted";
 
@@ -83,4 +85,22 @@ class CInitiating extends CDpObject {
              }
             return $initiating;
         }
+		
+	public function loadMillestones(){
+        $q = new DBQuery();
+        $q->addQuery("task_id");
+        $q->addTable("tasks");
+        $q->addWhere("task_project=". $this->project_id ."  and task_milestone=1 order by task_start_date asc");
+        $results = db_loadHashList($q->prepare(true), "task_id");
+        $list= array();
+        $i=0;
+        foreach ($results as $data) {
+		   $obj = new CTask();
+		   $obj->load($data[0]);
+           $list[$i]=$obj;
+           $i++;
+        }
+        return $list;
+    }	
+		
 }

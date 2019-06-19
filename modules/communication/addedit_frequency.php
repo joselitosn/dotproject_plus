@@ -2,29 +2,40 @@
 if (!defined('DP_BASE_DIR')) {
     die('You should not access this file directly.');
 }
-
+require_once (DP_BASE_DIR . "/modules/communication/comunication_controller.php");
+$controller=new ComunicationController();
 // add communication frequency
 if (isset($_GET['communication_frequency'])){
-    $add = ($_GET['communication_frequency']);
-    $radd = new DBQuery;
-    $radd->addInsert('communication_frequency', $add);
-    if($_GET['showdate']=='true'){
-        $radd->addInsert('communication_frequency_hasdate', 'Sim');  
+    if(!$controller->frequencyAlreadyExists($_GET['communication_frequency'])){
+        $add = ($_GET['communication_frequency']);
+        $radd = new DBQuery;
+        $radd->addInsert('communication_frequency', $add);
+        if($_GET['showdate']=='true'){
+            $radd->addInsert('communication_frequency_hasdate', 'Sim');  
+        }
+        $radd->addTable('communication_frequency');
+        $radd->exec();
+        $AppUI->setMsg("LBL_COMUNICATION_FREQUENCY_INCLUDED", UI_MSG_OK, true);
+    }else{
+        $AppUI->setMsg("LBL_VALIDATION_DUPLICATED_ITEMS", UI_MSG_WARNING, true);        
     }
-    $radd->addTable('communication_frequency');
-    $radd->exec();
-    $AppUI->setMsg("LBL_COMUNICATION_FREQUENCY_INCLUDED", UI_MSG_OK, true);
     $AppUI->redirect("m=communication&a=addedit_frequency&project_id=" .$_GET["project_id"]);
 }
 
 // del communication frequency
 if (isset($_GET['communication_frequency_id'])){
-    $del = ($_GET['communication_frequency_id']);
-    $rdel = new DBQuery;
-    $rdel->setDelete('communication_frequency');
-    $rdel->addWhere('communication_frequency_id=' .$del);
-    $rdel->exec();
-    $AppUI->setMsg("LBL_COMUNICATION_FREQUENCY_EXCLUDED", UI_MSG_OK, true);
+
+    $count=$controller->frequencyIsBeenUtilized($_GET['communication_frequency_id']);
+    if($count==0){
+        $del = ($_GET['communication_frequency_id']);
+        $rdel = new DBQuery;
+        $rdel->setDelete('communication_frequency');
+        $rdel->addWhere('communication_frequency_id=' .$del);
+        $rdel->exec();
+        $AppUI->setMsg("LBL_COMUNICATION_FREQUENCY_EXCLUDED", UI_MSG_OK, true);     
+    }else{
+         $AppUI->setMsg("LBL_NOT_POSSIBLE_TO_DELETE_DUE_TO_RELATIONSHIP", UI_MSG_ALERT, true);
+    }
     $AppUI->redirect("m=communication&a=addedit_frequency&project_id=" . $_GET["project_id"]);
 }
 
@@ -35,14 +46,23 @@ $frequencies->addTable('communication_frequency', 'f');
 $frequencies = $frequencies->loadList();
 
 ?>
+<!-- include libraries for lightweight messages -->
+<link type="text/css" rel="stylesheet" href="./modules/timeplanning/js/jsLibraries/alertify/alertify.css" media="screen"></link>
+<script type="text/javascript" src="./modules/timeplanning/js/jsLibraries/alertify/alertify.js"></script>
  <script language="javascript"> 
         var showdate = false;
         function submitIt(frequency){
-            window.location = ('?m=communication&a=addedit_frequency&communication_frequency='+frequency+'&showdate='+showdate+"&project_id=<?php echo $_GET["project_id"] ?>")
+            if($.trim(frequency)!==""){
+                window.location = ('?m=communication&a=addedit_frequency&communication_frequency='+frequency+'&showdate='+showdate+"&project_id=<?php echo $_GET["project_id"] ?>");
+            }else{
+                alertify.alert("<?php echo $AppUI->_("LBL_GENERIC_FORM_VALIDATION"); ?>"); 
+            }
         }
-         function DelFrequency(id_frequency){
+        
+        function DelFrequency(id_frequency){
             window.location = ('?m=communication&a=addedit_frequency&communication_frequency_id='+id_frequency +"&project_id=<?php echo $_GET["project_id"] ?>")    
         }
+        
         function SetShowDate(showdateValue){
            showdate = showdateValue;     
         }
@@ -57,9 +77,9 @@ $frequencies = $frequencies->loadList();
             <td width="80%" valign="top" align="left">
                 <table cellspacing="1" cellpadding="2" width="10%">
                     <tr>
-                        <td align="left" nowrap="nowrap" width="10%"><?php echo $AppUI->_("LBL_FREQUENCY")?>: </td>
+                        <td align="left" nowrap="nowrap" width="10%"><?php echo $AppUI->_("LBL_FREQUENCY")?><span style="color:red">*</span>: </td>
                         <td>
-                            <input type="text" align="left" name="communication_frequency" cols="50" rows="1" value=""></input>
+                            <input type="text" align="left" id="communication_frequency" name="communication_frequency" cols="50" rows="1" value=""></input>
                         </td>
                         </td>
                         <td>
@@ -93,3 +113,5 @@ $frequencies = $frequencies->loadList();
                 </table>
     </form>
 </table>
+<br />
+<span style="color:red">*</span><?php echo $AppUI->_("LBL_CLICK_ON_CANCEL_TO_RETURN_TO_PROJECT_SCREEN") ?>

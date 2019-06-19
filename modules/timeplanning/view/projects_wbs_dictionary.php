@@ -27,12 +27,13 @@ $controllerWBSItem = new ControllerWBSItem();
         foreach ($items as $item) {
             ?>
             <tr>
-                <td>
+                <td colspan="<?php echo $item->isLeaf() == 1?1:2 ?>">
                     <span style="color:#FFFFFF"><?php echo $item->getIdentation(); ?></span>
                     <?php echo $item->getNumber(); ?>
                     <?php echo $item->getName(); ?>
                     <?php echo $item->isLeaf()==1?"*":""; ?>
                 </td>
+                <?php if ($item->isLeaf()==1){ ?>
                 <td>
                     <?php
                         $obj=new WBSDictionaryEntry();
@@ -40,6 +41,7 @@ $controllerWBSItem = new ControllerWBSItem();
                     ?>
                     <textarea name="wbs_item_dictionaty_entry_<?php echo $item->getId(); ?>" style="width:95%" rows="3"><?php echo $obj->getDescription(); ?></textarea>
                 </td>
+                <?php } ?>
                 <!--
                 <td>
                     <select>

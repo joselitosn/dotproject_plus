@@ -1,32 +1,10 @@
 <?php
-$q = new DBQuery();
-$q->addQuery("c.communication_id, c.communication_title, c.communication_information, ch.*, fr.*, p.project_name,  c.communication_restrictions as communication_restrictions");
-$q->addTable("communication", "c");
-$q->addJoin("communication_channel", "ch", "ch.communication_channel_id=c.communication_channel_id");
-$q->addJoin("communication_frequency", "fr", "fr.communication_frequency_id=c.communication_frequency_id");
-$q->addJoin("projects", "p", "p.project_id=c.communication_project_id");
+require_once DP_BASE_DIR . "/modules/communication/comunication_controller.php";
+$comunicationController = new ComunicationController();
+$list = $comunicationController->getCommunictionByProject($projectId);
+$list_Emissor = $comunicationController->getListOfEmissor();
+$list_Receptor = $comunicationController->getListOfReceptor();
 
-$q->addwhere("c.communication_project_id=" . $projectId);
-$list = $q->loadList();
-$q->clear();
-
-$q = new DBQuery();
-$q->addQuery("c.communication_id, co.contact_first_name as emissor_first_name, co.contact_last_name as emissor_last_name");
-$q->addTable("communication", "c");
-$q->addJoin("communication_issuing", "ci", "ci.communication_id=c.communication_id");
-$q->addJoin("initiating_stakeholder", "st", "st.initiating_stakeholder_id=ci.communication_stakeholder_id");
-$q->addJoin("contacts", "co", "co.contact_id=ci.communication_stakeholder_id");
-$list_Emissor = $q->loadList();
-$q->clear();
-
-$q = new DBQuery();
-$q->addQuery("c.communication_id, cor.contact_first_name as receptor_first_name, cor.contact_last_name as receptor_last_name");
-$q->addTable("communication", "c");
-$q->addJoin("communication_receptor", "cr", "cr.communication_id=c.communication_id");
-$q->addJoin("initiating_stakeholder", "str", "str.initiating_stakeholder_id=cr.communication_stakeholder_id");
-$q->addJoin("contacts", "cor", "cor.contact_id=cr.communication_stakeholder_id");
-$list_Receptor = $q->loadList();
-$q->clear();
 ?>
 
 
@@ -55,7 +33,7 @@ foreach ($list as $row) {
         </tr>
 
         <tr>
-            <td class="labelCell"><?php echo $AppUI->_("LBL_PROJECT_COMUNICATION_FROM",UI_OUTPUT_HTML); ?>:</td>
+            <td class="labelCell"><?php echo $AppUI->_("LBL_PROJECT_COMUNICATION_FROM",UI_OUTPUT_HTML); ?></td>
             <td>
                 <?php
                 foreach ($list_Emissor as $emissor) {
@@ -70,16 +48,16 @@ foreach ($list as $row) {
         </tr>
 
         <tr>
-            <td class="labelCell"><?php echo $AppUI->_("LBL_COMMUNICATION",UI_OUTPUT_HTML); ?>:</td>
+            <td class="labelCell"><?php echo $AppUI->_("LBL_COMMUNICATION",UI_OUTPUT_HTML); ?></td>
             <td><?php echo $row["communication_information"] ?>&nbsp;</td></tr>
         <tr>
-            <td class="labelCell"><?php echo $AppUI->_("LBL_PROJECT_COMMUNICATION_MODE",UI_OUTPUT_HTML); ?>:</td>
+            <td class="labelCell"><?php echo $AppUI->_("LBL_PROJECT_COMMUNICATION_MODE",UI_OUTPUT_HTML); ?></td>
             <td><?php echo $row["communication_channel"] ?>&nbsp;</td></tr>
         <tr>
             <td class="labelCell"><?php echo $AppUI->_("LBL_PROJECT_COMMUNICATION_FREQUENCY",UI_OUTPUT_HTML); ?></td> 
             <td><?php echo $row["communication_frequency"] ?>&nbsp;</td></tr>
         <tr>
-            <td class="labelCell"><?php echo $AppUI->_("LBL_PROJECT_COMMUNICATION_CONSTRAINTS",UI_OUTPUT_HTML); ?>:</td>
+            <td class="labelCell"><?php echo $AppUI->_("LBL_PROJECT_COMMUNICATION_CONSTRAINTS",UI_OUTPUT_HTML); ?></td>
             <td>
 
                 <?php echo $row["communication_restrictions"]; ?>
