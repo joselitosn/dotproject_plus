@@ -319,7 +319,6 @@ class CDpObject {
 		if (!$this->canDelete($msg)) {
 			return $msg;
 		}
-		
 		$q = new DBQuery;
 		$q->setDelete($this->_tbl);
 		$q->addWhere($this->_tbl_key . " = '" . $this->$k . "'");

@@ -72,7 +72,6 @@ if (!($rows = $q->loadList())) {
         $status = $AppUI->_($pstatus[$row["project_status"]]);
         $project_percent_complete = $row["project_percent_complete"];
 
-
         $badgeClass = '';
         switch ($row["project_status"]) {
             case 0:
@@ -101,11 +100,11 @@ if (!($rows = $q->loadList())) {
                 break;
         }
         ?>
-        <div class="card inner-card">
+        <div class="card inner-card mouse-cursor-pointer card-project">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-11">
-                        <h5><a href="#"><?=$project_name?></a></h5>
+                        <h5><a class="project-link" href="?m=projects&a=view&project_id=<?=$project_id?>"><?=$project_name?></a></h5>
                     </div>
                     <div class="col-md-1 text-right">
                         <div class="dropdown">
@@ -140,3 +139,11 @@ if (!($rows = $q->loadList())) {
 
 }
 ?>
+<script>
+    $(document).ready(function () {
+        $(".card-project").on("click", function() {
+            console.log($(this).find("a.project-link").attr("href"));
+            window.location.href = $(this).find("a.project-link").attr("href");
+        });
+    });
+</script>

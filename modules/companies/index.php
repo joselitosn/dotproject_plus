@@ -125,6 +125,30 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                 <?php
 
                 foreach ($rows as $company) {
+                    $badgeClass = '';
+                    switch ($company['company_type']) {
+                        case 0:
+                            $badgeClass = ' badge-secondary';
+                            break;
+                        case 1:
+                            $badgeClass = ' badge-primary';
+                            break;
+                        case 2:
+                            $badgeClass = ' badge-dark';
+                            break;
+                        case 3:
+                            $badgeClass = ' badge-info';
+                            break;
+                        case 4:
+                            $badgeClass = ' badge-secondary';
+                            break;
+                        case 5:
+                            $badgeClass = ' badge-success';
+                            break;
+                        case 6:
+                            $badgeClass = ' badge-warning';
+                            break;
+                    }
                     ?>
                     <div class="card inner-card mouse-cursor-pointer">
                         <div class="card-body">
@@ -136,7 +160,7 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                                     <span><?=$AppUI->_('Active Projects').': '.$company['countp'].' | '.$AppUI->_('Archived Projects').': '.$company['inactive']?></span>
                                 </div>
                                 <div class="col-md-1 text-right">
-                                    <span class="badge badge-secondary"><?=$AppUI->_($types[$company['company_type']])?></span>
+                                    <span class="badge <?=$badgeClass?>">Tipo: <?=$AppUI->_($types[$company['company_type']])?></span>
                                 </div>
                             </div>
                         </div>
@@ -186,7 +210,7 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
 
             $(".card").on("click", function() {
                 company.view($(this).find("a").attr("href"));
-            })
+            });
         },
         create: function() {
             $.ajax({

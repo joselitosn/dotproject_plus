@@ -1,11 +1,6 @@
 <?php
 
 $dialog = dPgetParam($_GET, 'dialog', 0);
-if ($dialog) {
-    $page_title = '';
-} else {
-    $page_title = $dPconfig['page_title'] . '&nbsp;' . $AppUI->getVersion();
-}
 /*It solve the problems of unformated chars: This lines may be commented weith in the environment dpp is isntaled the EBS items presents strange characters as identation*/
 mysql_query("SET NAMES 'utf8'");
 mysql_query('SET character_set_connection=utf8');

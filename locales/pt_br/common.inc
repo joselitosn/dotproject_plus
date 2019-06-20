@@ -2792,3 +2792,5 @@
 "LBL_FEEDBACK_REPORT" => "Relatório de feedback instrucional por grupo",
 "LBL_CLASS_DELETED" => "Turma excluída com êxito.",
 "LBL_DELETE_CLASS" => "Excluir turma",
+"LBL_EVENTUAL_INVOLVIMENT"=>"Envolvimento eventual",
+"LBL_EVENTUAL_INVOLVIMENT_HINT"=>"Indica se o indivíduo irá trabalhar regularmente no projeto (com carga horária definida), ou se fará apenas uma participação eventual (p. ex: auditores de processo, consultores externos, membros de banca de TCC, etc.)",

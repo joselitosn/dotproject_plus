@@ -168,34 +168,48 @@ $res = & $query->exec();
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="text-right" width="15%"><?=$AppUI->_("Weekday working hours")?>:</th>
+                                    <th class="text-right" width="15%"><?=$AppUI->_('LBL_EVENTUAL_INVOLVIMENT')?>:</th>
                                     <td>
-                                        <table class="table table-sm table-bordered text-center">
-                                            <thead class="thead-dark">
-                                            <tr>
-                                                <th><?=$cwd_conv[0]?></th>
-                                                <th><?=$cwd_conv[1]?></th>
-                                                <th><?=$cwd_conv[2]?></th>
-                                                <th><?=$cwd_conv[3]?></th>
-                                                <th><?=$cwd_conv[4]?></th>
-                                                <th><?=$cwd_conv[5]?></th>
-                                                <th><?=$cwd_conv[6]?></th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td><?=$obj->human_resource_mon?></td>
-                                                <td><?=$obj->human_resource_tue?></td>
-                                                <td><?=$obj->human_resource_wed?></td>
-                                                <td><?=$obj->human_resource_thu?></td>
-                                                <td><?=$obj->human_resource_fri?></td>
-                                                <td><?=$obj->human_resource_sat?></td>
-                                                <td><?=$obj->human_resource_sun?></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                        <?=$obj->eventual == 0 ? $AppUI->_("LBL_NO") : $AppUI->_("LBL_YES")?>
                                     </td>
                                 </tr>
+                                <?php
+                                    if ($obj->eventual == 0) {
+                                        ?>
+                                        <tr>
+                                            <th class="text-right" width="15%"><?= $AppUI->_("Weekday working hours") ?>
+                                                :
+                                            </th>
+                                            <td>
+                                                <table class="table table-sm table-bordered text-center">
+                                                    <thead class="thead-dark">
+                                                    <tr>
+                                                        <th><?= $cwd_conv[0] ?></th>
+                                                        <th><?= $cwd_conv[1] ?></th>
+                                                        <th><?= $cwd_conv[2] ?></th>
+                                                        <th><?= $cwd_conv[3] ?></th>
+                                                        <th><?= $cwd_conv[4] ?></th>
+                                                        <th><?= $cwd_conv[5] ?></th>
+                                                        <th><?= $cwd_conv[6] ?></th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td><?= $obj->human_resource_mon ?></td>
+                                                        <td><?= $obj->human_resource_tue ?></td>
+                                                        <td><?= $obj->human_resource_wed ?></td>
+                                                        <td><?= $obj->human_resource_thu ?></td>
+                                                        <td><?= $obj->human_resource_fri ?></td>
+                                                        <td><?= $obj->human_resource_sat ?></td>
+                                                        <td><?= $obj->human_resource_sun ?></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <?php
+                                    }
+                                ?>
                                 <tr>
                                     <th class="text-right" width="15%">Custos do recurso humano:</th>
                                     <td>
@@ -313,97 +327,6 @@ $res = & $query->exec();
         </div>
     </div>
 </div>
-
-<!--<table width="95%" align="center" border="0" cellpadding="2" cellspacing="1" class="tbl">-->
-<!--    <caption><b>--><?php //echo $AppUI->_('2LBLHumanResources'); ?><!--</b></caption>-->
-<!--    <tr>-->
-<!--        <th width="5%"></th>-->
-<!--        <th nowrap="nowrap" width="30%">-->
-<!--            --><?php //echo $AppUI->_("User username"); ?>
-<!--        </th>-->
-<!--        <th nowrap="nowrap" width="40%">-->
-<!--            --><?php //echo $AppUI->_("User roles"); ?>
-<!--        </th>-->
-<!--        <th></th>-->
-<!--    </tr>-->
-<!--    --><?php
-//    require_once DP_BASE_DIR . "/modules/human_resources/human_resources.class.php";
-//    require_once DP_BASE_DIR . "/modules/human_resources/configuration_functions.php";
-//    require_once DP_BASE_DIR . "/modules/human_resources/allocation_functions.php";
-//    for ($res; !$res->EOF; $res->MoveNext()) {
-//        $user_id = $res->fields["user_id"];
-//        $human_resource_id = getHumanResourceId($user_id);
-//        $user_has_human_resource = $human_resource_id != -1; //$human_resource_id equals -1 means does not exist
-//        $style = $user_has_human_resource ? "" : "background-color:#ED9A9A; font-weight:bold";
-//        $contact_id = $res->fields["contact_id"];
-//
-//        $roles = getUserRolesByUserId($user_id);
-//        $concat_roles_names = "";
-//        if ($roles != null) {
-//            $roles_array = array();
-//            foreach ($roles as $role) {
-//                array_unshift($roles_array, $role["human_resources_role_name"]);
-//            }
-//            $concat_roles_names = implode(", ", $roles_array);
-//        }
-//        ?>
-<!--        <tr>-->
-<!--            <td style=--><?php //echo $style; ?><!-->
-<!--                <a style="text-decoration: none" href="index.php?m=human_resources&a=view_hr&user_id=--><?php //echo $user_id; ?><!--&contact_id=--><?php //echo $contact_id; ?><!--&company_id=--><?php //echo $company_id; ?><!--"> -->
-<!--                    <img src="images/icons/stock_edit-16.png" border="0" />-->
-<!--                </a>-->
-<!--            </td>-->
-<!--            <td style=--><?php //echo $style; ?><!-->
-<!--                --><?php //echo $res->fields["contact_first_name"]; ?><!-- --><?php //echo $res->fields["contact_last_name"]; ?>
-<!--            </td>-->
-<!--            <td style=--><?php //echo $style; ?><!-->
-<!--                --><?php //echo $concat_roles_names; ?>
-<!--            </td>-->
-<!--            <td style=--><?php //echo $style; ?><!-->
-<!--                --><?php
-//                $obj = new CHumanResource();
-//                $canDelete=false;
-//                if ($human_resource_id != -1) {
-//                     $obj->load($human_resource_id);
-//                     $canDelete=$obj->canDelete();
-//                }else{
-//                   $canDelete=true;
-//                }
-//                if ($canDelete) {//user without human resource can be deleted
-//                    ?>
-<!--                -->
-<!--                <script>-->
-<!--                    function confirmHRDeletion(){-->
-<!--                        var answer=false;-->
-<!--                        if(window.confirm("--><?php //echo $AppUI->_("LBL_ASK_HUMAN_RESOURCE_DELETE",UI_OUTPUT_JS); ?><!--")){
-//                            answer=true;
-//                        }
-//                        return answer;
-//                    }
-//                </script>
-//                <form name="frmDelete" action="?m=human_resources" method="post" onsubmit="return confirmHRDeletion()">
-//                    <input type="hidden" name="dosql" value="do_hr_aed" />
-//                    <input type="hidden" name="del" value="1" />
-//                    <input type="hidden" name="user_id" value="<?php //echo $user_id; ?><!--" />-->
-<!--                    <input type="hidden" name="contact_id" value="--><?php //echo $contact_id; ?><!--" />-->
-<!--                    <input type="hidden" name="company_id" value="--><?php //echo $company_id; ?><!--" />-->
-<!--                    <input type="hidden" name="human_resource_id" value="--><?php //echo $human_resource_id; ?><!--" />-->
-<!--                    <button type="submit" style="border:none;background: none;cursor: pointer"><img src="images/trash_small.gif" border="0" /></button>-->
-<!--                </form>-->
-<!--                    -->
-<!--                    --><?php
-//                }else{
-//                    ?>
-<!--                    <span style="color: green;"> --><?php //echo $AppUI->_("LBL_RH_CANT_BE_DELETED") ?><!-- </span>-->
-<!--                --><?php
-//                    }
-//                ?>
-<!--            </td>-->
-<!--        </tr>-->
-<!--        --><?php
-//    }
-//    $query->clear();
-//    ?>
 
 <script>
 
@@ -537,6 +460,9 @@ $res = & $query->exec();
                     });
                 }
                 hr.costs = newCosts;
+
+                hr.displayWorkingDays();
+
                 $("#editHrModal").modal();
             });
         },
@@ -739,8 +665,23 @@ $res = & $query->exec();
                }
             });
             hr.costs.splice(indice, 1);
-        }
+        },
 
+        displayWorkingDays: function () {
+            var eventual = $('input[name=eventual]:checked').val() == 1;
+            if (eventual) {
+                $('input[name=human_resource_mon]').val('');
+                $('input[name=human_resource_tue]').val('');
+                $('input[name=human_resource_wed]').val('');
+                $('input[name=human_resource_thu]').val('');
+                $('input[name=human_resource_fri]').val('');
+                $('input[name=human_resource_sat]').val('');
+                $('input[name=human_resource_sun]').val('');
+                $('#weekly_working_hours').hide()
+            } else {
+                $('#weekly_working_hours').show();
+            }
+        }
 
     };
 

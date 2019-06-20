@@ -152,22 +152,20 @@ $costsList = $controllerResourceCost->getRecordsByUser($user_id);
         </select>
     </div>
 
-
-    <!--
-
-    <td align="right" style="vertical-align: top"><?php //echo $AppUI->_("LBL_EVENTUAL_INVOLVIMENT"); ?>:</td>
-    <td width="2%" align="left" >
-        <input type="radio" name="eventual" value="0" <?php //echo $hr->eventual != "1" ? "checked=\"checked\"":""; ?> onchange="displayWorkingDays()" /> <?php //echo $AppUI->_("LBL_NO") ?>
-        <input type="radio" name="eventual" value="1" <?php //echo $hr->eventual == "1" ? "checked=\"checked\"":""; ?> onchange="displayWorkingDays()" /> <?php //echo $AppUI->_("LBL_YES") ?>
-        <br />
-        <span style="color:red">*</span>&nbsp;<span style="color:#1C1C1C;font-size: 0.7em;"><?php //echo $AppUI->_("LBL_EVENTUAL_INVOLVIMENT_HINT"); ?></span>
-    </td>
-
-    -->
-
-
-
     <div class="form-group">
+        <label for="human_resource_eventual_envolviment" class="required">
+            <?php echo $AppUI->_('LBL_EVENTUAL_INVOLVIMENT'); ?>
+        </label>
+        <input type="radio" name="eventual" value="0" <?=$hr->eventual != "1" ? "checked=\"checked\"":""; ?> onchange="hr.displayWorkingDays()" />
+            <?=$AppUI->_("LBL_NO") ?>
+        <input type="radio" name="eventual" value="1" <?=$hr->eventual == "1" ? "checked=\"checked\"":""; ?> onchange="hr.displayWorkingDays()" />
+            <?=$AppUI->_("LBL_YES") ?>
+        <div class="alert alert-info" role="alert">
+            <small><?=$AppUI->_("LBL_EVENTUAL_INVOLVIMENT_HINT"); ?></small>
+        </div>
+    </div>
+
+    <div id="weekly_working_hours" class="form-group">
         <label for="weekly_working_hours">
             <?=$AppUI->_('Weekday working hours')?>
         </label>
@@ -267,52 +265,6 @@ $costsList = $controllerResourceCost->getRecordsByUser($user_id);
 </form>
 
 <script>
-
-//    var hrEdit = {
-//
-//        init: function () {
-//            $(document).ready(function() {
-//
-//        },
-//
-//
-//
-//
-//    }
-//
-//    hrEdit.init();
-
-//    function dateSelected(date, element) {
-//        var arrDate = date.split('/');
-//        $date = $('#'+element.id);
-//        if ($date.attr('name') == 'start_date') {
-//            $('input[name=project_start_date]').val(arrDate[2] + arrDate[1] + arrDate[0]);
-//        } else {
-//            $('input[name=project_end_date]').val(arrDate[2] + arrDate[1] + arrDate[0]);
-//        }
-//    }
-//
-//    function formatDates() {
-//        var startDate = $('input[name=project_start_date]').val();
-//        var endDate = $('input[name=project_end_date]').val();
-//
-//        if (startDate) {
-//            $('input[name=start_date]').val(startDate.substr(6, 2)+'/'+startDate.substr(4, 2)+'/'+startDate.substr(0, 4));
-//        }
-//        if (endDate) {
-//            $('input[name=end_date]').val(endDate.substr(6, 2)+'/'+endDate.substr(4, 2)+'/'+endDate.substr(0, 4));
-//        }
-//
-//
-//        $date = $('#'+element.id);
-//        if ($date.attr('name') == 'start_date') {
-//            $('input[name=project_start_date]').val(arrDate[2] + arrDate[1] + arrDate[0]);
-//        } else {
-//            $('input[name=project_end_date]').val(arrDate[2] + arrDate[1] + arrDate[0]);
-//        }
-//    }
-//
-//    formatDates();
 
 </script>
 

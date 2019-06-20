@@ -17,28 +17,46 @@ if (!$obj->bind($_POST)) {
     echo $AppUI->getMsg();
     exit();
 }
-$userId = $obj->human_resource_user_id;
 
 if ($del) {
     require_once (DP_BASE_DIR . "/modules/contacts/contacts.class.php"); //for contact
     require_once (DP_BASE_DIR . "/modules/admin/admin.class.php"); //for user
+    $userId = dPgetParam($_POST, "user_id");
+
+    // delete hr costs
+    $resCost->deleteAllByUserId($userId);
+
+    // delete contact
     $contactObj = new CContact();
     $contactObj->load(dPgetParam($_POST, "contact_id", 0));
+    $contactObj->delete();
+
+    //delete roles
+    if ($obj->human_resource_id > 0) {
+        $human_resource_roles = new CHumanResourceRoles();
+        $human_resource_roles->deleteAll($obj->human_resource_id);
+    }
+
+    //delete human resource object
+    $q = new DBQuery();
+    $q->setDelete('human_resource');
+    $q->addWhere('human_resource_id=' . $obj->human_resource_id);
+    $q->exec();
+    $q->clear();
+
+//    $obj->delete();
+
+    // delete user
     $userObj = new CUser();
     $userObj->load($userId);
-    $contactObj->delete();
-    $resCost->deleteAllByUserId($userId);
     $userObj->delete();
-    //delete roles estimated
-    $human_resource_roles = new CHumanResourceRoles();
-    $human_resource_roles->deleteAll($obj->human_resource_id);
-    //delete human resource object
-    $obj->delete();
+
     $msg = $AppUI->_("Human Resource") . " " . $AppUI->_("deleted");
     $AppUI->setMsg($msg, UI_MSG_OK, false);
     echo $AppUI->getMsg();
     exit();
 } else {
+    $userId = $obj->human_resource_user_id;
     // Inserts costs
     $costs = dPgetParam($_POST,'costs');
     if ($costs) {
