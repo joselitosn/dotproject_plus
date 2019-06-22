@@ -2,27 +2,81 @@
 if (!defined('DP_BASE_DIR')) {
     die('You should not access this file directly.');
 }
+
+const WBS_FIRST_ITEM = 1;
+const WBS_FIRST_ITEM_ORDER = 1;
+
 require_once (DP_BASE_DIR . "/modules/timeplanning/control/controller_wbs_items.class.php");
 require_once (DP_BASE_DIR . "/modules/timeplanning/model/project_task_estimation.class.php");
 require_once (DP_BASE_DIR . "/modules/timeplanning/model/wbs_item_estimation.class.php");
 require_once (DP_BASE_DIR . '/modules/tasks/tasks.class.php');
 set_time_limit(300);
-//save
-$project_id = $_POST['project_id'];
-$wbs_item_id=$_POST["wbs_item_id"];
-$description=$_POST["wbs_item_description_".$wbs_item_id];
-$estimated_size=$_POST["estimated_size_".$wbs_item_id];
-$estimated_size_unit=$_POST["estimated_size_unit_".$wbs_item_id];
-$identation=$_POST["identation_field_".$wbs_item_id];
-$number=$_POST["number_field_".$wbs_item_id];
-$isLeaf= $_POST["leaf_field_".$wbs_item_id];
-$wbs_item_order=$_POST["wbs_item_order_".$wbs_item_id];
 
 $controllerWBSItem= new ControllerWBSItem();
-$controllerWBSItem->insert($project_id,$description,$number,$wbs_item_order,$isLeaf,$identation,$wbs_item_id);
-	
+
+$id = dPgetParam($_POST, 'item_id', -1);
+
+// Control variable. If $id is equal to -1 then it is an insert
+$update = $id != -1;
+
+$projectId = dPgetParam($_POST, 'project_id');
+$description = dPgetParam($_POST, 'wbs_item_description');
+$estimatedSize=$_POST["wbs_item_size"];
+$estimatedSizeUnit=$_POST["wbs_item_size_unit"];
+$parentNumber = $_POST['parent_number'];
+$isLeaf= 1;
+$firstItem = false;
+
+if (!$update) {
+    if ($parentNumber == '') {
+        // It is the first WBS item
+        $number = WBS_FIRST_ITEM;
+        $sortOrder = WBS_FIRST_ITEM_ORDER;
+        $firstItem = true;
+    } else {
+        $parentId = $_POST['parent_id'];
+        $lastChildNumber = $controllerWBSItem->getLastChildByParentNumber($projectId, $parentNumber);
+
+        if (!$lastChildNumber) {
+            // It is the first child
+            $number  = $parentNumber . '.' . WBS_FIRST_ITEM;
+            $sortOrder = array_sum(explode('.', $number));
+        } else {
+            // Gets the prefix of the number
+            // Extracts the last digit and adds 1 to it
+            $lastDigit = (int) substr($lastChildNumber, -1) + 1;
+            // Generates the next number
+            $number  = $parentNumber . '.' . $lastDigit;
+            $sortOrder = array_sum(explode('.', $number));
+        }
+    }
+
+    $controllerWBSItem->insert(
+        $id,
+        $projectId,
+        $description,
+        $number,
+        $sortOrder,
+        $isLeaf
+    );
+    $id = mysql_insert_id();
+
+    if (!$firstItem) {
+        $controllerWBSItem->setNotLeaf($parentId);
+    }
+} else {
+    $controllerWBSItem->insert(
+        $id,
+        $projectId,
+        $description
+    );
+}
+
 $eapItem = new WBSItemEstimation();
-$eapItem->store($wbs_item_id, $estimated_size, $estimated_size_unit);
+$eapItem->store($id, $estimatedSize, $estimatedSizeUnit);
+
 $AppUI->setMsg($AppUI->_("LBL_THE_WBS_ITEM") ." ($description) " . $AppUI->_("LBL_WAS_SAVED_M")  , UI_MSG_OK, true);
-$AppUI->redirect('m=projects&a=view&project_id='.$project_id);
+echo $AppUI->getMsg();
+exit();
+
 ?>

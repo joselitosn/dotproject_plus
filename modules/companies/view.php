@@ -197,20 +197,20 @@ if ($company_policies_id != "") {
                 </div>
 
                 <?php
-                switch ($tab) {
-                    case TAB_PROJECTS :
-                        require_once DP_BASE_DIR . "/modules/dotproject_plus/companies_tab.Projects.php";
-                        break;
-                    case TAB_ROLES :
-                        require_once DP_BASE_DIR . "/modules/human_resources/view_company_roles.php";
-                        break;
-                    case TAB_ORGANOGRAM :
-                        require_once DP_BASE_DIR . "/modules/timeplanning/companies_organizational_diagram.php";
-                        break;
-                    case TAB_HUMAN_RESOURCES :
-                        require_once DP_BASE_DIR . "/modules/human_resources/view_company_users.php";
-                        break;
-                }
+                    switch ($tab) {
+                        case TAB_PROJECTS :
+                            require_once DP_BASE_DIR . "/modules/dotproject_plus/companies_tab.Projects.php";
+                            break;
+                        case TAB_ROLES :
+                            require_once DP_BASE_DIR . "/modules/human_resources/view_company_roles.php";
+                            break;
+                        case TAB_ORGANOGRAM :
+                            require_once DP_BASE_DIR . "/modules/timeplanning/companies_organizational_diagram.php";
+                            break;
+                        case TAB_HUMAN_RESOURCES :
+                            require_once DP_BASE_DIR . "/modules/human_resources/view_company_users.php";
+                            break;
+                    }
                 ?>
 
                 <div class="modal" id="addEditCompanyModal" tabindex="-1" role="dialog">

@@ -10,10 +10,10 @@ $wbs_item_name=dPgetParam($_POST, 'wbs_item_name');
 $wbsItem=$controllerWBSItem->getWBSItemById($wbs_item_id);
 //delete the selected WBS item and its activities
 $controllerWBSItem->delete($wbs_item_id);
- $tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($wbs_item_id);
- foreach ($tasks as $obj) {
-     $obj->delete();
- }
+$tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($wbs_item_id);
+foreach ($tasks as $obj) {
+ $obj->delete();
+}
  //find all child WBS items
 $q = new DBQuery;
 $q->addQuery("eap.id");
@@ -32,5 +32,6 @@ foreach ($results as $id => $data) {
  
 
 $AppUI->setMsg($AppUI->_("LBL_THE_WORK_PACKAGE") . " ($wbs_item_name) " . $AppUI->_("LBL_WAS_EXCLUDED",UI_OUTPUT_HTML) .".", UI_MSG_OK, true);
-$AppUI->redirect('m=projects&a=view&project_id='.$project_id);
+echo $AppUI->getMsg();
+exit();
 ?>

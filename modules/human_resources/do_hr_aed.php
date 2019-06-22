@@ -21,7 +21,12 @@ if (!$obj->bind($_POST)) {
 if ($del) {
     require_once (DP_BASE_DIR . "/modules/contacts/contacts.class.php"); //for contact
     require_once (DP_BASE_DIR . "/modules/admin/admin.class.php"); //for user
-    $userId = dPgetParam($_POST, "user_id");
+    $userId = $obj->human_resource_user_id;
+
+    if ($obj->human_resource_id > 0 && !$obj->canDelete($msg)) {
+        echo $msg;
+        exit();
+    }
 
     // delete hr costs
     $resCost->deleteAllByUserId($userId);
@@ -37,14 +42,8 @@ if ($del) {
         $human_resource_roles->deleteAll($obj->human_resource_id);
     }
 
-    //delete human resource object
-    $q = new DBQuery();
-    $q->setDelete('human_resource');
-    $q->addWhere('human_resource_id=' . $obj->human_resource_id);
-    $q->exec();
-    $q->clear();
-
-//    $obj->delete();
+    //delete human resource
+    $obj->delete();
 
     // delete user
     $userObj = new CUser();

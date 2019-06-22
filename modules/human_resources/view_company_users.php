@@ -534,7 +534,7 @@ $res = & $query->exec();
                                 data: {
                                     dosql: 'do_hr_aed',
                                     del: 1,
-                                    user_id: userId,
+                                    human_resource_user_id: userId,
                                     contact_id: contactId,
                                     company_id: <?=$company_id?>,
                                     human_resource_id: hrId

@@ -5,11 +5,22 @@ class ControllerWBSItem {
 	function ControllerWBSItem(){
 	}
 	
-	function insert($projectId,$description,$number,$sortOrder,$isLeaf,$identation,$id) {
+	function insert($id, $projectId, $description, $number = null, $sortOrder = null, $isLeaf = null) {
 		$WBSItem= new WBSItem();
-		$WBSItem->store($projectId,$description,$number,$sortOrder,$isLeaf,$identation,$id);
+		$WBSItem->store($id, $projectId, $description, $number, $sortOrder, $isLeaf);
 	}
-	
+
+	function setNotLeaf($itemId) {
+        $WBSItem= new WBSItem();
+        $WBSItem->setNotLeaf($itemId);
+    }
+
+	function getLastChildByParentNumber($projectId, $number) {
+        $WBSItem= new WBSItem();
+        return $WBSItem->getLastChildByParentNumber($projectId, $number);
+    }
+
+
 	function delete($id){
 		$WBSItem= new WBSItem(); 
 		$WBSItem->delete($id);
@@ -40,8 +51,9 @@ class ControllerWBSItem {
 	function getWBSItems($projectId){
 		$list=array();
 		$q = new DBQuery();
-		$q->addQuery('t.id, t.item_name,t.identation,t.number,t.is_leaf,t.sort_order');
+		$q->addQuery('t.id, t.item_name,t.identation,t.number,t.is_leaf,t.sort_order, ie.size, ie.size_unit');
 		$q->addTable('project_eap_items', 't');
+        $q->addJoin('eap_item_estimations', 'ie', 'ie.eap_item_id = t.id');
 		$q->addWhere('project_id = '.$projectId .' order by sort_order');
 		$sql = $q->prepare();
 		$items = db_loadList($sql);
@@ -51,12 +63,14 @@ class ControllerWBSItem {
 			$name = $item['item_name'];
 			$identation= $item['identation'];
 			$number = $item['number'];
-			$is_leaf= $item['is_leaf']; 
+			$is_leaf= $item['is_leaf'];
+            $size = $item['size'];
+            $sizeUnit = $item['size_unit'];
 			$WBSItem= new WBSItem();
-			$WBSItem->load($id,$name,$identation,$number,$is_leaf);
-                        $WBSItem->setSortOrder($item['sort_order']);
+			$WBSItem->load($id,$name,$identation,$number,$is_leaf, null, $size, $sizeUnit);
+            $WBSItem->setSortOrder($item['sort_order']);
 			$list[$i]=$WBSItem;
-                        $i++;
+            $i++;
 		}
 		return $list;
 	}
@@ -66,7 +80,7 @@ class ControllerWBSItem {
 		$q = new DBQuery();
 		$q->addQuery('t.id, t.item_name,t.identation,t.number,t.is_leaf');
 		$q->addTable('project_eap_items', 't');
-		$q->addWhere("project_id = $projectId and is_leaf='1' order by sort_order");
+		$q->addWhere("project_id = $projectId order by sort_order");
 		$sql = $q->prepare();
 		$items = db_loadList($sql);
 		foreach ($items as $item) {
@@ -74,7 +88,7 @@ class ControllerWBSItem {
 			$name = $item['item_name'];
 			$identation= $item['identation'];
 			$number = $item['number'];
-			$is_leaf= $item['is_leaf']; 
+			$is_leaf= $item['is_leaf'];
 			$WBSItem= new WBSItem();
 			$WBSItem->load($id,$name,$identation,$number,$is_leaf);
 			$list[$id]=$WBSItem;

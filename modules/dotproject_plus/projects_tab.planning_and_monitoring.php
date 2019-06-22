@@ -728,7 +728,7 @@ if ($_GET["show_external_page"] != "") {
     $controllerWBSItem = new ControllerWBSItem();
     $ControllerWBSItemActivityRelationship = new ControllerWBSItemActivityRelationship();
     $controllerCompanyRole = new ControllerCompanyRole();
-    $items = $controllerWBSItem->getWorkPackages($project_id);
+//    $items = $controllerWBSItem->getWorkPackages($project_id);
 //start: build the roles list
 
     $roles = $controllerCompanyRole->getCompanyRoles($project->project_company);
@@ -851,8 +851,6 @@ if ($_GET["show_external_page"] != "") {
         </div>
     </div>
 
-    <div id="estimation_form_error_message"> </div> <!-- TODO remover caso desnecessário -->
-
     <?php 
         $project = new CProject();
         $project->load($project_id);
@@ -862,29 +860,13 @@ if ($_GET["show_external_page"] != "") {
 
         if (count($items) == 0) {
     ?>
-
-            <button type="button" 
-                class="btn btn-primary btn-sm float-md-right" 
-                title="<?php echo $AppUI->_("LBL_CLICK") . ' ' . $AppUI->_("LBL_HERE") . ' ' . $AppUI->_("LBL_CREATE_NEW_WBS_ITEM")?>"
-                data-toggle="modal"
-                data-target="#newWBSItemModal">
-                <i class="far fa-plus-square"></i>
-            </button>
-            <tr>
-                <td colspan="9" onmouseover="setContextDisabled(false)">
-                    * <?php echo $AppUI->_("LBL_CLICK") ?> <a href="#" onclick="createFirstWBSItem()"><b><u><?php echo $AppUI->_("LBL_HERE") ?></u></b></a> <?php echo $AppUI->_("LBL_CREATE_NEW_WBS_ITEM") ?>
-                    <form name="new_wbs_item_first" id="new_wbs_item_first" method="post" action="?m=dotproject_plus">
-                        <input name="dosql" type="hidden" value="do_new_wbs_item" />
-                        <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                        <input type="hidden" name="parent_id" value="" />
-                        <input type="hidden" name="sort_order" value="1" />         
-                        <input type="hidden" id="identation_field" name="identation_field" value="" />
-                        <input type="hidden" id="number_field" name="number_field" value="1" />
-                        <input type="hidden" id="leaf_field" name="leaf_field" value="1" />
-                    </form>
-                </td>
-            </tr>
-
+            <div class="alert alert-secondary text-center" role="alert">
+                <?php echo $AppUI->_("LBL_CLICK") ?>
+                <a href="#" onclick="wbs.new(<?=$project_id?>)">
+                    <b><u><?php echo $AppUI->_("LBL_HERE") ?></u></b>
+                </a>
+                <?php echo $AppUI->_("LBL_CREATE_NEW_WBS_ITEM") ?>
+            </div>
     <?php
         // WBS TREE DECLARATION
         } else {
@@ -923,10 +905,9 @@ if ($_GET["show_external_page"] != "") {
                             $eapItem = new WBSItemEstimation();
                             $id = $branch['id'];
                             $eapItem->load($id);
-                            $tasks = 0;
                             $ControllerWBSItemActivityRelationship = new ControllerWBSItemActivityRelationship();
                             $tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($id);
-                            $numberOfTasks = ((bool)$branch['isLeaf']) ? ' (' . sizeof($tasks) . ')' : '';
+                            $numberOfTasks = $isLeaf ? ' (' . sizeof($tasks) . ')' : '';
                         }
                         $innerCard = strlen($branch['number']) > 1 ? ' inner-card' : '';
                         $card = $dom->createElement('div');
@@ -951,135 +932,18 @@ if ($_GET["show_external_page"] != "") {
                         $carCol8Class = $dom->createAttribute('class');
                         $carCol8Class->value = 'col-md-8';
                         $carCol8->appendChild($carCol8Class);
-
                         $h5 = $dom->createElement('h5', $branch['number'] . ' ' . $branch['name'] . $numberOfTasks);
+
+                        if ($branch['number'] != 1) {
+                            $small = $dom->createElement('small', ' | Tamanho: ' . $branch['size'] . ' ' . $branch['sizeUnit']);
+                            $h5->appendChild($small);
+                        }
                         $carCol8->appendChild($h5);
                         
                         $carCol4 = $dom->createElement('div');
                         $carCol4Class = $dom->createAttribute('class');
                         $carCol4Class->value = 'col-md-4 text-right';
                         $carCol4->appendChild($carCol4Class);
-
-                        // // Button new WBS item
-                        // $btnWbs = $dom->createElement('button');
-                        // $btnWbsClass = $dom->createAttribute('class');
-                        // $btnWbsClass->value = 'btn btn-primary btn-sm';
-                        // $btnWbsToggle = $dom->createAttribute('data-toggle');
-                        // $btnWbsToggle->value = 'modal';
-                        // $btnWbsTarget = $dom->createAttribute('data-target');
-                        // $btnWbsTarget->value = '#newWBSItemModal';
-                        // $btnWbsTitle = $dom->createAttribute('title');
-                        // $btnWbsTitle->value = 'Criar Item EAP';
-                        // $btnWbs->appendChild($btnWbsClass);
-                        // $btnWbs->appendChild($btnWbsToggle);
-                        // $btnWbs->appendChild($btnWbsTarget);
-                        // $btnWbs->appendChild($btnWbsTitle);
-                        // $icon = $dom->createElement('i');
-                        // $iconClass = $dom->createAttribute('class');
-                        // $iconClass->value = 'far fa-plus-square';
-                        // $icon->appendChild($iconClass);
-                        // $btnWbs->appendChild($icon);
-                        // $carCol4->appendChild($btnWbs);
-
-                        // // Button new task
-                        // if ($isLeaf) {
-                        //     $btnTask = $dom->createElement('button');
-                        //     $btnTaskClass = $dom->createAttribute('class');
-                        //     $btnTaskClass->value = 'btn btn-secondary btn-sm';
-                        //     $btnTaskToggle = $dom->createAttribute('data-toggle');
-                        //     $btnTaskToggle->value = 'modal';
-                        //     $btnTaskTarget = $dom->createAttribute('data-target');
-                        //     $btnTaskTarget->value = '#newTaskModal';
-                        //     $btnTaskTitle = $dom->createAttribute('title');
-                        //     $btnTaskTitle->value = 'Nova Atividade';
-                        //     $btnTask->appendChild($btnTaskClass);
-                        //     $btnTask->appendChild($btnTaskToggle);
-                        //     $btnTask->appendChild($btnTaskTarget);
-                        //     $btnTask->appendChild($btnTaskTitle);
-                        //     $icon = $dom->createElement('i');
-                        //     $iconClass = $dom->createAttribute('class');
-                        //     $iconClass->value = 'far fa-plus-square';
-                        //     $icon->appendChild($iconClass);
-                        //     $btnTask->appendChild($icon);
-                        //     $carCol4->appendChild($btnTask);
-                        // }
-
-                        // // Button edit WBS item
-                        // $btnWbsEdit = $dom->createElement('button');
-                        // $btnWbsEditClass = $dom->createAttribute('class');
-                        // $btnWbsEditClass->value = 'btn btn-secondary btn-sm';
-                        // $btnWbsEditToggle = $dom->createAttribute('data-toggle');
-                        // $btnWbsEditToggle->value = 'modal';
-                        // $btnWbsEditTarget = $dom->createAttribute('data-target');
-                        // $btnWbsEditTarget->value = '#newTaskModal';
-                        // $btnWbsEditTitle = $dom->createAttribute('title');
-                        // $btnWbsEditTitle->value = 'Alterar Item EAP';
-                        // $btnWbsEdit->appendChild($btnWbsEditClass);
-                        // $btnWbsEdit->appendChild($btnWbsEditToggle);
-                        // $btnWbsEdit->appendChild($btnWbsEditTarget);
-                        // $btnWbsEdit->appendChild($btnWbsEditTitle);
-                        // $icon = $dom->createElement('i');
-                        // $iconClass = $dom->createAttribute('class');
-                        // $iconClass->value = 'far fa-edit';
-                        // $icon->appendChild($iconClass);
-                        // $btnWbsEdit->appendChild($icon);
-                        // $carCol4->appendChild($btnWbsEdit);
-
-                        // // Button delete WBS item
-                        // $btnWbsDel = $dom->createElement('button');
-                        // $btnWbsDelClass = $dom->createAttribute('class');
-                        // $btnWbsDelClass->value = 'btn btn-danger btn-sm';
-                        // $btnWbsDelTitle = $dom->createAttribute('title');
-                        // $btnWbsDelTitle->value = 'Excluir Item EAP';
-                        // $btnWbsDelClick = $dom->createAttribute('onclick');
-                        // $btnWbsDelClick->value = 'wbs.delete('.$branch['id'].')';
-                        // $btnWbsDel->appendChild($btnWbsDelClass);
-                        // $btnWbsDel->appendChild($btnWbsDelTitle);
-                        // $btnWbsDel->appendChild($btnWbsDelClick);
-                        // $icon = $dom->createElement('i');
-                        // $iconClass = $dom->createAttribute('class');
-                        // $iconClass->value = 'far fa-trash-alt';
-                        // $icon->appendChild($iconClass);
-                        // $btnWbsDel->appendChild($icon);
-                        // $carCol4->appendChild($btnWbsDel);
-
-                        // // Button scope declaration
-                        // $btnWbsScopeDec = $dom->createElement('button');
-                        // $btnWbsScopeDecClass = $dom->createAttribute('class');
-                        // $btnWbsScopeDecClass->value = 'btn btn-secondary btn-sm';
-                        // $btnWbsScopeDecTitle = $dom->createAttribute('title');
-                        // $btnWbsScopeDecTitle->value = 'Declaração do escopo';
-                        // $btnWbsScopeDecClick = $dom->createAttribute('onclick');
-                        // $btnWbsScopeDecClick->value = 'rightClickMenuShowScopeDeclaration()';
-                        // $btnWbsScopeDec->appendChild($btnWbsScopeDecClass);
-                        // $btnWbsScopeDec->appendChild($btnWbsScopeDecTitle);
-                        // $btnWbsScopeDec->appendChild($btnWbsScopeDecClick);
-                        // $icon = $dom->createElement('i');
-                        // $iconClass = $dom->createAttribute('class');
-                        // $iconClass->value = 'fas fa-paste';
-                        // $icon->appendChild($iconClass);
-                        // $btnWbsScopeDec->appendChild($icon);
-                        // $carCol4->appendChild($btnWbsScopeDec);
-
-                        // // Button WBS dictionary
-                        // $btnWbsDict = $dom->createElement('button');
-                        // $btnWbsDictClass = $dom->createAttribute('class');
-                        // $btnWbsDictClass->value = 'btn btn-secondary btn-sm';
-                        // $btnWbsDictTitle = $dom->createAttribute('title');
-                        // $btnWbsDictTitle->value = 'Dicionário da EAP';
-                        // $btnWbsDictClick = $dom->createAttribute('onclick');
-                        // $btnWbsDictClick->value = 'showWBSDictionary()';
-                        // $btnWbsDict->appendChild($btnWbsDictClass);
-                        // $btnWbsDict->appendChild($btnWbsDictClass);
-                        // $btnWbsDict->appendChild($btnWbsDictClick);
-                        // $icon = $dom->createElement('i');
-                        // $iconClass = $dom->createAttribute('class');
-                        // $iconClass->value = 'fas fa-book';
-                        // $icon->appendChild($iconClass);
-                        // $btnWbsDict->appendChild($icon);
-                        
-                        // $carCol4->appendChild($btnWbsDict);
-
 
                         // Dropdown
                         $dropdown = $dom->createElement('div');
@@ -1103,7 +967,7 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownA->appendChild($dropdownAId);
                         $icon = $dom->createElement('i');
                         $iconClass = $dom->createAttribute('class');
-                        $iconClass->value = 'fas fa-ellipsis-v';
+                        $iconClass->value = 'fas fa-bars';
                         $icon->appendChild($iconClass);
                         $dropdownA->appendChild($icon);
 
@@ -1119,14 +983,17 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownMenu->appendChild($dropdownMenuAriaL);
                         
                         // Dropdown item
-                        if(!$isLeaf) {
+                        if(sizeof($tasks) == 0) {
                             $dropdownItem = $dom->createElement('a');
                             $dropdownItemClass = $dom->createAttribute('class');
                             $dropdownItemClass->value = 'dropdown-item';
                             $dropdownItem->appendChild($dropdownItemClass);
                             $dropdownItemhref = $dom->createAttribute('href');
-                            $dropdownItemhref->value = '#';
+                            $dropdownItemhref->value = 'javascript:void(0)';
                             $dropdownItem->appendChild($dropdownItemhref);
+                            $dropdownItemOC = $dom->createAttribute('onclick');
+                            $dropdownItemOC->value = 'wbs.new('.$project_id.',"'.$branch['number'].'",'.$branch['id'].')';
+                            $dropdownItem->appendChild($dropdownItemOC);
                             $icon = $dom->createElement('i');
                             $iconClass = $dom->createAttribute('class');
                             $iconClass->value = 'far fa-plus-square';
@@ -1144,8 +1011,14 @@ if ($_GET["show_external_page"] != "") {
                             $dropdownItemClass->value = 'dropdown-item';
                             $dropdownItem->appendChild($dropdownItemClass);
                             $dropdownItemhref = $dom->createAttribute('href');
-                            $dropdownItemhref->value = '#';
+                            $dropdownItemhref->value = 'javascript:void(0)';
                             $dropdownItem->appendChild($dropdownItemhref);
+                            $dropdownItemDT = $dom->createAttribute('data-toggle');
+                            $dropdownItemDT->value = 'modal';
+                            $dropdownItem->appendChild($dropdownItemDT);
+                            $dropdownItemDT = $dom->createAttribute('data-target');
+                            $dropdownItemDT->value = '#taskModal';
+                            $dropdownItem->appendChild($dropdownItemDT);
                             $icon = $dom->createElement('i');
                             $iconClass = $dom->createAttribute('class');
                             $iconClass->value = 'far fa-plus-square';
@@ -1162,8 +1035,11 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItemClass->value = 'dropdown-item';
                         $dropdownItem->appendChild($dropdownItemClass);
                         $dropdownItemhref = $dom->createAttribute('href');
-                        $dropdownItemhref->value = '#';
+                        $dropdownItemhref->value = 'javascript:void(0)';
                         $dropdownItem->appendChild($dropdownItemhref);
+                        $dropdownItemOC = $dom->createAttribute('onclick');
+                        $dropdownItemOC->value = 'wbs.update('.$project_id.','.$branch['id'].',"'.$branch['name'].'",'.$branch['size'].',"'.$branch['sizeUnit'].'")';
+                        $dropdownItem->appendChild($dropdownItemOC);
                         $icon = $dom->createElement('i');
                         $iconClass = $dom->createAttribute('class');
                         $iconClass->value = 'far fa-edit';
@@ -1179,8 +1055,11 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItemClass->value = 'dropdown-item';
                         $dropdownItem->appendChild($dropdownItemClass);
                         $dropdownItemhref = $dom->createAttribute('href');
-                        $dropdownItemhref->value = '#';
+                        $dropdownItemhref->value = 'javascript:void(0)';
                         $dropdownItem->appendChild($dropdownItemhref);
+                        $dropdownItemOC = $dom->createAttribute('onclick');
+                        $dropdownItemOC->value = 'wbs.delete('.$project_id.','.$branch['id'].',"'.$branch['name'].'")';
+                        $dropdownItem->appendChild($dropdownItemOC);
                         $icon = $dom->createElement('i');
                         $iconClass = $dom->createAttribute('class');
                         $iconClass->value = 'far fa-trash-alt';
@@ -1203,7 +1082,7 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItemClass->value = 'dropdown-item';
                         $dropdownItem->appendChild($dropdownItemClass);
                         $dropdownItemhref = $dom->createAttribute('href');
-                        $dropdownItemhref->value = '#';
+                        $dropdownItemhref->value = 'javascript:void(0)';
                         $dropdownItem->appendChild($dropdownItemhref);
                         $icon = $dom->createElement('i');
                         $iconClass = $dom->createAttribute('class');
@@ -1220,7 +1099,7 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItemClass->value = 'dropdown-item';
                         $dropdownItem->appendChild($dropdownItemClass);
                         $dropdownItemhref = $dom->createAttribute('href');
-                        $dropdownItemhref->value = '#';
+                        $dropdownItemhref->value = 'javascript:void(0)';
                         $dropdownItem->appendChild($dropdownItemhref);
                         $icon = $dom->createElement('i');
                         $iconClass = $dom->createAttribute('class');
@@ -1232,28 +1111,9 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownMenu->appendChild($dropdownItem);
                         
                         $dropdown->appendChild($dropdownMenu);
-
                         $carCol4->appendChild($dropdown);
-
-                        // <div class="dropdown">
-                        // <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">
-                        //     Dropdown link
-                        // </a>
-
-                        // <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        //     <a class="dropdown-item" href="#">Action</a>
-                        //     <a class="dropdown-item" href="#">Another action</a>
-                        //     <a class="dropdown-item" href="#">Something else here</a>
-                        // </div>
-                        // </div>
-
-
-
-
-
                         $cardRow->appendChild($carCol8);
                         $cardRow->appendChild($carCol4);
-
                         $cardBody->appendChild($cardRow);
 
                         if ($isLeaf) {
@@ -1335,7 +1195,7 @@ if ($_GET["show_external_page"] != "") {
                                 
                                 $h6 = $dom->createElement('h6', 'A.' . $activitiesIdsForDisplay[$task_id] . ' ' . $taskDescription . ' ');
                                 $h6Class = $dom->createAttribute('class');
-                                $h6Class->value = 'link';
+                                $h6Class->value = 'mouse-cursor-pointer';
                                 $h6->appendChild($h6Class);
                                 $h6Toggle = $dom->createAttribute('data-toggle');
                                 $h6Toggle->value = 'collapse';
@@ -1350,8 +1210,6 @@ if ($_GET["show_external_page"] != "") {
                                 $icon->appendChild($iconClass);
                                 $h6->appendChild($icon);
                                 $carCol8->appendChild($h6);
-                                
-                                $h6->appendChild($activityStatus);
 
                                 // Responsável
                                 $span = $dom->createElement('span', 'Responsável: ' . $user_name); 
@@ -1371,61 +1229,92 @@ if ($_GET["show_external_page"] != "") {
                                 $carCol4Class = $dom->createAttribute('class');
                                 $carCol4Class->value = 'col-md-2 text-right';
                                 $carCol4->appendChild($carCol4Class);
+                                $carCol4->appendChild($activityStatus);
 
-                                // Button edit task
-                                // $btnTaskEdit = $dom->createElement('button');
-                                // $btnTaskEditClass = $dom->createAttribute('class');
-                                // $btnTaskEditClass->value = 'btn btn-secondary btn-sm';
-                                // $btnTaskEditToggle = $dom->createAttribute('data-toggle');
-                                // $btnTaskEditToggle->value = 'modal';
-                                // $btnTaskEditTarget = $dom->createAttribute('data-target');
-                                // $btnTaskEditTarget->value = '#newTaskModal';
-                                // $btnTaskEditTitle = $dom->createAttribute('title');
-                                // $btnTaskEditTitle->value = 'Alterar Atividade';
-                                // $btnTaskEdit->appendChild($btnTaskEditClass);
-                                // $btnTaskEdit->appendChild($btnTaskEditToggle);
-                                // $btnTaskEdit->appendChild($btnTaskEditTarget);
-                                // $btnTaskEdit->appendChild($btnTaskEditTitle);
-                                $icon = $dom->createElement('i');
-                                $icon = $dom->createElement('i');
-                                $iconTitle = $dom->createAttribute('title');
-                                $iconTitle->value = 'Alterar Atividade';
-                                $icon->appendChild($iconTitle);
-                                $iconClass = $dom->createAttribute('class');
-                                $iconClass->value = 'far fa-edit link';
-                                $icon->appendChild($iconClass);
-                                $iconToggle = $dom->createAttribute('data-toggle');
-                                $iconToggle->value = 'modal';
-                                $icon->appendChild($iconToggle);
-                                $iconTarget = $dom->createAttribute('data-target');
-                                $iconTarget->value = '#newTaskModal';
-                                $icon->appendChild($iconTarget);
-                                // $btnTaskEdit->appendChild($icon);
-                                $carCol4->appendChild($icon);
+                                // Dropdown activity options
+                                $dropdown = $dom->createElement('div');
+                                $dropdownClass = $dom->createAttribute('class');
+                                $dropdownClass->value = 'dropdown';
+                                $dropdown->appendChild($dropdownClass);
+                                $dropdownStyle = $dom->createAttribute('style');
+                                $dropdownStyle->value = 'width: 20%; float: right;';
+                                $dropdown->appendChild($dropdownStyle);
 
-                                // Button delete task
-                                // $btnTaskDel = $dom->createElement('button');
-                                // $btnTaskDelClass = $dom->createAttribute('class');
-                                // $btnTaskDelClass->value = 'btn btn-danger btn-sm';
-                                // $btnTaskDelTitle = $dom->createAttribute('title');
-                                // $btnTaskDelTitle->value = 'Excluir Atividade';
-                                // $btnTaskDelClick = $dom->createAttribute('onclick');
-                                // $btnTaskDelClick->value = 'tasks.delete('.$task_id.')';
-                                // $btnTaskDel->appendChild($btnTaskDelClass);
-                                // $btnTaskDel->appendChild($btnTaskDelTitle);
-                                // $btnTaskDel->appendChild($btnTaskDelClick);
+                                // Dropdown link
+                                $dropdownA = $dom->createElement('a');
+                                $dropdownAClass = $dom->createAttribute('class');
+                                $dropdownAClass->value = '';
+                                $dropdownA->appendChild($dropdownAClass);
+                                $dropdownAhref = $dom->createAttribute('href');
+                                $dropdownAhref->value = 'javascript:void(0)';
+                                $dropdownA->appendChild($dropdownAhref);
+                                $dropdownAToggle = $dom->createAttribute('data-toggle');
+                                $dropdownAToggle->value = 'dropdown';
+                                $dropdownA->appendChild($dropdownAToggle);
+                                $dropdownAId = $dom->createAttribute('id');
+                                $dropdownAId->value = '#dropdown_' . $branch['id'];
+                                $dropdownA->appendChild($dropdownAId);
                                 $icon = $dom->createElement('i');
-                                $iconTitle = $dom->createAttribute('title');
-                                $iconTitle->value = 'Excluir Atividade';
-                                $icon->appendChild($iconTitle);
                                 $iconClass = $dom->createAttribute('class');
-                                $iconClass->value = 'far fa-trash-alt link';
+                                $iconClass->value = 'fas fa-bars';
                                 $icon->appendChild($iconClass);
-                                $iconClick = $dom->createAttribute('onclick');
-                                $iconClick->value = 'tasks.delete('.$task_id.')';
-                                $icon->appendChild($iconClick);
-                                // $btnTaskDel->appendChild($icon);
-                                $carCol4->appendChild($icon);
+                                $dropdownA->appendChild($icon);
+
+                                $dropdown->appendChild($dropdownA);
+
+                                $dropdownMenu = $dom->createElement('div');
+                                $dropdownMenuClass = $dom->createAttribute('class');
+                                $dropdownMenuClass->value = 'dropdown-menu dropdown-menu-right';
+                                $dropdownMenu->appendChild($dropdownMenuClass);
+                                $dropdownMenuAriaL = $dom->createAttribute('aria-labelledby');
+                                $dropdownMenuAriaL->value = 'dropdown_'.$branch['id'];
+                                $dropdownMenu->appendChild($dropdownMenuAriaL);
+
+                                // Dropdown activity options item update activity
+                                $dropdownItem = $dom->createElement('a');
+                                $dropdownItemClass = $dom->createAttribute('class');
+                                $dropdownItemClass->value = 'dropdown-item';
+                                $dropdownItem->appendChild($dropdownItemClass);
+                                $dropdownItemhref = $dom->createAttribute('href');
+                                $dropdownItemhref->value = 'javascript:void(0)';
+                                $dropdownItem->appendChild($dropdownItemhref);
+                                $dropdownItemDT = $dom->createAttribute('data-toggle');
+                                $dropdownItemDT->value = 'modal';
+                                $dropdownItem->appendChild($dropdownItemDT);
+                                $dropdownItemDT = $dom->createAttribute('data-target');
+                                $dropdownItemDT->value = '#taskModal';
+                                $dropdownItem->appendChild($dropdownItemDT);
+                                $icon = $dom->createElement('i');
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'far fa-edit';
+                                $icon->appendChild($iconClass);
+                                $dropdownItem->appendChild($icon);
+                                $dropdownItemSpan = $dom->createElement('span', ' Alterar Atividade');
+                                $dropdownItem->appendChild($dropdownItemSpan);
+                                $dropdownMenu->appendChild($dropdownItem);
+
+                                // Dropdown activity options item delete activity
+                                $dropdownItem = $dom->createElement('a');
+                                $dropdownItemClass = $dom->createAttribute('class');
+                                $dropdownItemClass->value = 'dropdown-item';
+                                $dropdownItem->appendChild($dropdownItemClass);
+                                $dropdownItemhref = $dom->createAttribute('href');
+                                $dropdownItemhref->value = 'javascript:void(0)';
+                                $dropdownItem->appendChild($dropdownItemhref);
+                                $dropdownItemOC = $dom->createAttribute('onclick');
+                                $dropdownItemOC->value = 'tasks.delete('.$task_id.')';
+                                $dropdownItem->appendChild($dropdownItemOC);
+                                $icon = $dom->createElement('i');
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'far fa-trash-alt';
+                                $icon->appendChild($iconClass);
+                                $dropdownItem->appendChild($icon);
+                                $dropdownItemSpan = $dom->createElement('span', ' Excluir Atividade');
+                                $dropdownItem->appendChild($dropdownItemSpan);
+                                $dropdownMenu->appendChild($dropdownItem);
+
+                                $dropdown->appendChild($dropdownMenu);
+                                $carCol4->appendChild($dropdown);
 
                                 ?>
                                 <form action="?m=dotproject_plus" method="POST" id="formDeleteActivity_<?=$task_id?>">
@@ -1588,28 +1477,42 @@ if ($_GET["show_external_page"] != "") {
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_WBS_ITEM")?></h5>
+                    <h5 class="modal-title"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="<?=$AppUI->_("LBL_DESCRICAO")?>"><?=$AppUI->_("LBL_DESCRICAO")?></label>
-                        <input type="text" id="newWBSItem" class="form-control form-control-sm" maxlength="50" />
+                    <form name="wbsForm">
+                        <div class="form-group">
+                            <label class="required" for="<?=$AppUI->_("LBL_DESCRICAO")?>"><?=$AppUI->_("LBL_DESCRICAO")?></label>
+                            <input type="text" name="wbs_item_description" class="form-control form-control-sm" maxlength="50" />
+                        </div>
 
-                        <!-- Revisar e remover o desnecessário -->
-                        <input name="dosql" type="hidden" value="do_new_wbs_item" />
-                        <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                        <input type="hidden" name="parent_id" value="" />
-                        <input type="hidden" name="sort_order" value="1" />         
-                        <input type="hidden" id="identation_field" name="identation_field" value="" />
-                        <input type="hidden" id="number_field" name="number_field" value="1" />
-                        <input type="hidden" id="leaf_field" name="leaf_field" value="1" />
-                    </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="required" for="<?=$AppUI->_("LBL_TAMANHO")?>"><?=$AppUI->_("LBL_TAMANHO")?></label>
+                                    <input type="text" name="wbs_item_size" class="form-control form-control-sm" maxlength="10" size="15" />
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="required" for="<?=$AppUI->_("LBL_UNITY")?>"><?=$AppUI->_("LBL_UNITY")?></label>
+                                    <input type="text" name="wbs_item_size_unit" class="form-control form-control-sm" maxlength="30" size="25" />
+                                </div>
+                            </div>
+                        </div>
+                        <input name="dosql" type="hidden" value="do_save_wbs" />
+                        <input type="hidden" id="wbsProjectId" name="project_id" value="" />
+                        <input type="hidden" id="wbsParentId" name="parent_id" value="" />
+                        <input type="hidden" id="wbsParentNumber" name="parent_number" value="" />
+                        <input type="hidden" id="wbsNumber" name="number" value="" />
+                        <input type="hidden" id="wbsItemId" name="item_id" value="-1" />
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="addNewWBSItem()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="wbs.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
@@ -1617,7 +1520,7 @@ if ($_GET["show_external_page"] != "") {
     </div>
 
     <!-- MODAL NEW TASK FORM -->
-    <div id="newTaskModal" class="modal" tabindex="-1" role="dialog">
+    <div id="taskModal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1750,9 +1653,19 @@ if ($_GET["show_external_page"] != "") {
 ?>
 
 <script>
-    $(document).ready(function() {
-        $('#planned_start_date_activity').datepicker();
-    });
+
+//    var
+//    $(document).ready(function() {
+//
+//        // hidden.bs.modal
+//
+//
+//
+//
+//
+//
+//        $('#planned_start_date_activity').datepicker();
+//    });
 
 /**
  * function showWBSDictionary() {
@@ -1785,6 +1698,20 @@ if ($_GET["show_external_page"] != "") {
                     $(this).find('.task-date').show();
                 }
             });
+
+            $('#newWBSItemModal').on('hidden.bs.modal', function() {
+                // Hidden fields
+                $('#wbsProjectId').val('');
+                $('#wbsParentId').val('');
+                $('#wbsParentNumber').val('');
+                $('#wbsNumber').val('');
+                $('#wbsItemId').val('-1');
+
+                // Shown fields
+                $('input[name=wbs_item_description]').val('');
+                $('input[name=wbs_item_size]').val('');
+                $('input[name=wbs_item_size_unit]').val('');
+            });
         }
     };
     
@@ -1792,10 +1719,13 @@ if ($_GET["show_external_page"] != "") {
     var wbs = {
         msgDelete: "<?php echo $AppUI->_("LBL_MENU_DELETE_WBS_ITEM", UI_OUTPUT_JS); ?>",
         
-        delete: function(id) {
+        delete: function(projectId, itemId, itemName) {
+            console.log(projectId);
+            console.log(itemId);
+            console.log(itemName);
             $.confirm({
                 title: wbs.msgDelete,
-                content: '',
+                content: '<?=$AppUI->_(LBL_CONFIRM_WBS_ITEM_EXCLUSION, UI_OUTPUT_JS)?>',
                 buttons: {
                     yes: {
                         text: main.btnYes,
@@ -1804,17 +1734,99 @@ if ($_GET["show_external_page"] != "") {
                                 method: 'POST',
                                 url: "?m=dotproject_plus",
                                 data: {
-                                    // activity_id: id,
-                                    // dosql: 'do_delete_activity'
+                                    dosql: 'do_delete_wbs_item',
+                                    project_id: projectId,
+                                    wbs_item_id: itemId,
+                                    wbs_item_name: itemName
                                 }
-                            }).done(function() {
-                                $("#card_task_" + id).remove();
+                            }).done(function(resposta) {
+                                $.alert({
+                                    title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                    content: resposta,
+                                    onClose: function() {
+                                        window.location.reload(true);
+                                    }
+                                });
                             });
                         },
                     },
                     no: {
                         text: main.btnNo
                     }
+                }
+            });
+        },
+
+        new: function(projectId, parentNumber, parentId) {
+            $('#wbsProjectId').val(projectId);
+            $('#wbsParentNumber').val(parentNumber);
+            $('#wbsParentId').val(parentId);
+
+            var modal = $('#newWBSItemModal');
+            modal.find('.modal-title').html('<?=$AppUI->_("LBL_MENU_NEW_WBS_ITEM")?>');
+            modal.modal();
+        },
+
+        update: function (projectId, itemId, description, size, sizeUnit) {
+            $('#wbsProjectId').val(projectId);
+            $('#wbsItemId').val(itemId);
+            $('input[name=wbs_item_description]').val(description);
+            $('input[name=wbs_item_size]').val(size);
+            $('input[name=wbs_item_size_unit]').val(sizeUnit);
+
+            var modal = $('#newWBSItemModal');
+            modal.find('.modal-title').html('<?=$AppUI->_("LBL_MENU_EDIT_WBS_ITEM")?>');
+            modal.modal();
+        },
+
+        save: function () {
+            var description = $('input[name=wbs_item_description]').val();
+            var size = $('input[name=wbs_item_size]').val();
+            var sizeUnit = $('input[name=wbs_item_size_unit]').val();
+
+            var err = false;
+            var msg = '';
+            if (!description.trim()) {
+                err = true;
+                msg = 'A descrição é obrigatória';
+            }
+            if (!size.trim() || isNaN(size)) {
+                err = true;
+                msg = 'Tamanho inválido';
+            }
+            if (!sizeUnit.trim()) {
+                err = true;
+                msg = 'Unidade de medida é obrigatória';
+            }
+            if (err) {
+                $.alert({
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                    content: msg
+                });
+                return;
+            }
+
+            // submete o formulário tanto para inclusão como alteração
+            $.ajax({
+                url: "?m=dotproject_plus",
+                type: "post",
+                datatype: "json",
+                data: $("form[name=wbsForm]").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        content: resposta,
+                        onClose: function() {
+                            $("#newWBSItemModal").modal("hide");
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
                 }
             });
         }

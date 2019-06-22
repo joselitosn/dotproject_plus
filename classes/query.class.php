@@ -786,7 +786,6 @@ class DBQuery {
 		$this->clear();
 		return $result;
 	}
-	//2}}}
 
 	/** {{{2 function make_where_clause
 	 * Create a where clause based upon supplied field.
