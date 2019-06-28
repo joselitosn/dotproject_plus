@@ -16,110 +16,115 @@ $query->addQuery('r.*');
 $query->addWhere('r.human_resources_role_company_id = ' . $company_id);
 $res_companies = & $query->exec();
 
+require_once DP_BASE_DIR . "/modules/human_resources/configuration_functions.php";
+$roles = array();
+for ($res_companies; !$res_companies->EOF; $res_companies->MoveNext()) {
+    $role_id = $res_companies->fields['human_resources_role_id'];
 
-// TODO se não tiver roles, mostrar mensagem com opção para cadastrar
-
-if (!count($res_companies)) {
-
-} else {
-
-
-
+    $obj = new CHumanResourcesRole();
+    $obj->load($role_id);
+    $roles[] = array(
+        'canDelete' => $obj->canDelete($msg),
+        'obj' => $obj
+    );
 }
-?>
 
-<div class="row">
-    <div class="col-md-12 text-right">
-        <div class="dropdown">
-            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bars"></i>
+if (!count($roles)) {
+    ?>
+
+    <div class="alert alert-secondary text-center" role="alert">
+        <?=$AppUI->_("LBL_THERE_IS_NO_ROLE") ?>
+        <?=$AppUI->_("LBL_CLICK"); ?>
+        <a class="alert-link" href="javascript:void(0)" onclick="roles.new()">
+            <?php echo $AppUI->_("LBL_HERE"); ?>
+        </a>
+        <?php echo $AppUI->_("LBL_TO_CREATE_A_ROLE"); ?>
+    </div>
+    <?php
+} else {
+    ?>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="roles.new()">
+                <?= $AppUI->_('LBL_NEW_ROLE') ?>
             </a>
 
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="javascript:void(0)" onclick="roles.new()">
-                    <i class="far fa-plus-square"></i>
-                    <?=$AppUI->_('LBL_NEW_ROLE')?>
-                </a>
-            </div>
         </div>
     </div>
-</div>
 
 
-<?php
-
-
-    require_once DP_BASE_DIR . "/modules/human_resources/configuration_functions.php";
-    for ($res_companies; !$res_companies->EOF; $res_companies->MoveNext()) {
-        $human_resources_role_id = $res_companies->fields['human_resources_role_id'];
-
-        $obj = new CHumanResourcesRole();
-        $obj->load($human_resources_role_id);
-        $canDelete = $obj->canDelete($obj);
-
+    <?php
+    foreach ($roles as $role) {
+        $human_resources_role_id = $role['obj']->human_resources_role_id;
+        $canDelete = $role['canDelete'];
         $configured = isConfiguredRole($human_resources_role_id);
         $style = $configured ? '' : 'background-color:#ED9A9A; font-weight:bold';
-    ?>
+        ?>
 
         <div class="card inner-card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-11">
                         <h5>
-                            <a id="<?=$human_resources_role_id?>" data-toggle="collapse" href="#role_details_<?=$human_resources_role_id?>">
-                                <?=$res_companies->fields['human_resources_role_name']?>
+                            <a id="<?= $human_resources_role_id ?>" data-toggle="collapse"
+                               href="#role_details_<?= $human_resources_role_id ?>">
+                                <?= $role['obj']->human_resources_role_name ?>
                                 <i class="fas fa-caret-down"></i>
                             </a>
                         </h5>
                     </div>
                     <div class="col-md-1 text-right">
                         <div class="dropdown">
-                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bars"></i>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="javascript:void(0)" onclick="roles.edit(<?=$human_resources_role_id?>)">
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                   onclick="roles.edit(<?= $human_resources_role_id ?>)">
                                     <i class="far fa-edit"></i>
-                                    <?=$AppUI->_('LBL_UPDATE_ROLE')?>
+                                    <?= $AppUI->_('LBL_UPDATE_ROLE') ?>
                                 </a>
                                 <?php
-                                    if ($canDelete && $human_resources_role_id > 0) {
-                                ?>
-                                    <a class="dropdown-item" href="javascript:void(0)" onclick="roles.delete(<?=$human_resources_role_id?>)">
+                                if ($canDelete && $human_resources_role_id > 0) {
+                                    ?>
+                                    <a class="dropdown-item" href="javascript:void(0)"
+                                       onclick="roles.delete(<?= $human_resources_role_id ?>)">
                                         <i class="far fa-trash-alt"></i>
-                                        <?=$AppUI->_('LBL_DELETE_ROLE')?>
+                                        <?= $AppUI->_('LBL_DELETE_ROLE') ?>
                                     </a>
-                                <?php
-                                    }
+                                    <?php
+                                }
                                 ?>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="role_details_<?=$human_resources_role_id?>" class="collapse">
+                <div id="role_details_<?= $human_resources_role_id ?>" class="collapse">
                     <div class="row">
                         <table class="table table-sm no-border">
                             <tr>
                                 <th class="text-right" width="15%"><?php echo $AppUI->_("Role responsability"); ?>:</th>
-                                <td><?php echo $res_companies->fields['human_resources_role_responsability'] ?></td>
+                                <td><?php echo $role['obj']->human_resources_role_responsability ?></td>
                             </tr>
                             <tr>
                                 <th class="text-right" width="15%"><?php echo $AppUI->_("Role authority"); ?>:</th>
-                                <td><?php echo $res_companies->fields['human_resources_role_authority'] ?></td>
+                                <td><?php echo $role['obj']->human_resources_role_authority ?></td>
                             </tr>
                             <tr>
                                 <th class="text-right" width="15%"><?php echo $AppUI->_("Role competence"); ?>:</th>
-                                <td><?php echo $res_companies->fields['human_resources_role_competence'] ?></td>
+                                <td><?php echo $role['obj']->human_resources_role_competence ?></td>
                             </tr>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-<?php
+        <?php
     }
     $query->clear();
+}
 ?>
 
 <div class="modal" id="addEditRoleModal" tabindex="-1" role="dialog">

@@ -254,28 +254,28 @@ if ($project_id == 0 && $contact_id > 0) {
             allowClear: true,
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#addEditCompanyModal")
+            dropdownParent: $("#addEditProjectModal")
         });
 
         $(".project-status").select2({
             allowClear: true,
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#addEditCompanyModal")
+            dropdownParent: $("#addEditProjectModal")
         });
 
         $(".project-priority").select2({
             allowClear: true,
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#addEditCompanyModal")
+            dropdownParent: $("#addEditProjectModal")
         });
 
         $(".project-responsible").select2({
             allowClear: true,
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#addEditCompanyModal")
+            dropdownParent: $("#addEditProjectModal")
         });
 
         $( ".datepicker" ).datepicker({

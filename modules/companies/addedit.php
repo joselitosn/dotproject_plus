@@ -60,7 +60,6 @@ $query->clear();
 $policies = new CCompaniesPolicies();
 $policies->load($company_policies_id);
 
-
 ?>
 <form name="changeclient">
 
@@ -177,8 +176,9 @@ $policies->load($company_policies_id);
                         name="company_type">
                     <?php
                         foreach ($types as $key => $option) {
+                            $selected = $obj->company_type == $key ? 'selected="selected"' : '';
                     ?>
-                            <option value="<?=$key?>"><?=$AppUI->_($option)?></option>
+                            <option value="<?=$key?>"<?=$selected?>><?=$AppUI->_($option)?></option>
                     <?php
                         }
                     ?>
@@ -235,7 +235,7 @@ $policies->load($company_policies_id);
 
     <script>
 
-        $(".phone").mask("9999-?9999", {translation:  {'?': {pattern: /[0-9]/, optional: true}}});
+        $(".phone").mask("(99)9999-?9999", {translation:  {'?': {pattern: /[0-9]/, optional: true}}});
         $(".zip").mask("00000-000");
         $(".select-owner").select2({
             placeholder: "Dono",

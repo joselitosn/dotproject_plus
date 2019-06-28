@@ -7,6 +7,7 @@ if (!defined('DP_BASE_DIR')) {
 if (!$canAccess) {
 	$AppUI->redirect('m=public&a=access_denied');
 }
+
 $AppUI->savePlace();
 
 $valid_ordering = array('company_name', 'countp', 'inactive', 'company_type');
@@ -104,20 +105,10 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3"></div>
-                        <div class="col-md-3 text-right">
-                            <div class="dropdown">
-                                <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-bars"></i>
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                    <a class="dropdown-item" href="javascript:void(0)" onclick="company.create()">
-                                        <i class="far fa-plus-square"></i>
-                                        Nova empresa
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="col-md-6 text-right">
+                            <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="company.create()">
+                                Nova empresa
+                            </a>
                         </div>
                     </div>
                 </form>
@@ -125,6 +116,12 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                 <?php
 
                 foreach ($rows as $company) {
+
+                    $id = $company['company_id'];
+                    // check permissions for this record
+                    $canRead = getPermission($m, 'view', $id);
+                    $canEdit = getPermission($m, 'edit', $id);
+
                     $badgeClass = '';
                     switch ($company['company_type']) {
                         case 0:
@@ -150,17 +147,52 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                             break;
                     }
                     ?>
-                    <div class="card inner-card mouse-cursor-pointer">
+                    <div class="card inner-card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <h5><a href="?m=companies&a=view&company_id=<?=$company['company_id']?>"><?=$company['company_name']?></a></h5>
+                                <div class="col-md-5 action mouse-cursor-pointer">
+                                    <h5><a href="?m=companies&a=view&company_id=<?=$id?>"><?=$company['company_name']?></a></h5>
                                 </div>
                                 <div class="col-md-5">
                                     <span><?=$AppUI->_('Active Projects').': '.$company['countp'].' | '.$AppUI->_('Archived Projects').': '.$company['inactive']?></span>
                                 </div>
-                                <div class="col-md-1 text-right">
-                                    <span class="badge <?=$badgeClass?>">Tipo: <?=$AppUI->_($types[$company['company_type']])?></span>
+                                <div class="col-md-2 text-right">
+                                    <span class="badge <?=$badgeClass?>"><?=$AppUI->_($types[$company['company_type']])?></span>
+
+                                    <div class="dropdown" style="width: 20%; float: right;">
+                                        <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-bars"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                            <?php
+                                            if ($canEdit) {
+                                                ?>
+                                                <a class="dropdown-item" href="javascript:void(0)" onclick="company.edit(<?=$id?>)">
+                                                    <i class="far fa-edit"></i>
+                                                    Alterar empresa
+                                                </a>
+                                                <?php
+                                            }
+                                            if ($canDelete) {
+                                                ?>
+                                                <a class="dropdown-item" href="javascript:void(0)" onclick="company.delete(<?=$id?>)">
+                                                    <i class="far fa-trash-alt"></i>
+                                                    Excluir empresa
+                                                </a>
+                                                <?php
+                                            }
+                                            ?>
+                                            <a class="dropdown-item" href="?m=admin"">
+                                                <i class="fas fa-users"></i>
+                                                Usuários
+                                            </a>
+                                            <a class="dropdown-item" href="?m=contacts"">
+                                                <i class="fas fa-address-book"></i>
+                                                Contatos
+                                            </a>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -180,7 +212,7 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body company-modal">
 
                             </div>
                             <div class="modal-footer">
@@ -205,10 +237,10 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
             });
             $("#addEditCompanyModal").on("hidden.bs.modal", function() {
                 $("#btnSaveCompany").off("click");
-                $(this).find(".modal-body").html("");
+                $(this).find(".company-modal").html("");
             });
 
-            $(".card").on("click", function() {
+            $(".action").on("click", function() {
                 company.view($(this).find("a").attr("href"));
             });
         },
@@ -217,7 +249,7 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                 type: "get",
                 url: "?m=companies&template=addedit"
             }).done(function(response) {
-                $(".modal-body").html(response);
+                $(".company-modal").html(response);
                 $(".modal-title").html("<?=$AppUI->_('new company')?>");
                 $("#btnSaveCompany").on("click", function() {
                     company.save();
@@ -266,10 +298,73 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                 }
             });
         },
+        delete: function (companyId) {
+            $.confirm({
+                title: '<?=$AppUI->_("LBL_CONFIRM", UI_OUTPUT_JS); ?>',
+                content: '<?=$AppUI->_("delete company", UI_OUTPUT_JS); ?>',
+                buttons: {
+                    confirmar: {
+                        btnClass: 'btn-blue',
+                        action: function () {
+                            $.ajax({
+                                url: "?m=companies",
+                                type: "post",
+                                datatype: "json",
+                                data: {
+                                    dosql: 'do_company_aed',
+                                    del: 1,
+                                    company_id: companyId
+                                },
+                                success: function(resp) {
+                                    console.log(resp);
+                                    var resposta = JSON.parse(resp);
+                                    if (!resposta.err) {
+                                        $.alert({
+                                            title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                            content: resposta,
+                                            onClose: function() {
+                                                window.location.href = "?m=companies";
+                                            }
+                                        });
+                                    } else {
+                                        $.alert({
+                                            title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                                            content: resposta.msg
+                                        });
+                                    }
+                                },
+                                error: function(resposta) {
+                                    $.alert({
+                                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                                    });
+                                }
+                            });
+                        }
+                    },
+                    cancelar: function () {},
+                }
+            });
+        },
+        edit: function(companyId) {
+            $.ajax({
+                type: "get",
+                url: "?m=companies&template=addedit&company_id="+companyId
+            }).done(function(response) {
+                $(".company-modal").html(response);
+                $(".modal-title").html("<?=$AppUI->_('edit this company')?>");
+                $("#btnSaveCompany").on("click", function() {
+                    company.save();
+                });
+                $("#addEditCompanyModal").modal();
+            });
+        },
         view: function(url) {
             window.location.href = url;
         }
     };
-    company.init();
+    $(document).ready(function () {
+        company.init();
+    });
 
 </script>

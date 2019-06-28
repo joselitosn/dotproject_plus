@@ -30,8 +30,9 @@ require_once($AppUI->getSystemClass('CustomFields'));
 
 if ($del) {
 	if (!$obj->canDelete($msg)) {
-        $AppUI->setMsg($msg, UI_MSG_ERROR);
-        echo $AppUI->getMsg();
+//        $AppUI->setMsg($msg, UI_MSG_ERROR);
+        $res = array('err'=> true, 'msg' => $msg);
+        echo json_encode($res);
         exit();
 	}
 

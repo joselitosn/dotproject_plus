@@ -25,37 +25,26 @@ if (count($projList)) {
 $q->addWhere('prj.project_status <> 7');
 $q->addOrder($sort);
 
-
-//Draw screen
 if (!($rows = $q->loadList())) {
-    ?>
+
+?>
 
     <div class="alert alert-secondary text-center" role="alert">
         <?=$AppUI->_("LBL_THERE_IS_NO_PROJECT") ?>
         <?=$AppUI->_("LBL_CLICK"); ?>
-        <a class="alert-link" href="#" onclick="company.project.new()">
+        <a class="alert-link" href="javascript:void(0)" onclick="company.project.new()">
             <?php echo $AppUI->_("LBL_HERE"); ?>
         </a>
-        <?php echo $AppUI->_("to create a project"); ?>
+        <?php echo $AppUI->_("LBL_TO_CREATE_A_PROJECT"); ?>
     </div>
     <?php
 } else {
     ?>
-
     <div class="row">
         <div class="col-md-12 text-right">
-            <div class="dropdown">
-                <a href="#" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-bars"></i>
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" href="#" onclick="company.project.new()">
-                        <i class="far fa-plus-square"></i>
-                        Adicionar projeto
-                    </a>
-                </div>
-            </div>
+            <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="company.project.new()">
+                Adicionar projeto
+            </a>
         </div>
     </div>
 
@@ -100,15 +89,15 @@ if (!($rows = $q->loadList())) {
                 break;
         }
         ?>
-        <div class="card inner-card mouse-cursor-pointer card-project">
+        <div class="card inner-card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-md-11 mouse-cursor-pointer card-project">
                         <h5><a class="project-link" href="?m=projects&a=view&project_id=<?=$project_id?>"><?=$project_name?></a></h5>
                     </div>
                     <div class="col-md-1 text-right">
                         <div class="dropdown">
-                            <a href="#" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bars"></i>
                             </a>
 
