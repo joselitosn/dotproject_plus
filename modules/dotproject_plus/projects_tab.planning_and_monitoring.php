@@ -1,705 +1,705 @@
-<script src="./modules/timeplanning/js/estimations.js"></script>
-<script src="./modules/timeplanning/js/eap.js"></script>
-<script src="./modules/timeplanning/js/ajax_service_activator.js"></script>
-
-<!-- include libraries for right click menu -->
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/milonic_src.js"></script> 
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/mmenudom.js"></script> 
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/contextmenu_activities_wbs.js"></script>
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_activities.js"></script>
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_wbs.js"></script>
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_wbs_new_activity.js"></script>
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_wbs_non_workpackage.js"></script>
+<!--<script src="./modules/timeplanning/js/estimations.js"></script>-->
+<!--<script src="./modules/timeplanning/js/eap.js"></script>-->
+<!--<script src="./modules/timeplanning/js/ajax_service_activator.js"></script>-->
+<!---->
+<!--<!-- include libraries for right click menu -->
+<!--<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/milonic_src.js"></script> -->
+<!--<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/mmenudom.js"></script> -->
+<!--<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/contextmenu_activities_wbs.js"></script>-->
+<!--<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_activities.js"></script>-->
+<!--<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_wbs.js"></script>-->
+<!--<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_wbs_new_activity.js"></script>-->
+<!--<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_wbs_non_workpackage.js"></script>-->
 
 <!-- This script code  was moved to here due to translation reasons -->
 <script>
-    with (milonic = new menuname("contextMenu")) {
-        margin = 7;
-        style = contextStyle;
-        top = "offset=8";
-        aI("image=./modules/dotproject_plus/images/activities_details.png;text=<?php echo $AppUI->_("Details"); ?>;url=javascript:rightClickMenuShowActivity();");
-        aI("image=./modules/dotproject_plus/images/lapis.png;text=<?php echo $AppUI->_("Edit"); ?>;url=javascript:rightClickMenuEditActivity();");
-        aI("image=./modules/dotproject_plus/images/trash_small.gif;text=<?php echo $AppUI->_("LBL_EXCLUSION"); ?>;url=javascript:rightClickMenuExcludeActivity();");
-    }
-    drawMenus();
-
-    with (milonic = new menuname("contextMenuWBS")) {
-        margin = 9;
-        style = contextStyle;
-        top = "offset=5";
-        aI("image=./modules/dotproject_plus/images/mais_azul.png;text=<?php echo $AppUI->_("LBL_MENU_NEW_WBS_ITEM"); ?>;url=javascript:rightClickMenuNewEAPItem();");
-        aI("image=./modules/dotproject_plus/images/mais_verde.png;text=<?php echo $AppUI->_("LBL_MENU_NEW_ACTIVITY"); ?>;url=javascript:rightClickMenuNewActivity();");
-        aI("image=./modules/dotproject_plus/images/lapis.png;text=<?php echo $AppUI->_("Edit"); ?>;url=javascript:rightClickMenuEditEAPItem();");
-        aI("image=./modules/dotproject_plus/images/trash_small.gif;text=<?php echo $AppUI->_("LBL_EXCLUSION"); ?>;url=javascript:rightClickMenuDeleteWBSItem();");
-        aI("image=./modules/dotproject_plus/images/scope_declaration.jpg?eee=5;text=<?php echo $AppUI->_("LBL_PROJECT_SCOPE_DECLARATION"); ?>;url=javascript:rightClickMenuShowScopeDeclaration();");
-        aI("image=./modules/dotproject_plus/images/dicionario.png?eee=5;text=<?php echo $AppUI->_("LBL_WBS_DICTIONARY"); ?>;url=javascript:rightClickMenuShowWBSDictionary();");
-    }
-
-    drawMenus();
-
-    with (milonic = new menuname("contextMenuWBSNewActivity")) {
-        margin = 9;
-        style = contextStyle;
-        top = "offset=5";
-        aI("image=./modules/dotproject_plus/images/mais_verde.png;text=<?php echo $AppUI->_("LBL_MENU_NEW_ACTIVITY"); ?>;url=javascript:rightClickMenuFirstActivity();");
-    }
-    drawMenus();
-
-    with (milonic = new menuname("contextMenuWBSNonWorkPackage")) {
-        margin = 9;
-        style = contextStyle;
-        top = "offset=5";
-        aI("image=./modules/dotproject_plus/images/mais_azul.png;text=<?php echo $AppUI->_("LBL_MENU_NEW_WBS_ITEM"); ?>;url=javascript:rightClickMenuNewEAPItem();");
-        aI("image=./modules/dotproject_plus/images/lapis.png;text=<?php echo $AppUI->_("Edit"); ?>;url=javascript:rightClickMenuEditEAPItem();");
-        aI("image=./modules/dotproject_plus/images/trash_small.gif;text=<?php echo $AppUI->_("LBL_EXCLUSION"); ?>;url=javascript:rightClickMenuDeleteWBSItem();");
-        aI("image=./modules/dotproject_plus/images/scope_declaration.jpg?eee=5;text=<?php echo $AppUI->_("LBL_PROJECT_SCOPE_DECLARATION"); ?>;url=javascript:rightClickMenuShowScopeDeclaration();");
-        aI("image=./modules/dotproject_plus/images/dicionario.png?eee=5;text=<?php echo $AppUI->_("LBL_WBS_DICTIONARY"); ?>;url=javascript:rightClickMenuShowWBSDictionary();");
-    }
-    drawMenus();
+//    with (milonic = new menuname("contextMenu")) {
+//        margin = 7;
+//        style = contextStyle;
+//        top = "offset=8";
+//        aI("image=./modules/dotproject_plus/images/activities_details.png;text=<?php //echo $AppUI->_("Details"); ?>//;url=javascript:rightClickMenuShowActivity();");
+//        aI("image=./modules/dotproject_plus/images/lapis.png;text=<?php //echo $AppUI->_("Edit"); ?>//;url=javascript:rightClickMenuEditActivity();");
+//        aI("image=./modules/dotproject_plus/images/trash_small.gif;text=<?php //echo $AppUI->_("LBL_EXCLUSION"); ?>//;url=javascript:rightClickMenuExcludeActivity();");
+//    }
+//    drawMenus();
+//
+//    with (milonic = new menuname("contextMenuWBS")) {
+//        margin = 9;
+//        style = contextStyle;
+//        top = "offset=5";
+//        aI("image=./modules/dotproject_plus/images/mais_azul.png;text=<?php //echo $AppUI->_("LBL_MENU_NEW_WBS_ITEM"); ?>//;url=javascript:rightClickMenuNewEAPItem();");
+//        aI("image=./modules/dotproject_plus/images/mais_verde.png;text=<?php //echo $AppUI->_("LBL_MENU_NEW_ACTIVITY"); ?>//;url=javascript:rightClickMenuNewActivity();");
+//        aI("image=./modules/dotproject_plus/images/lapis.png;text=<?php //echo $AppUI->_("Edit"); ?>//;url=javascript:rightClickMenuEditEAPItem();");
+//        aI("image=./modules/dotproject_plus/images/trash_small.gif;text=<?php //echo $AppUI->_("LBL_EXCLUSION"); ?>//;url=javascript:rightClickMenuDeleteWBSItem();");
+//        aI("image=./modules/dotproject_plus/images/scope_declaration.jpg?eee=5;text=<?php //echo $AppUI->_("LBL_PROJECT_SCOPE_DECLARATION"); ?>//;url=javascript:rightClickMenuShowScopeDeclaration();");
+//        aI("image=./modules/dotproject_plus/images/dicionario.png?eee=5;text=<?php //echo $AppUI->_("LBL_WBS_DICTIONARY"); ?>//;url=javascript:rightClickMenuShowWBSDictionary();");
+//    }
+//
+//    drawMenus();
+//
+//    with (milonic = new menuname("contextMenuWBSNewActivity")) {
+//        margin = 9;
+//        style = contextStyle;
+//        top = "offset=5";
+//        aI("image=./modules/dotproject_plus/images/mais_verde.png;text=<?php //echo $AppUI->_("LBL_MENU_NEW_ACTIVITY"); ?>//;url=javascript:rightClickMenuFirstActivity();");
+//    }
+//    drawMenus();
+//
+//    with (milonic = new menuname("contextMenuWBSNonWorkPackage")) {
+//        margin = 9;
+//        style = contextStyle;
+//        top = "offset=5";
+//        aI("image=./modules/dotproject_plus/images/mais_azul.png;text=<?php //echo $AppUI->_("LBL_MENU_NEW_WBS_ITEM"); ?>//;url=javascript:rightClickMenuNewEAPItem();");
+//        aI("image=./modules/dotproject_plus/images/lapis.png;text=<?php //echo $AppUI->_("Edit"); ?>//;url=javascript:rightClickMenuEditEAPItem();");
+//        aI("image=./modules/dotproject_plus/images/trash_small.gif;text=<?php //echo $AppUI->_("LBL_EXCLUSION"); ?>//;url=javascript:rightClickMenuDeleteWBSItem();");
+//        aI("image=./modules/dotproject_plus/images/scope_declaration.jpg?eee=5;text=<?php //echo $AppUI->_("LBL_PROJECT_SCOPE_DECLARATION"); ?>//;url=javascript:rightClickMenuShowScopeDeclaration();");
+//        aI("image=./modules/dotproject_plus/images/dicionario.png?eee=5;text=<?php //echo $AppUI->_("LBL_WBS_DICTIONARY"); ?>//;url=javascript:rightClickMenuShowWBSDictionary();");
+//    }
+//    drawMenus();
 
 </script>
 
 
-<a href="http://www.milonic.com/" style="display: none">DHTML JavaScript Menu By Milonic.com</a>
-<!-- include libraries for calendar goodies -->
-<link type="text/css" rel="stylesheet" href="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css?random=20051112" media="screen"></link>
-<script type="text/javascript" src="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js?random=20060118"></script>
+<!--<a href="http://www.milonic.com/" style="display: none">DHTML JavaScript Menu By Milonic.com</a>-->
+<!--<!-- include libraries for calendar goodies -->
+<!--<link type="text/css" rel="stylesheet" href="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css?random=20051112" media="screen"></link>-->
+<!--<script type="text/javascript" src="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js?random=20060118"></script>-->
 
 <script>
-    //Definition of messages as glocal variables  
-    var mensagem_1 = "<?php echo $AppUI->_("LBL_CREATE_ACTIVITIES_BEFORE_SEQUENCING", UI_OUTPUT_JS); ?>";
-    var mensagem_2 = "<?php echo $AppUI->_("LBL_CONFIRM_WBS_ITEM_EXCLUSION", UI_OUTPUT_JS); ?>";
-    var mensagem_2_activity = "<?php echo $AppUI->_("LBL_CONFIRM_ACTIVITY_EXCLUSION", UI_OUTPUT_JS); ?>";
-
-    var mensagem_5_WBS = "<?php echo $AppUI->_("LBL_CONFIRM_ITEM_CANCEL", UI_OUTPUT_JS); ?>";
-    var mensagem_5 = "<?php echo $AppUI->_("LBL_CONFIRM_ITEM_CANCEL", UI_OUTPUT_JS); ?>";
-
-    function showMessage(msg) {
-        setAppMessage(msg, APP_MESSAGE_TYPE_INFO);
-        //window.alert(msg);
-    }
-
-    function showConfirmMessage(msg) {
-        return window.confirm(msg);
-    }
-
-
-    function saveWBSItem(wbsItemId) {
-        //window.alert(mensagem_4);
-        document.getElementById("save_wbs_" + wbsItemId).submit();
-        //showWBSItemEdit(wbsItemId);//this call will change to read mode the WBS item
-    }
-
-    function cancelSaveWBSItem(wbsItemId) {
-        if (showConfirmMessage(mensagem_5_WBS)) {
-            reload();
-        }
-    }
-
-    function newWBSItem(wbsItemId) {
-        document.getElementById("new_wbs_item_" + wbsItemId).submit();
-        //showWBSItemEdit(wbsItemId);//this call will change to read mode the WBS item
-    }
-
-    function createFirstActivity(wbsItemId) {
-        document.getElementById("new_first_activity_for_an_wbs_id_" + wbsItemId).submit();
-    }
-
-    function rightClickMenuFirstActivity() {
-        if (contextObject.id.indexOf("new_activity_wbs_item_id_") != -1) {
-            var wbsItemId = contextObject.id.split("new_activity_wbs_item_id_")[1];
-            createFirstActivity(wbsItemId);
-        }
-    }
-
-    function rightClickMenuShowActivity() {
-        if (contextObject.parentNode.id.indexOf("_activity_id_") != -1 || contextObject.parentNode.parentNode.id.indexOf("_activity_id_") != -1) {
-            var parentId = contextObject.parentNode.id.indexOf("_activity_id_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
-            var activityId = parentId.split("_activity_id_")[1];
-            var wbsItemId = parentId.split("wbs_id_")[1].split("_activity_id_")[0];
-            showActivityDetails(activityId, wbsItemId);
-        }
-    }
-
-    function rightClickMenuShowWBSDictionary() {
-        showWBSDictionary();
-    }
-
-    function rightClickMenuShowScopeDeclaration() {
-        // var url = replaceAll("#gqs_anchor", "", window.location.href);
-
-        window.location = window.location.href + "&show_external_page=/modules/timeplanning/view/scope_declaration.php";
-    }
-
-    function rightClickMenuEditActivity() {
-        if (contextObject.parentNode.id.indexOf("_activity_id_") != -1 || contextObject.parentNode.parentNode.id.indexOf("_activity_id_") != -1) {
-            var parentId = contextObject.parentNode.id.indexOf("_activity_id_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
-            var activityId = parentId.split("_activity_id_")[1];
-            var wbsItemId = parentId.split("wbs_id_")[1].split("_activity_id_")[0];
-            showActivityEdit(activityId, wbsItemId);
-        }
-    }
-
-    function rightClickMenuExcludeActivity() {
-        if (contextObject.parentNode.id.indexOf("_activity_id_") != -1 || contextObject.parentNode.parentNode.id.indexOf("_activity_id_") != -1) {
-            var parentId = contextObject.parentNode.id.indexOf("_activity_id_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
-            var activityId = parentId.split("_activity_id_")[1];
-            var wbsItemId = parentId.split("wbs_id_")[1].split("_activity_id_")[0];
-            if (showConfirmMessage(mensagem_2_activity)) {
-                excludeActivity(activityId, wbsItemId);
-                //showMessage(mensagem_4);
-            }
-        }
-    }
-
-    function prepareRolesToSave(taskId) {
-        var quant = parseInt(document.getElementById("roles_num_" + taskId).value);//this field provides the amount of estimated roles
-        var rolesIds = document.getElementById("estimatedRolesIds_" + taskId);//this field stores all selected roles separed by ";"
-        var rolesHRs = document.getElementById("estimatedRolesHR_" + taskId);//this field stores all selected hr separed by ";"
-        var resultado = true;
-        var feedback_message = "";
-        //verifica se algum usuário já foi alocado mais de uma vez
-        for (i = 0; i < quant; i++) {
-            var selectField = document.getElementById("allocated_hr_role_" + taskId + "_" + i);
-            var testRHId = selectField.options[selectField.selectedIndex].value;
-            if (testRHId != "") {
-                var count = 0;
-                for (j = 0; j < quant; j++) {
-                    selectField = document.getElementById("allocated_hr_role_" + taskId + "_" + j);
-                    var tempRHid = selectField.options[selectField.selectedIndex].value;
-                    if (testRHId == tempRHid && selectField.style.display != "none") {
-                        count++;
-                    }
-                }
-
-                if (count > 1 && resultado) {//resultado is used just to ensure the message will be presented once
-                    selectField = document.getElementById("allocated_hr_role_" + taskId + "_" + i);
-                    feedback_message += selectField.options[selectField.selectedIndex].text + " já está alocado para esta atividade, escolha outra pessoa.<br />";
-                    resultado = false; // Do not allow to save: A user is allocated twice to the same activity
-                }
-            }
-        }
-
-        for (i = 0; i < quant; i++) {
-            var nextId = i;
-            selectField = document.getElementById("estimated_role_" + taskId + "_" + nextId);
-            var role_id = selectField.options[selectField.selectedIndex].value;
-            rolesIds.value += role_id + ";";
-            selectField = document.getElementById("allocated_hr_role_" + taskId + "_" + nextId);
-            var hr_id = selectField.options[selectField.selectedIndex].value;
-            var hr_name = selectField.options[selectField.selectedIndex].text;
-            rolesHRs.value += hr_id + ";";
-            //alert("Role: "+ document.getElementById("estimated_role_" + taskId + "_" + nextId).value + " | HR: "+document.getElementById("allocated_hr_role_" + taskId + "_" + nextId).value);
-            if (hr_id != "" && role_id == "") {// A human resource has been selected, but a role has not been estimated.
-                feedback_message += "Por favor, selecione o papel antes de alocar o RH. <br />Detalhes: O recurso humano (" + hr_name + ") foi alocado sem que um papel fosse estimado.<br />";
-                resultado = false; // Do not allow to save: A human resource was allocated without a role estimated
-            }
-        }
-        if (!resultado) {
-            setAppMessage(feedback_message, APP_MESSAGE_TYPE_WARNING);
-        }
-        return resultado;
-    }
-
-
-    function reload() {
-        window.location.reload();
-    }
-
-    function rightClickMenuNewEAPItem() {
-        if (contextObject.parentNode.id.indexOf("row_") != -1 || contextObject.parentNode.parentNode.id.indexOf("row_") != -1) {
-            var parentId = contextObject.parentNode.id.indexOf("row_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
-            var wbsItemId = parentId.split("row_")[1];
-            if (!wbsHasActivity[wbsItemId]) {
-                newWBSItem(wbsItemId);
-            } else {
-                window.alert("<?php echo $AppUI->_("LBL_WBS_ITEM_HAS_ACTIVITY", UI_OUTPUT_JS); ?>");
-            }
-        }
-    }
-
-    function rightClickMenuDeleteWBSItem() {
-        if (contextObject.parentNode.id.indexOf("row_") != -1 || contextObject.parentNode.parentNode.id.indexOf("row_") != -1) {
-            var parentId = contextObject.parentNode.id.indexOf("row_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
-            var wbsItemId = parentId.split("row_")[1];
-            deleteWBSItem(wbsItemId);
-        }
-    }
-
-    function deleteWBSItem(wbsItemId) {
-        if (showConfirmMessage(mensagem_2)) {
-            document.getElementById("delete_wbs_" + wbsItemId).submit();
-        }
-    }
-
-    function createFirstWBSItem() {
-        document.getElementById("new_wbs_item_first").submit();
-    }
-
-    function rightClickMenuNewActivity() {
-        if (contextObject.parentNode.id.indexOf("row_") != -1 || contextObject.parentNode.parentNode.id.indexOf("row_") != -1) {
-            var parentId = contextObject.parentNode.id.indexOf("row_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
-            var wbsItemId = parentId.split("row_")[1];
-            newActivity(wbsItemId);
-        }
-    }
-
-    function rightClickMenuEditEAPItem() {
-        if (contextObject.parentNode.id.indexOf("row_") != -1 || contextObject.parentNode.parentNode.id.indexOf("row_") != -1) {
-            var parentId = contextObject.parentNode.id.indexOf("row_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
-            var wbsItemId = parentId.split("row_")[1];
-            showWBSItemEdit(wbsItemId);
-        }
-    }
-
-    function newActivity(wbsItemId) {
-        if (document.getElementById("wbs_item_is_leaf_id_" + wbsItemId).value == "1") {
-            document.getElementById("new_activity_for_wbs_" + wbsItemId).submit();
-        } else {
-            window.alert("Ação não permitida!\nApenas pacotes de trabalho (folhas da EAP) podem ter atividades derivadas.");
-        }
-    }
-
-
-    function expandControlWorkpackageActivities(id) {
-        if (document.getElementById("collapse_icon_" + id).style.display == "none") {
-            expandActivities(id);
-        } else {
-            collapseActivities(id);
-        }
-    }
-
-    function expandActivities(id) {
-        var table = document.getElementById("tb_eap");
-        for (var i = 0; i < table.rows.length; i++) {
-            row = table.rows[i];
-            if (row.id.indexOf("wbs_id_" + id) != -1) {
-                row.style.display = "none";
-            }
-        }
-        document.getElementById("collapse_icon_" + id).style.display = "inline";
-        document.getElementById("expand_icon_" + id).style.display = "none";
-    }
-
-    function collapseActivities(id) {
-        var table = document.getElementById("tb_eap");
-        for (var i = 0; i < table.rows.length; i++) {
-            row = table.rows[i];
-            if (row.id.indexOf("wbs_id_" + id) != -1 && row.id.indexOf("activity_details_id_") == -1) {
-                row.style.display = "table-row";
-            }
-        }
-        document.getElementById("collapse_icon_" + id).style.display = "none";
-        document.getElementById("expand_icon_" + id).style.display = "inline";
-    }
-
-    function filterActivitiesByUser() {
-        document.select_human_resource_filter_form.submit();
-    }
-
-    function viewSequenceActivities() {
-        if (parseInt(document.getElementById("activities_count").value) == 0) {
-            window.alert(mensagem_1);
-        } else {
-            // console.info(window.location.href);
-            // var url = replaceAll("#gqs_anchor", "", );
-            window.location = window.location.href + "&show_external_page=/modules/timeplanning/view/projects_mdp.php";
-        }
-    }
-
-    function showWBSDictionary() {
-        var url = window.location.href;
-        window.location = url + "&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php";
-    }
-
-    function showActivityDetails(activityId, wbsItemId) {
-
-        if (document.getElementById("activity_effort_edit_" + activityId).style.display != "block") {//expand/collapse just if in read mode
-            var el = document.getElementById("activity_details_id_" + activityId + "_wbs_id_" + wbsItemId);
-            document.getElementById("activity_responsible_edit_" + activityId).style.display = "none";
-            document.getElementById("activity_effort_edit_" + activityId).style.display = "none";
-           
-            document.getElementById("activity_resources_edit_" + activityId).style.display = "none";
-            document.getElementById("activity_responsible_read_" + activityId).style.display = "inline-block";
-            document.getElementById("activity_effort_read_" + activityId).style.display = "inline-block";
-            document.getElementById("activity_resources_read_" + activityId).style.display = "inline-block";
-            document.getElementById("activity_edit_actions_" + activityId).style.display = "none";
-            document.getElementById("activity_sort_id_" + activityId).style.display = "inline-block";
-            document.getElementById("activity_code_id_" + activityId).style.display = "inline-block";
-
-            //The set of elements below are always displayed. So the edit/read mode show be controled.
-            document.getElementById("activity_rh_edit_id_" + activityId).style.display = "none";
-            document.getElementById("activity_date_end_edit_id_" + activityId).style.display = "none";
-            document.getElementById("activity_date_start_edit_id_" + activityId).style.display = "none";
-            document.getElementById("activity_description_edit_id_" + activityId).style.display = "none";
-            document.getElementById("activity_rh_read_id_" + activityId).style.display = "inline-block";
-            document.getElementById("activity_date_end_read_id_" + activityId).style.display = "inline-block";
-            document.getElementById("activity_date_start_read_id_" + activityId).style.display = "inline-block";
-            document.getElementById("activity_description_read_id_" + activityId).style.display = "inline-block";
-
-
-            if (el.style.display != "none") {
-                el.style.display = "none";
-            } else {
-                el.style.display = "table-row";
-            }
-        }
-    }
-
-    function showWBSItemEdit(wbsItemId) {
-        var el = document.getElementById("edit_workpackage_id_" + wbsItemId);
-        var el_read = document.getElementById("read_workpackage_id_" + wbsItemId);
-        if (el.style.display != "none") {
-            el.style.display = "none";
-            el_read.style.display = "table-row";
-        } else {
-            el.style.display = "table-row";
-            el_read.style.display = "none";
-        }
-        document.getElementById("wbs_item_description_" + wbsItemId).focus();
-
-
-    }
-
-
-    function showActivityEdit(activityId, wbsItemId) {
-        var el = document.getElementById("activity_details_id_" + activityId + "_wbs_id_" + wbsItemId);
-        document.getElementById("activity_responsible_edit_" + activityId).style.display = "inline-block";
-        document.getElementById("activity_effort_edit_" + activityId).style.display = "inline-block";
-        document.getElementById("activity_resources_edit_" + activityId).style.display = "inline-block";
-        document.getElementById("activity_responsible_read_" + activityId).style.display = "none";
-        document.getElementById("activity_effort_read_" + activityId).style.display = "none";
-        document.getElementById("activity_resources_read_" + activityId).style.display = "none";
-        document.getElementById("activity_edit_actions_" + activityId).style.display = "inline-block";
-
-        document.getElementById("activity_sort_id_" + activityId).style.display = "none";
-        document.getElementById("activity_code_id_" + activityId).style.display = "inline-block";
-
-        //The set of elements below are always displayed. So the edit/read mode show be controled.
-        document.getElementById("activity_rh_edit_id_" + activityId).style.display = "inline-block";
-        document.getElementById("activity_date_end_edit_id_" + activityId).style.display = "inline-block";
-        document.getElementById("activity_date_start_edit_id_" + activityId).style.display = "inline-block";
-        document.getElementById("activity_description_edit_id_" + activityId).style.display = "inline-block";
-
-        document.getElementById("activity_rh_read_id_" + activityId).style.display = "none";
-        document.getElementById("activity_date_end_read_id_" + activityId).style.display = "none";
-        document.getElementById("activity_date_start_read_id_" + activityId).style.display = "none";
-        document.getElementById("activity_description_read_id_" + activityId).style.display = "none";
-
-        // if (el.style.display != "none") {
-        //      el.style.display = "none";
-        // } else {
-        el.style.display = "table-row";
-        document.getElementById("activity_description_id_" + activityId).focus();
-        // }
-    }
-
-
-    function saveActivity(activityId, wbsItemId) {
-        if (validateEstimatedDates()) {
-            //showMessage(mensagem_4);
-            if (prepareRolesToSave(activityId)) {
-                document.getElementById("activity_form_" + activityId).submit();
-            }
-        }
-    }
-
-    function cancelSaveActivity(activityId, wbsItemId) {
-        if (showConfirmMessage(mensagem_5)) {
-            reload();
-        }
-    }
-
-    function excludeActivity(activityId, wbsItemId) {
-        document.getElementById("delete_activity_" + activityId).submit();
-        /*
-         var row = document.getElementById("wbs_id_" + wbsItemId + "_activity_id_" + activityId);
-         var rowDetails = document.getElementById("activity_details_id_" + activityId + "_wbs_id_" + wbsItemId);
-         document.getElementById("tb_eap").deleteRow(row.rowIndex);
-         document.getElementById("tb_eap").deleteRow(rowDetails.rowIndex);
-         */
-    }
-
-
-    function sortWBSItem(direction, wbsItemId) {
-        var form = document.getElementById("sort_wbs_" + wbsItemId);
-        form.direction.value = direction;
-        form.submit();
-    }
-
-
-    function moveRow(direction, rowId, rowDetailsId, taskId) {
-        var oTable = document.getElementById("tb_eap");
-        var trs = oTable.tBodies[0].getElementsByTagName("tr");
-        var i = document.getElementById(rowId).rowIndex;
-        var j = i + direction + direction;
-        if (j == 0) {
-            return false;
-        }
-        if (i >= 0 && j >= 0 && i < trs.length && j < trs.length) {
-            //logical hook:just allow switch beetween activities
-
-            if (oTable.rows[j].id.indexOf("activity_id_") == -1) {
-                //alert("Failed hook:"+oTable.rows[j].id);
-                return false;
-            }
-
-            var form = document.getElementById("sort_activity_" + taskId);
-            form.direction.value = direction;
-            form.submit();
-            //As linhas não serão movimentadas pois
-            /*
-             if (i == j + 1) {
-             oTable.tBodies[0].insertBefore(trs[i], trs[j]);
-             } else if (j == i + 1) {
-             oTable.tBodies[0].insertBefore(trs[j], trs[i]);
-             } else {
-             var tmpNode = oTable.tBodies[0].replaceChild(trs[i], trs[j]);
-             if (typeof(trs[i]) != "undefined") {
-             oTable.tBodies[0].insertBefore(tmpNode, trs[i]);
-             } else {
-             oTable.appendChild(tmpNode);
-             }
-             }
-             moveRowDetails(direction, rowDetailsId);
-             */
-        } else {
-            //alert("Invalid Values!");
-            return false;
-        }
-
-    }
-
-    function moveRowDetails(direction, rowId) {
-        var oTable = document.getElementById("tbl_project_activities");
-        var trs = oTable.tBodies[0].getElementsByTagName("tr");
-        var i = document.getElementById(rowId).rowIndex;
-        var j = i + direction + direction;
-        if (j == 0) {
-            return false;
-        }
-        if (i >= 0 && j >= 0 && i < trs.length && j < trs.length) {
-            if (i == j + 1) {
-                oTable.tBodies[0].insertBefore(trs[i], trs[j]);
-            } else if (j == i + 1) {
-                oTable.tBodies[0].insertBefore(trs[j], trs[i]);
-            } else {
-                var tmpNode = oTable.tBodies[0].replaceChild(trs[i], trs[j]);
-                if (typeof (trs[i]) != "undefined") {
-                    oTable.tBodies[0].insertBefore(tmpNode, trs[i]);
-                } else {
-                    oTable.appendChild(tmpNode);
-                }
-            }
-        } else {
-            //alert("Invalid Values!");
-            return false;
-        }
-    }
-
-    function addEstimatedRoleHR(taskId, roleId, hrId, quantity) {
-        var div = document.getElementById("div_res_" + taskId);
-        var roleField = document.createElement("select");
-        var hrField = document.createElement("select");
-        var removeButton = document.createElement("img");
-        var br = document.createElement("br");
-        var nextIdField = document.getElementById("roles_num_" + taskId);
-        var nextId = nextIdField.value;
-
-        roleField.name = "estimated_role_" + taskId + "_" + nextId;
-        roleField.id = "estimated_role_" + taskId + "_" + nextId;
-        roleField.className = "text";
-
-        hrField.name = "allocated_hr_role_" + taskId + "_" + nextId;
-        hrField.id = "allocated_hr_role_" + taskId + "_" + nextId;
-        hrField.className = "text";
-
-        br.id = "br_" + taskId + "_" + nextId;
-
-        removeButton.src = "./modules/dotproject_plus/images/trash_small.gif";
-        removeButton.id = nextId;
-        removeButton.title = roleId;
-        removeButton.name = taskId;
-        removeButton.style.cursor = "pointer";
-        removeButton.onclick = removeEstimatedRoleHR;
-
-        roleField.options[0] = new Option("<?php echo $AppUI->_("LBL_ROLE"); ?>", "");
-        for (i = 0; i < roleIds.length; i++) {
-            roleField.options[i + 1] = new Option(roleNames[i], roleIds[i]);
-            if (roleId == roleIds[i]) {
-                roleField.options[i + 1].selected = true;
-                roleField.selectedIndex = i + 1;
-            }
-        }
-
-        hrField.options[0] = new Option("<?php echo $AppUI->_("Human Resource"); ?>", "");
-
-        //set onchange evento to role select field
-        roleField.onchange = function () {
-            updateHROptionsBasedOnRole(roleField.id, hrField.id);
-        };
-
-        //add all created fields in the screen
-        div.appendChild(roleField);
-        div.appendChild(hrField);
-        div.appendChild(removeButton);
-        div.appendChild(br);
-        nextIdField.value = parseInt(nextIdField.value) + 1;
-
-        //Set default values on HR field, just if a previusly role had been selected
-        if (roleField.selectedIndex > 0) {
-            updateHROptionsBasedOnRole(roleField.id, hrField.id);//add hr obtions based on selected role.
-            //set the default value based in an previous selected hrId
-            for (i = 0; i < hrField.options.length; i++) {
-                if (hrId == hrField.options[i].value) {
-                    hrField.options[i].selected = true;
-                    hrField.selectedIndex = i;
-                }
-            }
-        }
-
-    }
-
-    function removeEstimatedRoleHR() {
-        var field = document.getElementById("estimatedRolesExcluded_" + this.name);
-        var fieldRemovedRolesIds = document.getElementById("estimatedRolesExcludedIds_" + this.name);
-        var idHR = "allocated_hr_role_" + this.name + "_" + this.id;
-        var idRole = "estimated_role_" + this.name + "_" + this.id;
-        var idBr = "br_" + this.name + "_" + this.id;
-        document.getElementById(idHR).style.display = "none";
-        document.getElementById(idRole).style.display = "none";
-        //document.getElementById(idBr).style.display="none";
-        this.style.display = "none";
-        var idRoleDb = this.title;
-        field.value += field.value == "" ? this.id : "," + this.id;
-        fieldRemovedRolesIds.value += fieldRemovedRolesIds.value == "" ? idRoleDb : "," + idRoleDb;
-    }
-
-    /**
-     * This function is called after the user select a option of an estimated role (onchange, onselect events).
-     * It receive as parameter the index of the role in the select options list, and then get the list of names available for this role.
-     * A new set of options is built based on this list. 
-     */
-    function updateHROptionsBasedOnRole(roleSelectFieldId, hrSelectFieldId) {
-        var roleSelectField = document.getElementById(roleSelectFieldId);
-        var roleIndex = roleSelectField.selectedIndex - 1;//-1 because the first option of this field is invalid (the field label)
-        var hrSelectField = document.getElementById(hrSelectFieldId);
-        var hrs = hrPerRole[roleIndex];
-        var hr = null;
-        var hr_id = null;
-        var hr_name = null;
-        var option = null;
-        var optGroup = null;
-
-        if (roleIndex > -1) {
-            //remove all options from the select field
-            while (hrSelectField.options.length > 0) {
-                hrSelectField.options.remove(0)
-            }
-            //remove all optgroups from the select field
-            var ogl = hrSelectField.getElementsByTagName('optgroup');
-            for (var i = ogl.length - 1; i >= 0; i--) {
-                hrSelectField.removeChild(ogl[i])
-            }
-
-            //include options and optgroups
-            option = document.createElement("option");
-            option.text = "<?php echo $AppUI->_("Human Resource") ?>";
-            option.value = "";
-            hrSelectField.add(option);
-            optGroup = document.createElement("optgroup");
-            optGroup.label = roleSelectField.options[roleSelectField.selectedIndex].text;
-            hrSelectField.add(optGroup);
-            for (i = 0; i < hrs.length; i++) {
-                hr = hrs[i].split("#!");
-                if (hr.length == 2) {
-                    hr_id = hr[0];
-                    hr_name = hr[1];
-                    option = document.createElement("option");
-                    option.text = hr_name;
-                    option.value = hr_id;
-                    hrSelectField.add(option);
-                }
-            }
-            optGroup = document.createElement("optgroup");
-            //include all other hr that still does not contain the role
-            optGroup.label = "Outros";
-            hrSelectField.add(optGroup);
-            for (i = 0; i < hrIds.length; i++) {
-                if (hrs.indexOf(hrIds[i] + "#!" + hrNames[i]) == -1) {//include just HR that do not are in the hrs(hr per role) array
-                    option = new Option(hrNames[i], hrIds[i]);
-                    hrSelectField.add(option);
-                }
-            }
-        }
-    }
-    /**
-     * Function to assist the filling of activity dates.
-     * When the user select the start date, if it is after the current end date, or if it is empty, the it is filled with the same value as the start date.
-     
-     * @returns {void}     */
-    function updateActivityDateOnChange(activityId, dateSeparator) {
-        try {
-            var start_field = document.getElementById("planned_start_date_activity_" + activityId);
-            var end_field = document.getElementById("planned_end_date_activity_" + activityId);
-            var date_parts = null;
-            var end_date_parts = null;
-            var startDate = null;
-            var endDate = null;
-            var updateEndDateField = false;
-            if (start_field.value.length == 10) {
-                date_parts = start_field.value.split(dateSeparator);
-                startDate = new Date(date_parts[2], date_parts[1], date_parts[0], 0, 0, 0, 0);
-                if (end_field.value.length == 10) {
-                    end_date_parts = end_field.value.split(dateSeparator);
-                    endDate = new Date(end_date_parts[2], end_date_parts[1], end_date_parts[0], 0, 0, 0, 0);
-                    if (startDate.getTime() > endDate.getTime()) {
-                        updateEndDateField = true;
-                    }
-                } else {
-                    updateEndDateField = true;
-
-                }
-                if (updateEndDateField) {
-                    end_field.value = date_parts[0] + dateSeparator + date_parts[1] + dateSeparator + date_parts[2];
-                }
-            }
-        } catch (e) {
-            console.log("Erro on function - updateActivityDateOnChange:" + e);
-        }
-    }
-
-    /*
-    * Funtion for disable/enable activity duration fields based on activity effort.
-    * It means,to enable the activity duration, the effort must be estimated
-    * This function is called after the rendering of these fields, and onchange of effort field.
-     */
-    function enableDurationBasedOnEffort(activityId){
-        if(activityId!=""){
-            var startDateInput=document.getElementById("planned_start_date_activity_"+activityId);
-            var endDateInput=document.getElementById("planned_end_date_activity_"+activityId);
-            var effortInput=document.getElementById("planned_effort_"+activityId);
-            var calendarIcon1=document.getElementById("calendar_trigger_1_"+activityId);
-            var calendarIcon2=document.getElementById("calendar_trigger_2_"+activityId);
-            var messagePanel=document.getElementById("message_effort_for_duration_"+activityId);
-            var effort=effortInput.value;
-            
-            
-            if(effort!="" && effort!=0 && !isNaN(parseInt(effort))){
-                endDateInput.disabled=false;
-                startDateInput.disabled=false;
-                calendarIcon1.style.visibility="visible";
-                calendarIcon2.style.visibility="visible";
-                messagePanel.style.visibility="hidden";
-            }else{
-                endDateInput.disabled=true;
-                startDateInput.disabled=true;
-                calendarIcon1.style.visibility="hidden";
-                calendarIcon2.style.visibility="hidden";
-                messagePanel.style.visibility="visible";
-            }
-        }
-    }
+//    //Definition of messages as glocal variables
+//    var mensagem_1 = "<?php //echo $AppUI->_("LBL_CREATE_ACTIVITIES_BEFORE_SEQUENCING", UI_OUTPUT_JS); ?>//";
+//    var mensagem_2 = "<?php //echo $AppUI->_("LBL_CONFIRM_WBS_ITEM_EXCLUSION", UI_OUTPUT_JS); ?>//";
+//    var mensagem_2_activity = "<?php //echo $AppUI->_("LBL_CONFIRM_ACTIVITY_EXCLUSION", UI_OUTPUT_JS); ?>//";
+//
+//    var mensagem_5_WBS = "<?php //echo $AppUI->_("LBL_CONFIRM_ITEM_CANCEL", UI_OUTPUT_JS); ?>//";
+//    var mensagem_5 = "<?php //echo $AppUI->_("LBL_CONFIRM_ITEM_CANCEL", UI_OUTPUT_JS); ?>//";
+//
+//    function showMessage(msg) {
+//        setAppMessage(msg, APP_MESSAGE_TYPE_INFO);
+//        //window.alert(msg);
+//    }
+//
+//    function showConfirmMessage(msg) {
+//        return window.confirm(msg);
+//    }
+//
+//
+//    function saveWBSItem(wbsItemId) {
+//        //window.alert(mensagem_4);
+//        document.getElementById("save_wbs_" + wbsItemId).submit();
+//        //showWBSItemEdit(wbsItemId);//this call will change to read mode the WBS item
+//    }
+//
+//    function cancelSaveWBSItem(wbsItemId) {
+//        if (showConfirmMessage(mensagem_5_WBS)) {
+//            reload();
+//        }
+//    }
+//
+//    function newWBSItem(wbsItemId) {
+//        document.getElementById("new_wbs_item_" + wbsItemId).submit();
+//        //showWBSItemEdit(wbsItemId);//this call will change to read mode the WBS item
+//    }
+//
+//    function createFirstActivity(wbsItemId) {
+//        document.getElementById("new_first_activity_for_an_wbs_id_" + wbsItemId).submit();
+//    }
+//
+//    function rightClickMenuFirstActivity() {
+//        if (contextObject.id.indexOf("new_activity_wbs_item_id_") != -1) {
+//            var wbsItemId = contextObject.id.split("new_activity_wbs_item_id_")[1];
+//            createFirstActivity(wbsItemId);
+//        }
+//    }
+//
+//    function rightClickMenuShowActivity() {
+//        if (contextObject.parentNode.id.indexOf("_activity_id_") != -1 || contextObject.parentNode.parentNode.id.indexOf("_activity_id_") != -1) {
+//            var parentId = contextObject.parentNode.id.indexOf("_activity_id_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
+//            var activityId = parentId.split("_activity_id_")[1];
+//            var wbsItemId = parentId.split("wbs_id_")[1].split("_activity_id_")[0];
+//            showActivityDetails(activityId, wbsItemId);
+//        }
+//    }
+//
+//    function rightClickMenuShowWBSDictionary() {
+//        showWBSDictionary();
+//    }
+//
+//    function rightClickMenuShowScopeDeclaration() {
+//        // var url = replaceAll("#gqs_anchor", "", window.location.href);
+//
+//        window.location = window.location.href + "&show_external_page=/modules/timeplanning/view/scope_declaration.php";
+//    }
+//
+//    function rightClickMenuEditActivity() {
+//        if (contextObject.parentNode.id.indexOf("_activity_id_") != -1 || contextObject.parentNode.parentNode.id.indexOf("_activity_id_") != -1) {
+//            var parentId = contextObject.parentNode.id.indexOf("_activity_id_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
+//            var activityId = parentId.split("_activity_id_")[1];
+//            var wbsItemId = parentId.split("wbs_id_")[1].split("_activity_id_")[0];
+//            showActivityEdit(activityId, wbsItemId);
+//        }
+//    }
+//
+//    function rightClickMenuExcludeActivity() {
+//        if (contextObject.parentNode.id.indexOf("_activity_id_") != -1 || contextObject.parentNode.parentNode.id.indexOf("_activity_id_") != -1) {
+//            var parentId = contextObject.parentNode.id.indexOf("_activity_id_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
+//            var activityId = parentId.split("_activity_id_")[1];
+//            var wbsItemId = parentId.split("wbs_id_")[1].split("_activity_id_")[0];
+//            if (showConfirmMessage(mensagem_2_activity)) {
+//                excludeActivity(activityId, wbsItemId);
+//                //showMessage(mensagem_4);
+//            }
+//        }
+//    }
+//
+//    function prepareRolesToSave(taskId) {
+//        var quant = parseInt(document.getElementById("roles_num_" + taskId).value);//this field provides the amount of estimated roles
+//        var rolesIds = document.getElementById("estimatedRolesIds_" + taskId);//this field stores all selected roles separed by ";"
+//        var rolesHRs = document.getElementById("estimatedRolesHR_" + taskId);//this field stores all selected hr separed by ";"
+//        var resultado = true;
+//        var feedback_message = "";
+//        //verifica se algum usuário já foi alocado mais de uma vez
+//        for (i = 0; i < quant; i++) {
+//            var selectField = document.getElementById("allocated_hr_role_" + taskId + "_" + i);
+//            var testRHId = selectField.options[selectField.selectedIndex].value;
+//            if (testRHId != "") {
+//                var count = 0;
+//                for (j = 0; j < quant; j++) {
+//                    selectField = document.getElementById("allocated_hr_role_" + taskId + "_" + j);
+//                    var tempRHid = selectField.options[selectField.selectedIndex].value;
+//                    if (testRHId == tempRHid && selectField.style.display != "none") {
+//                        count++;
+//                    }
+//                }
+//
+//                if (count > 1 && resultado) {//resultado is used just to ensure the message will be presented once
+//                    selectField = document.getElementById("allocated_hr_role_" + taskId + "_" + i);
+//                    feedback_message += selectField.options[selectField.selectedIndex].text + " já está alocado para esta atividade, escolha outra pessoa.<br />";
+//                    resultado = false; // Do not allow to save: A user is allocated twice to the same activity
+//                }
+//            }
+//        }
+//
+//        for (i = 0; i < quant; i++) {
+//            var nextId = i;
+//            selectField = document.getElementById("estimated_role_" + taskId + "_" + nextId);
+//            var role_id = selectField.options[selectField.selectedIndex].value;
+//            rolesIds.value += role_id + ";";
+//            selectField = document.getElementById("allocated_hr_role_" + taskId + "_" + nextId);
+//            var hr_id = selectField.options[selectField.selectedIndex].value;
+//            var hr_name = selectField.options[selectField.selectedIndex].text;
+//            rolesHRs.value += hr_id + ";";
+//            //alert("Role: "+ document.getElementById("estimated_role_" + taskId + "_" + nextId).value + " | HR: "+document.getElementById("allocated_hr_role_" + taskId + "_" + nextId).value);
+//            if (hr_id != "" && role_id == "") {// A human resource has been selected, but a role has not been estimated.
+//                feedback_message += "Por favor, selecione o papel antes de alocar o RH. <br />Detalhes: O recurso humano (" + hr_name + ") foi alocado sem que um papel fosse estimado.<br />";
+//                resultado = false; // Do not allow to save: A human resource was allocated without a role estimated
+//            }
+//        }
+//        if (!resultado) {
+//            setAppMessage(feedback_message, APP_MESSAGE_TYPE_WARNING);
+//        }
+//        return resultado;
+//    }
+//
+//
+//    function reload() {
+//        window.location.reload();
+//    }
+//
+//    function rightClickMenuNewEAPItem() {
+//        if (contextObject.parentNode.id.indexOf("row_") != -1 || contextObject.parentNode.parentNode.id.indexOf("row_") != -1) {
+//            var parentId = contextObject.parentNode.id.indexOf("row_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
+//            var wbsItemId = parentId.split("row_")[1];
+//            if (!wbsHasActivity[wbsItemId]) {
+//                newWBSItem(wbsItemId);
+//            } else {
+//                window.alert("<?php //echo $AppUI->_("LBL_WBS_ITEM_HAS_ACTIVITY", UI_OUTPUT_JS); ?>//");
+//            }
+//        }
+//    }
+//
+//    function rightClickMenuDeleteWBSItem() {
+//        if (contextObject.parentNode.id.indexOf("row_") != -1 || contextObject.parentNode.parentNode.id.indexOf("row_") != -1) {
+//            var parentId = contextObject.parentNode.id.indexOf("row_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
+//            var wbsItemId = parentId.split("row_")[1];
+//            deleteWBSItem(wbsItemId);
+//        }
+//    }
+//
+//    function deleteWBSItem(wbsItemId) {
+//        if (showConfirmMessage(mensagem_2)) {
+//            document.getElementById("delete_wbs_" + wbsItemId).submit();
+//        }
+//    }
+//
+//    function createFirstWBSItem() {
+//        document.getElementById("new_wbs_item_first").submit();
+//    }
+//
+//    function rightClickMenuNewActivity() {
+//        if (contextObject.parentNode.id.indexOf("row_") != -1 || contextObject.parentNode.parentNode.id.indexOf("row_") != -1) {
+//            var parentId = contextObject.parentNode.id.indexOf("row_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
+//            var wbsItemId = parentId.split("row_")[1];
+//            newActivity(wbsItemId);
+//        }
+//    }
+//
+//    function rightClickMenuEditEAPItem() {
+//        if (contextObject.parentNode.id.indexOf("row_") != -1 || contextObject.parentNode.parentNode.id.indexOf("row_") != -1) {
+//            var parentId = contextObject.parentNode.id.indexOf("row_") != -1 ? contextObject.parentNode.id : contextObject.parentNode.parentNode.id;
+//            var wbsItemId = parentId.split("row_")[1];
+//            showWBSItemEdit(wbsItemId);
+//        }
+//    }
+//
+//    function newActivity(wbsItemId) {
+//        if (document.getElementById("wbs_item_is_leaf_id_" + wbsItemId).value == "1") {
+//            document.getElementById("new_activity_for_wbs_" + wbsItemId).submit();
+//        } else {
+//            window.alert("Ação não permitida!\nApenas pacotes de trabalho (folhas da EAP) podem ter atividades derivadas.");
+//        }
+//    }
+//
+//
+//    function expandControlWorkpackageActivities(id) {
+//        if (document.getElementById("collapse_icon_" + id).style.display == "none") {
+//            expandActivities(id);
+//        } else {
+//            collapseActivities(id);
+//        }
+//    }
+//
+//    function expandActivities(id) {
+//        var table = document.getElementById("tb_eap");
+//        for (var i = 0; i < table.rows.length; i++) {
+//            row = table.rows[i];
+//            if (row.id.indexOf("wbs_id_" + id) != -1) {
+//                row.style.display = "none";
+//            }
+//        }
+//        document.getElementById("collapse_icon_" + id).style.display = "inline";
+//        document.getElementById("expand_icon_" + id).style.display = "none";
+//    }
+//
+//    function collapseActivities(id) {
+//        var table = document.getElementById("tb_eap");
+//        for (var i = 0; i < table.rows.length; i++) {
+//            row = table.rows[i];
+//            if (row.id.indexOf("wbs_id_" + id) != -1 && row.id.indexOf("activity_details_id_") == -1) {
+//                row.style.display = "table-row";
+//            }
+//        }
+//        document.getElementById("collapse_icon_" + id).style.display = "none";
+//        document.getElementById("expand_icon_" + id).style.display = "inline";
+//    }
+//
+//    function filterActivitiesByUser() {
+//        document.select_human_resource_filter_form.submit();
+//    }
+//
+//    function viewSequenceActivities() {
+//        if (parseInt(document.getElementById("activities_count").value) == 0) {
+//            window.alert(mensagem_1);
+//        } else {
+//            // console.info(window.location.href);
+//            // var url = replaceAll("#gqs_anchor", "", );
+//            window.location = window.location.href + "&show_external_page=/modules/timeplanning/view/projects_mdp.php";
+//        }
+//    }
+//
+//    function showWBSDictionary() {
+//        var url = window.location.href;
+//        window.location = url + "&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php";
+//    }
+//
+//    function showActivityDetails(activityId, wbsItemId) {
+//
+//        if (document.getElementById("activity_effort_edit_" + activityId).style.display != "block") {//expand/collapse just if in read mode
+//            var el = document.getElementById("activity_details_id_" + activityId + "_wbs_id_" + wbsItemId);
+//            document.getElementById("activity_responsible_edit_" + activityId).style.display = "none";
+//            document.getElementById("activity_effort_edit_" + activityId).style.display = "none";
+//
+//            document.getElementById("activity_resources_edit_" + activityId).style.display = "none";
+//            document.getElementById("activity_responsible_read_" + activityId).style.display = "inline-block";
+//            document.getElementById("activity_effort_read_" + activityId).style.display = "inline-block";
+//            document.getElementById("activity_resources_read_" + activityId).style.display = "inline-block";
+//            document.getElementById("activity_edit_actions_" + activityId).style.display = "none";
+//            document.getElementById("activity_sort_id_" + activityId).style.display = "inline-block";
+//            document.getElementById("activity_code_id_" + activityId).style.display = "inline-block";
+//
+//            //The set of elements below are always displayed. So the edit/read mode show be controled.
+//            document.getElementById("activity_rh_edit_id_" + activityId).style.display = "none";
+//            document.getElementById("activity_date_end_edit_id_" + activityId).style.display = "none";
+//            document.getElementById("activity_date_start_edit_id_" + activityId).style.display = "none";
+//            document.getElementById("activity_description_edit_id_" + activityId).style.display = "none";
+//            document.getElementById("activity_rh_read_id_" + activityId).style.display = "inline-block";
+//            document.getElementById("activity_date_end_read_id_" + activityId).style.display = "inline-block";
+//            document.getElementById("activity_date_start_read_id_" + activityId).style.display = "inline-block";
+//            document.getElementById("activity_description_read_id_" + activityId).style.display = "inline-block";
+//
+//
+//            if (el.style.display != "none") {
+//                el.style.display = "none";
+//            } else {
+//                el.style.display = "table-row";
+//            }
+//        }
+//    }
+//
+//    function showWBSItemEdit(wbsItemId) {
+//        var el = document.getElementById("edit_workpackage_id_" + wbsItemId);
+//        var el_read = document.getElementById("read_workpackage_id_" + wbsItemId);
+//        if (el.style.display != "none") {
+//            el.style.display = "none";
+//            el_read.style.display = "table-row";
+//        } else {
+//            el.style.display = "table-row";
+//            el_read.style.display = "none";
+//        }
+//        document.getElementById("wbs_item_description_" + wbsItemId).focus();
+//
+//
+//    }
+//
+//
+//    function showActivityEdit(activityId, wbsItemId) {
+//        var el = document.getElementById("activity_details_id_" + activityId + "_wbs_id_" + wbsItemId);
+//        document.getElementById("activity_responsible_edit_" + activityId).style.display = "inline-block";
+//        document.getElementById("activity_effort_edit_" + activityId).style.display = "inline-block";
+//        document.getElementById("activity_resources_edit_" + activityId).style.display = "inline-block";
+//        document.getElementById("activity_responsible_read_" + activityId).style.display = "none";
+//        document.getElementById("activity_effort_read_" + activityId).style.display = "none";
+//        document.getElementById("activity_resources_read_" + activityId).style.display = "none";
+//        document.getElementById("activity_edit_actions_" + activityId).style.display = "inline-block";
+//
+//        document.getElementById("activity_sort_id_" + activityId).style.display = "none";
+//        document.getElementById("activity_code_id_" + activityId).style.display = "inline-block";
+//
+//        //The set of elements below are always displayed. So the edit/read mode show be controled.
+//        document.getElementById("activity_rh_edit_id_" + activityId).style.display = "inline-block";
+//        document.getElementById("activity_date_end_edit_id_" + activityId).style.display = "inline-block";
+//        document.getElementById("activity_date_start_edit_id_" + activityId).style.display = "inline-block";
+//        document.getElementById("activity_description_edit_id_" + activityId).style.display = "inline-block";
+//
+//        document.getElementById("activity_rh_read_id_" + activityId).style.display = "none";
+//        document.getElementById("activity_date_end_read_id_" + activityId).style.display = "none";
+//        document.getElementById("activity_date_start_read_id_" + activityId).style.display = "none";
+//        document.getElementById("activity_description_read_id_" + activityId).style.display = "none";
+//
+//        // if (el.style.display != "none") {
+//        //      el.style.display = "none";
+//        // } else {
+//        el.style.display = "table-row";
+//        document.getElementById("activity_description_id_" + activityId).focus();
+//        // }
+//    }
+//
+//
+//    function saveActivity(activityId, wbsItemId) {
+//        if (validateEstimatedDates()) {
+//            //showMessage(mensagem_4);
+//            if (prepareRolesToSave(activityId)) {
+//                document.getElementById("activity_form_" + activityId).submit();
+//            }
+//        }
+//    }
+//
+//    function cancelSaveActivity(activityId, wbsItemId) {
+//        if (showConfirmMessage(mensagem_5)) {
+//            reload();
+//        }
+//    }
+//
+//    function excludeActivity(activityId, wbsItemId) {
+//        document.getElementById("delete_activity_" + activityId).submit();
+//        /*
+//         var row = document.getElementById("wbs_id_" + wbsItemId + "_activity_id_" + activityId);
+//         var rowDetails = document.getElementById("activity_details_id_" + activityId + "_wbs_id_" + wbsItemId);
+//         document.getElementById("tb_eap").deleteRow(row.rowIndex);
+//         document.getElementById("tb_eap").deleteRow(rowDetails.rowIndex);
+//         */
+//    }
+//
+//
+//    function sortWBSItem(direction, wbsItemId) {
+//        var form = document.getElementById("sort_wbs_" + wbsItemId);
+//        form.direction.value = direction;
+//        form.submit();
+//    }
+//
+//
+//    function moveRow(direction, rowId, rowDetailsId, taskId) {
+//        var oTable = document.getElementById("tb_eap");
+//        var trs = oTable.tBodies[0].getElementsByTagName("tr");
+//        var i = document.getElementById(rowId).rowIndex;
+//        var j = i + direction + direction;
+//        if (j == 0) {
+//            return false;
+//        }
+//        if (i >= 0 && j >= 0 && i < trs.length && j < trs.length) {
+//            //logical hook:just allow switch beetween activities
+//
+//            if (oTable.rows[j].id.indexOf("activity_id_") == -1) {
+//                //alert("Failed hook:"+oTable.rows[j].id);
+//                return false;
+//            }
+//
+//            var form = document.getElementById("sort_activity_" + taskId);
+//            form.direction.value = direction;
+//            form.submit();
+//            //As linhas não serão movimentadas pois
+//            /*
+//             if (i == j + 1) {
+//             oTable.tBodies[0].insertBefore(trs[i], trs[j]);
+//             } else if (j == i + 1) {
+//             oTable.tBodies[0].insertBefore(trs[j], trs[i]);
+//             } else {
+//             var tmpNode = oTable.tBodies[0].replaceChild(trs[i], trs[j]);
+//             if (typeof(trs[i]) != "undefined") {
+//             oTable.tBodies[0].insertBefore(tmpNode, trs[i]);
+//             } else {
+//             oTable.appendChild(tmpNode);
+//             }
+//             }
+//             moveRowDetails(direction, rowDetailsId);
+//             */
+//        } else {
+//            //alert("Invalid Values!");
+//            return false;
+//        }
+//
+//    }
+//
+//    function moveRowDetails(direction, rowId) {
+//        var oTable = document.getElementById("tbl_project_activities");
+//        var trs = oTable.tBodies[0].getElementsByTagName("tr");
+//        var i = document.getElementById(rowId).rowIndex;
+//        var j = i + direction + direction;
+//        if (j == 0) {
+//            return false;
+//        }
+//        if (i >= 0 && j >= 0 && i < trs.length && j < trs.length) {
+//            if (i == j + 1) {
+//                oTable.tBodies[0].insertBefore(trs[i], trs[j]);
+//            } else if (j == i + 1) {
+//                oTable.tBodies[0].insertBefore(trs[j], trs[i]);
+//            } else {
+//                var tmpNode = oTable.tBodies[0].replaceChild(trs[i], trs[j]);
+//                if (typeof (trs[i]) != "undefined") {
+//                    oTable.tBodies[0].insertBefore(tmpNode, trs[i]);
+//                } else {
+//                    oTable.appendChild(tmpNode);
+//                }
+//            }
+//        } else {
+//            //alert("Invalid Values!");
+//            return false;
+//        }
+//    }
+//
+//    function addEstimatedRoleHR(taskId, roleId, hrId, quantity) {
+//        var div = document.getElementById("div_res_" + taskId);
+//        var roleField = document.createElement("select");
+//        var hrField = document.createElement("select");
+//        var removeButton = document.createElement("img");
+//        var br = document.createElement("br");
+//        var nextIdField = document.getElementById("roles_num_" + taskId);
+//        var nextId = nextIdField.value;
+//
+//        roleField.name = "estimated_role_" + taskId + "_" + nextId;
+//        roleField.id = "estimated_role_" + taskId + "_" + nextId;
+//        roleField.className = "text";
+//
+//        hrField.name = "allocated_hr_role_" + taskId + "_" + nextId;
+//        hrField.id = "allocated_hr_role_" + taskId + "_" + nextId;
+//        hrField.className = "text";
+//
+//        br.id = "br_" + taskId + "_" + nextId;
+//
+//        removeButton.src = "./modules/dotproject_plus/images/trash_small.gif";
+//        removeButton.id = nextId;
+//        removeButton.title = roleId;
+//        removeButton.name = taskId;
+//        removeButton.style.cursor = "pointer";
+//        removeButton.onclick = removeEstimatedRoleHR;
+//
+//        roleField.options[0] = new Option("<?php //echo $AppUI->_("LBL_ROLE"); ?>//", "");
+//        for (i = 0; i < roleIds.length; i++) {
+//            roleField.options[i + 1] = new Option(roleNames[i], roleIds[i]);
+//            if (roleId == roleIds[i]) {
+//                roleField.options[i + 1].selected = true;
+//                roleField.selectedIndex = i + 1;
+//            }
+//        }
+//
+//        hrField.options[0] = new Option("<?php //echo $AppUI->_("Human Resource"); ?>//", "");
+//
+//        //set onchange evento to role select field
+//        roleField.onchange = function () {
+//            updateHROptionsBasedOnRole(roleField.id, hrField.id);
+//        };
+//
+//        //add all created fields in the screen
+//        div.appendChild(roleField);
+//        div.appendChild(hrField);
+//        div.appendChild(removeButton);
+//        div.appendChild(br);
+//        nextIdField.value = parseInt(nextIdField.value) + 1;
+//
+//        //Set default values on HR field, just if a previusly role had been selected
+//        if (roleField.selectedIndex > 0) {
+//            updateHROptionsBasedOnRole(roleField.id, hrField.id);//add hr obtions based on selected role.
+//            //set the default value based in an previous selected hrId
+//            for (i = 0; i < hrField.options.length; i++) {
+//                if (hrId == hrField.options[i].value) {
+//                    hrField.options[i].selected = true;
+//                    hrField.selectedIndex = i;
+//                }
+//            }
+//        }
+//
+//    }
+//
+//    function removeEstimatedRoleHR() {
+//        var field = document.getElementById("estimatedRolesExcluded_" + this.name);
+//        var fieldRemovedRolesIds = document.getElementById("estimatedRolesExcludedIds_" + this.name);
+//        var idHR = "allocated_hr_role_" + this.name + "_" + this.id;
+//        var idRole = "estimated_role_" + this.name + "_" + this.id;
+//        var idBr = "br_" + this.name + "_" + this.id;
+//        document.getElementById(idHR).style.display = "none";
+//        document.getElementById(idRole).style.display = "none";
+//        //document.getElementById(idBr).style.display="none";
+//        this.style.display = "none";
+//        var idRoleDb = this.title;
+//        field.value += field.value == "" ? this.id : "," + this.id;
+//        fieldRemovedRolesIds.value += fieldRemovedRolesIds.value == "" ? idRoleDb : "," + idRoleDb;
+//    }
+//
+//    /**
+//     * This function is called after the user select a option of an estimated role (onchange, onselect events).
+//     * It receive as parameter the index of the role in the select options list, and then get the list of names available for this role.
+//     * A new set of options is built based on this list.
+//     */
+//    function updateHROptionsBasedOnRole(roleSelectFieldId, hrSelectFieldId) {
+//        var roleSelectField = document.getElementById(roleSelectFieldId);
+//        var roleIndex = roleSelectField.selectedIndex - 1;//-1 because the first option of this field is invalid (the field label)
+//        var hrSelectField = document.getElementById(hrSelectFieldId);
+//        var hrs = hrPerRole[roleIndex];
+//        var hr = null;
+//        var hr_id = null;
+//        var hr_name = null;
+//        var option = null;
+//        var optGroup = null;
+//
+//        if (roleIndex > -1) {
+//            //remove all options from the select field
+//            while (hrSelectField.options.length > 0) {
+//                hrSelectField.options.remove(0)
+//            }
+//            //remove all optgroups from the select field
+//            var ogl = hrSelectField.getElementsByTagName('optgroup');
+//            for (var i = ogl.length - 1; i >= 0; i--) {
+//                hrSelectField.removeChild(ogl[i])
+//            }
+//
+//            //include options and optgroups
+//            option = document.createElement("option");
+//            option.text = "<?php //echo $AppUI->_("Human Resource") ?>//";
+//            option.value = "";
+//            hrSelectField.add(option);
+//            optGroup = document.createElement("optgroup");
+//            optGroup.label = roleSelectField.options[roleSelectField.selectedIndex].text;
+//            hrSelectField.add(optGroup);
+//            for (i = 0; i < hrs.length; i++) {
+//                hr = hrs[i].split("#!");
+//                if (hr.length == 2) {
+//                    hr_id = hr[0];
+//                    hr_name = hr[1];
+//                    option = document.createElement("option");
+//                    option.text = hr_name;
+//                    option.value = hr_id;
+//                    hrSelectField.add(option);
+//                }
+//            }
+//            optGroup = document.createElement("optgroup");
+//            //include all other hr that still does not contain the role
+//            optGroup.label = "Outros";
+//            hrSelectField.add(optGroup);
+//            for (i = 0; i < hrIds.length; i++) {
+//                if (hrs.indexOf(hrIds[i] + "#!" + hrNames[i]) == -1) {//include just HR that do not are in the hrs(hr per role) array
+//                    option = new Option(hrNames[i], hrIds[i]);
+//                    hrSelectField.add(option);
+//                }
+//            }
+//        }
+//    }
+//    /**
+//     * Function to assist the filling of activity dates.
+//     * When the user select the start date, if it is after the current end date, or if it is empty, the it is filled with the same value as the start date.
+//
+//     * @returns {void}     */
+//    function updateActivityDateOnChange(activityId, dateSeparator) {
+//        try {
+//            var start_field = document.getElementById("planned_start_date_activity_" + activityId);
+//            var end_field = document.getElementById("planned_end_date_activity_" + activityId);
+//            var date_parts = null;
+//            var end_date_parts = null;
+//            var startDate = null;
+//            var endDate = null;
+//            var updateEndDateField = false;
+//            if (start_field.value.length == 10) {
+//                date_parts = start_field.value.split(dateSeparator);
+//                startDate = new Date(date_parts[2], date_parts[1], date_parts[0], 0, 0, 0, 0);
+//                if (end_field.value.length == 10) {
+//                    end_date_parts = end_field.value.split(dateSeparator);
+//                    endDate = new Date(end_date_parts[2], end_date_parts[1], end_date_parts[0], 0, 0, 0, 0);
+//                    if (startDate.getTime() > endDate.getTime()) {
+//                        updateEndDateField = true;
+//                    }
+//                } else {
+//                    updateEndDateField = true;
+//
+//                }
+//                if (updateEndDateField) {
+//                    end_field.value = date_parts[0] + dateSeparator + date_parts[1] + dateSeparator + date_parts[2];
+//                }
+//            }
+//        } catch (e) {
+//            console.log("Erro on function - updateActivityDateOnChange:" + e);
+//        }
+//    }
+//
+//    /*
+//    * Funtion for disable/enable activity duration fields based on activity effort.
+//    * It means,to enable the activity duration, the effort must be estimated
+//    * This function is called after the rendering of these fields, and onchange of effort field.
+//     */
+//    function enableDurationBasedOnEffort(activityId){
+//        if(activityId!=""){
+//            var startDateInput=document.getElementById("planned_start_date_activity_"+activityId);
+//            var endDateInput=document.getElementById("planned_end_date_activity_"+activityId);
+//            var effortInput=document.getElementById("planned_effort_"+activityId);
+//            var calendarIcon1=document.getElementById("calendar_trigger_1_"+activityId);
+//            var calendarIcon2=document.getElementById("calendar_trigger_2_"+activityId);
+//            var messagePanel=document.getElementById("message_effort_for_duration_"+activityId);
+//            var effort=effortInput.value;
+//
+//
+//            if(effort!="" && effort!=0 && !isNaN(parseInt(effort))){
+//                endDateInput.disabled=false;
+//                startDateInput.disabled=false;
+//                calendarIcon1.style.visibility="visible";
+//                calendarIcon2.style.visibility="visible";
+//                messagePanel.style.visibility="hidden";
+//            }else{
+//                endDateInput.disabled=true;
+//                startDateInput.disabled=true;
+//                calendarIcon1.style.visibility="hidden";
+//                calendarIcon2.style.visibility="hidden";
+//                messagePanel.style.visibility="visible";
+//            }
+//        }
+//    }
 
 </script>
 
@@ -713,10 +713,8 @@ require_once (DP_BASE_DIR . "/modules/tasks/tasks.class.php");
 require_once (DP_BASE_DIR . "/modules/projects/projects.class.php");
 
 $projectId = dPgetParam($_GET, 'project_id', 0);
-$activitiesIdsForDisplay; //updated by /modules/timeplanning/view/export_project_plan/time_planning_initializing_logical_ids.php
+$activitiesIdsForDisplay;
 require_once (DP_BASE_DIR . "/modules/timeplanning/view/export_project_plan/time_planning_initializing_logical_ids.php");
-
-
 
 if ($_GET["show_external_page"] != "") {
     include_once DP_BASE_DIR . $_GET["show_external_page"];
@@ -728,27 +726,12 @@ if ($_GET["show_external_page"] != "") {
     $controllerWBSItem = new ControllerWBSItem();
     $ControllerWBSItemActivityRelationship = new ControllerWBSItemActivityRelationship();
     $controllerCompanyRole = new ControllerCompanyRole();
-//    $items = $controllerWBSItem->getWorkPackages($project_id);
-//start: build the roles list
 
-    $roles = $controllerCompanyRole->getCompanyRoles($project->project_company);
-    ?>
-    <script>
-        var roleIds = new Array();
-        var roleNames = new Array();
-        var hrIds = new Array();
-        var hrNames = new Array();
-        var hrPerRole = new Array();//array to display the hr that have the role assigned.
-    <?php
+    $rolesArr = $controllerCompanyRole->getCompanyRoles($project->project_company);
+
     $i = 0;
-    foreach ($roles as $role) {
+    foreach ($rolesArr as $role) {
         $roles[$role->getId()] = $role->getDescription();
-        ?>
-            roleNames[<?php echo $i ?>] = "<?php echo $role->getDescription() ?>";
-            roleIds[<?php echo $i ?>] = "<?php echo $role->getId() ?>";
-            hrPerRole[<?php echo $i ?>] = new Array();
-        <?php
-        //start: build human resources list per role
 
         $q = new DBQuery();
         $q->addTable('contacts', 'c');
@@ -763,16 +746,11 @@ if ($_GET["show_external_page"] != "") {
         $j = 0;
         foreach ($records as $record) {
             $userNameByHRid[$record[1]] = $record[3];
-            ?>
-                hrPerRole[<?php echo $i ?>][<?php echo $j ?>] = "<?php echo $record[1] . "#!" . $record[3] ?>";
-            <?php
             $j++;
         }
-        //end: build human resources list per role
         $i++;
     }
-//end: build the roles list
-//start: build hr list
+
     $q = new DBQuery();
     $q->addTable('contacts', 'c');
     $q->addQuery('user_id, human_resource_id, contact_id,u.user_username');
@@ -781,32 +759,12 @@ if ($_GET["show_external_page"] != "") {
     $q->addWhere('c.contact_company = ' . $project->project_company);
     $q->addOrder("u.user_username");
     $sql = $q->prepare();
-    $records = db_loadList($sql);
-    $i = 0;
-    $userNameByHRid = array();
-    foreach ($records as $record) {
-        $userNameByHRid[$record[1]] = $record[3];
-        ?>
-            hrNames[<?php echo $i ?>] = "<?php echo $record[3] ?>";
-            hrIds[<?php echo $i ?>] = "<?php echo $record[1] ?>";
-        <?php
-        $i++;
-    }
-//end: build hr list
-//start: buld hr list per role
-//end: buld hr list per role 
-    ?>
-    </script>
-    <?php
-        $currentPage = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "index.php") + 9);
+    $hr = db_loadList($sql);
+
+    $currentPage = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "index.php") + 9);
+
     ?>
     <br />
-
-
-
-
-
-
 
     <!-- Filter section -->
     <div class="row">
@@ -820,7 +778,7 @@ if ($_GET["show_external_page"] != "") {
                             class="form-control form-control-sm">
                             <option <?=$_POST["project_resources_filter"] == "" ? "selected" : "" ?>   value=""><?=$AppUI->_("All"); ?></option>
                             <?php
-                                foreach ($records as $record) {
+                                foreach ($hr as $record) {
                             ?>
                                 <option <?=$_POST["project_resources_filter"] == $record[1] ? "selected" : "" ?> value="<?=$record[1] ?>"> 
                                     <?=$record[3] ?>
@@ -1013,12 +971,9 @@ if ($_GET["show_external_page"] != "") {
                             $dropdownItemhref = $dom->createAttribute('href');
                             $dropdownItemhref->value = 'javascript:void(0)';
                             $dropdownItem->appendChild($dropdownItemhref);
-                            $dropdownItemDT = $dom->createAttribute('data-toggle');
-                            $dropdownItemDT->value = 'modal';
-                            $dropdownItem->appendChild($dropdownItemDT);
-                            $dropdownItemDT = $dom->createAttribute('data-target');
-                            $dropdownItemDT->value = '#taskModal';
-                            $dropdownItem->appendChild($dropdownItemDT);
+                            $dropdownItemOC = $dom->createAttribute('onclick');
+                            $dropdownItemOC->value = 'tasks.new('. $project_id . ', ' . $branch['id'] . ')';
+                            $dropdownItem->appendChild($dropdownItemOC);
                             $icon = $dom->createElement('i');
                             $iconClass = $dom->createAttribute('class');
                             $iconClass->value = 'far fa-plus-square';
@@ -1484,6 +1439,12 @@ if ($_GET["show_external_page"] != "") {
                 </div>
                 <div class="modal-body">
                     <form name="wbsForm">
+
+                        <div class="form-group">
+                            <span class="required"></span>
+                            <?=$AppUI->_('requiredField');?>
+                        </div>
+
                         <div class="form-group">
                             <label class="required" for="<?=$AppUI->_("LBL_DESCRICAO")?>"><?=$AppUI->_("LBL_DESCRICAO")?></label>
                             <input type="text" name="wbs_item_description" class="form-control form-control-sm" maxlength="50" />
@@ -1530,119 +1491,130 @@ if ($_GET["show_external_page"] != "") {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="<?=$AppUI->_("LBL_DESCRICAO")?>"><?=$AppUI->_("LBL_DESCRICAO")?></label>
-                        <input type="text" id="taskDescription" class="form-control form-control-sm" maxlength="50" />
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="<?=$AppUI->_("LBL_EFFORT")?>"><?=$AppUI->_("LBL_EFFORT")?></label>
-                                <input type="text" id="taskDuration" class="form-control form-control-sm" />
+                    <form name="taskForm">
+
+                        <div class="form-group">
+                            <span class="required"></span>
+                            <?=$AppUI->_('requiredField');?>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required" for="<?=$AppUI->_("LBL_DESCRICAO")?>"><?=$AppUI->_("LBL_DESCRICAO")?></label>
+                            <input type="text" name="activity_description" id="taskDescription" class="form-control form-control-sm" maxlength="50" />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="<?=$AppUI->_("LBL_DATA_INICIO")?>"><?=$AppUI->_("LBL_DATA_INICIO")?></label>
+                                    <input type="text" name="planned_start_date_activity" class="form-control form-control-sm datepicker" id="planned_start_date_activity" placeholder="dd/mm/yyyy" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="<?=$AppUI->_("LBL_DATA_FIM")?>"><?=$AppUI->_("LBL_DATA_FIM")?></label>
+                                    <input type="text" name="planned_end_date_activity" class="form-control form-control-sm datepicker" id="planned_end_date_activity" placeholder="dd/mm/yyyy" />
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="empty">&nbsp;</label>
-                                <select class="form-control form-control-sm" name="planned_effort_unit" id="">
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="<?=$AppUI->_("LBL_EFFORT")?>"><?=$AppUI->_("LBL_EFFORT")?></label>
+                                    <input type="text" name="planned_effort" id="taskDuration" class="form-control form-control-sm" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="empty">&nbsp;</label>
+                                    <select class="form-control form-control-sm" name="planned_effort_unit" id="effortSelect">
+                                        <?php
+                                            //metric index is db key
+                                            $effortMetrics = array();
+                                            $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
+                                            $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
+                                            $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
+                                            $i = 0;
+                                            foreach ($effortMetrics as $metric) {
+                                                $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
+                                                echo "<option value=\"$i\" $selected>$metric</option>";
+                                                $i++;
+                                            }
+
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="<?=$AppUI->_("LBL_OWNER")?>"><?=$AppUI->_("LBL_OWNER")?></label>
+                            <select class="form-control form-control-sm" id="taskOwner" name="task_owner">
                                     <?php
-                                        //metric index is db key
-                                        $effortMetrics = array();
-                                        $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
-                                        $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
-                                        $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
-                                        $i = 0;
-                                        foreach ($effortMetrics as $metric) {
-                                            $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
-                                            echo "<option value=\"$i\" $selected>$metric</option>";
-                                            $i++;
-                                        }
-        
+                                        $query = new DBQuery();
+                                        $query->addTable("users", "u");
+                                        $query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
+                                        $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
+                                        $query->addWhere("c.contact_company = " . $company_id);
+                                        $query->addOrder("contact_last_name");
+                                        $res = & $query->exec();
+                                        for ($res; !$res->EOF; $res->MoveNext()) {
+                                            $user_id = $res->fields["user_id"];
+                                            $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
                                     ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="<?=$AppUI->_("LBL_OWNER")?>"><?=$AppUI->_("LBL_OWNER")?></label>
-                        <select class="form-control form-control-sm" id="taskOwner">
+                                    <option value="<?php echo $user_id; ?>">
+                                    <?php echo $user_name; ?>
+                                    </option>
                                 <?php
-                                    $query = new DBQuery();
-                                    $query->addTable("users", "u");
-                                    $query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
-                                    $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
-                                    $query->addWhere("c.contact_company = " . $company_id);
-                                    $query->addOrder("contact_last_name");
-                                    $res = & $query->exec();
-                                    for ($res; !$res->EOF; $res->MoveNext()) {
-                                        $user_id = $res->fields["user_id"];
-                                        $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
+                                    }
                                 ?>
-                                <option value="<?php echo $user_id; ?>">
-                                <?php echo $user_name; ?>
-                                </option>
-                            <?php
-                                }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="<?=$AppUI->_("LBL_DATA_INICIO")?>"><?=$AppUI->_("LBL_DATA_INICIO")?></label>
-                        <input type="text" class="form-control form-control-sm datepicker" id="planned_start_date_activity" placeholder="dd/mm/yyyy" /> 
-                    </div>
-                    <div class="form-group">
-                        <label for="<?=$AppUI->_("LBL_DATA_FIM")?>"><?=$AppUI->_("LBL_DATA_FIM")?></label>
-                        <input type="text" class="form-control form-control-sm datepicker" id="planned_end_date_activity" placeholder="dd/mm/yyyy" /> 
-                    </div>
-                      
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="<?=$AppUI->_("Resources")?>"><?=$AppUI->_("Resources")?></label>
-                                <select class="form-control form-control-sm" name="resourceRole" id="plannedResources" >
-                                    <?php
-                                        //metric index is db key
-                                        $effortMetrics = array();
-                                        $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
-                                        $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
-                                        $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
-        
-                                        $i = 0;
-                                        foreach ($effortMetrics as $metric) {
-                                            $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
-                                            echo "<option value=\"$i\" $selected>$metric</option>";
-                                            $i++;
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="roles">Papéis</label>
+
+                                    <select class="form-control form-control-sm" name="task_roles[]" multiple="multiple" id="taskRoles">
+                                        <?php
+                                        foreach ($rolesArr as $record) {
+                                            ?>
+                                            <option value="<?=$record->getId()?>">
+                                                <?=$record->getDescription()?>
+                                            </option>
+                                            <?php
                                         }
-                                    ?>
-                                </select>
+                                        ?>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="empty">&nbsp;</label>
-                                <select class="form-control form-control-sm" name="resourceRole" id="plannedResources" >
-                                    <?php
-                                        //metric index is db key
-                                        $effortMetrics = array();
-                                        $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
-                                        $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
-                                        $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
-        
-                                        $i = 0;
-                                        foreach ($effortMetrics as $metric) {
-                                            $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
-                                            echo "<option value=\"$i\" $selected>$metric</option>";
-                                            $i++;
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="hr">Recursos humanos</label>
+
+                                    <select class="form-control form-control-sm" name="human_resources[]" multiple="multiple" id="taskHumanResources">
+                                        <?php
+                                        foreach ($hr as $record) {
+                                            ?>
+                                            <option value="<?=$record["human_resource_id"]?>">
+                                                <?=$record["user_username"]?>
+                                            </option>
+                                            <?php
                                         }
-                                    ?>
-                                </select>
+                                        ?>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
+                        <input name="dosql" type="hidden" value="do_save_activity_estimations" />
+                        <input type="hidden" id="taskProjectId" name="project_id" value="" />
+                        <input type="hidden" id="taskWbsItemId" name="item_id" value="" />
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="addNewWBSItem()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
@@ -1653,19 +1625,6 @@ if ($_GET["show_external_page"] != "") {
 ?>
 
 <script>
-
-//    var
-//    $(document).ready(function() {
-//
-//        // hidden.bs.modal
-//
-//
-//
-//
-//
-//
-//        $('#planned_start_date_activity').datepicker();
-//    });
 
 /**
  * function showWBSDictionary() {
@@ -1712,6 +1671,51 @@ if ($_GET["show_external_page"] != "") {
                 $('input[name=wbs_item_size]').val('');
                 $('input[name=wbs_item_size_unit]').val('');
             });
+
+            $('.datepicker').datepicker();
+
+            $("#effortSelect").select2({
+                placeholder: "",
+                allowClear: true,
+                theme: "bootstrap",
+                dropdownParent: $("#taskModal")
+            });
+
+            $("#taskOwner").select2({
+                placeholder: "",
+                allowClear: true,
+                theme: "bootstrap",
+                dropdownParent: $("#taskModal")
+            });
+
+            $(".task_role").select2({
+                placeholder: "Papel",
+                allowClear: true,
+                theme: "bootstrap",
+                dropdownParent: $("#taskModal")
+            });
+
+            $(".task_hr").select2({
+                placeholder: "Recurso humano",
+                allowClear: true,
+                theme: "bootstrap",
+                dropdownParent: $("#taskModal")
+            });
+
+            $("#taskRoles").select2({
+                placeholder: "",
+                allowClear: true,
+                theme: "bootstrap",
+                dropdownParent: $("#taskModal")
+            });
+
+            $("#taskHumanResources").select2({
+                placeholder: "",
+                allowClear: true,
+                theme: "bootstrap",
+                dropdownParent: $("#taskModal")
+            });
+
         }
     };
     
@@ -1835,7 +1839,7 @@ if ($_GET["show_external_page"] != "") {
     var tasks = {
 
         msgDelete: "<?php echo $AppUI->_("LBL_CONFIRM_ACTIVITY_EXCLUSION", UI_OUTPUT_JS); ?>",
-        
+
         delete: function(id) {
             $.confirm({
                 title: '',
@@ -1866,18 +1870,32 @@ if ($_GET["show_external_page"] != "") {
             });
         },
 
-        add : function(id) {
+        new: function (projectId, wbsItemId) {
+            $('#taskProjectId').val(projectId);
+            $('#taskWbsItemId').val(wbsItemId);
+
+            $('#taskModal').modal();
+        },
+
+        save : function() {
+
+            var taskName = $('#taskDescription').val();
+            if (!taskName) {
+                $.alert({
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                    content: 'O nome da atividade é obrigatório'
+                });
+                return;
+            }
+
             $.ajax({
                 method: 'POST',
                 url: "?m=dotproject_plus",
-                data: {
-                    activity_id: id,
-                    dosql: 'do_new_activity'
-                }
+                data: $("form[name=taskForm]").serialize(),
             }).done(function() {
-                $("#card_task_" + id).remove();
+
             });
-        },
+        }
     }
 
     $(document).ready(main.init);

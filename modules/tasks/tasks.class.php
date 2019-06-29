@@ -93,7 +93,7 @@ class CTask extends CDpObject
 		global $AppUI;
 		
 		if ($this->task_id === NULL) {
-			return 'task id is NULL';
+			return NULL;
 		}
 		// ensure changes to checkboxes are honoured
 		$this->task_milestone = intval($this->task_milestone);
@@ -569,9 +569,9 @@ class CTask extends CDpObject
 	function store() {
 		GLOBAL $AppUI;
 		$q = new DBQuery;
-		
+
 		$this->dPTrimAll();
-		
+
 		$importing_tasks = false;
 		$msg = $this->check();
 		if ($msg) {

@@ -103,10 +103,10 @@ class CHumanResourceAllocation extends CDpObject {
 		return parent::store();
 	}
 	
-	function delete($task_id, $user_id) {
+	function delete($task_id) {
 		$q = new DBQuery;
 		$q->setDelete('user_tasks');
-		$q->addWhere('task_id = ' . $task_id . ' AND user_id = ' . $user_id);
+		$q->addWhere('task_id = ' . $task_id);
 		$q->exec();
 		$q->clear();
 		

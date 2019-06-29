@@ -8,10 +8,9 @@ class ControllerWBSItemActivityRelationship{
            
 	}
 	
-	function insert($id,$description,$work_package,$project_id) {
+	function insert($id, $work_package, $order) {
 		$WBSItemActivityRelationship = new WBSItemActivityRelationship();
-                $activity_order=sizeof($this->getActivitiesByWorkPackage($work_package))+1;//always insety new activities in the end
-		return $WBSItemActivityRelationship->store($id,$description,$work_package,$project_id,$activity_order);
+		return $WBSItemActivityRelationship->store($id, $work_package, $order);
 	}
 	
 	function delete($id){

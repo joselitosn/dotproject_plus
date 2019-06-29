@@ -36,7 +36,7 @@ class ProjectTaskEstimation {
         
     }
 
-    function store($idValue, $durationValue, $effortValue, $effortUnitValue, $rolesIdsValues, $rolesQuantityValues, $excludedRolesIds) {
+    function store($idValue, $durationValue, $effortValue, $effortUnitValue, $rolesIdsValues) {
         $q = new DBQuery();
         $q->addQuery("t.id");
         $q->addTable("project_tasks_estimations", "t");
@@ -58,41 +58,19 @@ class ProjectTaskEstimation {
         }
         $q->exec();
 
-
-         for ($i = 0; $i < sizeof($excludedRolesIds); $i++) {
-            $roleId = $excludedRolesIds[$i];
-            $q = new DBQuery();
-            $q->setDelete("project_tasks_estimated_roles");
-            $q->addWhere("task_id =" . $idValue. " and role_id=" . $roleId);
-            $q->exec();
-         }
         //remove old estimations
         $q = new DBQuery();
         $q->setDelete("project_tasks_estimated_roles");
         $q->addWhere("task_id =" . $idValue);
         $q->exec();
+
         //include new estimations
-        for ($i = 0; $i < sizeof($rolesIdsValues); $i++) {
-            $roleId = $rolesIdsValues[$i];
-            $roleQuantity = $rolesQuantityValues[$i];
-            if ($roleId != "") {
-                $q = new DBQuery();
-                $q->addQuery("role_id,count(role_id)");
-                $q->addTable("project_tasks_estimated_roles");
-                $q->addWhere("task_id =" . $idValue . " and role_id=" . $roleId);
-                $q->addGroup("role_id");
-                $q->exec();
-                $results = $q->loadList();
-                //if ($roleQuantity != $results[0]["count(role_id)"]) { //check whether had some change in the quantity of an estimated role, to avoid delete elements related to HR allocations
-                    for ($j = 0; $j < intval($roleQuantity); $j++) {
-                        $q = new DBQuery();
-                        $q->addTable("project_tasks_estimated_roles");
-                        $q->addInsert("task_id", $idValue);
-                        $q->addInsert("role_id", $roleId);
-                        $q->exec();
-                    }
-                //}
-            }
+        foreach ($rolesIdsValues as $roleId) {
+            $q = new DBQuery();
+            $q->addTable("project_tasks_estimated_roles");
+            $q->addInsert("task_id", $idValue);
+            $q->addInsert("role_id", $roleId);
+            $q->exec();
         }
     }
 
