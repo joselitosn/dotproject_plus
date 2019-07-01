@@ -20,7 +20,7 @@ class WBSItemActivityRelationship {
 	
 	function delete($id){
 		$q = new DBQuery();
-		$q->setDelete('tasks');
+		$q->setDelete('tasks_workpackages');
 		$q->addWhere('task_id=' . $id);
 		$q->exec();
 		$q->clear();

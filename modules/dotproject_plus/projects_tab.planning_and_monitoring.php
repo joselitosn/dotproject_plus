@@ -972,7 +972,7 @@ if ($_GET["show_external_page"] != "") {
                             $dropdownItemhref->value = 'javascript:void(0)';
                             $dropdownItem->appendChild($dropdownItemhref);
                             $dropdownItemOC = $dom->createAttribute('onclick');
-                            $dropdownItemOC->value = 'tasks.new('. $project_id . ', ' . $branch['id'] . ')';
+                            $dropdownItemOC->value = 'tasks.new('. $branch['id'] . ')';
                             $dropdownItem->appendChild($dropdownItemOC);
                             $icon = $dom->createElement('i');
                             $iconClass = $dom->createAttribute('class');
@@ -1490,128 +1490,8 @@ if ($_GET["show_external_page"] != "") {
                     <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <form name="taskForm">
+                <div class="modal-body task-modal">
 
-                        <div class="form-group">
-                            <span class="required"></span>
-                            <?=$AppUI->_('requiredField');?>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="required" for="<?=$AppUI->_("LBL_DESCRICAO")?>"><?=$AppUI->_("LBL_DESCRICAO")?></label>
-                            <input type="text" name="activity_description" id="taskDescription" class="form-control form-control-sm" maxlength="50" />
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="<?=$AppUI->_("LBL_DATA_INICIO")?>"><?=$AppUI->_("LBL_DATA_INICIO")?></label>
-                                    <input type="text" name="planned_start_date_activity" class="form-control form-control-sm datepicker" id="planned_start_date_activity" placeholder="dd/mm/yyyy" />
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="<?=$AppUI->_("LBL_DATA_FIM")?>"><?=$AppUI->_("LBL_DATA_FIM")?></label>
-                                    <input type="text" name="planned_end_date_activity" class="form-control form-control-sm datepicker" id="planned_end_date_activity" placeholder="dd/mm/yyyy" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="<?=$AppUI->_("LBL_EFFORT")?>"><?=$AppUI->_("LBL_EFFORT")?></label>
-                                    <input type="text" name="planned_effort" id="taskDuration" class="form-control form-control-sm" />
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="empty">&nbsp;</label>
-                                    <select class="form-control form-control-sm" name="planned_effort_unit" id="effortSelect">
-                                        <?php
-                                            //metric index is db key
-                                            $effortMetrics = array();
-                                            $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
-                                            $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
-                                            $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
-                                            $i = 0;
-                                            foreach ($effortMetrics as $metric) {
-                                                $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
-                                                echo "<option value=\"$i\" $selected>$metric</option>";
-                                                $i++;
-                                            }
-
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="<?=$AppUI->_("LBL_OWNER")?>"><?=$AppUI->_("LBL_OWNER")?></label>
-                            <select class="form-control form-control-sm" id="taskOwner" name="task_owner">
-                                    <?php
-                                        $query = new DBQuery();
-                                        $query->addTable("users", "u");
-                                        $query->addQuery("user_id, user_username, contact_last_name, contact_first_name, contact_id");
-                                        $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
-                                        $query->addWhere("c.contact_company = " . $company_id);
-                                        $query->addOrder("contact_last_name");
-                                        $res = & $query->exec();
-                                        for ($res; !$res->EOF; $res->MoveNext()) {
-                                            $user_id = $res->fields["user_id"];
-                                            $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
-                                    ?>
-                                    <option value="<?php echo $user_id; ?>">
-                                    <?php echo $user_name; ?>
-                                    </option>
-                                <?php
-                                    }
-                                ?>
-                            </select>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="roles">Papéis</label>
-
-                                    <select class="form-control form-control-sm" name="task_roles[]" multiple="multiple" id="taskRoles">
-                                        <?php
-                                        foreach ($rolesArr as $record) {
-                                            ?>
-                                            <option value="<?=$record->getId()?>">
-                                                <?=$record->getDescription()?>
-                                            </option>
-                                            <?php
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="hr">Recursos humanos</label>
-
-                                    <select class="form-control form-control-sm" name="human_resources[]" multiple="multiple" id="taskHumanResources">
-                                        <?php
-                                        foreach ($hr as $record) {
-                                            ?>
-                                            <option value="<?=$record["human_resource_id"]?>">
-                                                <?=$record["user_username"]?>
-                                            </option>
-                                            <?php
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <input name="dosql" type="hidden" value="do_save_activity_estimations" />
-                        <input type="hidden" id="taskProjectId" name="project_id" value="" />
-                        <input type="hidden" id="taskWbsItemId" name="item_id" value="" />
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
@@ -1670,50 +1550,6 @@ if ($_GET["show_external_page"] != "") {
                 $('input[name=wbs_item_description]').val('');
                 $('input[name=wbs_item_size]').val('');
                 $('input[name=wbs_item_size_unit]').val('');
-            });
-
-            $('.datepicker').datepicker();
-
-            $("#effortSelect").select2({
-                placeholder: "",
-                allowClear: true,
-                theme: "bootstrap",
-                dropdownParent: $("#taskModal")
-            });
-
-            $("#taskOwner").select2({
-                placeholder: "",
-                allowClear: true,
-                theme: "bootstrap",
-                dropdownParent: $("#taskModal")
-            });
-
-            $(".task_role").select2({
-                placeholder: "Papel",
-                allowClear: true,
-                theme: "bootstrap",
-                dropdownParent: $("#taskModal")
-            });
-
-            $(".task_hr").select2({
-                placeholder: "Recurso humano",
-                allowClear: true,
-                theme: "bootstrap",
-                dropdownParent: $("#taskModal")
-            });
-
-            $("#taskRoles").select2({
-                placeholder: "",
-                allowClear: true,
-                theme: "bootstrap",
-                dropdownParent: $("#taskModal")
-            });
-
-            $("#taskHumanResources").select2({
-                placeholder: "",
-                allowClear: true,
-                theme: "bootstrap",
-                dropdownParent: $("#taskModal")
             });
 
         }
@@ -1870,11 +1706,18 @@ if ($_GET["show_external_page"] != "") {
             });
         },
 
-        new: function (projectId, wbsItemId) {
-            $('#taskProjectId').val(projectId);
-            $('#taskWbsItemId').val(wbsItemId);
+        new: function (wbsItemId, taskId) {
+            $.ajax({
+                type: "get",
+                url: "?m=dotproject_plus&template=task_addedit&task_id="+taskId+"&company_id=<?=$company_id?>&project_id=<?=$projectId?>"
+            }).done(function(response) {
+                $(".task-modal").html(response);
+                $('#taskWbsItemId').val(wbsItemId);
+//                $(".modal-title").html("<?//=$AppUI->_('edit this company')?>//");
+                $('#taskModal').modal();
+            });
 
-            $('#taskModal').modal();
+
         },
 
         save : function() {
@@ -1885,9 +1728,23 @@ if ($_GET["show_external_page"] != "") {
                     title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: 'O nome da atividade é obrigatório'
                 });
+                $('#taskDescription').focus();
                 return;
             }
 
+            var rolesHr = [];
+            var elements = $('.row-role-hr');
+
+            for (row of elements) {
+                var obj = {};
+                var roleId = $(row.children[0]).find('select').val();
+                var hrId = $(row.children[1]).find('select').val();
+                obj.role = roleId;
+                obj.hr = hrId || null;
+                rolesHr.push(obj);
+            }
+
+            $('#rolesHrHidden').val(JSON.stringify(rolesHr));
             $.ajax({
                 method: 'POST',
                 url: "?m=dotproject_plus",
