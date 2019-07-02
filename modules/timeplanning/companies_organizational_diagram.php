@@ -24,6 +24,9 @@ if ($companyRole) {
 }
 ?>
 
+<h4><?=$AppUI->_("LBL_ORGONOGRAM");?></h4>
+<hr>
+
 <div class="row">
     <div class="col-md-12">
         <div class="alert alert-secondary text-center" role="alert" id="sectionNew">

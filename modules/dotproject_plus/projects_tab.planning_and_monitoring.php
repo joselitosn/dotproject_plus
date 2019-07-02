@@ -764,8 +764,8 @@ if ($_GET["show_external_page"] != "") {
     $currentPage = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "index.php") + 9);
 
     ?>
-    <br />
-
+    <h4><?=$AppUI->_("Planning and monitoring", UI_OUTPUT_HTML);?></h4>
+    <hr>
     <!-- Filter section -->
     <div class="row">
         <div class="col-md-12">
@@ -773,8 +773,7 @@ if ($_GET["show_external_page"] != "") {
                 <div class="form-group row">
                     <div class="col-sm-3">
                         <select id="project_resources_filter" 
-                            name="project_resources_filter" 
-                            onchange="filterActivitiesByUser()" 
+                            name="project_resources_filter"
                             class="form-control form-control-sm">
                             <option <?=$_POST["project_resources_filter"] == "" ? "selected" : "" ?>   value=""><?=$AppUI->_("All"); ?></option>
                             <?php
@@ -1056,6 +1055,9 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItemhref = $dom->createAttribute('href');
                         $dropdownItemhref->value = 'javascript:void(0)';
                         $dropdownItem->appendChild($dropdownItemhref);
+                        $dropdownItemOC = $dom->createAttribute('onclick');
+                        $dropdownItemOC->value = 'main.openDictionary()';
+                        $dropdownItem->appendChild($dropdownItemOC);
                         $icon = $dom->createElement('i');
                         $iconClass = $dom->createAttribute('class');
                         $iconClass->value = 'fas fa-book';
@@ -1082,8 +1084,8 @@ if ($_GET["show_external_page"] != "") {
                                 //duration and start/end dates.
                                 $obj = new CTask();
                                 $obj->load($task_id);
-                                $startDateTxt = "";
-                                $endDateTxt = "";
+                                $startDateTxt = "Não informado";
+                                $endDateTxt = "Não informado";
                                 if (isset($obj->task_start_date) && isset($obj->task_end_date)) {
                                     $startDateTxt = date("d/m/Y", strtotime($obj->task_start_date));
                                     $endDateTxt = date("d/m/Y", strtotime($obj->task_end_date));
@@ -1508,6 +1510,7 @@ if ($_GET["show_external_page"] != "") {
 
 /**
  * function showWBSDictionary() {
+ *
         var url = window.location.href;
         window.location = url + "&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php";
     }
@@ -1538,6 +1541,17 @@ if ($_GET["show_external_page"] != "") {
                 }
             });
 
+            $('#project_resources_filter').select2({
+                placeholder: 'Filtrar por recurso humano',
+                allowClear: true,
+                theme: "bootstrap",
+            }).on('select2:select', function (e) {
+
+                // TODO filtrar por RH
+
+                console.log(e);
+            });
+
             $('#newWBSItemModal').on('hidden.bs.modal', function() {
                 // Hidden fields
                 $('#wbsProjectId').val('');
@@ -1552,6 +1566,11 @@ if ($_GET["show_external_page"] != "") {
                 $('input[name=wbs_item_size_unit]').val('');
             });
 
+        },
+
+        openDictionary: function () {
+            var url = window.location.href;
+            window.location = url + "&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php";
         }
     };
     
@@ -1728,22 +1747,40 @@ if ($_GET["show_external_page"] != "") {
                     title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: 'O nome da atividade é obrigatório'
                 });
-                $('#taskDescription').focus();
                 return;
             }
 
-            var rolesHr = [];
-            var elements = $('.row-role-hr');
+            var startDate = $('#planned_start_date_activity').val();
+            var endDate = $('#planned_end_date_activity').val();
 
-            for (row of elements) {
-                var obj = {};
-                var roleId = $(row.children[0]).find('select').val();
-                var hrId = $(row.children[1]).find('select').val();
-                obj.role = roleId;
-                obj.hr = hrId || null;
-                rolesHr.push(obj);
+            if (startDate && endDate) {
+                var arrStart = startDate.split('/');
+                var arrEnd = endDate.split('/');
+                var date1 = new Date(arrStart[2], arrStart[1] - 1, arrStart[0]);
+                var date2 = new Date(arrEnd[2], arrEnd[1] - 1, arrEnd[0]);
+
+                if (date2 < date1) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: 'A data de fim deve ser posterior a data da início'
+                    });
+                    return;
+                }
             }
 
+            var rolesHr = [];
+            var row = $('.row-role-hr')[0];
+
+            for (var i = 0; i < row.childElementCount; i+=2) {
+                var obj = {};
+                var roleId = $(row.children[i]).find('select').val();
+                var hrId = $(row.children[i+1]).find('select').val();
+                if (roleId) {
+                    obj.role = roleId;
+                    obj.hr = hrId || null;
+                    rolesHr.push(obj);
+                }
+            }
             $('#rolesHrHidden').val(JSON.stringify(rolesHr));
             $.ajax({
                 method: 'POST',

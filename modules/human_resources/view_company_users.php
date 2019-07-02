@@ -11,26 +11,31 @@ $query->addQuery("user_id, user_username, contact_last_name, contact_first_name,
 $query->addJoin("contacts", "c", "u.user_contact = c.contact_id");
 $query->addWhere("c.contact_company = " . $company_id);
 $query->addOrder("contact_last_name");
-$res = & $query->exec();
+$res = $query->exec();
 ?>
-
-<div class="row">
-    <div class="col-md-12 text-right">
-        <div class="dropdown">
-            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bars"></i>
+    <h4><?=$AppUI->_('2LBLHumanResources');?></h4>
+    <hr>
+<?php
+if (!$res->fields) {
+?>
+    <div class="alert alert-secondary text-center" role="alert">
+        <?=$AppUI->_("LBL_THERE_IS_NO_HR") ?>
+        <?=$AppUI->_("LBL_CLICK"); ?>
+        <a class="alert-link" href="javascript:void(0)" onclick="hr.new()">
+            <?php echo $AppUI->_("LBL_HERE"); ?>
+        </a>
+        <?php echo $AppUI->_("LBL_TO_CREATE_A_HR"); ?>
+    </div>
+<?php
+} else {
+?>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="hr.new()">
+                Adicionar
             </a>
-
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                <a class="dropdown-item" href="javascript:void(0)" onclick="hr.new()">
-                    <i class="far fa-plus-square"></i>
-                    <?=$AppUI->_('LBL_NEW_UR')?>
-                </a>
-            </div>
         </div>
     </div>
-</div>
-
 <?php
     require_once DP_BASE_DIR . "/modules/human_resources/human_resources.class.php";
     require_once DP_BASE_DIR . "/modules/human_resources/configuration_functions.php";
@@ -117,9 +122,9 @@ $res = & $query->exec();
                         </h5>
                     </div>
                     <div class="col-md-2 text-right">
-                        <span class="badge <?=$badgeClass?>">
-                            <?=$status?>
-                        </span>
+                            <span class="badge <?=$badgeClass?>">
+                                <?=$status?>
+                            </span>
                         <div class="dropdown" style="width: 20%; float: right;">
                             <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bars"></i>
@@ -131,23 +136,23 @@ $res = & $query->exec();
                                     <?=$AppUI->_('Update Human Resource')?>
                                 </a>
                                 <?php
-                                    $obj = new CHumanResource();
-                                    $canDelete=false;
-                                    if ($human_resource_id != -1) {
-                                        $obj->load($human_resource_id);
-                                        $canDelete=$obj->canDelete();
-                                    }else{
-                                        $canDelete=true;
-                                    }
+                                $obj = new CHumanResource();
+                                $canDelete=false;
+                                if ($human_resource_id != -1) {
+                                    $obj->load($human_resource_id);
+                                    $canDelete=$obj->canDelete();
+                                }else{
+                                    $canDelete=true;
+                                }
 
-                                    if ($canDelete) {
-                                ?>
-                                        <a class="dropdown-item" href="javascript:void(0)" onclick="hr.delete(<?=$human_resource_id?>, <?=$user_id?>, <?=$contact_id?>)">
-                                            <i class="far fa-trash-alt"></i>
-                                            <?=$AppUI->_('Delete Human Resource')?>
-                                        </a>
-                                <?php
-                                    }
+                                if ($canDelete) {
+                                    ?>
+                                    <a class="dropdown-item" href="javascript:void(0)" onclick="hr.delete(<?=$human_resource_id?>, <?=$user_id?>, <?=$contact_id?>)">
+                                        <i class="far fa-trash-alt"></i>
+                                        <?=$AppUI->_('Delete Human Resource')?>
+                                    </a>
+                                    <?php
+                                }
                                 ?>
                             </div>
                         </div>
@@ -174,41 +179,41 @@ $res = & $query->exec();
                                     </td>
                                 </tr>
                                 <?php
-                                    if ($obj->eventual == 0) {
-                                        ?>
-                                        <tr>
-                                            <th class="text-right" width="15%"><?= $AppUI->_("Weekday working hours") ?>
-                                                :
-                                            </th>
-                                            <td>
-                                                <table class="table table-sm table-bordered text-center">
-                                                    <thead class="thead-dark">
-                                                    <tr>
-                                                        <th><?= $cwd_conv[0] ?></th>
-                                                        <th><?= $cwd_conv[1] ?></th>
-                                                        <th><?= $cwd_conv[2] ?></th>
-                                                        <th><?= $cwd_conv[3] ?></th>
-                                                        <th><?= $cwd_conv[4] ?></th>
-                                                        <th><?= $cwd_conv[5] ?></th>
-                                                        <th><?= $cwd_conv[6] ?></th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <tr>
-                                                        <td><?= $obj->human_resource_mon ?></td>
-                                                        <td><?= $obj->human_resource_tue ?></td>
-                                                        <td><?= $obj->human_resource_wed ?></td>
-                                                        <td><?= $obj->human_resource_thu ?></td>
-                                                        <td><?= $obj->human_resource_fri ?></td>
-                                                        <td><?= $obj->human_resource_sat ?></td>
-                                                        <td><?= $obj->human_resource_sun ?></td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <?php
-                                    }
+                                if ($obj->eventual == 0) {
+                                    ?>
+                                    <tr>
+                                        <th class="text-right" width="15%"><?= $AppUI->_("Weekday working hours") ?>
+                                            :
+                                        </th>
+                                        <td>
+                                            <table class="table table-sm table-bordered text-center">
+                                                <thead class="thead-dark">
+                                                <tr>
+                                                    <th><?= $cwd_conv[0] ?></th>
+                                                    <th><?= $cwd_conv[1] ?></th>
+                                                    <th><?= $cwd_conv[2] ?></th>
+                                                    <th><?= $cwd_conv[3] ?></th>
+                                                    <th><?= $cwd_conv[4] ?></th>
+                                                    <th><?= $cwd_conv[5] ?></th>
+                                                    <th><?= $cwd_conv[6] ?></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td><?= $obj->human_resource_mon ?></td>
+                                                    <td><?= $obj->human_resource_tue ?></td>
+                                                    <td><?= $obj->human_resource_wed ?></td>
+                                                    <td><?= $obj->human_resource_thu ?></td>
+                                                    <td><?= $obj->human_resource_fri ?></td>
+                                                    <td><?= $obj->human_resource_sat ?></td>
+                                                    <td><?= $obj->human_resource_sun ?></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
                                 ?>
                                 <tr>
                                     <th class="text-right" width="15%">Custos do recurso humano:</th>
@@ -223,28 +228,28 @@ $res = & $query->exec();
                                             </thead>
                                             <tbody>
                                             <?php
-                                                if (count($userCosts)) {
+                                            if (count($userCosts)) {
 
-                                                    foreach ($userCosts as $cost) {
-                                                        $dt_ini = $cost[4];
-                                                        $dt_fim = $cost[5];
-                                                        $dt_ini = $controllerUtil->formatDate($dt_ini);
-                                                        $dt_fim = $controllerUtil->formatDate($dt_fim);
-                                                        ?>
-                                                        <tr>
-                                                            <td><?= $dt_ini ?></td>
-                                                            <td><?= $dt_fim ?></td>
-                                                            <td>R$ <?=number_format($cost[2], 2, ',', '.') ?></td>
-                                                        </tr>
-                                                        <?php
-                                                    }
-                                                } else {
+                                                foreach ($userCosts as $cost) {
+                                                    $dt_ini = $cost[4];
+                                                    $dt_fim = $cost[5];
+                                                    $dt_ini = $controllerUtil->formatDate($dt_ini);
+                                                    $dt_fim = $controllerUtil->formatDate($dt_fim);
                                                     ?>
-                                                        <tr>
-                                                            <td class="text-center" colspan="3">Nenhum custo cadastrado</td>
-                                                        </tr>
+                                                    <tr>
+                                                        <td><?= $dt_ini ?></td>
+                                                        <td><?= $dt_fim ?></td>
+                                                        <td>R$ <?=number_format($cost[2], 2, ',', '.') ?></td>
+                                                    </tr>
                                                     <?php
                                                 }
+                                            } else {
+                                                ?>
+                                                <tr>
+                                                    <td class="text-center" colspan="3">Nenhum custo cadastrado</td>
+                                                </tr>
+                                                <?php
+                                            }
                                             ?>
 
                                             </tbody>
@@ -257,10 +262,13 @@ $res = & $query->exec();
                 </div>
             </div>
         </div>
-<?php
+    <?php
     }
     $query->clear();
+}
 ?>
+
+
 
 <div class="modal" id="addHrModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">

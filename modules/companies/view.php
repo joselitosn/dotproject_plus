@@ -105,10 +105,9 @@ if ($company_policies_id != "") {
 <!-- Page Content -->
 <div id="content">
     <fieldset>
-        <legend><?=$AppUI->_('Company')?></legend>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-primary" role="alert">
+                <div class="alert alert-primary" role="alert" style="display: none">
                     <a class="alert-link" id="companyDetailsLink" data-toggle="collapse" href="#company_details">
                         Dados da empresa
                         <i class="fas fa-caret-down"></i>
@@ -157,7 +156,7 @@ if ($company_policies_id != "") {
                         </table>
                     </div>
                 </div>
-
+                <br>
                 <?php
                     switch ($tab) {
                         case TAB_PROJECTS :

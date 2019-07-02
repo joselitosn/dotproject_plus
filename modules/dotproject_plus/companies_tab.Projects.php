@@ -24,7 +24,12 @@ if (count($projList)) {
 }
 $q->addWhere('prj.project_status <> 7');
 $q->addOrder($sort);
+?>
 
+<h4><?=$AppUI->_("Projects");?></h4>
+<hr>
+
+<?php
 if (!($rows = $q->loadList())) {
 
 ?>
@@ -43,7 +48,7 @@ if (!($rows = $q->loadList())) {
     <div class="row">
         <div class="col-md-12 text-right">
             <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="company.project.new()">
-                Adicionar projeto
+                Adicionar
             </a>
         </div>
     </div>

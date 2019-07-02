@@ -16,6 +16,11 @@ $query->addQuery('r.*');
 $query->addWhere('r.human_resources_role_company_id = ' . $company_id);
 $res_companies = & $query->exec();
 
+?>
+    <h4><?=$AppUI->_("LBL_ORGANIZATION_ROLES");?></h4>
+    <hr>
+<?php
+
 require_once DP_BASE_DIR . "/modules/human_resources/configuration_functions.php";
 $roles = array();
 for ($res_companies; !$res_companies->EOF; $res_companies->MoveNext()) {
@@ -28,8 +33,7 @@ for ($res_companies; !$res_companies->EOF; $res_companies->MoveNext()) {
         'obj' => $obj
     );
 }
-
-if (!count($roles)) {
+if (count($roles) === 0) {
     ?>
 
     <div class="alert alert-secondary text-center" role="alert">
@@ -46,7 +50,7 @@ if (!count($roles)) {
     <div class="row">
         <div class="col-md-12 text-right">
             <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="roles.new()">
-                <?= $AppUI->_('LBL_NEW_ROLE') ?>
+                Adicionar
             </a>
 
         </div>

@@ -281,8 +281,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 <!-- Page Content -->
 <div id="content">
     <fieldset>
-        <legend><?=$AppUI->_('Company')?></legend>
-        <div class="alert alert-primary" role="alert">
+        <div class="alert alert-primary" role="alert" style="display: none">
             <a class="alert-link" id="projectDetailsLink" data-toggle="collapse" href="#project_details">
                 <?php echo $obj->project_name ?>
                 <i class="fas fa-caret-down"></i>
@@ -335,6 +334,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 
             </div>
         </div>
+        <br>
         <?php
         if ($tab == 1) {
             switch ($subtab) {

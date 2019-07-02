@@ -90,8 +90,7 @@ if ($taskId) {
 }
 
 // Save estimations
-// TODO para cada $rolesIds inserido, um id será gerado e será usade para salvar RH. Role sem RH OK; RH sem role não OK.
-
+// TODO validar se os campor foram preenchidos para salvar
 foreach ($rolesHr as $line) {
     $rolesIds[] = $line['role'];
 }
@@ -107,17 +106,19 @@ $allocationRoleHR->delete($taskId);
 
 // Insert the new ones
 foreach ($rolesHr as $line) {
-    $q = new DBQuery();
-    $q->addTable("project_tasks_estimated_roles");
-    $q->addQuery("id");
-    $q->addWhere("role_id=".$line['role']." and task_id=".$taskId);
-    $sql = $q->prepare();
-    $records = db_loadList($sql);
-    $allocationRoleHR->human_resource_id = $line['hr'];
-    $allocationRoleHR->project_tasks_estimated_roles_id=$records[0][0];
-    $userId=getUserIdByHR($line['hr']);
-    $allocationRoleHR->store($taskId, $userId);
-    $i++;
+    if (null !== $line['hr']) {
+        $q = new DBQuery();
+        $q->addTable("project_tasks_estimated_roles");
+        $q->addQuery("id");
+        $q->addWhere("role_id=".$line['role']." and task_id=".$taskId);
+        $sql = $q->prepare();
+        $records = db_loadList($sql);
+        $allocationRoleHR->human_resource_id = $line['hr'];
+        $allocationRoleHR->project_tasks_estimated_roles_id=$records[0][0];
+        $userId=getUserIdByHR($line['hr']);
+        $allocationRoleHR->store($taskId, $userId);
+        $i++;
+    }
 
 }
 
