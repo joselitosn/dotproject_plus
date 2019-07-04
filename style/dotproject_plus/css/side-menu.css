@@ -63,15 +63,15 @@ a, a:hover, a:focus {
 }
 
 #sidebar {
-    /* don't forget to add all the previously mentioned styles here too */
-    background: #343a40;
-    color: #fff;
+    /*background: #343a40;*/
+    color: #343a40;
     transition: all 0.3s;
 }
 
 #sidebar .sidebar-header {
     padding: 20px;
-    background: #343a40;
+    color: #343a40;
+    /*background: #343a40;*/
 }
 
 #sidebar ul.components {
@@ -91,16 +91,18 @@ a, a:hover, a:focus {
     display: block;
 }
 #sidebar ul li a:hover {
+    text-decoration: underline;
     color: #343a40;
-    background: #fff;
+    background: #eee;
 }
 
 #sidebar ul li.active > a, #sidebar ul li.active > a[aria-expanded="true"] {
-    color: #fff;
-    background: #434a52;
+    color: #434a52;
+    background: #eee;
 }
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #434A52;
+    color: #343a40;
+    /*background: #434A52;*/
 }

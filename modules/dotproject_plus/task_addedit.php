@@ -19,6 +19,13 @@ $project = new CProject();
 $project->load($projectId);
 $controllerCompanyRole = new ControllerCompanyRole();
 $rolesArr = $controllerCompanyRole->getCompanyRoles($project->project_company);
+
+
+// Todo carregar lista de papéis
+// human_resources_role
+
+
+
 $roles = array();
 foreach ($rolesArr as $r) {
 
@@ -141,6 +148,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
                 $user_id = $res->fields["user_id"];
                 $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
                 ?>
+                <option></option>
                 <option value="<?php echo $user_id; ?>">
                     <?php echo $user_name; ?>
                 </option>
@@ -156,7 +164,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
             <div class="row row-role-hr">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <select class="form-control form-control-sm">
+                        <select class="form-control form-control-sm select-role">
                             <?php
                             foreach ($roles as $r) {
                                 ?>
@@ -172,7 +180,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <select class="form-control form-control-sm">
+                        <select class="form-control form-control-sm select-hr">
                             <?php
                             foreach ($hr as $record) {
                                 ?>
@@ -198,6 +206,8 @@ $effortMetrics[2] = 'Pessoas/Dia';
     <input name="roles_human_resources" type="hidden" value="" id="rolesHrHidden"/>
     <input type="hidden" id="taskWbsItemId" name="item_id" value="<?=$itemId?>" />
 </form>
+<?php
+?>
 
 <script>
 
@@ -221,15 +231,31 @@ $effortMetrics[2] = 'Pessoas/Dia';
             var selectsRoleHr = $(".row-role-hr").find('select');
             form.initSelect($(selectsRoleHr[0]), 'Papel');
             form.initSelect($(selectsRoleHr[1]), 'Recurso humano');
+
+
+
+
+
         },
 
         initSelect: function (select, placeholder) {
             select.select2({
                 placeholder: placeholder,
                 allowClear: true,
+                disabled: select.hasClass('select-hr') ? true : false,
                 theme: "bootstrap",
                 dropdownParent: $("#taskModal")
             });
+            if (select.hasClass('select-role')) {
+                var selectHr = select.parent().parent().next().children().children();
+                select.on('select2:select', function() {
+                    selectHr.attr('disabled', false);
+                });
+                select.on('select2:unselect', function() {
+                    selectHr.val(null).trigger('change');
+                    selectHr.attr('disabled', true);
+                });
+            }
         },
 
         addResource: function() {
@@ -238,7 +264,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
 
             var colRole = $('<div class="col-md-6"></div>');
             var groupRole = $('<div class="form-group"></div>');
-            var selectRole = $('<select class="form-control form-control-sm"></select>');
+            var selectRole = $('<select class="form-control form-control-sm select-role"></select>');
             $('<option></option>').appendTo(selectRole);
             form.roles.forEach(function(role) {
                 $('<option value="'+role.id+'">'+role.name+'</option>').appendTo(selectRole);
@@ -249,7 +275,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
 
             var colHr = $('<div class="col-md-6"></div>');
             var groupHr = $('<div class="form-group"></div>');
-            var selectHr = $('<select class="form-control form-control-sm"></select>');
+            var selectHr = $('<select class="form-control form-control-sm select-hr" disabled></select>');
             $('<option></option>').appendTo(selectHr);
             form.hrs.forEach(function(hr) {
                 $('<option value="'+hr.human_resource_id+'">'+hr.user_username+'</option>').appendTo(selectHr);

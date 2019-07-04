@@ -85,8 +85,8 @@ mysql_query('SET character_set_results=utf8');
             <ul class="navbar-nav">
                 <!-- Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-                        <?php echo $AppUI->user_first_name . ' ' . $AppUI->user_last_name; ?>
+                    <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown">
+                        <?=$AppUI->user_first_name . ' ' . $AppUI->user_last_name; ?>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="./index.php?m=admin&amp;a=viewuser&amp;user_id=<?php echo $AppUI->user_id ?>">

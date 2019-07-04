@@ -171,22 +171,21 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 </form>
 
 <!-- start main section - left project menu and EAP and tasks tree -->
-
 <!-- Sidebar -->
-<nav id="sidebar">
+<nav id="sidebar" style="margin-top:70px;">
     <div class="sidebar-header">
         <h5 class="text-right">
             <i id="sidebarCollapse" class="mouse-cursor-pointer fas fa-angle-double-left" style="margin-top: 20px;"></i>
         </h5>
     </div>
     <?php
-        if (!isset($_GET["tab"])) {
-            $tab = 1;
-            $_SESSION["user_choosen_feature"] = "/modules/dotproject_plus/projects_tab.planning_and_monitoring.php";
-        } else {
-            $tab = $_GET["tab"];
-            $_SESSION["user_choosen_feature"] = $_POST["user_choosen_feature"];
-        }
+//        if (!isset($_GET["tab"])) {
+//            $tab = 1;
+//            $_SESSION["user_choosen_feature"] = "/modules/dotproject_plus/projects_tab.planning_and_monitoring.php";
+//        } else {
+//            $tab = $_GET["tab"];
+//            $_SESSION["user_choosen_feature"] = $_POST["user_choosen_feature"];
+//        }
 
         if (!isset($_GET["subtab"])) {
             $subtab = 0;
@@ -279,7 +278,12 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 </nav>
 
 <!-- Page Content -->
-<div id="content">
+<div id="content" style="margin-top:70px;">
+    <div class="row" style="position: relative; top: -60px; left: -290px;">
+        <div class="col-md-12">
+            <h1>aqui vai os dads do projeto</h1>
+        </div>
+    </div>
     <fieldset>
         <div class="alert alert-primary" role="alert" style="display: none">
             <a class="alert-link" id="projectDetailsLink" data-toggle="collapse" href="#project_details">

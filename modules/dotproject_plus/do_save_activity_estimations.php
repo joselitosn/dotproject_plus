@@ -22,6 +22,7 @@ $startDate = $_POST["planned_start_date_activity"];
 $endDate = $_POST["planned_end_date_activity"];
 $task_percent_complete=$_POST["task_percent_complete"];
 
+
 $rolesHr = $_POST['roles_human_resources'];
 
 $rolesHr = json_decode($rolesHr, true);
@@ -103,7 +104,6 @@ $projectTaskEstimation->store($taskId, $duration, $effort, $effortUnit, $rolesId
 $allocationRoleHR= new CHumanResourceAllocation();
 $allocationRoleHR->delete($taskId);
 
-
 // Insert the new ones
 foreach ($rolesHr as $line) {
     if (null !== $line['hr']) {
@@ -112,12 +112,12 @@ foreach ($rolesHr as $line) {
         $q->addQuery("id");
         $q->addWhere("role_id=".$line['role']." and task_id=".$taskId);
         $sql = $q->prepare();
+        $q->clear();
         $records = db_loadList($sql);
-        $allocationRoleHR->human_resource_id = $line['hr'];
-        $allocationRoleHR->project_tasks_estimated_roles_id=$records[0][0];
+//        $allocationRoleHR->human_resource_id = $line['hr'];
+//        $allocationRoleHR->project_tasks_estimated_roles_id=$records[0][0];
         $userId=getUserIdByHR($line['hr']);
-        $allocationRoleHR->store($taskId, $userId);
-        $i++;
+        $allocationRoleHR->store($taskId, $userId, $line['hr'], $records[0][0]);
     }
 
 }

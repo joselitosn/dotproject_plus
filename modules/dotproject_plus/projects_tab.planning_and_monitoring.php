@@ -764,7 +764,8 @@ if ($_GET["show_external_page"] != "") {
     $currentPage = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "index.php") + 9);
 
     ?>
-    <h4><?=$AppUI->_("Planning and monitoring", UI_OUTPUT_HTML);?></h4>
+
+    <h4><?=$AppUI->_("Tasks",UI_OUTPUT_HTML)?></h4>
     <hr>
     <!-- Filter section -->
     <div class="row">
@@ -1107,6 +1108,9 @@ if ($_GET["show_external_page"] != "") {
                                 $taskCardBodyClass = $dom->createAttribute('class');
                                 $taskCardBodyClass->value = 'card-body';
                                 $taskCardBody->appendChild($taskCardBodyClass);
+                                $taskCardBodyStyle = $dom->createAttribute('style');
+                                $taskCardBodyStyle->value = 'padding: 10px 20px 1px 20px';
+                                $taskCardBody->appendChild($taskCardBodyStyle);
 
                                 $taskCardRow = $dom->createElement('div');
                                 $taskCardRowClass = $dom->createAttribute('class');
@@ -1354,8 +1358,28 @@ if ($_GET["show_external_page"] != "") {
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
                                 $carCol6->appendChild($span);
-                                
+
                                 // Recursos humanos
+
+//                                $q = new DBQuery();
+//                                $q->addTable("contacts", 'c');
+//                                $q->addQuery("CONCAT(c.contact_first_name, ' ', c.contact_last_name)");
+//                                $q->addJoin('users', 'u', 'u.user_contact = c.contact_id');
+//                                $q->addJoin('human_resource', 'hr', 'hr.human_resource_user_id = u.user_id');
+//                                $q->addJoin('human_resource_allocation', 'hra', 'hra.human_resource_id = hr.human_resource_id');
+//                                $q->addJoin('project_tasks_estimated_roles', 'pter', 'hra.project_tasks_estimated_roles_id = pter.id');
+//                                $q->addWhere("pter.task_id=" . $task_id);
+//                                $sql = $q->prepare();
+//                                $q->clear();
+//                                $humanRes = db_loadList($sql);
+
+
+//                                foreach ($humanRes as $humanRe) {
+//                                    if ($task_id != 235) continue;
+//                                    var_dump($humanRes);
+//                                    $estimatedRolesTxt .= ', ' . $humanRe[0];
+//                                }
+//                                var_dump($estimatedRolesTxt);
                                 $estimatedRolesTxt = "";
                                 $rolesNonGrouped = $projectTaskEstimation->getRolesNonGrouped($task_id);
                                 $totalRoles = count($rolesNonGrouped);
@@ -1365,10 +1389,10 @@ if ($_GET["show_external_page"] != "") {
                                 // } else {
                                 //     $hasFilteredRH = false;
                                 // }
-                                
+//                                var_dump($rolesNonGrouped);
                                 foreach ($rolesNonGrouped as $role) {
                                     $role_estimated_id = $role->getQuantity(); // the quantity field is been used to store the estimated role id
-                                    $allocated_hr_id = ""; //Get the allocated HR  (maybe there is just the role without allocation, in this case write the role name)          
+                                    $allocated_hr_id = ""; //Get the allocated HR  (maybe there is just the role without allocation, in this case write the role name)
                                     //Get id of a possible old allocation to delete it
                                     $q = new DBQuery();
                                     $q->addTable("human_resource_allocation");
@@ -1376,13 +1400,16 @@ if ($_GET["show_external_page"] != "") {
                                     $q->addWhere("project_tasks_estimated_roles_id=" . $role_estimated_id);
                                     $sql = $q->prepare();
                                     $records = db_loadList($sql);
+
+
                                     foreach ($records as $record) {
                                         $allocated_hr_id = $record[0];
                                     }
+
                                     if ($allocated_hr_id != "") {
-                                        $estimatedRolesTxt.=$userNameByHRid[$allocated_hr_id]; //write user name
+                                        $estimatedRolesTxt.=$userNameByHRid[$allocated_hr_id];
                                     } else {
-                                        $estimatedRolesTxt.="<i style='color:red'>" . $roles[$role->getRoleId()] . "</i>";
+                                        $estimatedRolesTxt.= $roles[$role->getRoleId()];
                                     }
                                     if ($totalRoles > $i) {
                                         $estimatedRolesTxt.=", ";

@@ -82,7 +82,7 @@ class CHumanResourceAllocation extends CDpObject {
 		return true;
 	}
 	
-	function store($task_id, $user_id) {
+	function store($task_id, $user_id, $hrId, $taskEstmatedRoleId) {
 		
 		$q = new DBQuery;		
 		$q->addTable('user_tasks');
@@ -99,8 +99,15 @@ class CHumanResourceAllocation extends CDpObject {
 			$q->addInsert('perc_assignment', '100');
 			$q->exec();
 			$q->clear();
-		}		
-		return parent::store();
+		}
+		// It is filing here and I have no idea why...
+//		return parent::store();
+		// Workaround
+        $q->addTable('human_resource_allocation');
+        $q->addInsert('human_resource_id', $hrId);
+        $q->addInsert('project_tasks_estimated_roles_id', $taskEstmatedRoleId);
+        $q->exec();
+        $q->clear();
 	}
 	
 	function delete($task_id) {
