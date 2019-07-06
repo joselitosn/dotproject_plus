@@ -179,13 +179,6 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
         </h5>
     </div>
     <?php
-//        if (!isset($_GET["tab"])) {
-//            $tab = 1;
-//            $_SESSION["user_choosen_feature"] = "/modules/dotproject_plus/projects_tab.planning_and_monitoring.php";
-//        } else {
-//            $tab = $_GET["tab"];
-//            $_SESSION["user_choosen_feature"] = $_POST["user_choosen_feature"];
-//        }
 
         if (!isset($_GET["subtab"])) {
             $subtab = 0;
@@ -279,66 +272,37 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 
 <!-- Page Content -->
 <div id="content" style="margin-top:70px;">
-    <div class="row" style="position: relative; top: -60px; left: -290px;">
+    <div class="row header-2" style="position: relative; top: -60px; left: -290px;">
         <div class="col-md-12">
-            <h1>aqui vai os dads do projeto</h1>
+            <h4><?=$obj->project_name?></h4>
+            <small>
+                <?=$AppUI->_('Start Date')?>:
+                <?=$start_date ? $start_date->format($df) : '-'?>
+                |
+                <?=$AppUI->_('Target End Date')?>:
+                <?=$end_date ? $end_date->format($df) : '-'?>
+                |
+                <?=$AppUI->_('Company')?>:
+                <?='<a href="?m=companies&amp;a=view&amp;company_id=' . $obj->project_company . '">' . htmlspecialchars($obj->company_name, ENT_QUOTES) . "</a>"?>
+                |
+                <?=$AppUI->_('Status')?>:
+                <?=$AppUI->_($pstatus[$obj->project_status])?>
+                |
+                <?=$AppUI->_('Priority')?>:
+                <?=$AppUI->_($projectPriority[$obj->project_priority])?>
+                |
+                <?=$AppUI->_("LBL_OWNER")?>:
+                <?=$obj->user_name?>
+                |
+                <?=$AppUI->_('Scheduled Hours')?>:
+                <?=$total_hours?>
+                |
+                <?=$AppUI->_('Target Budget')?>(<?php echo $dPconfig['currency_symbol']?>):
+                <?=number_format(@$obj->project_target_budget, 2, ',', '.')?>
+            </small>
         </div>
     </div>
     <fieldset>
-        <div class="alert alert-primary" role="alert" style="display: none">
-            <a class="alert-link" id="projectDetailsLink" data-toggle="collapse" href="#project_details">
-                <?php echo $obj->project_name ?>
-                <i class="fas fa-caret-down"></i>
-            </a>
-            <div id="project_details" class="collapse">
-                <table class="table table-sm project-details">
-                    <tr>
-                        <th style="text-align:right"><?php echo $AppUI->_("LBL_NOME"); ?>:</th>
-                        <td ><?php echo $obj->project_name ?></td>
-                        <th style="text-align:right"><?php echo $AppUI->_('Start Date'); ?>:</th>
-                        <td><?php echo $start_date ? $start_date->format($df) : '-'; ?></td>
-                        <th style="text-align:right"><?php echo $AppUI->_('Target End Date'); ?>:</th>
-                        <td><?php echo $end_date ? $end_date->format($df) : '-'; ?></td>
-                    </tr>
-                    <tr>
-                        <th style="text-align:right"><?php echo $AppUI->_('Company'); ?>:</th>
-                        <td><?php echo '<a href="?m=companies&amp;a=view&amp;company_id=' . $obj->project_company . '">' . htmlspecialchars($obj->company_name, ENT_QUOTES) . "</a>"; ?></td>
-                        <th style="text-align:right"><?php echo $AppUI->_('Status'); ?>:</th>
-                        <td><?php echo $AppUI->_($pstatus[$obj->project_status]); ?></td>
-                        <th style="text-align:right"><?php echo $AppUI->_('Priority'); ?>:</th>
-                        <td><?php echo $AppUI->_($projectPriority[$obj->project_priority]); ?></td>
-                    </tr>
-
-                    <tr>
-                        <th style="text-align:right"><?php echo $AppUI->_("LBL_OWNER"); ?>:</th>
-                        <td><?php echo $obj->user_name; ?></td>
-
-                        <th style="text-align:right"><?php echo $AppUI->_('Scheduled Hours'); ?>:</th>
-                        <td><?php echo $total_hours ?></td>
-
-                        <th style="text-align:right"><?php echo $AppUI->_('Target Budget'); ?>(<?php echo $dPconfig['currency_symbol'] ?>):</th>
-                        <td> <?php echo number_format(@$obj->project_target_budget, 2, ',', '.'); ?></td>
-                    </tr>
-                </table>
-                <button type="button" class="btn btn-secondary btn-sm">
-                    <?php echo ucfirst($AppUI->_("LBL_EDIT")); ?>
-                </button>
-                <button type="button" class="btn btn-secondary btn-sm">
-                    <?php echo $AppUI->_("LBL_REPORT"); ?>
-                </button>
-                <?php
-                if($canDelete) { // Precisa pedir confirmação antes de excluir... echo ($AppUI->_('doDelete', UI_OUTPUT_JS) . ' ' . $AppUI->_('Project', UI_OUTPUT_JS)
-                    ?>
-                    <button type="button" class="btn btn-danger btn-sm">
-                        <?php echo $AppUI->_("LBL_EXCLUSION"); ?>
-                    </button>
-                    <?php
-                }
-                ?>
-
-            </div>
-        </div>
-        <br>
         <?php
         if ($tab == 1) {
             switch ($subtab) {
@@ -369,9 +333,39 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 
             }
         }
-        // TODO controlar a view exibida pelo variavel $tab
         ?>
     </fieldset>
 </div>
 
-<script type="text/javascript" src="../../style/dotproject_plus/js/view.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(e) {
+
+        let collapseProject = $('#projectDetailsLink');
+        $('#project_details').on('shown.bs.collapse', function () {
+            collapseProject.find('i').removeClass('fa-caret-down');
+            collapseProject.find('i').addClass('fa-caret-up');
+        });
+        $('#project_details').on('hidden.bs.collapse', function () {
+            collapseProject.find('i').removeClass('fa-caret-up');
+            collapseProject.find('i').addClass('fa-caret-down');
+        });
+
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+
+            if ($(this).hasClass('fa-angle-double-right')) {
+                $(this).removeClass('fa-angle-double-right');
+                $(this).addClass('fa-angle-double-left');
+                $('.header-2').animate({
+                    left: '-290px'
+                }, 270);
+            } else {
+                $(this).removeClass('fa-angle-double-left');
+                $(this).addClass('fa-angle-double-right');
+                $('.header-2').animate({
+                    left: '-40px'
+                }, 270);
+            }
+        });
+    });
+</script>

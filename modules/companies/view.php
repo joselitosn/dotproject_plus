@@ -71,7 +71,8 @@ if ($company_policies_id != "") {
 ?>
 
 <!-- Sidebar -->
-<nav id="sidebar">
+
+<nav id="sidebar" style="margin-top:70px;">
     <div class="sidebar-header">
         <h5 class="text-right">
             <i id="sidebarCollapse" class="mouse-cursor-pointer fas fa-angle-double-left" style="margin-top: 20px;"></i>
@@ -103,60 +104,38 @@ if ($company_policies_id != "") {
 </nav>
 
 <!-- Page Content -->
-<div id="content">
+<div id="content" style="margin-top:70px;">
+    <div class="row header-2" style="position: relative; top: -60px; left: -290px;">
+        <div class="col-md-12">
+            <h4><?=htmlspecialchars($obj->company_name)?></h4>
+            <small>
+                <?=$AppUI->_("Owner")?>:
+                <?=htmlspecialchars($obj->contact_first_name) . '&nbsp;' . htmlspecialchars($obj->contact_last_name)?>
+                |
+                <?=$AppUI->_('Address')?>:
+                <?=$obj->company_address1 ? htmlspecialchars($obj->company_address1) : 'Não informado'?>
+                |
+                <?=$AppUI->_('Zip')?>:
+                <?=$obj->company_zip ? htmlspecialchars($obj->company_zip) : 'Não informado'?>
+                |
+                <?=$AppUI->_('City')?>:
+                <?=$obj->company_city ? dPformSafe($obj->company_city) : 'Não informado'?>
+                |
+                <?=$AppUI->_('State')?>:
+                <?=$obj->company_state ? htmlspecialchars($obj->company_state) : 'Não informado'?>
+                |
+                <?=$AppUI->_('Email')?>:
+                <?=$obj->company_email ? htmlspecialchars($obj->company_email) : 'Não informado'?>
+                |
+                <?=$AppUI->_("Phone")?>:
+                <?=$obj->company_phone1 ? htmlspecialchars($obj->company_phone1) : 'Não informado'?>
+
+            </small>
+        </div>
+    </div>
     <fieldset>
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-primary" role="alert" style="display: none">
-                    <a class="alert-link" id="companyDetailsLink" data-toggle="collapse" href="#company_details">
-                        Dados da empresa
-                        <i class="fas fa-caret-down"></i>
-                    </a>
-                    <div id="company_details" class="collapse">
-                        <table class="table table-sm company-details">
-                            <tr>
-                                <th style="text-align:right"><?php echo $AppUI->_("Name"); ?>:</th>
-                                <td><?php echo htmlspecialchars($obj->company_name) ?></td>
-                                <th style="text-align:right"><?php echo $AppUI->_('Address'); ?>:</th>
-                                <td><?php echo $obj->company_address1 ? htmlspecialchars($obj->company_address1) : 'Não informado'; ?></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align:right"><?php echo $AppUI->_("Owner"); ?>:</th>
-                                <td><?php echo htmlspecialchars($obj->contact_first_name) . '&nbsp;' . htmlspecialchars($obj->contact_last_name) ?></td>
-                                <th style="text-align:right"><?php echo $AppUI->_('City'); ?>:</th>
-                                <td><?php echo $obj->company_city ? dPformSafe($obj->company_city) : 'Não informado'; ?></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align:right"><?php echo $AppUI->_("Phone"); ?>:</th>
-                                <td ><?php echo $obj->company_phone1 ? htmlspecialchars($obj->company_phone1) : 'Não informado' ?></td>
-                                <th style="text-align:right"><?php echo $AppUI->_('State'); ?>:</th>
-                                <td><?php echo $obj->company_state ? htmlspecialchars($obj->company_state) : 'Não informado'; ?></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align:right"><?php echo $AppUI->_('Email'); ?>:</th>
-                                <td><?php echo $obj->company_email ? htmlspecialchars($obj->company_email) : 'Não informado'; ?></td>
-                                <th style="text-align:right"><?php echo $AppUI->_('Zip'); ?>:</th>
-                                <td><?php echo $obj->company_zip ? htmlspecialchars($obj->company_zip) : 'Não informado'; ?></td>
-                            </tr>
-                        </table>
-                        <h6><?=$AppUI->_("LBL_ORGANIZATIONAL_POLICY") ?></h6>
-                        <table class="table table-sm company-details">
-                            <tr>
-                                <th style="text-align:right; width:15%"><?php echo $AppUI->_("LBL_REWARDS"); ?>:</th>
-                                <td><?php echo $policies->company_policies_recognition ? $policies->company_policies_recognition : 'Não informado' ?></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align:right; width:15%"><?php echo $AppUI->_("LBL_RUGULATIONS"); ?>:</th>
-                                <td><?php echo $policies->company_policies_policy ? $policies->company_policies_policy : 'Não informado'; ?></td>
-                            </tr>
-                            <tr>
-                                <th style="text-align:right; width:15%"><?php echo $AppUI->_("Safety"); ?>:</th>
-                                <td><?php echo $policies->company_policies_safety ? $policies->company_policies_safety : 'Não informado'; ?></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                <br>
                 <?php
                     switch ($tab) {
                         case TAB_PROJECTS :
@@ -222,9 +201,16 @@ if ($company_policies_id != "") {
                     if ($(this).hasClass('fa-angle-double-right')) {
                         $(this).removeClass('fa-angle-double-right');
                         $(this).addClass('fa-angle-double-left');
+
+                        $('.header-2').animate({
+                            left: '-290px'
+                        }, 270);
                     } else {
                         $(this).removeClass('fa-angle-double-left');
                         $(this).addClass('fa-angle-double-right');
+                        $('.header-2').animate({
+                            left: '-40px'
+                        }, 270);
                     }
                 });
             });

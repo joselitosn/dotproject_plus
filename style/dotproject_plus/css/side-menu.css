@@ -78,6 +78,7 @@ a, a:hover, a:focus {
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left: 20px;
+    border-right: 1px groove #000;
 }
 
 #sidebar ul p {

@@ -78,6 +78,10 @@ footer {
     cursor: pointer;
 }
 
+.header-2 {
+    padding: 15px 0 15px 0;
+}
+
 /* Org chart */
 #people {
     width: 100%;
