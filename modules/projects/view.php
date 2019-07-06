@@ -1,6 +1,12 @@
 <?php
 
-// Constants definition
+    // Constants definition
+
+    // Initiation
+    const OPENING_TERM = 0;
+    const STAKEHOLDER = 1;
+
+    // Planning and monitoring
     const TAB_TASKS = 0;
     const TAB_SCHEDULE = 1;
     const TAB_COSTS = 2;
@@ -192,14 +198,14 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
             <a href="#iniciacaoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                 <?=$AppUI->_("1initiation", UI_OUTPUT_HTML);?>
             </a>
-            <ul class="collapse list-unstyled" id="iniciacaoSubmenu">
+            <ul class="collapse list-unstyled<?=$tab == 0 ? ' show' : ' hide'?>" id="iniciacaoSubmenu">
                 <li class="<?=$subtab == 0 ? 'active' : '' ?>">
-                    <a href="javascript:void(0)">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=0&amp;subtab=0">
                         <?=$AppUI->_("LBL_OPEN_PROJECT_CHARTER",UI_OUTPUT_HTML)?>
                     </a>
                 </li>
                 <li class="<?=$subtab == 1 ? 'active' : '' ?>">
-                    <a href="javascript:void(0)">
+                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=0&amp;subtab=1">
                         <?=$AppUI->_("LBL_PROJECT_STAKEHOLDER",UI_OUTPUT_HTML)?>
                     </a>
                 </li>
@@ -304,7 +310,16 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
     </div>
     <fieldset>
         <?php
-        if ($tab == 1) {
+        if ($tab == 0) {
+            switch ($subtab) {
+                case OPENING_TERM :
+                    require_once DP_BASE_DIR . '/modules/initiating/addedit.php';
+                    break;
+                case STAKEHOLDER :
+                    require_once DP_BASE_DIR . '/modules/stakeholder/project_stakeholder.php';
+                    break;
+            }
+        } else if ($tab == 1) {
             switch ($subtab) {
                 case TAB_TASKS :
                     require_once DP_BASE_DIR . '/modules/dotproject_plus/projects_tab.planning_and_monitoring.php';

@@ -110,12 +110,18 @@ mysql_query('SET character_set_results=utf8');
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="far fa-bell"></i>
-                    </a>
+<!--                    <a class="nav-link feedback"-->
+<!--                       href="javascript:void(0)"-->
+<!--                       data-container="body"-->
+<!--                       data-toggle="popover"-->
+<!--                       data-placement="bottom"-->
+<!--                       html="true"-->
+<!--                       data-content="--><?//require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_area.php")?><!--">-->
+<!--                        <i class="far fa-bell"></i>-->
+<!--                    </a>-->
 
                     <!-- Comment the line below to disable feedback module -->
-                    <?php //require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_area.php"); ?>
+
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="http://www.gqs.ufsc.br/evolution-of-dotproject/"  target="_blank">
@@ -125,6 +131,13 @@ mysql_query('SET character_set_results=utf8');
                 </li>
             </ul>
         </nav>
+        <script>
+//            $(document).ready(function() {
+//                $('.feedback').popover({
+//                    trigger: 'focus'
+//                });
+//            });
+        </script>
     <!--    <div class="container-fluid">-->
         <div class="wrapper">
         <!-- Aplication message panel -->

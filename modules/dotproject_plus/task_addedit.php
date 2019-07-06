@@ -232,10 +232,6 @@ $effortMetrics[2] = 'Pessoas/Dia';
             form.initSelect($(selectsRoleHr[0]), 'Papel');
             form.initSelect($(selectsRoleHr[1]), 'Recurso humano');
 
-
-
-
-
         },
 
         initSelect: function (select, placeholder) {

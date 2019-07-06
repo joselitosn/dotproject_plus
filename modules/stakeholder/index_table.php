@@ -10,6 +10,7 @@ $q->addOrder("stk.contact_id");
 $q->setLimit(100);
 $list = $q->loadList();
 ?>
+?>
 
 <table width="100%" border="0" cellpadding="2" cellspacing="1" class="tbl">
     <tr>

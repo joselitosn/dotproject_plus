@@ -39,46 +39,44 @@ foreach($contacts as $contact){
 // If userName already exists quit with error and do nothing
 
 
-if (!$obj->bind($_POST)) {
-	$AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
-	$AppUI->redirect("a=view&m=projects&project_id=".$projectId."&tab=1&targetScreenOnProject=/modules/stakeholder/project_stakeholder.php");
-}
-
 // delete the item
 if ($del) {
-	$obj->load($initiating_stakeholder_id);
+	$obj->load($initiating_id);
 	if (($msg = $obj->delete())) {
 		$AppUI->setMsg($msg, UI_MSG_ERROR);
-		$AppUI->redirect();
 	} else {
 		if ($not=='1') $obj->notify();
-		$AppUI->setMsg($AppUI->_("LBL_STAKEHOLDER_EXCLUDED"), UI_MSG_ALERT, true);
-		$AppUI->redirect("a=view&m=projects&project_id=".$projectId."&tab=1&targetScreenOnProject=/modules/stakeholder/project_stakeholder.php");
+		$AppUI->setMsg('Stakeholder excluído');
 	}
-}
-
-if ($contactId<=1) {
-    $contactObj = new CContact();
-    $contactObj->contact_last_name = $userLastName;
-    $contactObj->contact_first_name = $userFirstName;
-    $contactObj->contact_id = 0;
-    $contactObj->store();
-    $contactId = $contactObj->contact_id;
-}else{
-    //update the stakeholder name when it is edited after created
-    $contactObj = new CContact();
-    $contactObj->load($contactId);
-    $contactObj->contact_last_name = $userLastName;
-    $contactObj->contact_first_name = $userFirstName;
-    $contactObj->store();
-} 
-$obj->contact_id=$contactId;
-if (($msg = $obj->store())) {
-        $AppUI->setMsg($msg, UI_MSG_ERROR);
 } else {
-        $obj->load($obj->initiating_stakeholder_id);
-        if ($not=='1') $obj->notify();
-        $AppUI->setMsg($AppUI->_("LBL_STAKEHOLDER_INCLUDED"), UI_MSG_OK, true);
+    if (!$obj->bind($_POST)) {
+        $AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
+    }
+
+    if ($contactId<=1) {
+        $contactObj = new CContact();
+        $contactObj->contact_last_name = $userLastName;
+        $contactObj->contact_first_name = $userFirstName;
+        $contactObj->contact_id = 0;
+        $contactObj->store();
+        $contactId = $contactObj->contact_id;
+    }else{
+        //update the stakeholder name when it is edited after created
+        $contactObj = new CContact();
+        $contactObj->load($contactId);
+        $contactObj->contact_last_name = $userLastName;
+        $contactObj->contact_first_name = $userFirstName;
+        $contactObj->store();
+    }
+    $obj->contact_id=$contactId;
+    if (($msg = $obj->store())) {
+            $AppUI->setMsg($msg, UI_MSG_ERROR);
+    } else {
+            $obj->load($obj->initiating_stakeholder_id);
+            if ($not=='1') $obj->notify();
+            $AppUI->setMsg($AppUI->_("LBL_STAKEHOLDER_INCLUDED"), UI_MSG_OK, true);
+    }
 }
 
-$AppUI->redirect("a=view&m=projects&project_id=".$projectId."&tab=1&targetScreenOnProject=/modules/stakeholder/project_stakeholder.php");
+echo $AppUI->getMsg();
+exit();

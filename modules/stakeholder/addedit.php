@@ -26,62 +26,11 @@ if (!db_loadObject($q->prepare(), $obj) && $initiating_stakeholder_id > 0) {
 if(!isset($initiating_id)){
   $initiating_id=  $obj->initiating_id;
 } 
-// setup the title block
-$ttl = isset($initiating_stakeholder_id) ? "Edit" : "Add";
-$titleBlock = new CTitleBlock($ttl, 'applet3-48.png', $m, "$m.$a");
-//$titleBlock->addCrumb("?m=$m", "list of stakeholders");
-$titleBlock->addCrumbDelete('delete stakeholder', $canDelete, $msg);
-$titleBlock->show();
-// option of select box
-$opt = array('', $AppUI->_("LBL_PROJECT_STAKEHOLDER_HIGH"), $AppUI->_("LBL_PROJECT_STAKEHOLDER_LOW"));
+
+$opt = array('1' => $AppUI->_("LBL_PROJECT_STAKEHOLDER_HIGH"), '2' => $AppUI->_("LBL_PROJECT_STAKEHOLDER_LOW"));
 ?>
 
-<script language="javascript">
-    function submitIt() {
-        var f = document.uploadFrm;
-        f.strategy.value = document.uploadFrm.stakeholder_strategy.value;
-        var firstName=document.getElementById("first_name").value;
-        if(firstName==""){
-            window.alert("<?php echo $AppUI->_('LBL_VALIDATE_STAKEHOLDER',UI_OUTPUT_JS); ?>");
-        }else{
-            f.submit();
-        }
-    }
-    function delIt() {
-        if (confirm("<?php echo $AppUI->_('stakeholdersDelete', UI_OUTPUT_JS); ?>")) {
-            var f = document.uploadFrm;
-            f.del.value='1';
-            f.submit();
-        }
-    }
-
-    function updateStrategy() {
-        if (document.uploadFrm.stakeholder_power.value == '0' || document.uploadFrm.stakeholder_interest.value == '0'){
-            document.uploadFrm.stakeholder_strategy.value='';
-        }
-	
-        if (document.uploadFrm.stakeholder_power.value == '1'){
-            if (document.uploadFrm.stakeholder_interest.value == '2'){
-                document.uploadFrm.stakeholder_strategy.value='<?php echo $AppUI->_("LBL_STAKEHOLDER_MAINTAIN_SATISFIED",UI_OUTPUT_JS) ?>';
-            }
-            if (document.uploadFrm.stakeholder_interest.value == '1'){
-                document.uploadFrm.stakeholder_strategy.value='<?php echo $AppUI->_("LBL_STAKEHOLDER_CLOSELY_MANAGE",UI_OUTPUT_JS) ?>';
-            }
-        }
-
-        if (document.uploadFrm.stakeholder_power.value == '2'){
-            if (document.uploadFrm.stakeholder_interest.value == '2'){
-                document.uploadFrm.stakeholder_strategy.value='<?php echo $AppUI->_("LBL_STAKEHOLDER_MONITOR",UI_OUTPUT_JS) ?>';
-            }
-            if (document.uploadFrm.stakeholder_interest.value == '1'){ 
-                document.uploadFrm.stakeholder_strategy.value='<?php echo $AppUI->_("LBL_STAKEHOLDER_KEEP_INFORMED",UI_OUTPUT_JS) ?>';
-            }
-        }
-    }
-    
-</script>
-<link href="modules/timeplanning/css/table_form.css" type="text/css" rel="stylesheet" />
-<form name="uploadFrm" action="?m=stakeholder" method="post">
+<form name="stakeholderForm">
     <input type="hidden" name="dosql" value="do_stakeholder_aed" />
     <input type="hidden" name="del" value="0" />
     <input type="hidden" name="strategy" />
@@ -91,68 +40,98 @@ $opt = array('', $AppUI->_("LBL_PROJECT_STAKEHOLDER_HIGH"), $AppUI->_("LBL_PROJE
     <input type="hidden" name="project_id" value="<?php echo $_GET["project_id"]; ?>" />
        
     <?php
-    $firstName = "";
-    $lastName = "";
-    if ($obj->contact_id > 0) {
-        $contactObj = new CContact();
-        $contactObj->load($obj->contact_id);
-        $firstName = $contactObj->contact_first_name;
-        $lastName = $contactObj->contact_last_name;
-    }
+        $firstName = "";
+        $lastName = "";
+        if ($obj->contact_id > 0) {
+            $contactObj = new CContact();
+            $contactObj->load($obj->contact_id);
+            $firstName = $contactObj->contact_first_name;
+            $lastName = $contactObj->contact_last_name;
+        }
     ?>
-    <table width="100%" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form">
 
-        <tr>
-            <th colspan="2" c align="center"><?php echo $AppUI->_('Stakeholder'); ?></th>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label><?php echo $AppUI->_("LBL_NAME"); ?>:</label>
-            </td>
-            <td>
-                <input type="text" name="first_name" id="first_name" value="<?php echo $firstName . (strlen($lastName)>0? (' '.$lastName):'') ?>" maxlength="100"  />
-            </td>
-        <tr style="display: none">
-            <td class="td_label">
-                <label><?php echo $AppUI->_("Last Name"); ?>:</label></td>
-            <td>
-                <input type="text" name="last_name" id="last_name" value="<?php echo $lastName ?>" maxlength="100"  />
-            </td>
-        </tr>
-        
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Responsibilities'); ?>:</td>
-            <td>
-                <textarea name="stakeholder_responsibility" cols="50" rows="3" style="wrap:virtual;" class="textarea"><?php echo dPformSafe(@$obj->stakeholder_responsibility); ?></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Power'); ?>:</td>
-            <td align="left">
-                <?php echo arraySelect($opt, 'stakeholder_power', 'size="1" class="text" onchange="javascript:updateStrategy();"', ((@$obj->stakeholder_power) ? $obj->stakeholder_power : '')); ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Interest'); ?>:</td>
-            <td align="left"><?php echo arraySelect($opt, 'stakeholder_interest', 'size="1" class="text" onchange="javascript:updateStrategy();"', ((@$obj->stakeholder_interest) ? $obj->stakeholder_interest : '')); ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Strategy'); ?>:</td>
-            <td>
-                <textarea name="stakeholder_strategy" cols="50" rows="3" class="textarea"><?php echo dPformSafe($obj->stakeholder_strategy); ?></textarea>
-            </td>
-        </tr>
+    <div class="form-group">
+        <span class="required"></span>
+        <?=$AppUI->_('requiredField');?>
+    </div>
 
-    </table>
+    <div class="form-group">
+        <label for="stakeholder_name" class="required">
+            <?=$AppUI->_('LBL_NAME')?>
+        </label>
+        <input type="text" class="form-control form-control-sm" name="first_name" value="<?=$firstName . (strlen($lastName)>0? (' '.$lastName):'')?>" maxlength="100" />
+    </div>
 
-    <table border="0" width="100%">
-        <tr>
-            <td align="right" colspan="2">
-                <?php print("<a href='?m=stakeholder&amp;a=pdf&amp;id=$initiating_stakeholder_id&amp;suppressHeaders=1'>" . $AppUI->_('Gerar PDF') . "</a>\n"); ?>
-                <?php require_once (DP_BASE_DIR . "/modules/timeplanning/view/subform_back_button_project.php"); ?> 
-                <input type="button" class="button" value="<?php echo ucfirst($AppUI->_('submit')); ?>" onclick="submitIt()" />
-            </td>
-        </tr>
-    </table>		
+    <div class="form-group">
+        <label for="responsibilities">
+            <?=$AppUI->_('Responsibilities')?>
+        </label>
+        <textarea rows="3" class="form-control form-control-sm" name="stakeholder_responsibility"><?=dPformSafe(@$obj->stakeholder_responsibility)?></textarea>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="power">
+                    <?=$AppUI->_('Power'); ?>
+                </label>
+                <select class="form-control form-control-sm select-power" name="stakeholder_power">
+                    <option>&nbsp;</option>
+                    <?php
+                    foreach ($opt as $key => $option) {
+                        $selected = $obj->stakeholder_power == $key ? 'selected="selected"' : '';
+                        ?>
+                        <option value="<?=$key?>" <?=$selected?>><?=$option?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="interest">
+                    <?=$AppUI->_('Interest'); ?>
+                </label>
+                <select class="form-control form-control-sm select-interest" name="stakeholder_interest">
+                    <option>&nbsp;</option>
+                    <?php
+                    foreach ($opt as $key => $option) {
+                        $selected = $obj->stakeholder_interest == $key ? 'selected="selected"' : '';
+                        ?>
+                        <option value="<?=$key?>"<?=$selected?>><?=$AppUI->_($option)?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="responsibilities">
+            <?=$AppUI->_('Strategy')?>
+        </label>
+        <textarea rows="3" class="form-control form-control-sm" name="stakeholder_strategy"><?=dPformSafe(@$obj->stakeholder_strategy)?></textarea>
+    </div>
+
 </form>
+<script>
+
+    $(document).ready(function() {
+        $(".select-power").select2({
+            placeholder: "",
+            allowClear: true,
+            theme: "bootstrap",
+            dropdownParent: $("#addEditStakeholderModal")
+        });
+        $(".select-interest").select2({
+            placeholder: "",
+            allowClear: true,
+            theme: "bootstrap",
+            dropdownParent: $("#addEditStakeholderModal")
+        });
+    });
+
+</script>
+<?php exit(); ?>

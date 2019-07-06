@@ -44,16 +44,16 @@ $start_date = new CDate($obj->initiating_start_date);
 $end_date = new CDate($obj->initiating_end_date);
 ?>
 
-<link rel="stylesheet" type="text/css" media="all" href="./modules/initiating/libraries/modal/modal.css"  />
-<link rel="stylesheet" type="text/css" media="all" href="./modules/initiating/libraries/modal/table_form.css"  />
-<!-- include libraries for lightweight messages -->
-<link type="text/css" rel="stylesheet" href="./modules/initiating/libraries/alertifyjs/alertify.min.css" media="screen"></link>
-<script type="text/javascript" src="./modules/initiating/libraries/alertifyjs/alertify.min.js"></script>
-<!-- jquery -->
-<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-ui.js"></script>
-<link type="text/css" rel="stylesheet" href="./modules/initiating/libraries/jquery/jquery-ui.css" media="screen"></link>
-<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-datepicker-customizations.js"></script>
+<!--<link rel="stylesheet" type="text/css" media="all" href="./modules/initiating/libraries/modal/modal.css"  />-->
+<!--<link rel="stylesheet" type="text/css" media="all" href="./modules/initiating/libraries/modal/table_form.css"  />-->
+<!--<!-- include libraries for lightweight messages -->
+<!--<link type="text/css" rel="stylesheet" href="./modules/initiating/libraries/alertifyjs/alertify.min.css" media="screen"></link>-->
+<!--<script type="text/javascript" src="./modules/initiating/libraries/alertifyjs/alertify.min.js"></script>-->
+<!--<!-- jquery -->
+<!--<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-3.2.1.min.js"></script>-->
+<!--<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-ui.js"></script>-->
+<!--<link type="text/css" rel="stylesheet" href="./modules/initiating/libraries/jquery/jquery-ui.css" media="screen"></link>-->
+<!--<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-datepicker-customizations.js"></script>-->
 <script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery.maskMoney.js"></script>
 <?php
 //get user dateformat preference
@@ -86,7 +86,7 @@ $AppUI->savePlace();
 		submitIt();
 	}
 	
-	delete_milestone_id
+//	delete_milestone_id
 	
     // função para marcar como concluido o preenchimento do termo de abertura
     function completedIt() {
@@ -188,13 +188,10 @@ function resetWorkflow(){
     
 </script>
 
-<style>
-    textarea{
-        width: 350px;
-        height: 50px;
-        text-wrap: avoid;
-    }
-</style>
+
+<h4><?=$AppUI->_("LBL_OPEN_PROJECT_CHARTER",UI_OUTPUT_HTML)?></h4>
+<hr>
+
 <form name="uploadFrm" action="?m=initiating" method="post">
     <input type="hidden" name="dosql" value="do_initiating_aed" />
     <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
@@ -205,113 +202,309 @@ function resetWorkflow(){
     <input type="hidden" name="initiating_approved" value="<?php echo $initiating_approved; ?>" />
     <input type="hidden" name="initiating_authorized" value="<?php echo $initiating_authorized; ?>" />
     <input type="hidden" name="action_authorized_performed" value="0" /> <!-- field set to 1 after execute the authorized action -->
+
+    <div class="form-group">
+        <span class="required"></span>
+        <?=$AppUI->_('requiredField');?>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label for="roles"><?=$AppUI->_('Project Manager')?></label>
+            <div class="form-group">
+                <select class="form-control form-control-sm select-manager" name="initiating_manager">
+                    <?php
+                    foreach ($owners as $key => $value) {
+                        $selected = $obj->initiating_manager == $key ? 'selected="selected"' : '';
+                        ?>
+                        <option></option>
+                        <option value="<?=$key?>" <?=$selected?>>
+                            <?=$value?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+    </div>
+    <?php if ($initiating_id) { ?>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="initiating_justification">
+                        <?=$AppUI->_('Justification')?>
+                    </label>
+                    <textarea rows="4" class="form-control form-control-sm" name="initiating_justification"><?=$obj->initiating_justification?></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="initiating_objective">
+                        <?=$AppUI->_('Objectives')?>
+                    </label>
+                    <textarea rows="4" class="form-control form-control-sm" name="initiating_objective"><?=$obj->initiating_objective?></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="initiating_expected_result">
+                        <?=$AppUI->_('Expected Results')?>
+                    </label>
+                    <textarea rows="4" class="form-control form-control-sm" name="initiating_expected_result"><?=$obj->initiating_expected_result?></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="initiating_premise">
+                        <?=$AppUI->_('Premises')?>
+                    </label>
+                    <textarea rows="4" class="form-control form-control-sm" name="initiating_premise"><?=$obj->initiating_premise?></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="initiating_restrictions">
+                        <?=$AppUI->_('Restrictions')?>
+                    </label>
+                    <textarea rows="4" class="form-control form-control-sm" name="initiating_restrictions"><?=$obj->initiating_restrictions?></textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="initiating_budget">
+                        <?=$AppUI->_('Budget')?> (<?=dPgetConfig("currency_symbol")?>)
+                    </label>
+                    <textarea rows="4" class="form-control form-control-sm" name="initiating_budget"><?=$obj->initiating_budget?></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="initiating_success">
+                        <?=$AppUI->_('Criteria for success')?>
+                    </label>
+                    <textarea rows="4" class="form-control form-control-sm" name="initiating_success"><?=str_replace("\n", "<br />", $obj->initiating_success)?></textarea>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="initiating_start_date"><?=$AppUI->_("Start Date")?></label>
+                    <input type="hidden" name="initiating_start_date" value="<?=$start_date->format(FMT_TIMESTAMP_DATE)?>" />
+                    <input type="text"
+                           name="start_date"
+                           class="form-control form-control-sm datepicker"
+                           placeholder="dd/mm/yyyy"
+                           value="<?=$start_date->format($df)?>" />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="initiating_start_date"><?=$AppUI->_("End Date")?></label>
+                    <input type="hidden" name="initiating_end_date" value="<?=$end_date->format(FMT_TIMESTAMP_DATE)?>" />
+                    <input type="text"
+                           name="end_date"
+                           class="form-control form-control-sm datepicker"
+                           placeholder="dd/mm/yyyy"
+                           value="<?=$end_date->format($df)?>" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label for="initiating_restrictions">
+                    <?=$AppUI->_('Milestones')?>
+                </label>
+                <br>
+                <div class="form-group">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="initiating.newMilestone()" title="Adicionar marco">
+                        <i class="far fa-plus-square"></i>
+                    </button>
+                </div>
+                <div id="milestones">
+                <?php
+                    $milestones =$obj->loadMillestones();
+                    $i=0;
+
+                    foreach($milestones as $milestone) {
+                        $milestone_date = new CDate($milestone->task_start_date);
+                        ?>
+                        <div class="form-group">
+                            <div class="row" id="milestone_row_id_<?=$i?>">
+                                <div class="col-md-8">
+                                    <input type="hidden" name="milestone_id_<?=$i?>"
+                                           value="<?=$milestone->task_id?>"/>
+                                    <input type="text"
+                                       value="<?=$milestone->task_name?>"
+                                       class="form-control form-control-sm"
+                                       name="milestone_name_<?=$i?>"
+                                       id="milestone_name_<?=$i?>" />
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="text"
+                                       class="form-control form-control-sm datepicker"
+                                       name="milestone_date_<?=$i?>"
+                                       id="milestone_date_<?=$i?>"
+                                       value="<?=$milestone_date->format($df)?>" />
+                                </div>
+                                <div class="col-md-1">
+                                    <button type="button" class="btn btn-sm btn-secondary" onclick="initiating.removeMilestone(<?=$i?>)" title="Remover marco">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info" role="alert">
+            <strong><?=$AppUI->_("Status")?>: </strong>
+            <?=$AppUI->_($obj->getStatus())?>
+        </div>
+
+        <?php
+            if ($obj->initiating_approved_comments !="") {
+        ?>
+            <div class="alert alert-secondary" role="alert">
+                <strong><?=$AppUI->_('Approved/Not Approved Comments')?>: </strong>
+                <?=str_replace("\n", "<br />", $obj->initiating_approved_comments)?>
+            </div>
+    <?php
+        }
+        if ($obj->initiating_authorized_comments !="") {
+            ?>
+            <div class="alert alert-secondary" role="alert">
+                <strong><?=$AppUI->_('Authorized/Not Authorized Comments')?>: </strong>
+                <?=str_replace("\n", "<br />", $obj->initiating_authorized_comments)?>
+            </div>
+            <?php
+        }
+    }
+    ?>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <a href="?m=initiating&amp;a=pdf&amp;id=$initiating_id&amp;suppressHeaders=1"
+               target="_blank"
+                class="btn btn-sm btn-secondary">
+                <?=$AppUI->_("Gerar PDF")?>
+            </a>
+
+            <?php if ($initiating_id && !$initiating_completed) { ?>
+            <button type="button" class="btn btn-sm btn-primary" onclick="initiating.save()"><?=ucfirst($AppUI->_('LBL_SAVE'))?></button>
+            <?php } ?>
+
+            <?php if ($initiating_id && !$initiating_completed) { ?>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="initiating.complete()"><?=ucfirst($AppUI->_('Completed'))?></button>
+            <?php } if ($initiating_completed && !$initiating_approved) { ?>
+
+                <button type="button" class="btn btn-sm btn-secondary" onclick=""><?=ucfirst($AppUI->_('Approved'))?></button>
+<!--                <input type="button" class="button" value="--><?php //echo $AppUI->_('Approved'); ?><!--" onclick="document.getElementById('authorize_div').style.display='none';document.getElementById('approve_div').style.display='block';modal.style.display = 'block';" />-->
+
+            <?php } if ($initiating_approved && !$initiating_authorized) { ?>
+                <button type="button" class="btn btn-sm btn-secondary" onclick=""><?=ucfirst($AppUI->_('Authorized'))?></button>
+<!--                <input type="button" class="button" value="--><?php //echo $AppUI->_('Authorized'); ?><!--" onclick="document.getElementById('authorize_div').style.display='block';document.getElementById('approve_div').style.display='none';modal.style.display = 'block';" />-->
+            <?php } ?>
+        </div>
+    </div>
+
+    <hr>
+
+
     <table width="95%" align="center" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form" >
-        <tr>
-            <th colspan="4" align="center">
-                <?php echo $AppUI->_("Project charter"); ?>
-            </th>
-        </tr>
-        <tr>
-            <td class="td_label" style="width:100px">
-                <?php echo $AppUI->_('Project Title'); ?>:
-            </td>
-            <td align="left" nowrap="nowrap" style="width:300px;">
-                <?php echo $obj->initiating_title ?>
-            </td>
 
-            <td class="td_label" style="width:100px">
-                <?php echo $AppUI->_('Project Manager'); ?>:
-            </td>
-            <td align="left" style="width: 300px">
-                
-                <?php 
-                 if ($initiating_completed!=1){
-                    echo arraySelect($owners, 'initiating_manager', 'size="1" class="text"', ((@$obj->initiating_manager) ? $obj->initiating_manager : $AppUI->contact_id)); 
-                 }else{
-                    echo  $owners[$obj->initiating_manager];
-                 }
-                 ?>
-            </td>
-        </tr>
+
         <?php if ($initiating_id) { ?>
-            <tr>
-                <td class="td_label"><?php echo $AppUI->_('Justification'); ?>:</td>
-                <td >
-                    <textarea style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_justification"   class="textarea"><?php echo $obj->initiating_justification; ?></textarea>
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo str_replace("\n", "<br />", $obj->initiating_justification); ?></span>
-                </td>
-                <td class="td_label"><?php echo $AppUI->_('Objectives'); ?>:</td>
-                <td >
-                    <textarea style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_objective" class="textarea"><?php echo  $obj->initiating_objective; //dPformSafe ?></textarea>
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo str_replace("\n", "<br />", $obj->initiating_objective); ?></span>
-                </td>
-            </tr>
-            <tr>
-                <td class="td_label"><?php echo $AppUI->_('Expected Results'); ?>:</td>
-                <td>
-                    <textarea style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_expected_result"   class="textarea"><?php echo $obj->initiating_expected_result ?></textarea>
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo str_replace("\n", "<br />", $obj->initiating_expected_result) ?></span>
-                </td>
-                <td class="td_label"><?php echo $AppUI->_('Premises'); ?>:</td>
-                <td>
-                    <textarea style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_premise"   class="textarea"><?php echo $obj->initiating_premise ?></textarea>
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo str_replace("\n", "<br />", $obj->initiating_premise) ?></span>
-                </td>
-            </tr>
-            <tr>
-                <td class="td_label"><?php echo $AppUI->_('Restrictions'); ?>:</td>
-                <td>
-                    <textarea style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_restrictions"   class="textarea"><?php echo $obj->initiating_restrictions; ?></textarea>
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo str_replace("\n", "<br />", $obj->initiating_restrictions) ?></span>
-                </td>
-
-                <td class="td_label"><?php echo $AppUI->_('Budget'); ?> (<?php echo dPgetConfig("currency_symbol") ?>):</td>
-                <td>
-                    <input style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_budget" id="initiating_budget" style="width: 100px;" maxlength="15" class="text" value="<?php echo number_format($obj->initiating_budget, 2, ',', '.'); ?>" />
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo number_format($obj->initiating_budget, 2, ',', '.'); ?></span>
-                </td>
-            </tr>
-            <tr>
-                <td class="td_label"><?php echo $AppUI->_('Start Date'); ?></td>
-                <td nowrap="nowrap"><input type="hidden" name="initiating_start_date" value="<?php echo $start_date->format(FMT_TIMESTAMP_DATE); ?>" />
-                   <span style="display:<?php echo $initiating_completed!=1?"block":"none" ?>">
-                        <input type="text" style="width:80px" class="text" name="start_date" id="date1" value="<?php echo $start_date->format($df); ?>" class="text" />
-                    </span>
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo $start_date->format($df); ?></span>     
-                </td>
-                <td class="td_label"><?php echo $AppUI->_('End Date'); ?></td>
-                <td nowrap="nowrap"><input type="hidden" name="initiating_end_date" value="<?php echo $end_date->format(FMT_TIMESTAMP_DATE); ?>" />
-                    <span style="display:<?php echo $initiating_completed!=1?"block":"none" ?>">
-                        <input type="text" style="width:80px" class="text" name="end_date" id="date2" value="<?php echo $end_date->format($df); ?>" class="text" />
-  
-                    </span>
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo $end_date->format($df); ?></span>
-                </td>
-            </tr>
-            <tr>
+<!--            <tr>-->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Justification'); ?><!--:</td>-->
+<!--                <td >-->
+<!--                    <textarea style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_justification"   class="textarea">--><?php //echo $obj->initiating_justification; ?><!--</textarea>-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo str_replace("\n", "<br />", $obj->initiating_justification); ?><!--</span>-->
+<!--                </td>-->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Objectives'); ?><!--:</td>-->
+<!--                <td >-->
+<!--                    <textarea style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_objective" class="textarea">--><?php //echo  $obj->initiating_objective; //dPformSafe ?><!--</textarea>-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo str_replace("\n", "<br />", $obj->initiating_objective); ?><!--</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Expected Results'); ?><!--:</td>-->
+<!--                <td>-->
+<!--                    <textarea style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_expected_result"   class="textarea">--><?php //echo $obj->initiating_expected_result ?><!--</textarea>-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo str_replace("\n", "<br />", $obj->initiating_expected_result) ?><!--</span>-->
+<!--                </td>-->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Premises'); ?><!--:</td>-->
+<!--                <td>-->
+<!--                    <textarea style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_premise"   class="textarea">--><?php //echo $obj->initiating_premise ?><!--</textarea>-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo str_replace("\n", "<br />", $obj->initiating_premise) ?><!--</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Restrictions'); ?><!--:</td>-->
+<!--                <td>-->
+<!--                    <textarea style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_restrictions"   class="textarea">--><?php //echo $obj->initiating_restrictions; ?><!--</textarea>-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo str_replace("\n", "<br />", $obj->initiating_restrictions) ?><!--</span>-->
+<!--                </td>-->
+<!---->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Budget'); ?><!-- (--><?php //echo dPgetConfig("currency_symbol") ?><!--):</td>-->
+<!--                <td>-->
+<!--                    <input style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_budget" id="initiating_budget" style="width: 100px;" maxlength="15" class="text" value="--><?php //echo number_format($obj->initiating_budget, 2, ',', '.'); ?><!--" />-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo number_format($obj->initiating_budget, 2, ',', '.'); ?><!--</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Start Date'); ?><!--</td>-->
+<!--                <td nowrap="nowrap"><input type="hidden" name="initiating_start_date" value="--><?php //echo $start_date->format(FMT_TIMESTAMP_DATE); ?><!--" />-->
+<!--                   <span style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--">-->
+<!--                        <input type="text" style="width:80px" class="text" name="start_date" id="date1" value="--><?php //echo $start_date->format($df); ?><!--" class="text" />-->
+<!--                    </span>-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo $start_date->format($df); ?><!--</span>-->
+<!--                </td>-->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('End Date'); ?><!--</td>-->
+<!--                <td nowrap="nowrap"><input type="hidden" name="initiating_end_date" value="--><?php //echo $end_date->format(FMT_TIMESTAMP_DATE); ?><!--" />-->
+<!--                    <span style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--">-->
+<!--                        <input type="text" style="width:80px" class="text" name="end_date" id="date2" value="--><?php //echo $end_date->format($df); ?><!--" class="text" />-->
+<!---->
+<!--                    </span>-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo $end_date->format($df); ?><!--</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+            <tr style="display: none">
                 <td class="td_label"><?php echo $AppUI->_('Milestones'); ?>:</td>
                 <td>
-				
+
                     <!-- <textarea style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_milestone"   class="textarea"><?php echo $obj->initiating_milestone; ?></textarea> -->
 					<img src="./modules/initiating/images/add_button_icon.png" onclick="newMilestone()" style="cursor:pointer;width:18px;height:18px;display:<?php echo $initiating_completed!=1?"block":"none" ?>" />
 					<?php
 					$milestones =$obj->loadMillestones();
 					$i=0;
-					
+
 					foreach($milestones as $milestone){
 						$milestone_date = new CDate($milestone->task_start_date);
 						?>
-						<span style="display:<?php echo $initiating_completed!=1?"block":"none" ?>">					
+						<span style="display:<?php echo $initiating_completed!=1?"block":"none" ?>">
 							<br />
 							<input type="hidden" name="milestone_id_<?php echo $i ?>" value="<?php echo $milestone->task_id ?>" />
 							<input type="text" value="<?php echo $milestone->task_name ?>" style="width:260px"  class="text" name="milestone_name_<?php echo $i ?>" id="milestone_name_<?php echo $i ?>" />
-							<input type="text" style="width:80px" class="text" name="milestone_date_<?php echo $i ?>" id="milestone_date_<?php echo $i ?>" value="<?php echo $milestone_date->format($df); ?>" class="text" />           
+							<input type="text" style="width:80px" class="text" name="milestone_date_<?php echo $i ?>" id="milestone_date_<?php echo $i ?>" value="<?php echo $milestone_date->format($df); ?>" class="text" />
 							<script>
 								$("#milestone_date_<?php echo $i ?>").datepicker({dateFormat: "<?php echo $_SESSION["dateFormat"] ?>"});
 							</script>
-							
+
 							<img src="./modules/initiating/images/trash-icon.png" onclick="delMilestone(<?php echo $milestone->task_id ?>)" style="cursor:pointer;width:15px;height:15px;" />
-					
+
 						</span>
 						<span style="display:<?php echo $initiating_completed==1?"block":"none" ?>">
 						<?php echo $milestone->task_name ?> &nbsp; (<?php echo $milestone_date->format($df); ?>)
@@ -322,59 +515,54 @@ function resetWorkflow(){
 					}
 					?>
 					<input type="hidden" name="total_milestones" value="<?php echo $i ?>" />
-					
+
 					<input type="hidden" name="new_milestone" id="new_milestone" value="0" />
 					<input type="hidden" name="delete_milestone_id" id="delete_milestone_id" value="0" />
-					
+
                    <!-- <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo str_replace("\n", "<br />", $obj->initiating_milestone); ?></span> -->
-               
+
                 </td>
-                <td class="td_label"><?php echo $AppUI->_('Criteria for success'); ?>:</td>
-                <td>
-                    <textarea style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_success"   class="textarea"><?php echo $obj->initiating_success; ?></textarea>
-                    <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo str_replace("\n", "<br />", $obj->initiating_success); ?></span>    
-                </td>
-            </tr>
-   
-            <tr>
-                <td class="td_label" > <?php echo $AppUI->_("Status"); ?>: </td>
-                <td colspan="3"> <?php echo $AppUI->_($obj->getStatus()); ?> </td>
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Criteria for success'); ?><!--:</td>-->
+<!--                <td>-->
+<!--                    <textarea style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_success"   class="textarea">--><?php //echo $obj->initiating_success; ?><!--</textarea>-->
+<!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo str_replace("\n", "<br />", $obj->initiating_success); ?><!--</span>    -->
+<!--                </td>-->
             </tr>
             
-            <tr>
-                <td class="td_label" >
-                    <?php if ($obj->initiating_approved_comments !=""){ echo $AppUI->_('Approved/Not Approved Comments');} ?>
-                </td>
-                <td>
-                    <?php echo str_replace("\n", "<br />", $obj->initiating_approved_comments); ?>
-                </td>
-                <td class="td_label" >
-                    <?php if ($obj->initiating_authorized_comments != ""){ echo $AppUI->_('Authorized/Not Authorized Comments');} ?>
-                </td>
-                <td>
-                    <?php echo str_replace("\n", "<br />", $obj->initiating_authorized_comments); ?>
-                 </td>
-            </tr>
+<!--            <tr>-->
+<!--                <td class="td_label" >-->
+<!--                    --><?php //if ($obj->initiating_approved_comments !=""){ echo $AppUI->_('Approved/Not Approved Comments');} ?>
+<!--                </td>-->
+<!--                <td>-->
+<!--                    --><?php //echo str_replace("\n", "<br />", $obj->initiating_approved_comments); ?>
+<!--                </td>-->
+<!--                <td class="td_label" >-->
+<!--                    --><?php //if ($obj->initiating_authorized_comments != ""){ echo $AppUI->_('Authorized/Not Authorized Comments');} ?>
+<!--                </td>-->
+<!--                <td>-->
+<!--                    --><?php //echo str_replace("\n", "<br />", $obj->initiating_authorized_comments); ?>
+<!--                 </td>-->
+<!--            </tr>-->
             
             
         </table>
     <?php } ?>
-    <table width="95%" align="center">
-        <tr>
-            <td align="right">
-                <?php print("<a href='?m=initiating&amp;a=pdf&amp;id=$initiating_id&amp;suppressHeaders=1'><b>" . $AppUI->_("Print PDF") . "</b></a>\n"); ?>
-                <input style="visibility:<?php echo $initiating_completed!=1?"visible":"hidden" ?>" type="button" class="button" value="<?php echo ucfirst($AppUI->_('submit')); ?>" onclick="submitIt()" />
-        
-                <?php if ($initiating_id && !$initiating_completed) { ?>
-                    <input type="button" class="button" value="<?php echo $AppUI->_('Completed'); ?>" onclick="completedIt()" />
-                <?php } if ($initiating_completed && !$initiating_approved) { ?>
-                    <input type="button" class="button" value="<?php echo $AppUI->_('Approved'); ?>" onclick="document.getElementById('authorize_div').style.display='none';document.getElementById('approve_div').style.display='block';modal.style.display = 'block';" />
-                <?php } if ($initiating_approved && !$initiating_authorized) { ?>
-                    <input type="button" class="button" value="<?php echo $AppUI->_('Authorized'); ?>" onclick="document.getElementById('authorize_div').style.display='block';document.getElementById('approve_div').style.display='none';modal.style.display = 'block';" />
-               <?php } ?>
-            </td>
-        </tr>
-    </table>
+<!--    <table width="95%" align="center">-->
+<!--        <tr>-->
+<!--            <td align="right">-->
+<!--                --><?php //print("<a href='?m=initiating&amp;a=pdf&amp;id=$initiating_id&amp;suppressHeaders=1'><b>" . $AppUI->_("Print PDF") . "</b></a>\n"); ?>
+<!--                <input style="visibility:--><?php //echo $initiating_completed!=1?"visible":"hidden" ?><!--" type="button" class="button" value="--><?php //echo ucfirst($AppUI->_('submit')); ?><!--" onclick="submitIt()" />-->
+<!--        -->
+<!--                --><?php //if ($initiating_id && !$initiating_completed) { ?>
+<!--                    <input type="button" class="button" value="--><?php //echo $AppUI->_('Completed'); ?><!--" onclick="completedIt()" />-->
+<!--                --><?php //} if ($initiating_completed && !$initiating_approved) { ?>
+<!--                    <input type="button" class="button" value="--><?php //echo $AppUI->_('Approved'); ?><!--" onclick="document.getElementById('authorize_div').style.display='none';document.getElementById('approve_div').style.display='block';modal.style.display = 'block';" />-->
+<!--                --><?php //} if ($initiating_approved && !$initiating_authorized) { ?>
+<!--                    <input type="button" class="button" value="--><?php //echo $AppUI->_('Authorized'); ?><!--" onclick="document.getElementById('authorize_div').style.display='block';document.getElementById('approve_div').style.display='none';modal.style.display = 'block';" />-->
+<!--               --><?php //} ?>
+<!--            </td>-->
+<!--        </tr>-->
+<!--    </table>-->
 
      
     <div id="myModal" class="modal">
@@ -403,24 +591,52 @@ function resetWorkflow(){
             </p>
         </div>
     </div>
-  
-    <script>
-    // Get the modal
-    var modal = document.getElementById('myModal');
-     // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-    
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
+<script>
+//    // Get the modal
+//    var modal = document.getElementById('myModal');
+//     // Get the <span> element that closes the modal
+//    var span = document.getElementsByClassName("close")[0];
+//
+//    // When the user clicks on <span> (x), close the modal
+//    span.onclick = function() {
+//        modal.style.display = "none";
+//    }
+//
+//    // When the user clicks anywhere outside of the modal, close it
+//    window.onclick = function(event) {
+//        if (event.target == modal) {
+//            modal.style.display = "none";
+//        }
+//    }
 
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+    var initiating = {
+
+        init: function () {
+            $('.datepicker').datepicker({
+                dateFormat: 'dd/mm/yy'
+            });
+
+            $('.select-manager').select2({
+                placeholder: '',
+                allowClear: true,
+                theme: "bootstrap",
+            });
+        },
+        
+        newMilestone: function () {
+            
+        },
+
+        removeMilestone: function (id) {
+            $('#milestone_row_id_'+id).remove();
+        },
+
+        complete: function () {
+            // refers to completedIt()
         }
-    }
+    };
+
+    $(document).ready(initiating.init());
 </script>
 </form>
  <?php if ($initiating_authorized==1){ ?>
