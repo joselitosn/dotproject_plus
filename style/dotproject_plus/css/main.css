@@ -79,7 +79,10 @@ footer {
 }
 
 .header-2 {
-    padding: 15px 0 15px 0;
+    padding: 15px 0 15px 10px;
+    background-color: #424f5c;
+    color: #fff;
+    margin-bottom: -40px;
 }
 
 /* Org chart */

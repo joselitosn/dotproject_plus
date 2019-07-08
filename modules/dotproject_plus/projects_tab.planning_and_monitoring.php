@@ -993,7 +993,9 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItemhref->value = 'javascript:void(0)';
                         $dropdownItem->appendChild($dropdownItemhref);
                         $dropdownItemOC = $dom->createAttribute('onclick');
-                        $dropdownItemOC->value = 'wbs.update('.$project_id.','.$branch['id'].',"'.$branch['name'].'",'.$branch['size'].',"'.$branch['sizeUnit'].'")';
+                        $wbsSize = $branch['size'] ? $branch['size'] : '';
+                        $wbsSizeUnit = $branch['sizeUnit'] ? $branch['sizeUnit'] : '';
+                        $dropdownItemOC->value = 'wbs.update('.$project_id.','.$branch['id'].',"'.$branch['name'].'","'.$wbsSize.'","'.$wbsSizeUnit.'")';
                         $dropdownItem->appendChild($dropdownItemOC);
                         $icon = $dom->createElement('i');
                         $iconClass = $dom->createAttribute('class');
@@ -1254,6 +1256,26 @@ if ($_GET["show_external_page"] != "") {
                                 $dropdownItem->appendChild($dropdownItemSpan);
                                 $dropdownMenu->appendChild($dropdownItem);
 
+                                // Dropdown activity options item log
+                                $dropdownItem = $dom->createElement('a');
+                                $dropdownItemClass = $dom->createAttribute('class');
+                                $dropdownItemClass->value = 'dropdown-item';
+                                $dropdownItem->appendChild($dropdownItemClass);
+                                $dropdownItemhref = $dom->createAttribute('href');
+                                $dropdownItemhref->value = 'javascript:void(0)';
+                                $dropdownItem->appendChild($dropdownItemhref);
+                                $dropdownItemOC = $dom->createAttribute('onclick');
+                                $dropdownItemOC->value = 'tasks.newLog('.$task_id.')';
+                                $dropdownItem->appendChild($dropdownItemOC);
+                                $icon = $dom->createElement('i');
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'far fa-edit';
+                                $icon->appendChild($iconClass);
+                                $dropdownItem->appendChild($icon);
+                                $dropdownItemSpan = $dom->createElement('span', ' Novo log');
+                                $dropdownItem->appendChild($dropdownItemSpan);
+                                $dropdownMenu->appendChild($dropdownItem);
+
                                 // Dropdown activity options item delete activity
                                 $dropdownItem = $dom->createElement('a');
                                 $dropdownItemClass = $dom->createAttribute('class');
@@ -1482,13 +1504,13 @@ if ($_GET["show_external_page"] != "") {
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="required" for="<?=$AppUI->_("LBL_TAMANHO")?>"><?=$AppUI->_("LBL_TAMANHO")?></label>
+                                    <label for="<?=$AppUI->_("LBL_TAMANHO")?>"><?=$AppUI->_("LBL_TAMANHO")?></label>
                                     <input type="text" name="wbs_item_size" class="form-control form-control-sm" maxlength="10" size="15" />
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <div class="form-group">
-                                    <label class="required" for="<?=$AppUI->_("LBL_UNITY")?>"><?=$AppUI->_("LBL_UNITY")?></label>
+                                    <label for="<?=$AppUI->_("LBL_UNITY")?>"><?=$AppUI->_("LBL_UNITY")?></label>
                                     <input type="text" name="wbs_item_size_unit" class="form-control form-control-sm" maxlength="30" size="25" />
                                 </div>
                             </div>
@@ -1516,7 +1538,7 @@ if ($_GET["show_external_page"] != "") {
                 <div class="modal-header">
                     <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_ACTIVITY")?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
-                    <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body task-modal">
@@ -1524,6 +1546,48 @@ if ($_GET["show_external_page"] != "") {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TASK LOG FORM -->
+    <div id="taskLogModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo log</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body task-log">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONTACTS -->
+    <div id="contactsModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_("Contacts")?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body modal-contacts-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="setEmailContacts()"><?=$AppUI->_("LBL_SELECT")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
@@ -1667,22 +1731,12 @@ if ($_GET["show_external_page"] != "") {
 
         save: function () {
             var description = $('input[name=wbs_item_description]').val();
-            var size = $('input[name=wbs_item_size]').val();
-            var sizeUnit = $('input[name=wbs_item_size_unit]').val();
 
             var err = false;
             var msg = '';
             if (!description.trim()) {
                 err = true;
                 msg = 'A descrição é obrigatória';
-            }
-            if (!size.trim() || isNaN(size)) {
-                err = true;
-                msg = 'Tamanho inválido';
-            }
-            if (!sizeUnit.trim()) {
-                err = true;
-                msg = 'Unidade de medida é obrigatória';
             }
             if (err) {
                 $.alert({
@@ -1762,8 +1816,6 @@ if ($_GET["show_external_page"] != "") {
 //                $(".modal-title").html("<?//=$AppUI->_('edit this company')?>//");
                 $('#taskModal').modal();
             });
-
-
         },
 
         save : function() {
@@ -1815,6 +1867,16 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=taskForm]").serialize(),
             }).done(function() {
 
+            });
+        },
+
+        newLog: function (taskId) {
+            $.ajax({
+                type: "get",
+                url: "?m=tasks&template=vw_log_update&task_id="+taskId
+            }).done(function(response) {
+                $(".task-log").html(response);
+                $("#taskLogModal").modal();
             });
         }
     }

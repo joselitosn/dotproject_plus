@@ -110,17 +110,14 @@ mysql_query('SET character_set_results=utf8');
             </ul>
             <ul class="navbar-nav">
                 <li class="nav-item">
-<!--                    <a class="nav-link feedback"-->
-<!--                       href="javascript:void(0)"-->
-<!--                       data-container="body"-->
-<!--                       data-toggle="popover"-->
-<!--                       data-placement="bottom"-->
-<!--                       html="true"-->
-<!--                       data-content="--><?//require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_area.php")?><!--">-->
-<!--                        <i class="far fa-bell"></i>-->
-<!--                    </a>-->
+                    <a class="nav-link feedback"
+                       href="javascript:void(0)"
+                       data-container="body"
+                       data-toggle="popover"
+                       data-placement="bottom">
+                        <i class="far fa-bell"></i>
+                    </a>
 
-                    <!-- Comment the line below to disable feedback module -->
 
                 </li>
                 <li class="nav-item">
@@ -132,61 +129,28 @@ mysql_query('SET character_set_results=utf8');
             </ul>
         </nav>
         <script>
-//            $(document).ready(function() {
-//                $('.feedback').popover({
-//                    trigger: 'focus'
-//                });
-//            });
+            $(document).ready(function() {
+
+                $('.feedback').popover({
+                    html: true,
+                    content: function() {
+                        return $('#feedbackContainer').html();
+                    }
+                });
+
+            });
         </script>
-    <!--    <div class="container-fluid">-->
-        <div class="wrapper">
-        <!-- Aplication message panel -->
-            <?php /*
-                $msg_dp = $AppUI->getMsg();
-                if(isset($_SESSION["user_feedback_display_message"])){
-                    
-                    $msg_dp=$_SESSION["user_feedback_display_message"];
-                    unset($_SESSION["user_feedback_display_message"]);
-                }
-            ?>
-            <table align="center" width="400" id="app_message_panel" style="border-radius: 10px;border:1px solid silver;background-color: #FFFFFF;padding: 5px 5px;margin-top: 5px;display:<?php echo $msg_dp != "" ? "block" : "none" ?>">
-                <tr>
-                    <td colspan="3"  style="text-align: center;"  >
-                        <span style="text-align: center;" id="app_message_panel_content">
-                                        <?php
-                                        echo $msg_dp;
-                                        ?>
-                        </span>
-                    </td>
-                </tr>
-            </table>
-            <script>
-                //function defined to set messages on the panel. It was setup in this file, to be available to to whole application
-                //These threee constants below represents the types of message, and are identical to the image file name.
-                var APP_MESSAGE_TYPE_SUCCESS = "sucess";
-                var APP_MESSAGE_TYPE_WARNING = "warning";
-                var APP_MESSAGE_TYPE_INFO = "info";
-                function setAppMessage(message, type) {
-                    var app_message_panel = document.getElementById("app_message_panel");
-                    var img = "<img src='./style/default/images/icon_" + type + ".png' />";
-                    document.getElementById("app_message_panel_content").innerHTML = img + "&nbsp;&nbsp;" + message;
-                    app_message_panel.style.display = "block";
-                    app_message_panel.scrollIntoView();
-                    setTimeout(closeAppMessage, 15000);//close the message panel after x seconds.
-                }
-                function closeAppMessage() {
-                    document.getElementById("app_message_panel").style.display = "none";
-                }
-                
-                
-                //functions necessary for general system navegation
-                function replaceAll(find, replace, str) {
-                    return str.replace(new RegExp(find, 'g'), replace);
-                }
-                
-                
-                
-            </script>
-            */
-            ?>
-            <!-- end message panel -->
+        <div style="display: none;" id="feedbackContainer">
+            <div>
+                <h6><?=$AppUI->_("LBL_FEEDBACK_INSTRUCTIONAL_FEEDBACK")?></h6>
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                    <label class="custom-control-label" for="customSwitch1">Toggle</label>
+                </div>
+            </div>
+        </div>
+
+
+        <div style="display: none;">
+            <?=require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_area.php")?>
+        </div>

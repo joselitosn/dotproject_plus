@@ -1,15 +1,15 @@
-<?php
-require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback.php");
-require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controller.php");
+    <?php
+    require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback.php");
+    require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controller.php");
 
-    ?>
-<!-- CSS for switch button -->
-<link rel="stylesheet" type="text/css" href="./modules/dotproject_plus/feedback/switchbutton.css" /> 
-    <span id='cssmenu'style="display: inline-block; margin-right: 13px;" >
+        ?>
+    <!-- CSS for switch button -->
+<div>
+    <link rel="stylesheet" type="text/css" href="./modules/dotproject_plus/feedback/switchbutton.css" />
+    <span id='cssmenu' style="display: inline-block; margin-right: 13px;" >
         <ul>
-            <li class='active has-sub'>
+            <li class="active has-sub">
                 <u style="text-decoration: none">
-                    <img style="cursor:pointer;position: relative;height: 22px;top: 3px" src="./style/dotproject_plus/img/bell_icon.png" /> 
                     <div style="display:inline-block;position: relative;left:-12px;top: 6px; background-color: red;color:#FFFFFF; border-radius: 25px;" id="feedback_count"></div>
                 </u>
                 <ul style="border:1px solid silver; right:10px;margin-top: -1px;">
@@ -19,9 +19,9 @@ require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controll
                     <form method="post" action="?m=dotproject_plus" name="feedback_preferences">
                         <input name="dosql" type="hidden" value="do_save_feedback_preferences" />
                         <input type="hidden" name="url" value="<?php echo substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "?") + 1, strlen($_SERVER["REQUEST_URI"])); ?>" />
-                        
+
                             <?php echo $AppUI->_("LBL_SEE_GENERIC_FEEDBACK"); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
-                         
+
 
                             <div class="onoffswitch" >
                                  <input align="center" value="1" type="checkbox" name="generic_feedback" onclick="document.feedback_preferences.submit()" class="onoffswitch-checkbox" id="onoffswitch_generic" <?php echo $_SESSION["user_generic_feedback"] == 1 ? "checked" : "" ?>  />
@@ -35,7 +35,7 @@ require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controll
 
 
                             <?php echo $AppUI->_("LBL_SEE_SPECIFIC_FEEDBACK"); ?><br />
-                         
+
                             <div class="onoffswitch" >
                                  <input align="center" value="1"  type="checkbox" name="especific_feedback" onclick="document.feedback_preferences.submit()" class="onoffswitch-checkbox" id="onoffswitch_especific" <?php echo $_SESSION["user_especific_feedback"] == 1 ? "checked" : "" ?>  />
                                  <label align="center" class="onoffswitch-label" for="onoffswitch_especific">
@@ -44,7 +44,7 @@ require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controll
                                  </label>
                                 </div>
                             <br />
-                        
+
                     </form>
                     <hr />
                     <?php
@@ -56,7 +56,7 @@ require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controll
                             if (($feedback->getGeneric() && $_SESSION["user_generic_feedback"] == 1) || (!$feedback->getGeneric() && $_SESSION["user_especific_feedback"] == 1) ) {
                                 $feedback_count++;
                                 if ($feedback_count <= 5) {
-                                    ?>     
+                                    ?>
 
                                     <li>
                                         <a  style="line-height: 120%" href="#" onclick="document.getElementById('show_feedback_<?php echo $feedback->getId() ?>').submit()">
@@ -97,3 +97,4 @@ require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controll
             </li>
         </ul>
     </span>
+</div>

@@ -170,115 +170,8 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 
 ?>
 
-<form name="frmDelete" action="./index.php?m=projects" method="post">
-    <input type="hidden" name="dosql" value="do_project_aed" />
-    <input type="hidden" name="del" value="1" />
-    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-</form>
-
-<!-- start main section - left project menu and EAP and tasks tree -->
-<!-- Sidebar -->
-<nav id="sidebar" style="margin-top:70px;">
-    <div class="sidebar-header">
-        <h5 class="text-right">
-            <i id="sidebarCollapse" class="mouse-cursor-pointer fas fa-angle-double-left" style="margin-top: 20px;"></i>
-        </h5>
-    </div>
-    <?php
-
-        if (!isset($_GET["subtab"])) {
-            $subtab = 0;
-        } else {
-            $subtab = $_GET["subtab"];
-        }
-    ?>
-
-    <ul class="list-unstyled components">
-        <li class="<?=$tab == 0 ? 'active' : '' ?>">
-            <a href="#iniciacaoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                <?=$AppUI->_("1initiation", UI_OUTPUT_HTML);?>
-            </a>
-            <ul class="collapse list-unstyled<?=$tab == 0 ? ' show' : ' hide'?>" id="iniciacaoSubmenu">
-                <li class="<?=$subtab == 0 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=0&amp;subtab=0">
-                        <?=$AppUI->_("LBL_OPEN_PROJECT_CHARTER",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li class="<?=$subtab == 1 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=0&amp;subtab=1">
-                        <?=$AppUI->_("LBL_PROJECT_STAKEHOLDER",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="<?=$tab == 1 ? 'active' : '' ?>">
-            <a href="#pmSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-                <?=$AppUI->_("Planning and monitoring", UI_OUTPUT_HTML);?>
-            </a>
-            <ul class="collapse list-unstyled<?=$tab == 1 ? ' show' : ' hide'?>" id="pmSubmenu">
-                <li class="<?=$tab == 1 && $subtab == 0 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=0">
-                        <?=$AppUI->_("Tasks",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li class="<?=$tab == 1 && $subtab == 1 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=1">
-                        <?=$AppUI->_("6LBLCRONOGRAMA",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li class="<?=$tab == 1 && $subtab == 2 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=2">
-                        <?=$AppUI->_("5LBLCUSTO",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li class="<?=$tab == 1 && $subtab == 3 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=3">
-                        <?=$AppUI->_("LBL_PROJECT_RISKS",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li class="<?=$tab == 1 && $subtab == 4 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=4">
-                        <?=$AppUI->_("7LBLQUALIDADE",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li class="<?=$tab == 1 && $subtab == 5 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=5">
-                        <?=$AppUI->_("LBL_PROJECT_COMMUNICATION",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li class="<?=$tab == 1 && $subtab == 6 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=6">
-                        <?=$AppUI->_("LBL_PROJECT_ACQUISITIONS",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li class="<?=$tab == 1 && $subtab == 7 ? 'active' : '' ?>">
-                    <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=7">
-                        <?=$AppUI->_("Stakeholder",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-                <li>
-                    <a href="modules/timeplanning/view/export_project_plan/export.php?project_id=<?php echo $project_id; ?>&print=0" target = "_blank">
-                        <?=$AppUI->_("LBL_PROJECT_PLAN",UI_OUTPUT_HTML)?>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="<?=$tab == 2 ? 'active' : '' ?>">
-            <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=2">
-                <?=$AppUI->_("3execution", UI_OUTPUT_HTML);?>
-            </a>
-        </li>
-        <li class="<?=$tab == 3 ? 'active' : '' ?>">
-            <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=3">
-                <?=$AppUI->_("5closing", UI_OUTPUT_HTML);?>
-            </a>
-        </li>
-    </ul>
-</nav>
-
-<!-- Page Content -->
-<div id="content" style="margin-top:70px;">
-    <div class="row header-2" style="position: relative; top: -60px; left: -290px;">
+<div class="container-fluid">
+    <div class="row header-2">
         <div class="col-md-12">
             <h4><?=$obj->project_name?></h4>
             <small>
@@ -308,79 +201,179 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
             </small>
         </div>
     </div>
-    <fieldset>
-        <?php
-        if ($tab == 0) {
-            switch ($subtab) {
-                case OPENING_TERM :
-                    require_once DP_BASE_DIR . '/modules/initiating/addedit.php';
-                    break;
-                case STAKEHOLDER :
-                    require_once DP_BASE_DIR . '/modules/stakeholder/project_stakeholder.php';
-                    break;
-            }
-        } else if ($tab == 1) {
-            switch ($subtab) {
-                case TAB_TASKS :
-                    require_once DP_BASE_DIR . '/modules/dotproject_plus/projects_tab.planning_and_monitoring.php';
-                    break;
-                case TAB_SCHEDULE :
-                    require_once DP_BASE_DIR . '/modules/monitoringandcontrol/view/view.6LBLCRONOGRAMA.php';
-                    break;
-                case TAB_COSTS :
-                    require_once DP_BASE_DIR . '/modules/costs/view_costs.php';
-                    break;
-                case TAB_RISKS :
-                    require_once DP_BASE_DIR . '/modules/risks/projects_risks.php';
-                    break;
-                case TAB_QUALITY :
-                    require_once DP_BASE_DIR . '/modules/timeplanning/view/quality/project_quality_planning.php';
-                    break;
-                case TAB_COMUNICATION :
-                    require_once DP_BASE_DIR . '/modules/communication/index_project.php';
-                    break;
-                case TAB_AQUISITIONS :
-                    require_once DP_BASE_DIR . '/modules/timeplanning/view/acquisition/acquisition_planning.php';
-                    break;
-                case TAB_STAKEHOLDERS :
-                    require_once DP_BASE_DIR . '/modules/stakeholder/project_stakeholder.php';
-                    break;
-
-            }
-        }
-        ?>
-    </fieldset>
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function(e) {
+<div class="wrapper">
+    <!-- start main section - left project menu and EAP and tasks tree -->
+    <!-- Sidebar -->
+    <nav id="sidebar" style="margin-top:70px;">
+        <div class="sidebar-header">
+            <h5 class="text-right">
+                <i id="sidebarCollapse" class="mouse-cursor-pointer fas fa-angle-double-left" style="margin-top: 20px;"></i>
+            </h5>
+        </div>
+        <?php
 
-        let collapseProject = $('#projectDetailsLink');
-        $('#project_details').on('shown.bs.collapse', function () {
-            collapseProject.find('i').removeClass('fa-caret-down');
-            collapseProject.find('i').addClass('fa-caret-up');
-        });
-        $('#project_details').on('hidden.bs.collapse', function () {
-            collapseProject.find('i').removeClass('fa-caret-up');
-            collapseProject.find('i').addClass('fa-caret-down');
-        });
-
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-
-            if ($(this).hasClass('fa-angle-double-right')) {
-                $(this).removeClass('fa-angle-double-right');
-                $(this).addClass('fa-angle-double-left');
-                $('.header-2').animate({
-                    left: '-290px'
-                }, 270);
+            if (!isset($_GET["subtab"])) {
+                $subtab = 0;
             } else {
-                $(this).removeClass('fa-angle-double-left');
-                $(this).addClass('fa-angle-double-right');
-                $('.header-2').animate({
-                    left: '-40px'
-                }, 270);
+                $subtab = $_GET["subtab"];
             }
+        ?>
+
+        <ul class="list-unstyled components">
+            <li class="<?=$tab == 0 ? 'active' : '' ?>">
+                <a href="#iniciacaoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <?=$AppUI->_("1initiation", UI_OUTPUT_HTML);?>
+                </a>
+                <ul class="collapse list-unstyled<?=$tab == 0 ? ' show' : ' hide'?>" id="iniciacaoSubmenu">
+                    <li class="<?=$subtab == 0 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=0&amp;subtab=0">
+                            <?=$AppUI->_("LBL_OPEN_PROJECT_CHARTER",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li class="<?=$subtab == 1 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=0&amp;subtab=1">
+                            <?=$AppUI->_("LBL_PROJECT_STAKEHOLDER",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="<?=$tab == 1 ? 'active' : '' ?>">
+                <a href="#pmSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                    <?=$AppUI->_("Planning and monitoring", UI_OUTPUT_HTML);?>
+                </a>
+                <ul class="collapse list-unstyled<?=$tab == 1 ? ' show' : ' hide'?>" id="pmSubmenu">
+                    <li class="<?=$tab == 1 && $subtab == 0 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=0">
+                            <?=$AppUI->_("Tasks",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li class="<?=$tab == 1 && $subtab == 1 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=1">
+                            <?=$AppUI->_("6LBLCRONOGRAMA",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li class="<?=$tab == 1 && $subtab == 2 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=2">
+                            <?=$AppUI->_("5LBLCUSTO",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li class="<?=$tab == 1 && $subtab == 3 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=3">
+                            <?=$AppUI->_("LBL_PROJECT_RISKS",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li class="<?=$tab == 1 && $subtab == 4 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=4">
+                            <?=$AppUI->_("7LBLQUALIDADE",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li class="<?=$tab == 1 && $subtab == 5 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=5">
+                            <?=$AppUI->_("LBL_PROJECT_COMMUNICATION",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li class="<?=$tab == 1 && $subtab == 6 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=6">
+                            <?=$AppUI->_("LBL_PROJECT_ACQUISITIONS",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li class="<?=$tab == 1 && $subtab == 7 ? 'active' : '' ?>">
+                        <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=7">
+                            <?=$AppUI->_("Stakeholder",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="modules/timeplanning/view/export_project_plan/export.php?project_id=<?php echo $project_id; ?>&print=0" target = "_blank">
+                            <?=$AppUI->_("LBL_PROJECT_PLAN",UI_OUTPUT_HTML)?>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="<?=$tab == 2 ? 'active' : '' ?>">
+                <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=2">
+                    <?=$AppUI->_("3execution", UI_OUTPUT_HTML);?>
+                </a>
+            </li>
+            <li class="<?=$tab == 3 ? 'active' : '' ?>">
+                <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=3">
+                    <?=$AppUI->_("5closing", UI_OUTPUT_HTML);?>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="content" style="margin-top:70px;">
+
+        <fieldset>
+            <?php
+            if ($tab == 0) {
+                switch ($subtab) {
+                    case OPENING_TERM :
+                        require_once DP_BASE_DIR . '/modules/initiating/addedit.php';
+                        break;
+                    case STAKEHOLDER :
+                        require_once DP_BASE_DIR . '/modules/stakeholder/project_stakeholder.php';
+                        break;
+                }
+            } else if ($tab == 1) {
+                switch ($subtab) {
+                    case TAB_TASKS :
+                        require_once DP_BASE_DIR . '/modules/dotproject_plus/projects_tab.planning_and_monitoring.php';
+                        break;
+                    case TAB_SCHEDULE :
+                        require_once DP_BASE_DIR . '/modules/monitoringandcontrol/view/view.6LBLCRONOGRAMA.php';
+                        break;
+                    case TAB_COSTS :
+                        require_once DP_BASE_DIR . '/modules/costs/view_costs.php';
+                        break;
+                    case TAB_RISKS :
+                        require_once DP_BASE_DIR . '/modules/risks/projects_risks.php';
+                        break;
+                    case TAB_QUALITY :
+                        require_once DP_BASE_DIR . '/modules/timeplanning/view/quality/project_quality_planning.php';
+                        break;
+                    case TAB_COMUNICATION :
+                        require_once DP_BASE_DIR . '/modules/communication/index_project.php';
+                        break;
+                    case TAB_AQUISITIONS :
+                        require_once DP_BASE_DIR . '/modules/timeplanning/view/acquisition/acquisition_planning.php';
+                        break;
+                    case TAB_STAKEHOLDERS :
+                        require_once DP_BASE_DIR . '/modules/stakeholder/project_stakeholder.php';
+                        break;
+
+                }
+            }
+            ?>
+        </fieldset>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(e) {
+
+            let collapseProject = $('#projectDetailsLink');
+            $('#project_details').on('shown.bs.collapse', function () {
+                collapseProject.find('i').removeClass('fa-caret-down');
+                collapseProject.find('i').addClass('fa-caret-up');
+            });
+            $('#project_details').on('hidden.bs.collapse', function () {
+                collapseProject.find('i').removeClass('fa-caret-up');
+                collapseProject.find('i').addClass('fa-caret-down');
+            });
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+
+                if ($(this).hasClass('fa-angle-double-right')) {
+                    $(this).removeClass('fa-angle-double-right');
+                    $(this).addClass('fa-angle-double-left');
+                } else {
+                    $(this).removeClass('fa-angle-double-left');
+                    $(this).addClass('fa-angle-double-right');
+                }
+            });
         });
-    });
-</script>
+    </script>

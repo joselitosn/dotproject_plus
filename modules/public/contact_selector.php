@@ -13,6 +13,11 @@ if (dPgetParam($_POST, 'selected_contacts_id'))	{
 	$selected_contacts_id = dPgetCleanParam($_POST, 'selected_contacts_id');
 }
 ?>
+
+// TODO get rid of this shit and store the selected contacts
+
+
+
 <script language="javascript">
 function setContactIDs (method,querystring)
 {
@@ -229,6 +234,9 @@ foreach ($contacts as $contact_id => $contact_data) {
 <hr />
 <input name="contacts_submited" type="hidden" value="1" />
 <input name="selected_contacts_id" type="hidden" value="<?php echo $selected_contacts_id; ?>">
-<input type="submit" value="<?php 
+<input type="submit" value="<?php
 echo $AppUI->_('Continue'); ?>" onClick="setContactIDs()" class="button" />
 </form>
+<?php
+    exit();
+?>

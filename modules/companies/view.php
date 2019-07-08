@@ -70,42 +70,9 @@ if ($company_policies_id != "") {
 }
 ?>
 
-<!-- Sidebar -->
 
-<nav id="sidebar" style="margin-top:70px;">
-    <div class="sidebar-header">
-        <h5 class="text-right">
-            <i id="sidebarCollapse" class="mouse-cursor-pointer fas fa-angle-double-left" style="margin-top: 20px;"></i>
-        </h5>
-    </div>
-
-    <ul class="list-unstyled components">
-        <li class="<?=$tab == 0 ? 'active' : '' ?>">
-            <a href="?m=companies&amp;a=view&amp;company_id=<?=$company_id?>&amp;tab=0">
-                <?=$AppUI->_("Projects");?>
-            </a>
-        </li>
-        <li class="<?=$tab == 1 ? 'active' : '' ?>">
-            <a href="?m=companies&amp;a=view&amp;company_id=<?=$company_id?>&amp;tab=1">
-                <?=$AppUI->_("LBL_ORGANIZATION_ROLES");?>
-            </a>
-        </li>
-        <li class="<?=$tab == 2 ? 'active' : '' ?>">
-            <a href="?m=companies&amp;a=view&amp;company_id=<?=$company_id?>&amp;tab=2">
-                <?=$AppUI->_("LBL_ORGONOGRAM");?>
-            </a>
-        </li>
-        <li class="<?=$tab == 3 ? 'active' : '' ?>">
-            <a href="?m=companies&amp;a=view&amp;company_id=<?=$company_id?>&amp;tab=3">
-                <?=$AppUI->_('2LBLHumanResources');?>
-            </a>
-        </li>
-    </ul>
-</nav>
-
-<!-- Page Content -->
-<div id="content" style="margin-top:70px;">
-    <div class="row header-2" style="position: relative; top: -60px; left: -290px;">
+<div class="container-fluid">
+    <div class="row header-2">
         <div class="col-md-12">
             <h4><?=htmlspecialchars($obj->company_name)?></h4>
             <small>
@@ -133,195 +100,225 @@ if ($company_policies_id != "") {
             </small>
         </div>
     </div>
-    <fieldset>
-        <div class="row">
-            <div class="col-md-12">
-                <?php
-                    switch ($tab) {
-                        case TAB_PROJECTS :
-                            require_once DP_BASE_DIR . "/modules/dotproject_plus/companies_tab.Projects.php";
-                            break;
-                        case TAB_ROLES :
-                            require_once DP_BASE_DIR . "/modules/human_resources/view_company_roles.php";
-                            break;
-                        case TAB_ORGANOGRAM :
-                            require_once DP_BASE_DIR . "/modules/timeplanning/companies_organizational_diagram.php";
-                            break;
-                        case TAB_HUMAN_RESOURCES :
-                            require_once DP_BASE_DIR . "/modules/human_resources/view_company_users.php";
-                            break;
-                    }
-                ?>
-            </div>
+</div>
+
+<div class="wrapper">
+    <!-- Sidebar -->
+    <nav id="sidebar" style="margin-top:70px;">
+        <div class="sidebar-header">
+            <h5 class="text-right">
+                <i id="sidebarCollapse" class="mouse-cursor-pointer fas fa-angle-double-left" style="margin-top: 20px;"></i>
+            </h5>
         </div>
 
-        <div class="modal" id="addEditProjectModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body company-modal">
+        <ul class="list-unstyled components">
+            <li class="<?=$tab == 0 ? 'active' : '' ?>">
+                <a href="?m=companies&amp;a=view&amp;company_id=<?=$company_id?>&amp;tab=0">
+                    <?=$AppUI->_("Projects");?>
+                </a>
+            </li>
+            <li class="<?=$tab == 1 ? 'active' : '' ?>">
+                <a href="?m=companies&amp;a=view&amp;company_id=<?=$company_id?>&amp;tab=1">
+                    <?=$AppUI->_("LBL_ORGANIZATION_ROLES");?>
+                </a>
+            </li>
+            <li class="<?=$tab == 2 ? 'active' : '' ?>">
+                <a href="?m=companies&amp;a=view&amp;company_id=<?=$company_id?>&amp;tab=2">
+                    <?=$AppUI->_("LBL_ORGONOGRAM");?>
+                </a>
+            </li>
+            <li class="<?=$tab == 3 ? 'active' : '' ?>">
+                <a href="?m=companies&amp;a=view&amp;company_id=<?=$company_id?>&amp;tab=3">
+                    <?=$AppUI->_('2LBLHumanResources');?>
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
-                        <button type="button" class="btn btn-primary" id="btnSaveCompany" ><?=$AppUI->_('LBL_SAVE')?></button>
+    <!-- Page Content -->
+    <div id="content" style="margin-top:70px;">
+        <fieldset>
+            <div class="row">
+                <div class="col-md-12">
+                    <?php
+                        switch ($tab) {
+                            case TAB_PROJECTS :
+                                require_once DP_BASE_DIR . "/modules/dotproject_plus/companies_tab.Projects.php";
+                                break;
+                            case TAB_ROLES :
+                                require_once DP_BASE_DIR . "/modules/human_resources/view_company_roles.php";
+                                break;
+                            case TAB_ORGANOGRAM :
+                                require_once DP_BASE_DIR . "/modules/timeplanning/companies_organizational_diagram.php";
+                                break;
+                            case TAB_HUMAN_RESOURCES :
+                                require_once DP_BASE_DIR . "/modules/human_resources/view_company_users.php";
+                                break;
+                        }
+                    ?>
+                </div>
+            </div>
+
+            <div class="modal" id="addEditProjectModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modal title</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body company-modal">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                            <button type="button" class="btn btn-primary" id="btnSaveCompany" ><?=$AppUI->_('LBL_SAVE')?></button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <?php
-            //require (DP_BASE_DIR . '/style/' . $uistyle . '/end-page.php');
-        ?>
-    </fieldset>
-</div>
+            <?php
+                //require (DP_BASE_DIR . '/style/' . $uistyle . '/end-page.php');
+            ?>
+        </fieldset>
+    </div>
 
-<script>
+    <script>
 
-    var company = {
-        init: function() {
+        var company = {
+            init: function() {
 
-            $(document).ready(function(e) {
-                const collapseCompany = $('#companyDetailsLink');
-                $('#company_details').on('shown.bs.collapse', function () {
-                    collapseCompany.find('i').removeClass('fa-caret-down');
-                    collapseCompany.find('i').addClass('fa-caret-up');
-                });
-                $('#company_details').on('hidden.bs.collapse', function () {
-                    collapseCompany.find('i').removeClass('fa-caret-up');
-                    collapseCompany.find('i').addClass('fa-caret-down');
-                });
-                $('#sidebarCollapse').on('click', function () {
-                    $('#sidebar').toggleClass('active');
-
-                    if ($(this).hasClass('fa-angle-double-right')) {
-                        $(this).removeClass('fa-angle-double-right');
-                        $(this).addClass('fa-angle-double-left');
-
-                        $('.header-2').animate({
-                            left: '-290px'
-                        }, 270);
-                    } else {
-                        $(this).removeClass('fa-angle-double-left');
-                        $(this).addClass('fa-angle-double-right');
-                        $('.header-2').animate({
-                            left: '-40px'
-                        }, 270);
-                    }
-                });
-            });
-
-        },
-
-        project: {
-
-            new: function() {
-                console.log('aquiiiii');
-                $.ajax({
-                    type: "get",
-                    url: "?m=projects&template=addedit&company_id=<?=$company_id?>"
-                }).done(function(response) {
-                    $(".company-modal").html(response);
-                    $(".modal-title").html("<?=$AppUI->_('new project')?>");
-                    $("#btnSaveCompany").on("click", function() {
-                        company.project.save();
-                    })
-                    $("#addEditProjectModal").modal();
-                });
-            },
-
-            edit: function(projectId) {
-                $.ajax({
-                    type: "get",
-                    url: "?m=projects&template=addedit&company_id=<?=$company_id?>&project_id=" + projectId
-                }).done(function(response) {
-                    $(".company-modal").html(response);
-                    $(".modal-title").html("<?=$AppUI->_('Update Project')?>");
-                    $("#btnSaveCompany").on("click", function() {
-                        company.project.save();
-                    })
-                    $("#addEditProjectModal").modal();
-                });
-            },
-
-            save: function() {
-                var name = $("input[name=project_name]").val();
-                var company = $("select[name=project_company]").val();
-
-                if (!name || company == null) {
-                    var msg = [];
-                    if (!name) msg.push("Informe o nome do projeto");
-                    if (company == null) msg.push("<?=$AppUI->_('projectsBadCompany', UI_OUTPUT_JS); ?>");
-                    $.alert({
-                        title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
-                        content: msg.join("<br>")
+                $(document).ready(function(e) {
+                    const collapseCompany = $('#companyDetailsLink');
+                    $('#company_details').on('shown.bs.collapse', function () {
+                        collapseCompany.find('i').removeClass('fa-caret-down');
+                        collapseCompany.find('i').addClass('fa-caret-up');
                     });
-                    return;
-                }
-                $.ajax({
-                    url: "?m=projects",
-                    type: "post",
-                    datatype: "json",
-                    data: $("form[name=addEditProject]").serialize(),
-                    success: function(resposta) {
-                        console.log(resposta);
-                        $.alert({
-                            title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
-                            content: resposta,
-                            onClose: function() {
-                                window.location.reload(true);
-                            }
-                        });
-                        $("#addEditProjectModal").modal("hide");
-                    },
-                    error: function(resposta) {
-                        $.alert({
-                            title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
-                            content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
-                        });
-                    }
+                    $('#company_details').on('hidden.bs.collapse', function () {
+                        collapseCompany.find('i').removeClass('fa-caret-up');
+                        collapseCompany.find('i').addClass('fa-caret-down');
+                    });
+                    $('#sidebarCollapse').on('click', function () {
+                        $('#sidebar').toggleClass('active');
+
+                        if ($(this).hasClass('fa-angle-double-right')) {
+                            $(this).removeClass('fa-angle-double-right');
+                            $(this).addClass('fa-angle-double-left');
+                        } else {
+                            $(this).removeClass('fa-angle-double-left');
+                            $(this).addClass('fa-angle-double-right');
+                        }
+                    });
                 });
+
             },
 
-            setShortName: function () {
-                var x = 10;
-                var $projectName = $('input[name=project_name]');
+            project: {
 
-                var name = $projectName.val().trim();
+                new: function() {
+                    console.log('aquiiiii');
+                    $.ajax({
+                        type: "get",
+                        url: "?m=projects&template=addedit&company_id=<?=$company_id?>"
+                    }).done(function(response) {
+                        $(".company-modal").html(response);
+                        $(".modal-title").html("<?=$AppUI->_('new project')?>");
+                        $("#btnSaveCompany").on("click", function() {
+                            company.project.save();
+                        })
+                        $("#addEditProjectModal").modal();
+                    });
+                },
 
-                if (name.length < 11) {
-                    x = $projectName.val().length;
-                }
-                $('input[name=project_short_name]').val($projectName.val().trim().substr(0, x));
-            },
+                edit: function(projectId) {
+                    $.ajax({
+                        type: "get",
+                        url: "?m=projects&template=addedit&company_id=<?=$company_id?>&project_id=" + projectId
+                    }).done(function(response) {
+                        $(".company-modal").html(response);
+                        $(".modal-title").html("<?=$AppUI->_('Update Project')?>");
+                        $("#btnSaveCompany").on("click", function() {
+                            company.project.save();
+                        })
+                        $("#addEditProjectModal").modal();
+                    });
+                },
 
-            dateSelected: function (date, element) {
-                var arrDate = date.split('/');
-                $date = $('#'+element.id);
-                if ($date.attr('name') == 'start_date') {
-                    $('input[name=project_start_date]').val(arrDate[2] + arrDate[1] + arrDate[0]);
-                } else {
-                    $('input[name=project_end_date]').val(arrDate[2] + arrDate[1] + arrDate[0]);
-                }
-            },
+                save: function() {
+                    var name = $("input[name=project_name]").val();
+                    var company = $("select[name=project_company]").val();
 
-            formatDates: function () {
-                var startDate = $('input[name=project_start_date]').val();
-                var endDate = $('input[name=project_end_date]').val();
+                    if (!name || company == null) {
+                        var msg = [];
+                        if (!name) msg.push("Informe o nome do projeto");
+                        if (company == null) msg.push("<?=$AppUI->_('projectsBadCompany', UI_OUTPUT_JS); ?>");
+                        $.alert({
+                            title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
+                            content: msg.join("<br>")
+                        });
+                        return;
+                    }
+                    $.ajax({
+                        url: "?m=projects",
+                        type: "post",
+                        datatype: "json",
+                        data: $("form[name=addEditProject]").serialize(),
+                        success: function(resposta) {
+                            console.log(resposta);
+                            $.alert({
+                                title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                content: resposta,
+                                onClose: function() {
+                                    window.location.reload(true);
+                                }
+                            });
+                            $("#addEditProjectModal").modal("hide");
+                        },
+                        error: function(resposta) {
+                            $.alert({
+                                title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                                content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                            });
+                        }
+                    });
+                },
 
-                if (startDate) {
-                    $('input[name=start_date]').val(startDate.substr(6, 2)+'/'+startDate.substr(4, 2)+'/'+startDate.substr(0, 4));
-                }
-                if (endDate) {
-                    $('input[name=end_date]').val(endDate.substr(6, 2)+'/'+endDate.substr(4, 2)+'/'+endDate.substr(0, 4));
+                setShortName: function () {
+                    var x = 10;
+                    var $projectName = $('input[name=project_name]');
+
+                    var name = $projectName.val().trim();
+
+                    if (name.length < 11) {
+                        x = $projectName.val().length;
+                    }
+                    $('input[name=project_short_name]').val($projectName.val().trim().substr(0, x));
+                },
+
+                dateSelected: function (date, element) {
+                    var arrDate = date.split('/');
+                    $date = $('#'+element.id);
+                    if ($date.attr('name') == 'start_date') {
+                        $('input[name=project_start_date]').val(arrDate[2] + arrDate[1] + arrDate[0]);
+                    } else {
+                        $('input[name=project_end_date]').val(arrDate[2] + arrDate[1] + arrDate[0]);
+                    }
+                },
+
+                formatDates: function () {
+                    var startDate = $('input[name=project_start_date]').val();
+                    var endDate = $('input[name=project_end_date]').val();
+
+                    if (startDate) {
+                        $('input[name=start_date]').val(startDate.substr(6, 2)+'/'+startDate.substr(4, 2)+'/'+startDate.substr(0, 4));
+                    }
+                    if (endDate) {
+                        $('input[name=end_date]').val(endDate.substr(6, 2)+'/'+endDate.substr(4, 2)+'/'+endDate.substr(0, 4));
+                    }
                 }
             }
-        }
-    };
-    company.init();
+        };
+        company.init();
 
-</script>
+    </script>
