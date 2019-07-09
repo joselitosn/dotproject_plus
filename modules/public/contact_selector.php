@@ -12,91 +12,7 @@ $selected_contacts_id = dPgetCleanParam($_GET, 'selected_contacts_id', '');
 if (dPgetParam($_POST, 'selected_contacts_id'))	{
 	$selected_contacts_id = dPgetCleanParam($_POST, 'selected_contacts_id');
 }
-?>
 
-// TODO get rid of this shit and store the selected contacts
-
-
-
-<script language="javascript">
-function setContactIDs (method,querystring)
-{
-	var URL = 'index.php?m=public&a=contact_selector';
-    
-	var field = document.getElementsByName('contact_id[]');
-	var selected_contacts_id = document.frmContactSelect.selected_contacts_id;
-	var currentIDstring = selected_contacts_id.value.toString();
-	var currentIDs = currentIDstring.split(',');
-	var addkeepIDs = new Array();
-	var dropIDs = new Array();
-	var resultIDs = new Array();
-	var i = 0;
-	var j = 0;
-	var flag = 0;
-	
-	if (method == 'GET' && querystring) {
-		URL += '&' + querystring;
-	}
-	
-	var countkeep = 0;
-	var countdrop = 0;
-	
-	for (i = 0; i < field.length; i++) {
-		if (field[i].checked) {
-			addkeepIDs[countkeep++] = field[i].value;
-		} else {
-			dropIDs[countdrop++] = field[i].value;
-		}
-	}
-	
-	var countfinal = 0;
-	
-	for (i = 0; i < addkeepIDs.length; i++) {
-		resultIDs[countfinal++] = addkeepIDs[i];
-	}
-	
-	for (i = 0; i < currentIDs.length; i++) {
-		flag = 1;
-		for (j = 0; j < addkeepIDs.length; j++) {
-			if (currentIDs[i] == addkeepIDs[j]) {
-				flag = 0;
-			}
-		}
-		for (j = 0; j < dropIDs.length; j++) {
-			if (currentIDs[i] == dropIDs[j]) {
-				flag = 0;
-			}
-		}
-		if (flag > 0) {
-			resultIDs[countfinal++] = currentIDs[i];
-		}
-	}
-	
-	
-	selected_contacts_id.value = resultIDs.join(',');
-    
-	if (method == 'GET') {
-		URL +=  '&selected_contacts_id=' + selected_contacts_id.value;
-		return URL;
-	} else {
-		return selected_contacts_id;
-	}
-}
-
-<?php
-
-if ($contacts_submited == 1) {
-	$call_back_string = ((!(is_null($call_back))) 
-	                     ? "window.opener.$call_back('$selected_contacts_id');" : '');
-echo $call_back_string 
-?>
-self.close();
-<?php
-}
-?>
-
-</script>
-<?php
 function remove_invalid($arr) {
 	$result = array();
 	foreach ($arr as $val) {
@@ -191,52 +107,81 @@ echo ((!is_null($call_back)) ? '&call_back='.$call_back : '');
 <?php
 $pointer_department = '';
 $pointer_company    = '';
-$companies_names = array(0 => $AppUI->_('Select a company')) + $aCpies;
-echo arraySelect($companies_names, 'company_id', 
-                 ('onchange="document.frmContactSelect.contacts_submited.value=0; ' 
-                  . 'setContactIDs(); document.frmContactSelect.submit();"'), 0);
-?>
 
-<br />
-<h4><a href="#" onClick="window.location.href=setContactIDs('GET','dialog=1<?php 
-echo ((!is_null($call_back)) ? ('&call_back=' . $call_back) : ''); ?>&show_all=1');">
-<?php echo $AppUI->_('View all allowed companies'); ?>
-</a></h4>
-<hr />
-<h2><?php echo $AppUI->_('Contacts for'); ?> <?php echo $company_name ?></h2>
+?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label><?php echo $AppUI->_('Select a company'); ?></label>
+                <select class="form-control form-control-sm select-company-filter" name="company_id">
+                    <option></option>
+                    <?php
+                    foreach ($aCpies as $key => $value) {
+                        ?>
+                        <option value="<?=$key?>">
+                            <?=$value?>
+                        </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+    </div>
+<div id="contactList">
 <?php	
 foreach ($contacts as $contact_id => $contact_data) {
 	$contact_company = (($contact_data['company_name']) 
 	                    ? $contact_data['company_name'] : $contact_data['contact_company']);
 	if ($contact_company  && $contact_company != $pointer_company) {
-		echo '<h4>'.$contact_company.'</h4>';
+		echo '<h5 class="wildcard '.$contact_data['company_name'].'">'.$contact_company.'</h5>';
 		$pointer_company = $contact_company;
 	}
 	
 	$contact_department = (($contact_data['dept_name']) 
 	                       ? $contact_data['dept_name'] : $contact_data['contact_department']);
 	if ($contact_department && $contact_department != $pointer_department) {
-		echo '<h5>'.$contact_department.'</h5>';
+		echo '<h6 class="wildcard '.$contact_data['company_name'].'">'.$contact_department.'</h6>';
 		$pointer_department = $contact_department;
 	}
-
-	$checked = in_array($contact_id, $contacts_id) ? 'checked="checked"' : '';
-	
-	echo ('<input type="checkbox" name="contact_id[]" id="contact_' . $contact_id . '" value="' 
-	      . $contact_id . '" ' . $checked . ' />');
-	echo ('<label for="contact_' . $contact_id . '">' . $contact_data['contact_first_name'] . ' ' 
+	echo ('<input class="wildcard '.$contact_data['company_name'].'" type="checkbox" id="' . $contact_id . '" value="' . $contact_id . '" />');
+	echo ('<label class="wildcard '.$contact_data['company_name'].'" for="contact_' . $contact_id . '">&nbsp;' . $contact_data['contact_first_name'] . ' '
 	      . $contact_data['contact_last_name'] 
 	      . (($contact_data['contact_extra']) ? ($contact_data['contact_extra']) : '') 
 	      . '</label>');
-	echo ('<br />');
+	echo ('<br class="wildcard '.$contact_data['company_name'].'" />');
 	}
 ?>
-<hr />
-<input name="contacts_submited" type="hidden" value="1" />
-<input name="selected_contacts_id" type="hidden" value="<?php echo $selected_contacts_id; ?>">
-<input type="submit" value="<?php
-echo $AppUI->_('Continue'); ?>" onClick="setContactIDs()" class="button" />
+</div>
 </form>
+
+<script>
+    $(document).ready(function() {
+        $('.select-company-filter').select2({
+            placeholder: '',
+            allowClear: true,
+            theme: "bootstrap",
+            dropdownParent: $("#contactsModal")
+        });
+
+        $('.select-company-filter').on('select2:select', function(e) {
+            var data = e.params.data;
+            var cls = data.text.trim();
+            var listItems = $('#contactList').find('.wildcard');
+            for (var item of listItems) {
+                if (!$(item).hasClass(cls)) {
+                    $(item).hide();
+                } else {
+                    $(item).show();
+                }
+            }
+        });
+
+        $('.select-company-filter').on('select2:unselect', function() {
+            $('#contactList').find('.wildcard').show();
+        });
+    });
+</script>
 <?php
     exit();
 ?>

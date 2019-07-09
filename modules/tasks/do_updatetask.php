@@ -11,7 +11,7 @@ if (!defined('DP_BASE_DIR')) {
  * should add to the replacements array too...
 */
 function cleanText($text) {
-	//This text file is not utf, its iso so we have to decode/encode
+	//This text file is not utf, its iso so we have to decode/encode      JESUS CHRIST
 	$text = utf8_decode($text);
 	$trade = array('�'=>'a','�'=>'a','�'=>'a',
                  '�'=>'a','�'=>'a',
@@ -48,7 +48,6 @@ $obj = new CTaskLog();
 
 if (!($obj->bind($_POST))) {
 	$AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
-	$AppUI->redirect();
 }
 
 if ($obj->task_log_date) {
@@ -70,14 +69,12 @@ if ($del) {
 	} else {
 		$AppUI->setMsg('deleted', UI_MSG_ALERT);
 	}
-	$AppUI->redirect();
 } else {
 	$obj->task_log_costcode = cleanText($obj->task_log_costcode);
 	if (($msg = $obj->store())) {
 		$AppUI->setMsg($msg, UI_MSG_ERROR);
-		$AppUI->redirect();
 	} else {
-		$AppUI->setMsg(@$_POST['task_log_id'] ? 'updated' : 'inserted', UI_MSG_OK, true);
+		$AppUI->setMsg(@$_POST['task_log_id'] ? 'atualizado' : 'inserido', UI_MSG_OK, true);
 	}
 }
 $task = new CTask();
@@ -122,6 +119,6 @@ if ($task->email_log($obj, $email_assignees, $email_task_contacts, $email_projec
 	$obj->store(); // Save the updated message. It is not an error if this fails.
 }
 
-$AppUI->redirect('m=tasks&a=view&task_id=' . $obj->task_log_task . '&tab=0#tasklog' 
-                 . $obj->task_log_id);
+echo $AppUI->getMsg();
+exit();
 ?>

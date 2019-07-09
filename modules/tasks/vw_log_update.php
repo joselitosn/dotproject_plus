@@ -151,10 +151,10 @@ echo $AppUI->_('minutes elapsed'); ?>)";
 	function timerStart() {
 		if (!timerID) { // this means that it needs to be started
 			timerSet();
-			document.editFrm.timerStartStopButton.value = "<?php echo $AppUI->_('Stop'); ?>";
+			document.editFrm.timerStartStopButton.innerHTML = "<?php echo $AppUI->_('Stop'); ?>";
 			UpdateTimer();
 		} else { // timer must be stoped
-			document.editFrm.timerStartStopButton.value = "<?php echo $AppUI->_('Start'); ?>";
+			document.editFrm.timerStartStopButton.innerHTML = "<?php echo $AppUI->_('Start'); ?>";
 			document.getElementById("timerStatus").innerHTML = "";
 			timerStop();
 		}
@@ -193,8 +193,7 @@ if ($obj->canUserEditTimeInformation()) {
 
 <a name="log"></a>
 
-<form name="editFrm" action="?m=tasks&amp;a=view&amp;task_id=<?php echo $task_id; ?>" method="post"
-  onsubmit='javascript:updateEmailContacts();'>
+<form name="editFrm">
   <input type="hidden" name="uniqueid" value="<?php echo uniqid(""); ?>" />
   <input type="hidden" name="dosql" value="do_updatetask" />
   <input type="hidden" name="task_log_id" value="<?php echo $log->task_log_id; ?>" />
@@ -269,7 +268,6 @@ echo(($log->task_log_creator == 0) ? $AppUI->user_id : $log->task_log_creator) ?
                                maxlength="8"
                                size="6" />
                     </div>
-                    <small><span id='timerStatus'></span></small>
                 </div>
                 <div class="col-md-7">
                     <div class="form-group">
@@ -278,6 +276,7 @@ echo(($log->task_log_creator == 0) ? $AppUI->user_id : $log->task_log_creator) ?
                     </div>
                 </div>
             </div>
+            <small style="position: relative; top: -15px; color: #C82333;"><span id='timerStatus'></span></small>
         </div>
         <div class="col-md-7">
             <div class="form-group">
@@ -337,7 +336,7 @@ echo(($log->task_log_creator == 0) ? $AppUI->user_id : $log->task_log_creator) ?
         <div class="col-md-6">
             <div class="form-group">
                 <label><?=$AppUI->_('Summary')?></label>
-                <input type="text" class="form-control form-control-sm" name="task_log_name" value="<?=$AppUI->___($log->task_log_name)?>" maxlength="255" size="30" />
+                <input type="text" class="form-control form-control-sm" name="task_log_name" value="<?=$log->task_log_name?>" maxlength="255" size="30" />
             </div>
         </div>
         <div class="col-md-6">
@@ -430,7 +429,7 @@ echo(($log->task_log_creator == 0) ? $AppUI->user_id : $log->task_log_creator) ?
                 <?php
                 if ($AppUI->isActiveModule('contacts') && getPermission('contacts', 'view')) {
                     ?>
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="javascript:popEmailContacts()"><?=$AppUI->_('Other Contacts...')?></button>
+                    <button type="button" class="btn btn-sm btn-secondary" id="selectOtherContact"><?=$AppUI->_('Other Contacts...')?></button>
                     <?php
                 }
                 ?>
@@ -628,7 +627,7 @@ echo(($log->task_log_creator == 0) ? $AppUI->user_id : $log->task_log_creator) ?
 <script>
 
     var log = {
-        init: function () {
+        init: function() {
             $('.datepicker').datepicker({
                 dateFormat: 'dd/mm/yy'
             });
@@ -654,37 +653,52 @@ echo(($log->task_log_creator == 0) ? $AppUI->user_id : $log->task_log_creator) ?
                 theme: "bootstrap",
                 dropdownParent: $("#taskLogModal")
             });
+
+            $('#selectOtherContact').on('click', log.popEmailContacts);
         },
+
+        getContacts: function() {
+            var contacts = $('#contactList').find('input[type=checkbox]:checked');
+            var list = [];
+            for(var c of contacts) {
+                list.push(c.id);
+            }
+            $('#email_others').val(list.join(','));
+            $("#contactsModal").modal('hide');
+        },
+
+        popEmailContacts: function() {
+
+            updateEmailContacts();
+
+            $.ajax({
+                type: "get",
+                url: "?m=public&template=contact_selector"
+            }).done(function(response) {
+                $(".modal-contacts-body").html(response).css('max-height', (window.innerHeight * 0.8)).css('overflow', 'scroll');
+                $("#btnGetContacts").on("click", log.getContacts);
+                var modal = $("#contactsModal");
+                modal.on('hidden.bs.modal', function() {
+                    $("#btnGetContacts").off("click");
+                });
+
+                var contactList = $('#contactList').find('input[type=checkbox]');
+                var selectedContacts = $('#email_others').val().split(',');
+                for (var item of contactList) {
+                    if (selectedContacts.length) {
+                        selectedContacts.forEach(function(id) {
+                            if (item.id == id) {
+                                item.checked = 'checked';
+                            }
+                        });
+                    }
+                }
+                modal.modal();
+            });
+        }
     };
 
     $(document).ready(log.init());
-
-
-
-    function popEmailContacts() {
-
-        updateEmailContacts();
-
-        var email_others = document.getElementById('email_others');
-
-        $.ajax({
-            type: "get",
-            url: "?m=public&template=contact_selector&selected_contacts_id="+ email_others.value
-        }).done(function(response) {
-            $(".modal-contacts-body").html(response);
-            $("#contactsModal").modal();
-        });
-    }
-
-    function setEmailContacts(contact_id_string) {
-        if (! contact_id_string) {
-            contact_id_string = "";
-        }
-        var email_others = document.getElementById('email_others');
-        email_others.value = contact_id_string;
-
-        $("#contactsModal").modal('hide');
-    }
 
     function updateEmailContacts() {
         var email_others = document.getElementById('email_others');

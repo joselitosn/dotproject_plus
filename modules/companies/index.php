@@ -316,7 +316,6 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                                     company_id: companyId
                                 },
                                 success: function(resp) {
-                                    console.log(resp);
                                     var resposta = JSON.parse(resp);
                                     if (!resposta.err) {
                                         $.alert({

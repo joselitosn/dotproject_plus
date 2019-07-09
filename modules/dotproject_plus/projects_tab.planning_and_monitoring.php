@@ -1269,7 +1269,7 @@ if ($_GET["show_external_page"] != "") {
                                 $dropdownItem->appendChild($dropdownItemOC);
                                 $icon = $dom->createElement('i');
                                 $iconClass = $dom->createAttribute('class');
-                                $iconClass->value = 'far fa-edit';
+                                $iconClass->value = 'far fa-file-alt';
                                 $icon->appendChild($iconClass);
                                 $dropdownItem->appendChild($icon);
                                 $dropdownItemSpan = $dom->createElement('span', ' Novo log');
@@ -1566,7 +1566,7 @@ if ($_GET["show_external_page"] != "") {
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.saveLog()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
@@ -1575,7 +1575,7 @@ if ($_GET["show_external_page"] != "") {
 
     <!-- MODAL CONTACTS -->
     <div id="contactsModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title"><?=$AppUI->_("Contacts")?></h5>
@@ -1587,7 +1587,7 @@ if ($_GET["show_external_page"] != "") {
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="setEmailContacts()"><?=$AppUI->_("LBL_SELECT")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btnGetContacts"><?=$AppUI->_("LBL_SELECT")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
@@ -1876,7 +1876,33 @@ if ($_GET["show_external_page"] != "") {
                 url: "?m=tasks&template=vw_log_update&task_id="+taskId
             }).done(function(response) {
                 $(".task-log").html(response);
+
                 $("#taskLogModal").modal();
+            });
+        },
+
+        saveLog: function () {
+            updateEmailContacts();
+            console.log(updateEmailContacts);
+            $.ajax({
+                method: 'POST',
+                url: "?m=tasks",
+                data: $("form[name=editFrm]").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
+                }
             });
         }
     }
