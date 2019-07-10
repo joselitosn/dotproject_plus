@@ -481,7 +481,7 @@ function resetWorkflow(){
 <!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo $end_date->format($df); ?><!--</span>-->
 <!--                </td>-->
 <!--            </tr>-->
-            <tr style="display: none">
+            <tr style="display: block">
                 <td class="td_label"><?php echo $AppUI->_('Milestones'); ?>:</td>
                 <td>
 

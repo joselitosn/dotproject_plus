@@ -1257,24 +1257,26 @@ if ($_GET["show_external_page"] != "") {
                                 $dropdownMenu->appendChild($dropdownItem);
 
                                 // Dropdown activity options item log
-                                $dropdownItem = $dom->createElement('a');
-                                $dropdownItemClass = $dom->createAttribute('class');
-                                $dropdownItemClass->value = 'dropdown-item';
-                                $dropdownItem->appendChild($dropdownItemClass);
-                                $dropdownItemhref = $dom->createAttribute('href');
-                                $dropdownItemhref->value = 'javascript:void(0)';
-                                $dropdownItem->appendChild($dropdownItemhref);
-                                $dropdownItemOC = $dom->createAttribute('onclick');
-                                $dropdownItemOC->value = 'tasks.newLog('.$task_id.')';
-                                $dropdownItem->appendChild($dropdownItemOC);
-                                $icon = $dom->createElement('i');
-                                $iconClass = $dom->createAttribute('class');
-                                $iconClass->value = 'far fa-file-alt';
-                                $icon->appendChild($iconClass);
-                                $dropdownItem->appendChild($icon);
-                                $dropdownItemSpan = $dom->createElement('span', ' Novo log');
-                                $dropdownItem->appendChild($dropdownItemSpan);
-                                $dropdownMenu->appendChild($dropdownItem);
+                                if (getPermission('task_log', 'edit')) {
+                                    $dropdownItem = $dom->createElement('a');
+                                    $dropdownItemClass = $dom->createAttribute('class');
+                                    $dropdownItemClass->value = 'dropdown-item';
+                                    $dropdownItem->appendChild($dropdownItemClass);
+                                    $dropdownItemhref = $dom->createAttribute('href');
+                                    $dropdownItemhref->value = 'javascript:void(0)';
+                                    $dropdownItem->appendChild($dropdownItemhref);
+                                    $dropdownItemOC = $dom->createAttribute('onclick');
+                                    $dropdownItemOC->value = 'tasks.newLog('.$task_id.')';
+                                    $dropdownItem->appendChild($dropdownItemOC);
+                                    $icon = $dom->createElement('i');
+                                    $iconClass = $dom->createAttribute('class');
+                                    $iconClass->value = 'far fa-file-alt';
+                                    $icon->appendChild($iconClass);
+                                    $dropdownItem->appendChild($icon);
+                                    $dropdownItemSpan = $dom->createElement('span', ' Novo log');
+                                    $dropdownItem->appendChild($dropdownItemSpan);
+                                    $dropdownMenu->appendChild($dropdownItem);
+                                }
 
                                 // Dropdown activity options item delete activity
                                 $dropdownItem = $dom->createElement('a');
@@ -1382,36 +1384,15 @@ if ($_GET["show_external_page"] != "") {
                                 $carCol6->appendChild($span);
 
                                 // Recursos humanos
-
-//                                $q = new DBQuery();
-//                                $q->addTable("contacts", 'c');
-//                                $q->addQuery("CONCAT(c.contact_first_name, ' ', c.contact_last_name)");
-//                                $q->addJoin('users', 'u', 'u.user_contact = c.contact_id');
-//                                $q->addJoin('human_resource', 'hr', 'hr.human_resource_user_id = u.user_id');
-//                                $q->addJoin('human_resource_allocation', 'hra', 'hra.human_resource_id = hr.human_resource_id');
-//                                $q->addJoin('project_tasks_estimated_roles', 'pter', 'hra.project_tasks_estimated_roles_id = pter.id');
-//                                $q->addWhere("pter.task_id=" . $task_id);
-//                                $sql = $q->prepare();
-//                                $q->clear();
-//                                $humanRes = db_loadList($sql);
-
-
-//                                foreach ($humanRes as $humanRe) {
-//                                    if ($task_id != 235) continue;
-//                                    var_dump($humanRes);
-//                                    $estimatedRolesTxt .= ', ' . $humanRe[0];
-//                                }
-//                                var_dump($estimatedRolesTxt);
                                 $estimatedRolesTxt = "";
                                 $rolesNonGrouped = $projectTaskEstimation->getRolesNonGrouped($task_id);
                                 $totalRoles = count($rolesNonGrouped);
-                                $i = 1; //It avoids the inclusion of a comma in the text to display the human resources
-                                // if ($_POST["project_resources_filter"] == "") {
-                                //     $hasFilteredRH = true; //controls if will be some filter based on human resource
-                                // } else {
-                                //     $hasFilteredRH = false;
-                                // }
-//                                var_dump($rolesNonGrouped);
+                                $i = 1;
+                                 if ($_POST["project_resources_filter"] == "") {
+                                     $hasFilteredRH = true; //controls if will be some filter based on human resource
+                                 } else {
+                                     $hasFilteredRH = false;
+                                 }
                                 foreach ($rolesNonGrouped as $role) {
                                     $role_estimated_id = $role->getQuantity(); // the quantity field is been used to store the estimated role id
                                     $allocated_hr_id = ""; //Get the allocated HR  (maybe there is just the role without allocation, in this case write the role name)
@@ -1438,9 +1419,9 @@ if ($_GET["show_external_page"] != "") {
                                     }
                                     $i++;
                                     // TODO Ver filtro posteriormente
-                                    // if (!$hasFilteredRH && $_POST["project_resources_filter"] == $allocated_hr_id) {
-                                    //     $hasFilteredRH = true;
-                                    // }
+                                     if (!$hasFilteredRH && $_POST["project_resources_filter"] == $allocated_hr_id) {
+                                         $hasFilteredRH = true;
+                                     }
                                 }
                                 $span = $dom->createElement('span', 'Recursos humanos: ' . $estimatedRolesTxt); 
                                 $spanClass = $dom->createAttribute('class');
@@ -1457,6 +1438,24 @@ if ($_GET["show_external_page"] != "") {
                                 $divCollapse->appendChild($divCollapseId);
                                 
                                 $divCollapse->appendChild($taskCardRow);
+
+                                $taskCardRow = $dom->createElement('div');
+                                $taskCardRowClass = $dom->createAttribute('class');
+                                $taskCardRowClass->value = 'row';
+                                $taskCardRow->appendChild($taskCardRowClass);
+
+                                $carCol12 = $dom->createElement('div');
+                                $carCol12Class = $dom->createAttribute('class');
+                                $carCol12Class->value = 'col-md-12';
+                                $carCol12->appendChild($carCol12Class);
+
+                                $carCol12Id= $dom->createAttribute('id');
+                                $carCol12Id->value = 'activity-log-'.$task_id;
+                                $carCol12->appendChild($carCol12Id);
+
+                                $taskCardRow->appendChild($carCol12);
+                                $divCollapse->appendChild($taskCardRow);
+
                                 $taskCardBody->appendChild($divCollapse);
                                 
                                 $taskCard->appendChild($taskCardBody);
@@ -1619,11 +1618,18 @@ if ($_GET["show_external_page"] != "") {
         init: function() {
 
             $('.inner-card').find('h6').on('click', function(e) {
+                var taskId;
+                try {
+                    taskId = $(e.target).attr('data-target').split('_')[1];
+                } catch (err) {
+                    taskId = $(e.target).parent().attr('data-target').split('_')[1];
+                }
                 if ($(this).find('i').hasClass('fa-caret-down')) {
                     $(this).find('i').removeClass('fa-caret-down');
                     $(this).find('i').addClass('fa-caret-up');
                     $(this).find('.responsible').hide();
                     $(this).find('.task-date').hide();
+                    tasks.loadLogs(taskId);
                 } else {
                     $(this).find('i').removeClass('fa-caret-up');
                     $(this).find('i').addClass('fa-caret-down');
@@ -1637,10 +1643,7 @@ if ($_GET["show_external_page"] != "") {
                 allowClear: true,
                 theme: "bootstrap",
             }).on('select2:select', function (e) {
-
-                // TODO filtrar por RH
-
-                console.log(e);
+                document.select_human_resource_filter_form.submit();
             });
 
             $('#newWBSItemModal').on('hidden.bs.modal', function() {
@@ -1774,6 +1777,8 @@ if ($_GET["show_external_page"] != "") {
     
     var tasks = {
 
+        loadedLogs: [],
+
         msgDelete: "<?php echo $AppUI->_("LBL_CONFIRM_ACTIVITY_EXCLUSION", UI_OUTPUT_JS); ?>",
 
         delete: function(id) {
@@ -1903,6 +1908,54 @@ if ($_GET["show_external_page"] != "") {
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });
                 }
+            });
+        },
+
+        deleteLog: function (logId) {
+            $.confirm({
+                title: '',
+                content: '<?=$AppUI->_("doDelete", UI_OUTPUT_JS)." ".$AppUI->_("Task Log", UI_OUTPUT_JS)."?"?>',
+                buttons: {
+                    yes: {
+                        text: main.btnYes,
+                        action: function () {
+
+                             $.ajax({
+                                 method: 'POST',
+                                 url: "?m=tasks",
+                                 data: {
+                                     task_log_id: logId,
+                                     dosql: 'do_updatetask',
+                                     del: 1
+                                 }
+                             }).done(function() {
+//                                 $("#card_task_" + id).remove();
+                             });
+                        },
+                    },
+                    no: {
+                        text: main.btnNo
+                    }
+                }
+            });
+        },
+
+        loadLogs: function (taskId) {
+            if (tasks.loadedLogs.includes(taskId)) {
+                return;
+            }
+
+            var element = $("#activity-log-"+taskId);
+            element.loading({
+                message: 'Carregando logs...'
+            });
+            $.ajax({
+                type: "get",
+                url: "?m=tasks&template=vw_logs&task_id="+taskId
+            }).done(function(response) {
+                tasks.loadedLogs.push(taskId);
+                element.html(response);
+                element.loading('stop');
             });
         }
     }

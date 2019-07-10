@@ -24,6 +24,7 @@ mysql_query('SET character_set_results=utf8');
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/select-2/select2.min.css" media="all" />
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/select-2/select2-bootstrap.min.css" media="all" />
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/jquery/jquery-ui-1.12.1/jquery-ui.min.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/jquery-loading/jquery.loading.min.css" media="all" />
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/orgchart/getorgchart.css" />
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/css/main.css" media="all" />
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/css/side-menu.css" media="all" />
@@ -31,6 +32,7 @@ mysql_query('SET character_set_results=utf8');
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/bootstrap/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/jquery-confirm/jquery-confirm.min.js"></script>
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/jquery-mask/jquery.mask.min.js"></script>
+        <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/jquery-loading/jquery.loading.min.js"></script>
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/orgchart/getorgchart.js"></script>
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/select-2/select2.min.js"></script>
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/jquery/jquery-ui-1.12.1/jquery-ui.min.js"></script>
