@@ -6,7 +6,7 @@ class CopyProjectViewHelper {
     public function getProjectsCombo(){
         $projectSelector= new ProjectSelector();
         $projects=$projectSelector->getProjectsUserAcess();
-        $output="<select name='project_to_copy'>";
+        $output="<select name='project_to_copy' class='form-control form-sm'>";
         $currentProject=$_GET["project_id"];
         foreach($projects as $row){
             if($currentProject!=$row['project_id']){

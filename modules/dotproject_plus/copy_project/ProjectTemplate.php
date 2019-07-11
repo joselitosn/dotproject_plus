@@ -34,8 +34,10 @@ class ProjectTemplate {
         if(sizeof($wbsItemsTargetProject)===0){
             foreach ($wbsItems as $wbsItem){
                 $clonedItem= new WBSItem();
-                $id = $clonedItem->store($targetProjectId, $wbsItem->getName(), $wbsItem->getNumber(), $wbsItem->getSortOrder(), $wbsItem->isLeaf(), htmlentities($wbsItem->getIdentation()), -1);
+                $id = $clonedItem->store(-1, $targetProjectId, $wbsItem->getName(), $wbsItem->getNumber(), $wbsItem->getSortOrder(), $wbsItem->isLeaf());
+
                 if ($wbsItem->isLeaf()) {
+                    var_dump('copiando atividades');
                     $tasks = $taskController->getActivitiesByWorkPackage($wbsItem->getId()); //get activities of original WBS item to then copy them to the new one
                
                     $o=0;

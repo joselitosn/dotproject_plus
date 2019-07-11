@@ -89,6 +89,7 @@ class WBSItem {
     }
 
     function store($id, $projectId, $description, $number, $sortOrder, $isLeaf) {
+
         $q = new DBQuery();
         $q->addQuery('id');
         $q->addTable('project_eap_items');
@@ -107,7 +108,9 @@ class WBSItem {
             $q->addUpdate('item_name', $description);
             $q->addWhere('id = ' . $id);
         }
-        $q->exec();
+
+        var_dump($q->prepare());
+//        $q->exec();
         $q->clear();
     }
 

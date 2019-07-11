@@ -96,8 +96,38 @@ if ($company_policies_id != "") {
                 |
                 <?=$AppUI->_("Phone")?>:
                 <?=$obj->company_phone1 ? htmlspecialchars($obj->company_phone1) : 'Não informado'?>
-
             </small>
+            <small class="float-right">
+                <a href="javascript:void(0)" id="linkCopanyPolicies">
+                    <?=$AppUI->_('LBL_ORGANIZATIONAL_POLICY')?>
+                </a>
+            </small>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="modalCompanyPolicies">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_('LBL_ORGANIZATIONAL_POLICY')?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6><?=$AppUI->_("LBL_REWARDS")?></h6>
+                <p><?=$policies->company_policies_recognition?></p>
+
+                <h6><?=$AppUI->_("LBL_RUGULATIONS")?></h6>
+                <p><?=$policies->company_policies_policy?></p>
+
+                <h6><?=$AppUI->_("Safety")?></h6>
+                <p><?=$policies->company_policies_safety?></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+            </div>
         </div>
     </div>
 </div>
@@ -210,14 +240,21 @@ if ($company_policies_id != "") {
                             $(this).addClass('fa-angle-double-right');
                         }
                     });
+                    console.log($('#linkCopanyPolicies'));
+                    $('#linkCopanyPolicies').on('click', company.showPolicies);
                 });
 
+            },
+
+            showPolicies: function () {
+                console.log('aquiiii');
+                console.log($('#modalCompanyPolicies'));
+                $('#modalCompanyPolicies').modal();
             },
 
             project: {
 
                 new: function() {
-                    console.log('aquiiiii');
                     $.ajax({
                         type: "get",
                         url: "?m=projects&template=addedit&company_id=<?=$company_id?>"

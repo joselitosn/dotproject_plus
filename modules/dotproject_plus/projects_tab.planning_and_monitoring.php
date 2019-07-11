@@ -711,6 +711,7 @@ require_once (DP_BASE_DIR . "/modules/timeplanning/control/controller_wbs_item_a
 require_once (DP_BASE_DIR . "/modules/timeplanning/control/controller_company_role.class.php");
 require_once (DP_BASE_DIR . "/modules/tasks/tasks.class.php");
 require_once (DP_BASE_DIR . "/modules/projects/projects.class.php");
+require_once (DP_BASE_DIR . "/modules/dotproject_plus/copy_project/CopyProjectViewHelper.php");
 
 $projectId = dPgetParam($_GET, 'project_id', 0);
 $activitiesIdsForDisplay;
@@ -769,30 +770,23 @@ if ($_GET["show_external_page"] != "") {
     <hr>
     <!-- Filter section -->
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-3">
             <form name="select_human_resource_filter_form" action="<?php echo $currentPage ?>" method="post">
-                <div class="form-group row">
-                    <div class="col-sm-3">
-                        <select id="project_resources_filter" 
-                            name="project_resources_filter"
-                            class="form-control form-control-sm">
-                            <option <?=$_POST["project_resources_filter"] == "" ? "selected" : "" ?>   value=""><?=$AppUI->_("All"); ?></option>
-                            <?php
-                                foreach ($hr as $record) {
-                            ?>
-                                <option <?=$_POST["project_resources_filter"] == $record[1] ? "selected" : "" ?> value="<?=$record[1] ?>"> 
-                                    <?=$record[3] ?>
-                                </option>
-                            <?php
-                                }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="col-sm-9 text-right">
-                        <input class="btn btn-secondary btn-sm" type="button" value="<?php echo $AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING") ?>" onclick="viewSequenceActivities()" />
-                        <input class="btn btn-secondary btn-sm" type="button" value="<?php echo $AppUI->_("LBL_NEED_FOR_TRAINING") ?>" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';" /> 
-                        <input class="btn btn-secondary btn-sm" type="button" value="<?php echo $AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS") ?>" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php#gqs_anchor';" />   
-                    </div>
+                <div class="form-group">
+                    <select id="project_resources_filter"
+                        name="project_resources_filter"
+                        class="form-control form-control-sm">
+                        <option <?=$_POST["project_resources_filter"] == "" ? "selected" : "" ?>   value=""><?=$AppUI->_("All"); ?></option>
+                        <?php
+                            foreach ($hr as $record) {
+                        ?>
+                            <option <?=$_POST["project_resources_filter"] == $record[1] ? "selected" : "" ?> value="<?=$record[1] ?>">
+                                <?=$record[3] ?>
+                            </option>
+                        <?php
+                            }
+                        ?>
+                    </select>
                 </div>
                 <?php
                     //verify if the is some activity defined in the entire project
@@ -807,7 +801,48 @@ if ($_GET["show_external_page"] != "") {
                 <input type="hidden" name="activities_count" id="activities_count" value="<?php echo $activitiesCount ?>" />
             </form>
         </div>
+        <div class="col-sm-9 text-right">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="viewSequenceActivities()"><?=$AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING")?></button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';"><?=$AppUI->_("LBL_NEED_FOR_TRAINING")?></button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php#gqs_anchor';"><?=$AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS")?></button>
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#modalCopyProjectFromTemplate"><?=$AppUI->_("LBL_COPY_FROM_TEMPLATE")?></button>
+        </div>
     </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="modalCopyProjectFromTemplate">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_("LBL_COPY_FROM_TEMPLATE")?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-secondary" role="alert">
+                        <?=$AppUI->_("LBL_COPY_FROM_TEMPLATE_HELP")?>
+                    </div>
+
+                    <form id="copy_project_form">
+                        <input name="dosql" type="hidden" value="do_copy_project" />
+                        <input name="target_project_id" type="hidden" value="<?=$project_id?>" />
+                        <div class="form-group">
+                            <label for="project_to_copy"><?=$AppUI->_("LBL_PROJECT")?></label>
+                            <?php
+                                $copyProjectViewHelper = new CopyProjectViewHelper();
+                                echo $copyProjectViewHelper->getProjectsCombo();
+                            ?>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="main.copyFromTemplate()"><?=$AppUI->_('LBL_COPY')?></button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <?php 
         $project = new CProject();
@@ -1169,7 +1204,7 @@ if ($_GET["show_external_page"] != "") {
                                 
                                 $icon = $dom->createElement('i', '&nbsp;');
                                 $iconClass = $dom->createAttribute('class');
-                                $iconClass->value = 'fas fa-caret-down';
+                                $iconClass->value = 'fas fa-caret-down title';
                                 $icon->appendChild($iconClass);
                                 $h6->appendChild($icon);
                                 $carCol8->appendChild($h6);
@@ -1660,6 +1695,45 @@ if ($_GET["show_external_page"] != "") {
                 $('input[name=wbs_item_size_unit]').val('');
             });
 
+            $('#copy_project_form').find('select').select2({
+                placeholder: '',
+                allowClear: true,
+                theme: "bootstrap",
+                dropdownParent: $("#modalCopyProjectFromTemplate")
+
+            });
+
+        },
+
+        copyFromTemplate: function () {
+            $.ajax({
+                method: 'POST',
+                url: "?m=dotproject_plus",
+                data: $("#copy_project_form").serialize(),
+                success: function(resposta) {
+                    var resp = JSON.parse(resposta);
+                    if (resp.err) {
+                        $.alert({
+                            title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                            content: resp.msg
+                        });
+                    } else {
+                        $.alert({
+                            title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                            content: resp.msg,
+                            onClose: function() {
+                            window.location.reload(true);
+                            }
+                        });
+                    }
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
+                }
+            });
         },
 
         openDictionary: function () {
@@ -1888,7 +1962,6 @@ if ($_GET["show_external_page"] != "") {
 
         saveLog: function () {
             updateEmailContacts();
-            console.log(updateEmailContacts);
             $.ajax({
                 method: 'POST',
                 url: "?m=tasks",
@@ -1927,9 +2000,22 @@ if ($_GET["show_external_page"] != "") {
                                      task_log_id: logId,
                                      dosql: 'do_updatetask',
                                      del: 1
+                                 },
+                                 success: function(resposta) {
+                                     $.alert({
+                                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                         content: resposta,
+                                         onClose: function() {
+                                             $('#table_log_'+logId).remove();
+                                         }
+                                     });
+                                 },
+                                 error: function(resposta) {
+                                     $.alert({
+                                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                                     });
                                  }
-                             }).done(function() {
-//                                 $("#card_task_" + id).remove();
                              });
                         },
                     },
@@ -1956,6 +2042,17 @@ if ($_GET["show_external_page"] != "") {
                 tasks.loadedLogs.push(taskId);
                 element.html(response);
                 element.loading('stop');
+            });
+        },
+
+        editLog: function (taskId, logId) {
+            $.ajax({
+                type: "get",
+                url: "?m=tasks&template=vw_log_update&task_id="+taskId+"&task_log_id="+logId
+            }).done(function(response) {
+                $(".task-log").html(response);
+
+                $("#taskLogModal").modal();
             });
         }
     }

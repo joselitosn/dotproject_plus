@@ -54,7 +54,7 @@ $hrs = 0;
 
         $link = '-';
         if (!empty($row['task_log_related_url'])) {
-            $link = '<a target-"_blank" href="' . @$row['task_log_related_url'] . '" title="' . @$row['task_log_related_url'] . '">' . $AppUI->_('URL') . '</a>';
+            $link = '<a target="_blank" href="' . @$row['task_log_related_url'] . '" title="' . @$row['task_log_related_url'] . '">' . $AppUI->_('URL') . '</a>';
         }
 
         $hours = '-';
@@ -76,7 +76,7 @@ $hrs = 0;
                 . '" class="hilite">["' . $AppUI->_('translation') . '"]</a></div>';
         }
         ?>
-        <table class="table table-sm table-bordered text-center">
+        <table class="table table-sm table-bordered text-center" id="table_log_<?=$row['task_log_id']?>">
             <!-- Line one -->
             <thead class="thead-dark">
             <tr>
@@ -104,7 +104,7 @@ $hrs = 0;
             <tr>
                 <th width="10%"><?php echo $AppUI->_('Cost Code'); ?></th>
                 <th width="80%" colspan="4"><?php echo $AppUI->_('Comments'); ?></th>
-                <th width="10%"></th>
+                <th width="10%">Ações</th>
             </tr>
             </thead>
             <tbody>
@@ -112,8 +112,11 @@ $hrs = 0;
                 <td><?= $AppUI->___($row['task_log_costcode']) ?></td>
                 <td colspan="4"><?= $comments ?></td>
                 <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-danger text-center" title="Remover log" onclick="tasks.deleteLog(<?= $row['task_log_id'] ?>)">
+                    <button type="button" class="btn btn-sm btn-danger text-center" title="Remover log" onclick="tasks.deleteLog(<?=$row['task_log_id'] ?>)">
                         <i class="far fa-trash-alt"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-secondary text-center" title="Alterar log" onclick="tasks.editLog(<?=$task_id?>, <?=$row['task_log_id']?>)">
+                        <i class="far fa-edit"></i>
                     </button>
                 </td>
             </tr>

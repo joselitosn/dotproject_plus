@@ -23,7 +23,7 @@
     box-shadow: 2px 2px 10px -6px rgba(0,0,0,0.75);
 }
 
-.card .card-body i {
+.card .card-body i.title {
     margin-left: 10px;
 }
 
