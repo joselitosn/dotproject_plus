@@ -1030,7 +1030,7 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItemOC = $dom->createAttribute('onclick');
                         $wbsSize = $branch['size'] ? $branch['size'] : '';
                         $wbsSizeUnit = $branch['sizeUnit'] ? $branch['sizeUnit'] : '';
-                        $dropdownItemOC->value = 'wbs.update('.$project_id.','.$branch['id'].',"'.$branch['name'].'","'.$wbsSize.'","'.$wbsSizeUnit.'")';
+                        $dropdownItemOC->value = 'wbs.update('.$project_id.',"'.$branch['number'].'",'.$branch['id'].',"'.$branch['name'].'","'.$wbsSize.'","'.$wbsSizeUnit.'",'.$isLeaf.')';
                         $dropdownItem->appendChild($dropdownItemOC);
                         $icon = $dom->createElement('i');
                         $iconClass = $dom->createAttribute('class');
@@ -1068,22 +1068,22 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItem->appendChild($dropdownItemClass);
                         $dropdownMenu->appendChild($dropdownItem);
 
-                        // Dropdown item
-                        $dropdownItem = $dom->createElement('a');
-                        $dropdownItemClass = $dom->createAttribute('class');
-                        $dropdownItemClass->value = 'dropdown-item';
-                        $dropdownItem->appendChild($dropdownItemClass);
-                        $dropdownItemhref = $dom->createAttribute('href');
-                        $dropdownItemhref->value = 'javascript:void(0)';
-                        $dropdownItem->appendChild($dropdownItemhref);
-                        $icon = $dom->createElement('i');
-                        $iconClass = $dom->createAttribute('class');
-                        $iconClass->value = 'fas fa-paste';
-                        $icon->appendChild($iconClass);
-                        $dropdownItem->appendChild($icon);
-                        $dropdownItemSpan = $dom->createElement('span', ' Declaração do escopo');
-                        $dropdownItem->appendChild($dropdownItemSpan);
-                        $dropdownMenu->appendChild($dropdownItem);
+//                        // Dropdown item
+//                        $dropdownItem = $dom->createElement('a');
+//                        $dropdownItemClass = $dom->createAttribute('class');
+//                        $dropdownItemClass->value = 'dropdown-item';
+//                        $dropdownItem->appendChild($dropdownItemClass);
+//                        $dropdownItemhref = $dom->createAttribute('href');
+//                        $dropdownItemhref->value = 'javascript:void(0)';
+//                        $dropdownItem->appendChild($dropdownItemhref);
+//                        $icon = $dom->createElement('i');
+//                        $iconClass = $dom->createAttribute('class');
+//                        $iconClass->value = 'fas fa-paste';
+//                        $icon->appendChild($iconClass);
+//                        $dropdownItem->appendChild($icon);
+//                        $dropdownItemSpan = $dom->createElement('span', ' Declaração do escopo');
+//                        $dropdownItem->appendChild($dropdownItemSpan);
+//                        $dropdownMenu->appendChild($dropdownItem);
 
                         // Dropdown item
                         $dropdownItem = $dom->createElement('a');
@@ -1555,10 +1555,53 @@ if ($_GET["show_external_page"] != "") {
                         <input type="hidden" id="wbsParentNumber" name="parent_number" value="" />
                         <input type="hidden" id="wbsNumber" name="number" value="" />
                         <input type="hidden" id="wbsItemId" name="item_id" value="-1" />
+                        <input type="hidden" id="wbsIsLeaf" name="is_leaf" value="" />
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary btn-sm" onclick="wbs.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SCOPE DECLARATION FORM -->
+    <div id="scopeDeclarationModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_ACTIVITY")?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body scope-declaration-modal">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NEW TASK FORM -->
+    <div id="taskModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_ACTIVITY")?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body task-modal">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
@@ -1794,9 +1837,11 @@ if ($_GET["show_external_page"] != "") {
             modal.modal();
         },
 
-        update: function (projectId, itemId, description, size, sizeUnit) {
+        update: function (projectId, itemNumber, itemId, description, size, sizeUnit, isLeaf) {
             $('#wbsProjectId').val(projectId);
             $('#wbsItemId').val(itemId);
+            $('#wbsNumber').val(itemNumber);
+            $('#wbsIsLeaf').val(isLeaf);
             $('input[name=wbs_item_description]').val(description);
             $('input[name=wbs_item_size]').val(size);
             $('input[name=wbs_item_size_unit]').val(sizeUnit);
@@ -1846,6 +1891,17 @@ if ($_GET["show_external_page"] != "") {
                     });
                 }
             });
+        },
+
+        openScopeDeclaration: function (wbsItemId){
+            $.ajax({
+                type: "get",
+                url: "?m=timeplanning&view=scope_declaration&project_id=<?=$projectId?>"
+            }).done(function(response) {
+                $(".scope-declaration-modal").html(response);
+                $('#taskWbsItemId').val(wbsItemId);
+                $('#scopeDeclarationModal').modal();
+            });
         }
     };
     
@@ -1865,17 +1921,6 @@ if ($_GET["show_external_page"] != "") {
                         action: function () {
                             console.log('mandando excluir');
                             $('#formDeleteActivity_'+id).submit();
-                            
-                            // $.ajax({
-                            //     method: 'POST',
-                            //     url: "?m=dotproject_plus",
-                            //     data: {
-                            //         activity_id: id,
-                            //         dosql: 'do_delete_activity'
-                            //     }
-                            // }).done(function() {
-                            //     $("#card_task_" + id).remove();
-                            // });
                         },
                     },
                     no: {
@@ -1892,7 +1937,6 @@ if ($_GET["show_external_page"] != "") {
             }).done(function(response) {
                 $(".task-modal").html(response);
                 $('#taskWbsItemId').val(wbsItemId);
-//                $(".modal-title").html("<?//=$AppUI->_('edit this company')?>//");
                 $('#taskModal').modal();
             });
         },

@@ -24,7 +24,9 @@ $description = dPgetParam($_POST, 'wbs_item_description');
 $estimatedSize=$_POST["wbs_item_size"];
 $estimatedSizeUnit=$_POST["wbs_item_size_unit"];
 $parentNumber = $_POST['parent_number'];
-$isLeaf= 1;
+$itemNumber = $_POST['number'];
+$sortOrder = $_POST['parent'];
+$isLeaf= dPgetParam($_POST, 'is_leaf', 1);
 $firstItem = false;
 
 if (!$update) {
@@ -50,7 +52,6 @@ if (!$update) {
             $sortOrder = array_sum(explode('.', $number));
         }
     }
-
     $controllerWBSItem->insert(
         $id,
         $projectId,
@@ -65,10 +66,14 @@ if (!$update) {
         $controllerWBSItem->setNotLeaf($parentId);
     }
 } else {
+    $sortOrder = array_sum(explode('.', $itemNumber));
     $controllerWBSItem->insert(
         $id,
         $projectId,
-        $description
+        $description,
+        $itemNumber,
+        $sortOrder,
+        $isLeaf
     );
 }
 

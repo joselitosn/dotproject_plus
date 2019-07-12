@@ -103,15 +103,20 @@ class WBSItem {
             $q->addInsert('sort_order', $sortOrder);
             $q->addInsert('number', $number);
             $q->addInsert('is_leaf', $isLeaf);
-            
+
         } else {
+            $q->addUpdate('sort_order', $sortOrder);
+            $q->addUpdate('number', $number);
+            $q->addUpdate('is_leaf', $isLeaf);
             $q->addUpdate('item_name', $description);
             $q->addWhere('id = ' . $id);
         }
-
-        var_dump($q->prepare());
-//        $q->exec();
+        $q->exec();
         $q->clear();
+        if($id===-1){
+            $id=mysql_insert_id();
+        }
+        return $id;
     }
 
     function load($idValue, $name, $identation, $number, $is_leaf, $parent = null, $size = null, $sizeUnit = null) {

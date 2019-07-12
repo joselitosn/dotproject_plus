@@ -1,18 +1,5 @@
 <?php require_once (DP_BASE_DIR . "/modules/timeplanning/model/need_for_training.class.php"); ?>
-<!--
-<script type="text/javascript" src="./modules/timeplanning/js/jsLibraries/tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript">
-    tinyMCE.init({
-        mode : "textareas",
-        theme : "advanced",
-        width : "95%",
-        height: "340",
-        theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
-        theme_advanced_buttons2 : "search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
-        theme_advanced_buttons3 : "hr,removeformat,sub,sup,charmap"
-    });
-</script>
--->
+
 <style>
     textarea{
         width:950%;
@@ -51,3 +38,7 @@
         </tr>
     </table>
 </form>
+
+<?php
+exit();
+?>

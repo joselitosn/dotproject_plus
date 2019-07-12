@@ -28,9 +28,9 @@ class ControllerWBSItemActivityRelationship{
 		$sql = $q->prepare();
 		$tasks = db_loadList($sql);
 		foreach ($tasks as $task) {
-                    $obj = new CTask();
-                    $obj->load($task['task_id']);
-                    $list[$task['task_id']]=$obj;
+            $obj = new CTask();
+            $obj->load($task['task_id']);
+            $list[$task['task_id']]=$obj;
 		}
 		return $list;
 	}
