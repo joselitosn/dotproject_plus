@@ -245,6 +245,13 @@ if ($project_id == 0 && $contact_id > 0) {
             </div>
         </div>
     </div>
+
+    <div class="form-group">
+        <label for="project_description">
+            <?php echo $AppUI->_("LBL_PROJECT_SCOPE_DECLARATION"); ?>
+        </label>
+        <textarea class="form-control form-control-sm" rows="5" name="project_description"><?=$row->project_description?></textarea>
+    </div>
 </form>
 
 <script>

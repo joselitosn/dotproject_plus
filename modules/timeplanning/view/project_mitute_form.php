@@ -1,17 +1,17 @@
 <?php $actionEstimation = $_GET['action_estimation']; ?>
+<style>
+    .tox-notifications-container {display: none !important;}
+</style>
 <a name="minute_estimation_form"></a>
 <div id="ata_div" width="100%" style="display:<?php echo $actionEstimation == "read" ? 'block' : 'none'; ?>">
     <!-- TinyMCE -->
-    <script type="text/javascript" src="./modules/timeplanning/js/jsLibraries/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/tinymce/tinymce.min.js"></script>
     <script type="text/javascript">
-        tinyMCE.init({
-            mode: "textareas",
-            theme: "advanced",
-            width: "90%",
-            height: "240",
-            theme_advanced_buttons1: "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
-            theme_advanced_buttons2: "search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor",
-            theme_advanced_buttons3: "hr,removeformat,sub,sup,charmap"
+
+        tinymce.init({
+            selector: '#description_edit',
+            branding: false,
+            height: 350,
         });
     </script>
     <!-- /TinyMCE -->
@@ -20,7 +20,7 @@
     <SCRIPT type="text/javascript" src="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js?random=20060118"></script>
 
     <!-- ajax caller -->
-    <script type="text/javascript" src="./modules/timeplanning/js/serviceActivator.js"></script>
+<!--    <script type="text/javascript" src="./modules/timeplanning/js/serviceActivator.js"></script>-->
 
     <table class="std" align="center" width="95%" >			
         <tr>

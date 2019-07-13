@@ -803,6 +803,7 @@ if ($_GET["show_external_page"] != "") {
         </div>
         <div class="col-sm-9 text-right">
             <button type="button" class="btn btn-secondary btn-sm" onclick="viewSequenceActivities()"><?=$AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING")?></button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="main.openDictionaryModal()"><?=$AppUI->_("LBL_WBS_DICTIONARY")?></button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';"><?=$AppUI->_("LBL_NEED_FOR_TRAINING")?></button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php#gqs_anchor';"><?=$AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS")?></button>
             <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#modalCopyProjectFromTemplate"><?=$AppUI->_("LBL_COPY_FROM_TEMPLATE")?></button>
@@ -1061,12 +1062,12 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItem->appendChild($dropdownItemSpan);
                         $dropdownMenu->appendChild($dropdownItem);
 
-                        // Divider
-                        $dropdownItem = $dom->createElement('div');
-                        $dropdownItemClass = $dom->createAttribute('class');
-                        $dropdownItemClass->value = 'dropdown-divider';
-                        $dropdownItem->appendChild($dropdownItemClass);
-                        $dropdownMenu->appendChild($dropdownItem);
+//                        // Divider
+//                        $dropdownItem = $dom->createElement('div');
+//                        $dropdownItemClass = $dom->createAttribute('class');
+//                        $dropdownItemClass->value = 'dropdown-divider';
+//                        $dropdownItem->appendChild($dropdownItemClass);
+//                        $dropdownMenu->appendChild($dropdownItem);
 
 //                        // Dropdown item
 //                        $dropdownItem = $dom->createElement('a');
@@ -1085,25 +1086,25 @@ if ($_GET["show_external_page"] != "") {
 //                        $dropdownItem->appendChild($dropdownItemSpan);
 //                        $dropdownMenu->appendChild($dropdownItem);
 
-                        // Dropdown item
-                        $dropdownItem = $dom->createElement('a');
-                        $dropdownItemClass = $dom->createAttribute('class');
-                        $dropdownItemClass->value = 'dropdown-item';
-                        $dropdownItem->appendChild($dropdownItemClass);
-                        $dropdownItemhref = $dom->createAttribute('href');
-                        $dropdownItemhref->value = 'javascript:void(0)';
-                        $dropdownItem->appendChild($dropdownItemhref);
-                        $dropdownItemOC = $dom->createAttribute('onclick');
-                        $dropdownItemOC->value = 'main.openDictionary()';
-                        $dropdownItem->appendChild($dropdownItemOC);
-                        $icon = $dom->createElement('i');
-                        $iconClass = $dom->createAttribute('class');
-                        $iconClass->value = 'fas fa-book';
-                        $icon->appendChild($iconClass);
-                        $dropdownItem->appendChild($icon);
-                        $dropdownItemSpan = $dom->createElement('span', ' Dicionário da EAP');
-                        $dropdownItem->appendChild($dropdownItemSpan);
-                        $dropdownMenu->appendChild($dropdownItem);
+//                        // Dropdown item
+//                        $dropdownItem = $dom->createElement('a');
+//                        $dropdownItemClass = $dom->createAttribute('class');
+//                        $dropdownItemClass->value = 'dropdown-item';
+//                        $dropdownItem->appendChild($dropdownItemClass);
+//                        $dropdownItemhref = $dom->createAttribute('href');
+//                        $dropdownItemhref->value = 'javascript:void(0)';
+//                        $dropdownItem->appendChild($dropdownItemhref);
+//                        $dropdownItemOC = $dom->createAttribute('onclick');
+//                        $dropdownItemOC->value = 'main.openDictionary()';
+//                        $dropdownItem->appendChild($dropdownItemOC);
+//                        $icon = $dom->createElement('i');
+//                        $iconClass = $dom->createAttribute('class');
+//                        $iconClass->value = 'fas fa-book';
+//                        $icon->appendChild($iconClass);
+//                        $dropdownItem->appendChild($icon);
+//                        $dropdownItemSpan = $dom->createElement('span', ' Dicionário da EAP');
+//                        $dropdownItem->appendChild($dropdownItemSpan);
+//                        $dropdownMenu->appendChild($dropdownItem);
                         
                         $dropdown->appendChild($dropdownMenu);
                         $carCol4->appendChild($dropdown);
@@ -1566,21 +1567,21 @@ if ($_GET["show_external_page"] != "") {
         </div>
     </div>
 
-    <!-- MODAL SCOPE DECLARATION FORM -->
-    <div id="scopeDeclarationModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+    <!-- MODAL WBS DICTIONARY FORM -->
+    <div id="modalWbsDictionary" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_ACTIVITY")?></h5>
+                    <h5 class="modal-title"><?=$AppUI->_("LBL_WBS_DICTIONARY")?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body scope-declaration-modal">
+                <div class="modal-body wbs-dictionary-modal">
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="main.saveDictionary()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
@@ -1745,7 +1746,39 @@ if ($_GET["show_external_page"] != "") {
                 dropdownParent: $("#modalCopyProjectFromTemplate")
 
             });
+        },
 
+        openDictionaryModal: function() {
+            $.ajax({
+                type: "get",
+                url: "?m=timeplanning&template=/view/projects_wbs_dictionary&project_id=<?=$project_id?>"
+            }).done(function(response) {
+                $(".wbs-dictionary-modal").html(response);
+                $('#modalWbsDictionary').modal();
+            });
+        },
+
+        saveDictionary: function () {
+            $.ajax({
+                method: 'POST',
+                url: "?m=timeplanning",
+                data: $("form[name=form_wbs_dictionary]").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        content: resposta,
+                        onClose: function() {
+                            $('#modalWbsDictionary').modal('hide');
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
+                }
+            });
         },
 
         copyFromTemplate: function () {
@@ -1778,11 +1811,6 @@ if ($_GET["show_external_page"] != "") {
                 }
             });
         },
-
-        openDictionary: function () {
-            var url = window.location.href;
-            window.location = url + "&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php";
-        }
     };
     
     
@@ -1893,16 +1921,6 @@ if ($_GET["show_external_page"] != "") {
             });
         },
 
-        openScopeDeclaration: function (wbsItemId){
-            $.ajax({
-                type: "get",
-                url: "?m=timeplanning&view=scope_declaration&project_id=<?=$projectId?>"
-            }).done(function(response) {
-                $(".scope-declaration-modal").html(response);
-                $('#taskWbsItemId').val(wbsItemId);
-                $('#scopeDeclarationModal').modal();
-            });
-        }
     };
     
     var tasks = {

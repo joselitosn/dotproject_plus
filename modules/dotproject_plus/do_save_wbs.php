@@ -26,8 +26,13 @@ $estimatedSizeUnit=$_POST["wbs_item_size_unit"];
 $parentNumber = $_POST['parent_number'];
 $itemNumber = $_POST['number'];
 $sortOrder = $_POST['parent'];
-$isLeaf= dPgetParam($_POST, 'is_leaf', 1);
+$isLeaf= dPgetParam($_POST, 'is_leaf');
+if ($isLeaf == '') {
+    $isLeaf = 1;
+}
+
 $firstItem = false;
+
 
 if (!$update) {
     if ($parentNumber == '') {

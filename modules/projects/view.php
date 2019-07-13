@@ -167,7 +167,6 @@ $start_date = (intval($obj->project_start_date) ? new CDate($obj->project_start_
 $end_date = (intval($obj->project_end_date) ? new CDate($obj->project_end_date) : null);
 $actual_end_date = (intval($criticalTasks[0]['task_end_date']) ? new CDate($criticalTasks[0]['task_end_date']) : null);
 $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:red; font-weight:bold"' : '');
-
 ?>
 
 <div class="container-fluid">
@@ -199,6 +198,30 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                 <?=$AppUI->_('Target Budget')?>(<?php echo $dPconfig['currency_symbol']?>):
                 <?=number_format(@$obj->project_target_budget, 2, ',', '.')?>
             </small>
+            <small class="float-right">
+                <a href="javascript:void(0)" data-toggle="modal" data-target="#modalScopeDeclaration">
+                    <?=$AppUI->_('LBL_PROJECT_SCOPE_DECLARATION')?>
+                </a>
+            </small>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="modalScopeDeclaration">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_('LBL_PROJECT_SCOPE_DECLARATION')?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6><?=$AppUI->_("LBL_DESCRIPTION")?></h6>
+                    <p><?=$obj->project_description?></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -75,7 +75,6 @@ else {
 
 
 	}
-//	$AppUI->redirect();
 }
 
 //    if ($importTask_projectId = (int)dPgetParam($_POST, 'import_tasks_from', '0')) {

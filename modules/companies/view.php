@@ -98,7 +98,7 @@ if ($company_policies_id != "") {
                 <?=$obj->company_phone1 ? htmlspecialchars($obj->company_phone1) : 'Não informado'?>
             </small>
             <small class="float-right">
-                <a href="javascript:void(0)" id="linkCopanyPolicies">
+                <a href="javascript:void(0)" data-toggle="modal" data-target="#modalCompanyPolicies">
                     <?=$AppUI->_('LBL_ORGANIZATIONAL_POLICY')?>
                 </a>
             </small>
@@ -240,16 +240,12 @@ if ($company_policies_id != "") {
                             $(this).addClass('fa-angle-double-right');
                         }
                     });
-                    console.log($('#linkCopanyPolicies'));
-                    $('#linkCopanyPolicies').on('click', company.showPolicies);
                 });
 
-            },
+                $("#addEditProjectModal").on("hidden.bs.modal", function() {
+                    $("#btnSaveCompany").off("click");
+                });
 
-            showPolicies: function () {
-                console.log('aquiiii');
-                console.log($('#modalCompanyPolicies'));
-                $('#modalCompanyPolicies').modal();
             },
 
             project: {
@@ -277,7 +273,7 @@ if ($company_policies_id != "") {
                         $(".modal-title").html("<?=$AppUI->_('Update Project')?>");
                         $("#btnSaveCompany").on("click", function() {
                             company.project.save();
-                        })
+                        });
                         $("#addEditProjectModal").modal();
                     });
                 },
