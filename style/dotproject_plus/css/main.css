@@ -96,3 +96,7 @@ footer {
 .get-blue.get-org-chart {
     background-color: transparent;
 }
+
+.tox-notifications-container {
+    display: none !important;
+}

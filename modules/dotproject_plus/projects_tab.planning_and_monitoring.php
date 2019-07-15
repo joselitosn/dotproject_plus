@@ -805,7 +805,7 @@ if ($_GET["show_external_page"] != "") {
             <button type="button" class="btn btn-secondary btn-sm" onclick="viewSequenceActivities()"><?=$AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING")?></button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="main.openDictionaryModal()"><?=$AppUI->_("LBL_WBS_DICTIONARY")?></button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';"><?=$AppUI->_("LBL_NEED_FOR_TRAINING")?></button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php#gqs_anchor';"><?=$AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS")?></button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="main.openMinutesModal()"><?=$AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS")?></button>
             <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#modalCopyProjectFromTemplate"><?=$AppUI->_("LBL_COPY_FROM_TEMPLATE")?></button>
         </div>
     </div>
@@ -1651,21 +1651,27 @@ if ($_GET["show_external_page"] != "") {
         </div>
     </div>
 
-    <!-- MODAL CONTACTS -->
-    <div id="contactsModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+    <!-- MODAL MINUTES -->
+    <div id="minutesModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><?=$AppUI->_("Contacts")?></h5>
+                    <h5 class="modal-title"><?=$AppUI->_("LBL_MINUTES")?></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body modal-contacts-body">
+                <div class="modal-body">
+                    <div id="minutesList">
+
+                    </div>
+                    <div id="minutesForm">
+
+                    </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" id="btnGetContacts"><?=$AppUI->_("LBL_SELECT")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btnSaveMinute" onclick="main.saveMinute()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
@@ -1677,19 +1683,6 @@ if ($_GET["show_external_page"] != "") {
 
 <script>
 
-/**
- * function showWBSDictionary() {
- *
-        var url = window.location.href;
-        window.location = url + "&show_external_page=/modules/timeplanning/view/projects_wbs_dictionary.php";
-    }
-
-    function rightClickMenuShowScopeDeclaration() {
-        // var url = replaceAll("#gqs_anchor", "", window.location.href);
-
-        window.location = window.location.href + "&show_external_page=/modules/timeplanning/view/scope_declaration.php";
-    }
- */
     var main = {
         btnYes: "<?php echo $AppUI->_("LBL_YES", UI_OUTPUT_JS); ?>",
         btnNo: "<?php echo $AppUI->_("LBL_NO", UI_OUTPUT_JS); ?>",
@@ -1745,6 +1738,11 @@ if ($_GET["show_external_page"] != "") {
                 theme: "bootstrap",
                 dropdownParent: $("#modalCopyProjectFromTemplate")
 
+            });
+
+            $('#minutesModal').on('hidden.bs.modal', function() {
+                $("#minutesList").html('').show();
+                $("#minutesForm").html('').hide();
             });
         },
 
@@ -1811,6 +1809,110 @@ if ($_GET["show_external_page"] != "") {
                 }
             });
         },
+
+        openMinutesModal: function () {
+            $.ajax({
+                type: "get",
+                url: "?m=timeplanning&template=view/projects_estimations_minutes&project_id=<?=$project_id?>"
+            }).done(function(response) {
+                $('#btnSaveMinute').hide();
+                $("#minutesList").html(response);
+                $('#minutesModal').modal();
+            });
+
+            <?php //require_once (DP_BASE_DIR . "/modules/timeplanning/view/project_mitute_form.php"); ?>
+        },
+
+        showMinutesForm: function () {
+            $.ajax({
+                type: "get",
+                url: "?m=timeplanning&template=view/project_minute_form&project_id=<?=$_GET["project_id"]?>"
+            }).done(function(response) {
+                $('#minutesForm').html(response).show();
+                $('#btnSaveMinute').show();
+                $("#minutesList").hide();
+            });
+        },
+
+        saveMinute: function () {
+            var date = $('#date').val();
+            var description = $('#description_edit').val();
+            var msg = [];
+            var err = false;
+            if (!date) {
+                err = true;
+                msg.push('Favor informar a data da reunião');
+            }
+            if (!description) {
+                err = true;
+                msg.push('Favor informar a descrição da reunião');
+            }
+
+            if (err) {
+                $.alert({
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                    content: msg.join('<br>')
+                });
+                return;
+            }
+
+            $.ajax({
+                url: "?m=timeplanning",
+                type: "post",
+                datatype: "json",
+                data: $("form[name=minute_form]").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        content: resposta,
+                        onClose: function() {
+                            // TODO get the data and set to the table
+                            // hide the form and show the table updated
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
+                }
+            });
+        },
+
+        deleteMinute: function (id) {
+            $.confirm({
+                title: 'Excluir ata',
+                content: 'Você tem certeza de que quer excluir a Ata?',
+                buttons: {
+                    yes: {
+                        text: main.btnYes,
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=timeplanning",
+                                data: {
+                                    dosql: 'do_projects_estimations_aed',
+                                    minute_id: id,
+                                    action_estimation: 'delete'
+                                }
+                            }).done(function(resposta) {
+                                $.alert({
+                                    title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                    content: resposta,
+                                    onClose: function() {
+                                        $('#tableMinutes_line_'+id).remove();
+                                    }
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: main.btnNo
+                    }
+                }
+            });
+        }
     };
     
     
@@ -1818,9 +1920,6 @@ if ($_GET["show_external_page"] != "") {
         msgDelete: "<?php echo $AppUI->_("LBL_MENU_DELETE_WBS_ITEM", UI_OUTPUT_JS); ?>",
         
         delete: function(projectId, itemId, itemName) {
-            console.log(projectId);
-            console.log(itemId);
-            console.log(itemName);
             $.confirm({
                 title: wbs.msgDelete,
                 content: '<?=$AppUI->_(LBL_CONFIRM_WBS_ITEM_EXCLUSION, UI_OUTPUT_JS)?>',

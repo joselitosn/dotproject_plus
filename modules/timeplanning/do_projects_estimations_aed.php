@@ -19,7 +19,9 @@ $isDuration = $_POST['isDuration'];
 $isResource = $_POST['isResource'];
 $isSize = $_POST['isSize'];
 $id = $_POST['minute_id'];
-$tab = $_POST['tab'];
+if ($id == '') {
+    $id = -1;
+}
 $members = $_POST['membersIds'];
 $pos = strpos($members, ",");
 if ($pos === false) {
@@ -78,10 +80,8 @@ if ($action == "saveEstimationsData") {
         $eapItem->store($eapItemId, $size, $sizeUnit);
     }
     $AppUI->setMsg($AppUI->_("LBL_DATA_SUCCESSFULLY_PROCESSED"), UI_MSG_OK);
-    $AppUI->redirect('m=projects&a=view&project_id=' . $project_id . "&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php&tab=" . $tab);
 } else {
     if ($action == "read") {
-        $AppUI->redirect('m=projects&a=view&project_id=' . $project_id . "&tab=" . $tab . "&minute_id=" . $id . "&action_estimation=read&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php");
     } else {
         $projectMinute = new ProjectMinute();
         if ($action == "delete") {
@@ -91,8 +91,6 @@ if ($action == "saveEstimationsData") {
             $projectMinute->store($description, $date, $project_id, $id, $isEffort, $isDuration, $isResource, $isSize, $members);
             $AppUI->setMsg($AppUI->_("Ata de reunião de estimativa registrada.",UI_OUTPUT_HTML), UI_MSG_OK);
         }
-        
-        $AppUI->redirect('m=projects&a=view&project_id=' . $project_id . "&show_external_page=/modules/timeplanning/view/projects_estimations_minutes.php&tab=" . $tab);
     }
 }
 
@@ -148,5 +146,8 @@ function updateActivity($startDateTxt, $endDateTxt, $taskId) {
     $q->exec();
     return $duration;
 }
+
+echo $AppUI->getMsg();
+exit();
 ?>
 
