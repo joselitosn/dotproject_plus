@@ -22,14 +22,9 @@ $id = $_POST['minute_id'];
 if ($id == '') {
     $id = -1;
 }
-$members = $_POST['membersIds'];
-$pos = strpos($members, ",");
-if ($pos === false) {
-    $memberId = $members;
+$members = $_POST['selected_members'];
+if (!$members) {
     $members = array();
-    $members[$memberId] = $memberId;
-} else {
-    $members = explode(",", $members);
 }
 
 $action = $_POST['action_estimation'];
@@ -81,6 +76,8 @@ if ($action == "saveEstimationsData") {
     }
     $AppUI->setMsg($AppUI->_("LBL_DATA_SUCCESSFULLY_PROCESSED"), UI_MSG_OK);
 } else {
+
+    $response = array();
     if ($action == "read") {
     } else {
         $projectMinute = new ProjectMinute();
@@ -88,8 +85,12 @@ if ($action == "saveEstimationsData") {
             $projectMinute->delete($id);
             $AppUI->setMsg($AppUI->_("Ata de reunião de estimativa excluída.",UI_OUTPUT_HTML), UI_MSG_OK);
         } else {
-            $projectMinute->store($description, $date, $project_id, $id, $isEffort, $isDuration, $isResource, $isSize, $members);
+            $newMinuteId = $projectMinute->store($description, $date, $project_id, $id, $isEffort, $isDuration, $isResource, $isSize, $members);
             $AppUI->setMsg($AppUI->_("Ata de reunião de estimativa registrada.",UI_OUTPUT_HTML), UI_MSG_OK);
+            $response['newMinuteId'] = $newMinuteId;
+            $response['msg'] = $AppUI->getMsg();
+            echo json_encode($response);
+            exit();
         }
     }
 }

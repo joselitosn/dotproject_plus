@@ -82,6 +82,7 @@ class ProjectMinute {
             }
         }
         $this->setMembers($membersIds, $id);
+        return $id;
     }
 
     function setMembers($membersIds, $id) {

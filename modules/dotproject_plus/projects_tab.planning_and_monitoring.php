@@ -804,7 +804,7 @@ if ($_GET["show_external_page"] != "") {
         <div class="col-sm-9 text-right">
             <button type="button" class="btn btn-secondary btn-sm" onclick="viewSequenceActivities()"><?=$AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING")?></button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="main.openDictionaryModal()"><?=$AppUI->_("LBL_WBS_DICTIONARY")?></button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=<?php echo $project_id ?>&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';"><?=$AppUI->_("LBL_NEED_FOR_TRAINING")?></button>
+<!--            <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=--><?php //echo $project_id ?><!--&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';"><?//=$AppUI->_("LBL_NEED_FOR_TRAINING")?><!--</button>-->
             <button type="button" class="btn btn-secondary btn-sm" onclick="main.openMinutesModal()"><?=$AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS")?></button>
             <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#modalCopyProjectFromTemplate"><?=$AppUI->_("LBL_COPY_FROM_TEMPLATE")?></button>
         </div>
@@ -1560,8 +1560,8 @@ if ($_GET["show_external_page"] != "") {
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="wbs.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="wbs.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                 </div>
             </div>
         </div>
@@ -1581,8 +1581,8 @@ if ($_GET["show_external_page"] != "") {
 
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                     <button type="button" class="btn btn-primary btn-sm" onclick="main.saveDictionary()"><?=$AppUI->_("LBL_SAVE")?></button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 </div>
             </div>
         </div>
@@ -1602,8 +1602,8 @@ if ($_GET["show_external_page"] != "") {
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                 </div>
             </div>
         </div>
@@ -1623,8 +1623,8 @@ if ($_GET["show_external_page"] != "") {
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
                 </div>
             </div>
         </div>
@@ -1644,8 +1644,8 @@ if ($_GET["show_external_page"] != "") {
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.saveLog()"><?=$AppUI->_("LBL_SAVE")?></button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.saveLog()"><?=$AppUI->_("LBL_SAVE")?></button>
                 </div>
             </div>
         </div>
@@ -1671,8 +1671,9 @@ if ($_GET["show_external_page"] != "") {
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-sm" id="btnSaveMinute" onclick="main.saveMinute()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-light btn-sm" id="btnBackList" onclick="main.backMinuteList()">Voltar</button>
                     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btnSaveMinute" onclick="main.saveMinute()"><?=$AppUI->_("LBL_SAVE")?></button>
                 </div>
             </div>
         </div>
@@ -1816,21 +1817,33 @@ if ($_GET["show_external_page"] != "") {
                 url: "?m=timeplanning&template=view/projects_estimations_minutes&project_id=<?=$project_id?>"
             }).done(function(response) {
                 $('#btnSaveMinute').hide();
+                $('#btnBackList').hide();
                 $("#minutesList").html(response);
                 $('#minutesModal').modal();
             });
-
-            <?php //require_once (DP_BASE_DIR . "/modules/timeplanning/view/project_mitute_form.php"); ?>
         },
 
-        showMinutesForm: function () {
+        showMinutesForm: function (id) {
+            var urlSufix = "";
+            if (id) {
+                urlSufix = "&minute_id="+id;
+            }
+
             $.ajax({
                 type: "get",
-                url: "?m=timeplanning&template=view/project_minute_form&project_id=<?=$_GET["project_id"]?>"
+                url: "?m=timeplanning&template=view/project_minute_form&project_id=<?=$_GET["project_id"]?>"+urlSufix
             }).done(function(response) {
-                $('#minutesForm').html(response).show();
                 $('#btnSaveMinute').show();
+                $('#btnBackList').show();
                 $("#minutesList").hide();
+                var form = $('#minutesForm').html(response);
+
+                var members = $('#minuteMembersHidden').val();
+                if (members) {
+                    $('#selectMembers').val(JSON.parse(members)).trigger('change');
+                }
+
+                form.show();
             });
         },
 
@@ -1856,18 +1869,50 @@ if ($_GET["show_external_page"] != "") {
                 return;
             }
 
+            var dateFormatted = $('#date_edit').val();
+
             $.ajax({
                 url: "?m=timeplanning",
                 type: "post",
                 datatype: "json",
                 data: $("form[name=minute_form]").serialize(),
                 success: function(resposta) {
+                    resposta = JSON.parse(resposta);
+                    var id = resposta.newMinuteId;
                     $.alert({
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
-                        content: resposta,
+                        content: resposta.msg,
                         onClose: function() {
-                            // TODO get the data and set to the table
-                            // hide the form and show the table updated
+
+                            var btnDelete = '<button type="button" class="btn btn-sm btn-danger" onclick="main.deleteMinute('+id+')" title="Remover ata">' +
+                                    '<i class="far fa-trash-alt"></i>' +
+                                '</button>';
+                            var btnEdit = '<button type="button" class="btn btn-sm btn-secondary" onclick="main.showMinutesForm('+id+')" title="Alterar ata">' +
+                                    '<i class="far fa-edit"></i>' +
+                                '</button>';
+
+                             var cells = '<td>'
+                                .concat(dateFormatted)
+                                .concat('</td>')
+                                .concat('<td>')
+                                .concat(description)
+                                .concat('</td>')
+                                .concat('<td>')
+                                .concat(btnDelete)
+                                .concat(btnEdit)
+                                .concat('</td>');
+
+                            var tableLine = $('#tableMinutes_line_'+id);
+                            var newLine = false;
+                            if (!tableLine.html()) {
+                                newLine = true;
+                                tableLine = $('<tr id="tableMinutes_line_'+id+'"></tr>');
+                            }
+                            tableLine.html('').html(cells);
+                            if (newLine) {
+                                $('#minutesTableBody').append(tableLine.html());
+                            }
+                            main.backMinuteList();
                         }
                     });
                 },
@@ -1878,6 +1923,13 @@ if ($_GET["show_external_page"] != "") {
                     });
                 }
             });
+        },
+
+        backMinuteList: function () {
+            $('#btnSaveMinute').hide();
+            $('#btnBackList').hide();
+            $("#minutesForm").hide();
+            $("#minutesList").show();
         },
 
         deleteMinute: function (id) {
@@ -2116,7 +2168,6 @@ if ($_GET["show_external_page"] != "") {
                 url: "?m=tasks&template=vw_log_update&task_id="+taskId
             }).done(function(response) {
                 $(".task-log").html(response);
-
                 $("#taskLogModal").modal();
             });
         },

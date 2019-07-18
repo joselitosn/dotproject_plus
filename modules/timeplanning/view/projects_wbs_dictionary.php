@@ -18,7 +18,14 @@ $controllerWBSItem = new ControllerWBSItem();
     ?>
 
     <div class="alert alert-secondary" role="alert">
-        <?=$firstItem->getNumber()?>&nbsp;<?=$firstItem->getName()?>
+        <?php
+            if (count($items) == 0) {
+                $items = array();
+                echo 'A EAP está vazia.';
+            } else {
+                echo $firstItem->getNumber() . ' '. $firstItem->getName();
+            }
+        ?>
     </div>
 
     <?php

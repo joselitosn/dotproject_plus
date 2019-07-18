@@ -21,6 +21,25 @@
     //remove from all users array the users already allocated
     $all_users = array_diff($all_users, $members);
 
+    $minuteId = dPgetParam($_GET, "minute_id", -1);
+    $date = "";
+    $description = "";
+    if ($minuteId != "-1" && $minuteId != "") {
+        $projectMinute = new ProjectMinute();
+        $projectMinute->load($minuteId);
+        $date = $projectMinute->getDate();
+        $description = $projectMinute->getDescription();
+        $isEffort = $projectMinute->isEffort();
+        $isDuration = $projectMinute->isDuration();
+        $isResource = $projectMinute->isResource();
+        $isSize = $projectMinute->isSize();
+        $members = $projectMinute->getMembers();
+    }
+
+    $arrMembres = array();
+    foreach ($members as $key => $value) {
+        $arrMembres[] = $value;
+    }
 ?>
 <!-- TinyMCE -->
 <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/tinymce/tinymce.min.js"></script>
@@ -82,7 +101,8 @@
 
     <div class="form-group">
         <labe for="type"><?=$AppUI->_('LBL_PARTICIPANTS')?></labe>
-        <select class="form-control form-control-sm" multiple name="selected_members" id="selectMembers">
+        <input type="hidden" name="minuteMembersHidden" id="minuteMembersHidden" value='<?=json_encode($arrMembres)?>'>
+        <select class="form-control form-control-sm" multiple name="selected_members[]" id="selectMembers">
             <?php
                 foreach ($all_users as $key => $value) {
                 ?>
@@ -126,9 +146,14 @@
             var arrDate = date.split('/');
             target.val(arrDate[2] + '-' + arrDate[1] + '-' + arrDate[0]);
         }
-    }
+    };
 
-    $(document).ready(minutesForm.init);
+    $(document).ready(
+        function() {
+            minutesForm.init();
+            minutesForm.dateSelected();
+        }
+    );
 </script>
 <?php
     exit();
