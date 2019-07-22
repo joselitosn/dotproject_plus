@@ -5,8 +5,7 @@ if (!defined('DP_BASE_DIR')) {
 require_once(DP_BASE_DIR . "/modules/monitoringandcontrol/control/controller_earn_value.class.php");
 require_once (DP_BASE_DIR . "/modules/monitoringandcontrol/control/controller_baseline.class.php");
 require_once(DP_BASE_DIR . "/modules/monitoringandcontrol/control/controller_util.class.php");
-$AppUI->savePlace();
-$tabBox = new CTabBox('?m=monitoringandcontrol', DP_BASE_DIR . '/modules/monitoringandcontrol/', $tab);
+
 $project_id = dPgetParam($_GET, 'project_id', 0);
 
 ini_set('max_execution_time', 180);
@@ -28,85 +27,28 @@ if (isset($_POST['date_edit']) &&
 $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
 ?>
 
-<script>
-    var calendarField = "";
-    var calwin = null;
-
-    /*
-     * @param {type} field: the id of the date field
-     * A hidden field with the same name should has an identical id, but that starts with f_ 
-     * @returns {undefined}
-     */
-    function popCalendar(field) {
-        calendarField = field;
-        idate = document.getElementById("f_" + field).value;
-        window.open('index.php?m=public&a=calendar&dialog=1&callback=setCalendar&date=' + idate, 'calwin', 'width=280, height=250, scrollbars=no');
-    }
-
-    /**
-     *	@param string Input date in the format YYYYMMDD
-     *	@param string Formatted date
-     */
-    function setCalendar(idate, fdate) {
-        fld_date = document.getElementById(calendarField);
-        fld_fdate = document.getElementById("f_" + calendarField);
-        fld_date.value = fdate;
-        fld_fdate.value = idate;
-    }
-</script>
-
 <script type="text/javascript" src="./modules/monitoringandcontrol/js/util.js"></script>
-<!--  calendar  -->
-<link type="text/css" rel="stylesheet" href="./modules/monitoringandcontrol/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css" media="screen" />
-<script type="text/javascript" src="./modules/monitoringandcontrol/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js"   ></script>
-<!-- end calendar  -->   
-<br />
-<div>
 
-    <form name="gantt_filter" method="GET" action="">
-        <input type="hidden" name="m" value="projects">
-        <input type="hidden" name="a" value="view">
-        <input type="hidden" name="project_id" value="<?php echo $_GET["project_id"] ?>">
-        <div style="display:none" width="90%" align="center" >
-            Data Início:
-            <input type="hidden" name="f_date_begin" id="f_date_begin"  value="<?php echo $_GET["f_date_begin"]; ?>"/>
-            <!-- format(FMT_TIMESTAMP_DATE) -->
-            <input type="text" style="width:85px" class="text" name="date_begin" id="date_begin" value="<?php echo ($_GET["date_begin"]); ?>" readonly="true"  />
-            <a href="#" onclick="popCalendar('date_begin');">
-                <img src="./images/calendar.gif" width="24" height="12" alt="{dPtranslate word='Calendar'}" border="0" />
-            </a>
-            &nbsp; à &nbsp;
-            Data fim:
-            <input type="hidden" name="f_date_end" id="f_date_end"  value="<?php echo $_GET["f_date_end"]; ?>" />
-            <!-- format(FMT_TIMESTAMP_DATE) -->
-            <input type="text" style="width:85px" class="text" name="date_end" id="date_end" value="<?php echo $_GET["date_end"]; ?>" readonly="true" />
-            <a href="#" onclick="popCalendar('date_end');">
-                <img src="./images/calendar.gif" width="24" height="12" alt="{dPtranslate word='Calendar'}" border="0" />
-            </a>
-            &nbsp;
-            <input type="submit" value="Consultar" class="button" />
+<div>
+    <h4><?=$AppUI->_("6LBLCRONOGRAMA",UI_OUTPUT_HTML)?></h4>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <?php require_once (DP_BASE_DIR . "/modules/timeplanning/view/gantt_chart.php"); ?>
         </div>
-    </form>
-    
-    <br /><br />
-    
-    <div align="center">
-        <?php require_once (DP_BASE_DIR . "/modules/timeplanning/view/gantt_chart.php"); ?>
     </div>
-    <br />
-        <input type="button" onclick="document.gqs_feature_menu.user_choosen_feature.value = '/modules/monitoringandcontrol/view/view.1LBLBASELINE.php';submitMenuForm();" value="<?php echo $AppUI->_("View baselines") ?>" onclick="submitMenuForm()" />
-        <!--
-        <input type="button" onclick="document.gqs_feature_menu.user_choosen_feature.value = '/modules/monitoringandcontrol/view/view.2LBLRESPONSABILIDADE.php';submitMenuForm();" value="<?php echo $AppUI->_("View responsabilities") ?>" onclick="submitMenuForm()" />
-        <input type="button" onclick="document.gqs_feature_menu.user_choosen_feature.value = '/modules/monitoringandcontrol/view/view.3LBLACAOCORRETIVA.php';submitMenuForm();" value="<?php echo $AppUI->_("View corrective actions") ?>" onclick="submitMenuForm()" />
-        <input type="button" onclick="document.gqs_feature_menu.user_choosen_feature.value = '/modules/monitoringandcontrol/view/view.4LBLATA.php';submitMenuForm();" value="<?php echo $AppUI->_("View minutes") ?>" onclick="submitMenuForm()" />
-        <input type="button" onclick="document.gqs_feature_menu.user_choosen_feature.value = '/modules/monitoringandcontrol/view/view.5LBLCUSTO.php';submitMenuForm();" value="<?php echo $AppUI->_("View CPI - Costs monitoring") ?>" onclick="submitMenuForm()" />
-        <input type="button" onclick="document.gqs_feature_menu.user_choosen_feature.value = '/modules/monitoringandcontrol/view/view.5LBLCUSTO.php';submitMenuForm();" value="<?php echo $AppUI->_("Vingandcontrol/view/view.5LBLCUSTOiew CPI - View quality monitoring") ?>" onclick="submitMenuForm()" />
-        -->
-    <hr align="center" width="90%" />
-    <table  width="40%" align="left" >	    
-        <tr>
-            <td colspan="2">&nbsp;
-                <?php
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#baseLineModal">
+                <?=$AppUI->_("View baselines")?>
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-3">
+            <?php
                 $controllerUtil = new ControllerUtil();
                 $controllerEarnValue = new ControllerEarnValue();
 
@@ -120,7 +62,7 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
                     $dtUtil = new CDate($ini[0]);
                     $dtInicioProjeto = $dtUtil->format('%d/%m/%Y');
                 }
-   
+
                 $vlPlanejado = array();
                 $vlAgregado = array();
                 $dtConsultaArray = array();
@@ -166,100 +108,276 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
                         break;
                     }
                 }
-                ?>            
-            </td>
-        </tr>	
-    
-        <form name="formdata" id="formdata" method="post"  action=""  enctype="multipart/form-data" >
-
-            <tr>			  
-                <td align="right"><?php echo $AppUI->_('LBL_BASELINE'); ?></td> 
-                <td nowrap="nowrap">   
-                    <select name="cmbBaseline" size="1" id="cmbBaseline" onchange="submit();"> 		
+            ?>
+            <form name="formdata" id="formdata" method="post">
+                <div class="form-group">
+                    <label for="<?=$AppUI->_('LBL_BASELINE')?>"><?=$AppUI->_('LBL_BASELINE')?></label>
+                    <select name="cmbBaseline" class="form-control form-control-sm" id="cmbBaseline" onchange="submit();">
                         <?php
-                        $controllerBaseline = new ControllerBaseline();
-                        $lstBaseline = $controllerBaseline->listBaseline($project_id);
-                        echo "<option value='0'>" . $AppUI->_('LBL_POSICAO_ATUAL') . "</option>";
-                        for ($i = 0; $i < count($lstBaseline); $i++) {
-                            if ($cmbBaseline == $lstBaseline[$i][baseline_id]) {
-                                echo "<option value='" . $lstBaseline[$i][baseline_id] . "' selected>" . $lstBaseline[$i][baseline_version] . "</option>";
-                            } else {
-                                echo "<option value='" . $lstBaseline[$i][baseline_id] . "' >" . $lstBaseline[$i][baseline_version] . "</option>";
+                            $controllerBaseline = new ControllerBaseline();
+                            $lstBaseline = $controllerBaseline->listBaseline($project_id);
+                            echo "<option value='0'>" . $AppUI->_('LBL_POSICAO_ATUAL') . "</option>";
+                            for ($i = 0; $i < count($lstBaseline); $i++) {
+                                if ($cmbBaseline == $lstBaseline[$i][baseline_id]) {
+                                    echo "<option value='" . $lstBaseline[$i][baseline_id] . "' selected>" . $lstBaseline[$i][baseline_version] . "</option>";
+                                } else {
+                                    echo "<option value='" . $lstBaseline[$i][baseline_id] . "' >" . $lstBaseline[$i][baseline_version] . "</option>";
+                                }
                             }
-                        }
-                        ?>          
-                    </select>		
-                </td>	
-            </tr>	
+                        ?>
+                    </select>
+                </div>
 
-            <tr>			  
-                <td align="right"><?php echo $AppUI->_('LBL_DATA'); ?></td> 
-                <td nowrap="nowrap">   
-                    <input type="text" class="text"  name="date_edit"  id="date_edit"  size="15" value="<?php echo $dtAtual; ?>"  onchange="submit();" maxlength="10" onkeyup="formatadata(this, event)"/>
-                    <img src="./modules/monitoringandcontrol/images/img.gif" id="calendar_trigger" style="cursor:pointer" onclick="displayCalendar(document.getElementById('date_edit'), 'dd/mm/yyyy', this)" />   
-                </td>
-            </tr>
-        </form>					
-        
-        <tr>
-            <td width="40%" align="right" ><?php echo $AppUI->_('LBL_VALOR_PLANEJADO'); ?> (<?php echo $AppUI->_('LBL_VP'); ?>)</td>
-            <td><input type="text" class="text"  name="vp" size="15" readonly="readonly" value="<?php
-                if (isset($vlValorPlanejado)) {
-                    echo number_format($vlValorPlanejado, 2, ',', '.');
-                }
-                else
-                    echo "";
-                ?>"></td>
-        </tr>		
-        <tr>
-            <td align="right"><?php echo $AppUI->_('LBL_VALOR_AGREGADO'); ?> (<?php echo $AppUI->_('LBL_VA'); ?>)</td>
-            <td><input type="text"  class="text"  name="va" size="15" readonly="readonly" value="<?php
-                if (isset($vlValorAgregado)) {
-                    echo number_format($vlValorAgregado, 2, ',', '.');
-                }
-                else
-                    echo "";
-                ?>" ></td>
-        </tr>		
-        <tr>
-            <td align="right"><?php echo $AppUI->_('LBL_VARIACAO_PRAZO'); ?> (<?php echo $AppUI->_('LBL_VPR'); ?>)</td>
-            <td><input type="text" class="text" name="vc" size="15" readonly="readonly" value="<?php
-                if (isset($vlVariacaoCronograma)) {
-                    echo number_format($vlVariacaoCronograma, 2, ',', '.');
-                }
-                else
-                    echo "";
-                ?>"></td>
-        </tr>		        
-        <tr>
-            <td align="right"><?php echo $AppUI->_('LBL_INDICE_PRAZO'); ?> (<?php echo $AppUI->_('LBL_IDP'); ?>)</td>
-            <td><input type="text" class="text" name="idp" size="15" readonly="readonly" value="<?php echo round($vlIndiceDesempenho, 2); ?>"></td>
-        </tr>	
-        <tr>
-            <td colspan="2">&nbsp;</td>
-        </tr>
-        <tr>
-            <td colspan="2" style="padding-left:20px" >
-                <p><?php echo $AppUI->_('LBL_IDP'); ?> < 1: <?php echo $AppUI->_('LBL_IDP_MENOR'); ?>
-                    <br><?php echo $AppUI->_('LBL_IDP'); ?> > 1: <?php echo $AppUI->_('LBL_IDP_MAIOR'); ?>
-                    <br><?php echo $AppUI->_('LBL_IDP'); ?> = 1: <?php echo $AppUI->_('LBL_IDP_IGUAL'); ?></p>			
-            </td>
-        </tr>
-    </table>
-    
-    <table  width="60%" align="left" >	    
-        <tr>
-            <td colspan="2">
-                <?php
+                <div class="form-group">
+                    <label for="<?=$AppUI->_('LBL_DATA')?>"><?=$AppUI->_('LBL_DATA')?></label>
+                    <input type="text"
+                        class="form-control form-control-sm"
+                        name="date_edit"
+                        id="date_edit"
+                        value="<?=$dtAtual?>"
+                        onchange="submit();"
+                        maxlength="10"
+                        onkeyup="formatadata(this, event)" />
+                </div>
+
+                <div class="form-group">
+                    <label for="<?=$AppUI->_('LBL_VALOR_PLANEJADO')?>"><?=$AppUI->_('LBL_VALOR_PLANEJADO')?> (<?=$AppUI->_('LBL_VP')?>)</label>
+                    <input type="text" class="form-control form-control-sm" name="vp" size="15" readonly="readonly" value="<?php
+                        if (isset($vlValorPlanejado)) {
+                            echo number_format($vlValorPlanejado, 2, ',', '.');
+                        }
+                        else
+                            echo "";
+                    ?>" />
+                </div>
+
+                <div class="form-group">
+                    <label for="<?=$AppUI->_('LBL_VALOR_AGREGADO')?>"><?=$AppUI->_('LBL_VALOR_AGREGADO')?> (<?=$AppUI->_('LBL_VA')?>)</label>
+                    <input type="text" class="form-control form-control-sm" name="va" size="15" readonly="readonly" value="<?php
+                        if (isset($vlValorAgregado)) {
+                            echo number_format($vlValorAgregado, 2, ',', '.');
+                        }
+                        else
+                            echo "";
+                        ?>" />
+                </div>
+
+                <div class="form-group">
+                    <label for="<?=$AppUI->_('LBL_VARIACAO_PRAZO')?>"><?=$AppUI->_('LBL_VARIACAO_PRAZO')?> (<?=$AppUI->_('LBL_VPR')?>)</label>
+                    <input type="text" class="form-control form-control-sm" name="vc" size="15" readonly="readonly" value="<?php
+                        if (isset($vlVariacaoCronograma)) {
+                            echo number_format($vlVariacaoCronograma, 2, ',', '.');
+                        }
+                        else
+                            echo "";
+                        ?>" />
+                </div>
+
+                <div class="form-group">
+                    <label for="<?=$AppUI->_('LBL_INDICE_PRAZO')?>"><?=$AppUI->_('LBL_INDICE_PRAZO')?> (<?=$AppUI->_('LBL_IDP')?>)</label>
+                    <input type="text" class="form-control form-control-sm" name="idp" size="15" readonly="readonly" value="<?php echo round($vlIndiceDesempenho, 2); ?>" />
+                </div>
+
+            </form>
+        </div>
+        <div class="col-md-9 text-center">
+            <?php
                 if ((!empty($vlPlanejado) || !isset($vlPlanejado)) || (!empty($vlAgregado) || !isset($vlAgregado))) {
                     $url = './modules/monitoringandcontrol/grafico/line_Graph_Schedule.php?titGrafico=' . urlencode(serialize($titGrafico)) . '&titVP=' . urlencode(serialize($titVP)) . '&titVA=' . urlencode(serialize($titVA)) . '&dtConsultaArray=' . urlencode(serialize($dtConsultaArray)) . '&vlPlanejado=' . urlencode(serialize($vlPlanejado)) . '&vlAgregado=' . urlencode(serialize($vlAgregado));
-                }
-                else
+                } else {
                     $url = './modules/monitoringandcontrol/grafico/line_Graph_Schedule.php';
-                ?>
-                <img  src="<?php echo $url; ?>" >         
-            </td> 						
-
-        </tr>  
-    </table>	
+                }
+            ?>
+            <img src="<?=$url?>">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p><?php echo $AppUI->_('LBL_IDP'); ?> < 1: <?php echo $AppUI->_('LBL_IDP_MENOR'); ?>
+                <br><?php echo $AppUI->_('LBL_IDP'); ?> > 1: <?php echo $AppUI->_('LBL_IDP_MAIOR'); ?>
+                <br><?php echo $AppUI->_('LBL_IDP'); ?> = 1: <?php echo $AppUI->_('LBL_IDP_IGUAL'); ?></p>
+        </div>
+    </div>
 </div>
+<!-- MODAL MINUTES -->
+<div id="baseLineModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_BASELINE")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="baseLineList">
+                    <?php
+                        require_once  DP_BASE_DIR . '/modules/monitoringandcontrol/view/view.1LBLBASELINE.php';
+                    ?>
+                </div>
+                <div id="baseLineForm" style="display: none;">
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" style="display: none;" id="btnBackBaseline" onclick="baseline.backToList()">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" style="display: none;" id="btnSaveBaseline" onclick="baseline.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var baseline = {
+
+        init: function () {
+            $('#cmbBaseline').select2({
+                placeholder: '',
+                allowClear: true,
+                theme: "bootstrap"
+            });
+
+            $( "#date_edit").datepicker({
+                dateFormat: 'dd/mm/yy',
+                onSelect: baseline.submitForm
+            });
+
+            $('#baseLineModal').on('hidden.bs.modal', function() {
+                $("#baseLineList").show();
+                $("#baseLineForm").hide();
+            });
+        },
+
+        submitForm: function () {
+            $('#formdata').submit();
+        },
+
+        new: function () {
+            $.ajax({
+                type: "get",
+                url: "?m=monitoringandcontrol&template=addedit_baseline&project_id=<?=$project_id?>"
+            }).done(function(response) {
+                $('#baseLineList').hide();
+                $('#baseLineForm').html(response).show();
+                $('#btnSaveBaseline').show();
+                $('#btnBackBaseline').show();
+            });
+        },
+
+        save: function () {
+            var baselineName = $('#nmBaseline').val();
+            var baselineVersion = $('#nmVersao').val();
+            var msg = [];
+            var err = false;
+            if (!baselineName) {
+                err = true;
+                msg.push('Informe o nome');
+            }
+
+            if (!baselineVersion) {
+                err = true;
+                msg.push('Informe a versão');
+            }
+
+            if (err) {
+                $.alert({
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                    content: msg.join('<br>')
+                });
+                return;
+            }
+
+            $.ajax({
+                url: "?m=monitoringandcontrol",
+                type: "post",
+                datatype: "json",
+                data: $("form[name=form_baseline]").serialize(),
+                success: function(resposta) {
+                    resposta = JSON.parse(resposta);
+                    var id = resposta.newBaselineId;
+                    var dateTime = resposta.dateTime;
+                    $.alert({
+                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        content: resposta.msg,
+                        onClose: function() {
+                            var btnDelete = '<button type="button" class="btn btn-sm btn-danger" onclick="baseline.delete('+id+')" title="Remover baseline">' +
+                                '<i class="far fa-trash-alt"></i>' +
+                                '</button>';
+                            var btnEdit = '<button type="button" class="btn btn-sm btn-secondary" onclick="baseline.edit('+id+')" title="Alterar baseline">' +
+                                '<i class="far fa-edit"></i>' +
+                                '</button>';
+
+                            var cells = '<td>'
+                                .concat(baselineName)
+                                .concat('</td>')
+                                .concat('<td>')
+                                .concat(baselineVersion)
+                                .concat('</td>')
+                                .concat('<td>')
+                                .concat(dateTime)
+                                .concat('</td>')
+                                .concat('<td>')
+                                .concat(btnDelete)
+                                .concat(btnEdit)
+                                .concat('</td>');
+
+                            var tableLine = $('#tableBaselines_line_'+id);
+                            var newLine = false;
+                            if (!tableLine.html()) {
+                                newLine = true;
+                                tableLine = $('<tr id="tableBaselines_line_'+id+'"></tr>');
+                            }
+                            tableLine.html('').html(cells);
+                            if (newLine) {
+                                $('#baselinesTableBody').append(tableLine.html());
+                            }
+                            baseline.backToList();
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
+                }
+            });
+        },
+
+        delete: function () {
+//            /**
+//             * <form name="form_delete" method="post" action="?m=monitoringandcontrol&a=addedit_update_baseline&project_id=--><?php ////echo $project_id; ?>//<!--" enctype="multipart/form-data" >-->
+//             <!--                    <input name="dosql" type="hidden" value="do_baseline_aed" />-->
+//             <!--                    <input  type="hidden" name="acao" value="delete"  />-->
+//             <!--                    <input name="idBaseline" type="hidden" id="idBaseline" value="--><?php ////echo $row['baseline_id']; ?>//<!--">-->
+//             <!--                    <input name="project_id" type="hidden" id="project_id" value="--><?php ////echo $project_id; ?>//<!--">-->
+//             <!--                    <input  type="image" alt="./images/icons/stock_delete-16.png" src="./images/icons/stock_delete-16.png" title="Deletar" name="deletar" value="deletar" onclick="deleteRow(excluir);"  />-->
+//             <!--                </form>-->
+//             */
+        },
+
+        edit: function () {
+//            /**
+//             * <!--                <form name="form_update" method="post" action="?m=monitoringandcontrol&a=addedit_update_baseline&project_id=--><?php ////echo $project_id; ?>//<!--&idBaseline=--><?php ////echo $row['baseline_id'] ; ?>//<!--" enctype="multipart/form-data" >-->
+//             <!--                    <input  type="hidden" name="acao" value="update"  />-->
+//             <!--                    <input name="project_id" type="hidden" id="project_id" value="--><?php ////echo $project_id; ?>//<!--">-->
+//             <!--                    <input name="idBaseline" type="hidden" id="meeting_id" value="--><?php ////echo $row['baseline_id']; ?>//<!--">-->
+//             <!--                    <input  type="image" alt="./images/icons/pencil.gif" src="./images/icons/pencil.gif" title="Editar" name="editar" value="editar" onclick="updateRow();"  />-->
+//             <!--                </form>-->
+//             */
+        },
+
+        backToList: function () {
+            $('#btnSaveBaseline').hide();
+            $('#btnBackBaseline').hide();
+            $('#baseLineForm').hide();
+            $('#baseLineList').show();
+        }
+
+    }
+
+    $(document).ready(baseline.init);
+
+</script>

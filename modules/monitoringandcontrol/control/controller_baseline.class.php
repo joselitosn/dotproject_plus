@@ -78,10 +78,11 @@ DB filelds - TABLE: 'monitoring_quality_type'
 		return $list;	
 	}		
 		
-	function insertRow($project,$name,$version,$observation,$user){
-		$dtAtual = date("Y-m-d h:i:s"); 
-		
-		
+	function insertRow($project,$name,$version,$observation,$user, $dtAtual = null){
+	    if (null === $dtAtual) {
+		    $dtAtual = date("Y-m-d h:i:s");
+        }
+
 		//Grava o baseline
 		$q = new DBQuery();
 		$q-> addTable('monitoring_baseline');
@@ -105,7 +106,6 @@ DB filelds - TABLE: 'monitoring_quality_type'
 		$controllerBaseline = new ControllerBaseline();
 		$controllerBaseline->insertBaselineUserCost($baselineId);		
 		//Grava o baseline task
-		global $AppUI;	
 		$controllerBaseline = new ControllerBaseline();
 		
 		$q = new DBQuery;
@@ -117,16 +117,19 @@ DB filelds - TABLE: 'monitoring_quality_type'
 	
 		if (!empty($list)) {
 			foreach($list as $row){			
-				$controllerBaseline->insertBaselineTask($baselineId, 
-                                $row['task_id'], 
-                                $row['task_start_date'], 
-                                $row['task_duration'], 
-                                $row['task_duration_type'], 
-                                $row['task_hours_worked'], 
-                                $row['task_end_date'], 
-                                $row['task_percent_complete']);  		
+				$controllerBaseline->insertBaselineTask(
+				    $baselineId,
+                    $row['task_id'],
+                    $row['task_start_date'],
+                    $row['task_duration'],
+                    $row['task_duration_type'],
+                    $row['task_hours_worked'],
+                    $row['task_end_date'],
+                    $row['task_percent_complete']
+                );
 			}
-		}	
+		}
+		return $baselineId;
 	}		
 		
 	function insertBaselineTask($baseline_id,$task_id,$task_start_date,$task_duration,$task_duration_type, $task_hours_worked, $task_end_date, $task_percent_complete ){
