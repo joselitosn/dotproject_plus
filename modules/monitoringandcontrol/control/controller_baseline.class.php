@@ -26,7 +26,7 @@ DB filelds - TABLE: 'monitoring_quality_type'
 		global $AppUI;	
 		$list = array();
 		$q = new DBQuery;
-		$q->addQuery('b.baseline_id, b.baseline_name, b.baseline_version, b.baseline_observation');
+		$q->addQuery('b.baseline_id, b.baseline_name, b.baseline_version, b.baseline_observation, b.baseline_date');
 		$q->addTable('monitoring_baseline', 'b');	
 		$q->addWhere('b.baseline_id='.$baseline_id);
 		$sql = $q->prepare();
@@ -259,7 +259,8 @@ DB filelds - TABLE: 'monitoring_quality_type'
 			$q->addUpdate('baseline_observation', $baseline_observation);
 			$q->addWhere('baseline_id = '. $baseline_id);
 			$q->exec();	
-			$q->clear();	
+			$q->clear();
+			return $baseline_id;
 	}	
 
 }

@@ -219,7 +219,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                     <p><?=$obj->project_description?></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
                 </div>
             </div>
         </div>

@@ -7,6 +7,7 @@ require_once (DP_BASE_DIR . "/modules/projects/projects.class.php");
 $project_id = dPgetParam($_GET, "project_id", 0);
 $projectObj = new CProject();
 $projectObj->load($project_id);
+
 $obj = CInitiating::findByProjectId($project_id);
 $initiating_id = "";
 if (is_null($obj)) {
@@ -85,8 +86,6 @@ $AppUI->savePlace();
 		$("#delete_milestone_id").val(id);
 		submitIt();
 	}
-	
-//	delete_milestone_id
 	
     // função para marcar como concluido o preenchimento do termo de abertura
     function completedIt() {
@@ -201,14 +200,16 @@ function resetWorkflow(){
     <input type="hidden" name="initiating_completed" value="<?php echo $initiating_completed; ?>" />
     <input type="hidden" name="initiating_approved" value="<?php echo $initiating_approved; ?>" />
     <input type="hidden" name="initiating_authorized" value="<?php echo $initiating_authorized; ?>" />
-    <input type="hidden" name="action_authorized_performed" value="0" /> <!-- field set to 1 after execute the authorized action -->
+    <input type="hidden" name="action_authorized_performed" value="0" />
+    <input type="hidden" name="new_milestone" id="new_milestone" value="0" />
+    <input type="hidden" name="delete_milestone_id" id="delete_milestone_id" value="0" />
 
     <div class="form-group">
         <span class="required"></span>
         <?=$AppUI->_('requiredField');?>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label for="roles"><?=$AppUI->_('Project Manager')?></label>
             <div class="form-group">
                 <select class="form-control form-control-sm select-manager" name="initiating_manager">
@@ -224,6 +225,28 @@ function resetWorkflow(){
                     }
                     ?>
                 </select>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="initiating_start_date"><?=$AppUI->_("Start Date")?></label>
+                <input type="hidden" name="initiating_start_date" value="<?=$start_date->format(FMT_TIMESTAMP_DATE)?>" />
+                <input type="text"
+                       name="start_date"
+                       class="form-control form-control-sm datepicker"
+                       placeholder="dd/mm/yyyy"
+                       value="<?=$start_date->format($df)?>" />
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="initiating_start_date"><?=$AppUI->_("End Date")?></label>
+                <input type="hidden" name="initiating_end_date" value="<?=$end_date->format(FMT_TIMESTAMP_DATE)?>" />
+                <input type="text"
+                       name="end_date"
+                       class="form-control form-control-sm datepicker"
+                       placeholder="dd/mm/yyyy"
+                       value="<?=$end_date->format($df)?>" />
             </div>
         </div>
     </div>
@@ -294,28 +317,7 @@ function resetWorkflow(){
                     <textarea rows="4" class="form-control form-control-sm" name="initiating_success"><?=str_replace("\n", "<br />", $obj->initiating_success)?></textarea>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="initiating_start_date"><?=$AppUI->_("Start Date")?></label>
-                    <input type="hidden" name="initiating_start_date" value="<?=$start_date->format(FMT_TIMESTAMP_DATE)?>" />
-                    <input type="text"
-                           name="start_date"
-                           class="form-control form-control-sm datepicker"
-                           placeholder="dd/mm/yyyy"
-                           value="<?=$start_date->format($df)?>" />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label for="initiating_start_date"><?=$AppUI->_("End Date")?></label>
-                    <input type="hidden" name="initiating_end_date" value="<?=$end_date->format(FMT_TIMESTAMP_DATE)?>" />
-                    <input type="text"
-                           name="end_date"
-                           class="form-control form-control-sm datepicker"
-                           placeholder="dd/mm/yyyy"
-                           value="<?=$end_date->format($df)?>" />
-                </div>
-            </div>
+
         </div>
 
         <div class="row">
@@ -325,7 +327,7 @@ function resetWorkflow(){
                 </label>
                 <br>
                 <div class="form-group">
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="initiating.newMilestone()" title="Adicionar marco">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="newMilestone()" title="Adicionar marco">
                         <i class="far fa-plus-square"></i>
                     </button>
                 </div>
@@ -356,15 +358,17 @@ function resetWorkflow(){
                                        value="<?=$milestone_date->format($df)?>" />
                                 </div>
                                 <div class="col-md-1">
-                                    <button type="button" class="btn btn-sm btn-secondary" onclick="initiating.removeMilestone(<?=$i?>)" title="Remover marco">
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="delMilestone(<?=$milestone->task_id?>)" title="Remover marco">
                                         <i class="far fa-trash-alt"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <?php
+                        $i++;
                     }
                     ?>
+                    <input type="hidden" name="total_milestones" value="<?=$i?>" />
                 </div>
             </div>
         </div>
@@ -402,9 +406,7 @@ function resetWorkflow(){
                 <?=$AppUI->_("Gerar PDF")?>
             </a>
 
-            <?php if ($initiating_id && !$initiating_completed) { ?>
-            <button type="button" class="btn btn-sm btn-primary" onclick="initiating.save()"><?=ucfirst($AppUI->_('LBL_SAVE'))?></button>
-            <?php } ?>
+            <button style="visibility:<?=$initiating_completed != 1 ? 'visible' : 'hidden'?>" type="button" class="btn btn-sm btn-primary" onclick="submitIt()"><?=ucfirst($AppUI->_('LBL_SAVE'))?></button>
 
             <?php if ($initiating_id && !$initiating_completed) { ?>
                 <button type="button" class="btn btn-sm btn-secondary" onclick="initiating.complete()"><?=ucfirst($AppUI->_('Completed'))?></button>
@@ -423,7 +425,7 @@ function resetWorkflow(){
     <hr>
 
 
-    <table width="95%" align="center" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form" >
+<!--    <table width="95%" align="center" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form" >-->
 
 
         <?php if ($initiating_id) { ?>
@@ -481,53 +483,53 @@ function resetWorkflow(){
 <!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo $end_date->format($df); ?><!--</span>-->
 <!--                </td>-->
 <!--            </tr>-->
-            <tr style="display: block">
-                <td class="td_label"><?php echo $AppUI->_('Milestones'); ?>:</td>
-                <td>
+<!--            <tr style="display: block">-->
+<!--                <td class="td_label">--><?php //echo $AppUI->_('Milestones'); ?><!--:</td>-->
+<!--                <td>-->
 
-                    <!-- <textarea style="display:<?php echo $initiating_completed!=1?"block":"none" ?>" name="initiating_milestone"   class="textarea"><?php echo $obj->initiating_milestone; ?></textarea> -->
-					<img src="./modules/initiating/images/add_button_icon.png" onclick="newMilestone()" style="cursor:pointer;width:18px;height:18px;display:<?php echo $initiating_completed!=1?"block":"none" ?>" />
+<!--                     <textarea style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_milestone"   class="textarea">--><?php //echo $obj->initiating_milestone; ?><!--</textarea> -->
+<!--					<img src="./modules/initiating/images/add_button_icon.png" onclick="newMilestone()" style="cursor:pointer;width:18px;height:18px;display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" />-->
 					<?php
-					$milestones =$obj->loadMillestones();
-					$i=0;
-
-					foreach($milestones as $milestone){
-						$milestone_date = new CDate($milestone->task_start_date);
-						?>
-						<span style="display:<?php echo $initiating_completed!=1?"block":"none" ?>">
-							<br />
-							<input type="hidden" name="milestone_id_<?php echo $i ?>" value="<?php echo $milestone->task_id ?>" />
-							<input type="text" value="<?php echo $milestone->task_name ?>" style="width:260px"  class="text" name="milestone_name_<?php echo $i ?>" id="milestone_name_<?php echo $i ?>" />
-							<input type="text" style="width:80px" class="text" name="milestone_date_<?php echo $i ?>" id="milestone_date_<?php echo $i ?>" value="<?php echo $milestone_date->format($df); ?>" class="text" />
-							<script>
-								$("#milestone_date_<?php echo $i ?>").datepicker({dateFormat: "<?php echo $_SESSION["dateFormat"] ?>"});
-							</script>
-
-							<img src="./modules/initiating/images/trash-icon.png" onclick="delMilestone(<?php echo $milestone->task_id ?>)" style="cursor:pointer;width:15px;height:15px;" />
-
-						</span>
-						<span style="display:<?php echo $initiating_completed==1?"block":"none" ?>">
-						<?php echo $milestone->task_name ?> &nbsp; (<?php echo $milestone_date->format($df); ?>)
-						</span>
-						<br />
-						<?php
-						$i++;
-					}
+//					$milestones =$obj->loadMillestones();
+//					$i=0;
+//
+//					foreach($milestones as $milestone){
+//						$milestone_date = new CDate($milestone->task_start_date);
+//						?>
+<!--						<span style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--">-->
+<!--							<br />-->
+<!--							<input type="hidden" name="milestone_id_--><?php //echo $i ?><!--" value="--><?php //echo $milestone->task_id ?><!--" />-->
+<!--							<input type="text" value="--><?php //echo $milestone->task_name ?><!--" style="width:260px"  class="text" name="milestone_name_--><?php //echo $i ?><!--" id="milestone_name_--><?php //echo $i ?><!--" />-->
+<!--							<input type="text" style="width:80px" class="text" name="milestone_date_--><?php //echo $i ?><!--" id="milestone_date_--><?php //echo $i ?><!--" value="--><?php //echo $milestone_date->format($df); ?><!--" class="text" />-->
+<!--							<script>-->
+<!--								$("#milestone_date_--><?php //echo $i ?><!--").datepicker({dateFormat: "--><?php //echo $_SESSION["dateFormat"] ?><!--//"});-->
+<!--//							</script>-->
+<!--//-->
+<!--//							<img src="./modules/initiating/images/trash-icon.png" onclick="delMilestone(--><?php ////echo $milestone->task_id ?><!--)" style="cursor:pointer;width:15px;height:15px;" />
+<!--//-->
+<!--/						</span>-->
+<!--//						<span style="display:--><?php ////echo $initiating_completed==1?"block":"none" ?><!--">-->
+<!--						--><?php //echo $milestone->task_name ?><!-- &nbsp; (--><?php //echo $milestone_date->format($df); ?><!--)-->
+<!--						</span>-->
+<!--						<br />-->
+<!--						--><?php
+//						$i++;
+//					}
 					?>
-					<input type="hidden" name="total_milestones" value="<?php echo $i ?>" />
+<!--					<input type="hidden" name="total_milestones" value="--><?php //echo $i ?><!--" />-->
+<!---->
+<!--					<input type="hidden" name="new_milestone" id="new_milestone" value="0" />-->
+<!--					<input type="hidden" name="delete_milestone_id" id="delete_milestone_id" value="0" />-->
 
-					<input type="hidden" name="new_milestone" id="new_milestone" value="0" />
-					<input type="hidden" name="delete_milestone_id" id="delete_milestone_id" value="0" />
+                   <!-- <span style="display:<?php //echo $initiating_completed==1?"block":"none" ?>"><?php //echo str_replace("\n", "<br />", $obj->initiating_milestone); ?></span> -->
 
-                   <!-- <span style="display:<?php echo $initiating_completed==1?"block":"none" ?>"><?php echo str_replace("\n", "<br />", $obj->initiating_milestone); ?></span> -->
-
-                </td>
+<!--                </td>-->
 <!--                <td class="td_label">--><?php //echo $AppUI->_('Criteria for success'); ?><!--:</td>-->
 <!--                <td>-->
 <!--                    <textarea style="display:--><?php //echo $initiating_completed!=1?"block":"none" ?><!--" name="initiating_success"   class="textarea">--><?php //echo $obj->initiating_success; ?><!--</textarea>-->
 <!--                    <span style="display:--><?php //echo $initiating_completed==1?"block":"none" ?><!--">--><?php //echo str_replace("\n", "<br />", $obj->initiating_success); ?><!--</span>    -->
 <!--                </td>-->
-            </tr>
+<!--            </tr>-->
             
 <!--            <tr>-->
 <!--                <td class="td_label" >-->
@@ -545,7 +547,7 @@ function resetWorkflow(){
 <!--            </tr>-->
             
             
-        </table>
+<!--        </table>-->
     <?php } ?>
 <!--    <table width="95%" align="center">-->
 <!--        <tr>-->

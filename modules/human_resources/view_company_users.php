@@ -307,8 +307,8 @@ if (!$res->fields) {
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
-                <button type="button" class="btn btn-primary" id="btnAddHr" ><?=$AppUI->_('LBL_SAVE')?></button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnAddHr" ><?=$AppUI->_('LBL_SAVE')?></button>
             </div>
         </div>
     </div>
@@ -329,8 +329,8 @@ if (!$res->fields) {
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
-                <button type="button" class="btn btn-primary" id="btnEditHr" ><?=$AppUI->_('LBL_SAVE')?></button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnEditHr" ><?=$AppUI->_('LBL_SAVE')?></button>
             </div>
         </div>
     </div>

@@ -837,8 +837,8 @@ if ($_GET["show_external_page"] != "") {
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="main.copyFromTemplate()"><?=$AppUI->_('LBL_COPY')?></button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="main.copyFromTemplate()"><?=$AppUI->_('LBL_COPY')?></button>
                 </div>
             </div>
         </div>
@@ -1910,7 +1910,7 @@ if ($_GET["show_external_page"] != "") {
                             }
                             tableLine.html('').html(cells);
                             if (newLine) {
-                                $('#minutesTableBody').append(tableLine.html());
+                                $('#minutesTableBody').append(tableLine[0]);
                             }
                             main.backMinuteList();
                         }
@@ -1966,11 +1966,11 @@ if ($_GET["show_external_page"] != "") {
             });
         }
     };
-    
-    
+
+
     var wbs = {
         msgDelete: "<?php echo $AppUI->_("LBL_MENU_DELETE_WBS_ITEM", UI_OUTPUT_JS); ?>",
-        
+
         delete: function(projectId, itemId, itemName) {
             $.confirm({
                 title: wbs.msgDelete,
@@ -2073,7 +2073,7 @@ if ($_GET["show_external_page"] != "") {
         },
 
     };
-    
+
     var tasks = {
 
         loadedLogs: [],

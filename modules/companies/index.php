@@ -216,8 +216,8 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
-                                <button type="button" class="btn btn-primary" id="btnSaveCompany" ><?=$AppUI->_('LBL_SAVE')?></button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btnSaveCompany" ><?=$AppUI->_('LBL_SAVE')?></button>
                             </div>
                         </div>
                     </div>

@@ -15,6 +15,7 @@ $nmBaseline = dPgetParam($_POST,'nmBaseline');
 $nmVersao = dPgetParam($_POST,'nmVersao');
 $dsObservacao = dPgetParam($_POST,'dsObservacao');
 $user_id = dPgetParam($_POST,'user');
+$dateTime = dPgetParam($_POST,'dateTime');
 
 $response = array('err' => false);
 
@@ -32,6 +33,7 @@ try {
         $id = $acao->updateRow($idBaseline,$nmBaseline,$nmVersao,$dsObservacao);
         $response['msg'] = 'Baseline alterada';
         $response['newBaselineId'] = $id;
+        $response['dateTime'] = $controllerUtil->formatDateTime($dateTime);
     }
 } catch (Exception $e) {
     $response['err'] = true;

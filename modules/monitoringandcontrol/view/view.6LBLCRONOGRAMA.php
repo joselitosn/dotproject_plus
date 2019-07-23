@@ -245,8 +245,8 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
             });
 
             $('#baseLineModal').on('hidden.bs.modal', function() {
-                $("#baseLineList").show();
-                $("#baseLineForm").hide();
+                window.location.reload(true);
+
             });
         },
 
@@ -329,9 +329,10 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
                                 newLine = true;
                                 tableLine = $('<tr id="tableBaselines_line_'+id+'"></tr>');
                             }
+
                             tableLine.html('').html(cells);
                             if (newLine) {
-                                $('#baselinesTableBody').append(tableLine.html());
+                                $('#baselinesTableBody').append(tableLine[0]);
                             }
                             baseline.backToList();
                         }
@@ -346,27 +347,51 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
             });
         },
 
-        delete: function () {
-//            /**
-//             * <form name="form_delete" method="post" action="?m=monitoringandcontrol&a=addedit_update_baseline&project_id=--><?php ////echo $project_id; ?>//<!--" enctype="multipart/form-data" >-->
-//             <!--                    <input name="dosql" type="hidden" value="do_baseline_aed" />-->
-//             <!--                    <input  type="hidden" name="acao" value="delete"  />-->
-//             <!--                    <input name="idBaseline" type="hidden" id="idBaseline" value="--><?php ////echo $row['baseline_id']; ?>//<!--">-->
-//             <!--                    <input name="project_id" type="hidden" id="project_id" value="--><?php ////echo $project_id; ?>//<!--">-->
-//             <!--                    <input  type="image" alt="./images/icons/stock_delete-16.png" src="./images/icons/stock_delete-16.png" title="Deletar" name="deletar" value="deletar" onclick="deleteRow(excluir);"  />-->
-//             <!--                </form>-->
-//             */
+        delete: function (id) {
+            $.confirm({
+                title: 'Excluir baseline',
+                content: 'Você tem certeza de que quer excluir a baseline?',
+                buttons: {
+                    yes: {
+                        text: 'Sim',
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=monitoringandcontrol",
+                                data: {
+                                    dosql: 'do_baseline_aed',
+                                    idBaseline: id,
+                                    acao: 'delete'
+                                }
+                            }).done(function(resposta) {
+                                resposta = JSON.parse(resposta);
+                                $.alert({
+                                    title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                    content: resposta.msg,
+                                    onClose: function() {
+                                        $('#tableBaselines_line_'+id).remove();
+                                    }
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: 'Não'
+                    }
+                }
+            });
         },
 
-        edit: function () {
-//            /**
-//             * <!--                <form name="form_update" method="post" action="?m=monitoringandcontrol&a=addedit_update_baseline&project_id=--><?php ////echo $project_id; ?>//<!--&idBaseline=--><?php ////echo $row['baseline_id'] ; ?>//<!--" enctype="multipart/form-data" >-->
-//             <!--                    <input  type="hidden" name="acao" value="update"  />-->
-//             <!--                    <input name="project_id" type="hidden" id="project_id" value="--><?php ////echo $project_id; ?>//<!--">-->
-//             <!--                    <input name="idBaseline" type="hidden" id="meeting_id" value="--><?php ////echo $row['baseline_id']; ?>//<!--">-->
-//             <!--                    <input  type="image" alt="./images/icons/pencil.gif" src="./images/icons/pencil.gif" title="Editar" name="editar" value="editar" onclick="updateRow();"  />-->
-//             <!--                </form>-->
-//             */
+        edit: function (id) {
+            $.ajax({
+                type: "get",
+                url: "?m=monitoringandcontrol&template=addedit_baseline&project_id=<?=$project_id?>&baseline_id=" + id
+            }).done(function(response) {
+                $('#baseLineList').hide();
+                $('#baseLineForm').html(response).show();
+                $('#btnSaveBaseline').show();
+                $('#btnBackBaseline').show();
+            });
         },
 
         backToList: function () {

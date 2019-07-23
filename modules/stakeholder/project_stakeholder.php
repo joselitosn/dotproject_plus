@@ -141,8 +141,8 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
-                <button type="button" class="btn btn-primary" id="btnSaveStakeholder" ><?=$AppUI->_('LBL_SAVE')?></button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnSaveStakeholder" ><?=$AppUI->_('LBL_SAVE')?></button>
             </div>
         </div>
     </div>
