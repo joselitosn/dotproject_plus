@@ -100,3 +100,15 @@ footer {
 .tox-notifications-container {
     display: none !important;
 }
+
+.draggable-active {
+    border-color: #80bdff;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #80bdff;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #80bdff;
+}
+
+.daggable-over {
+    border-color: #06ca1f;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #06ca1f;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #06ca1f;
+}

@@ -848,7 +848,6 @@ class CTask extends CDpObject
 		$q->addWhere('dependencies_task_id=' . $this->task_id);
 		$q->exec();
 		$q->clear();
-		
 		// process dependencies
 		$tarr = explode(',', $cslist);
 		foreach ($tarr as $task_id) {

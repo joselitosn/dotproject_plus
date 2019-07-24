@@ -768,6 +768,7 @@ if ($_GET["show_external_page"] != "") {
 
     <h4><?=$AppUI->_("Tasks",UI_OUTPUT_HTML)?></h4>
     <hr>
+    <input type="hidden" value="<?=$project_id?>" id="projectIdHidden" />
     <!-- Filter section -->
     <div class="row">
         <div class="col-md-3">
@@ -807,6 +808,14 @@ if ($_GET["show_external_page"] != "") {
 <!--            <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=--><?php //echo $project_id ?><!--&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';"><?//=$AppUI->_("LBL_NEED_FOR_TRAINING")?><!--</button>-->
             <button type="button" class="btn btn-secondary btn-sm" onclick="main.openMinutesModal()"><?=$AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS")?></button>
             <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#modalCopyProjectFromTemplate"><?=$AppUI->_("LBL_COPY_FROM_TEMPLATE")?></button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-info" role="alert">
+                Para sequenciar as atividades você deve arrastar a atividade predecessora e soltar sobre a atividade sucessora.
+            </div>
         </div>
     </div>
 
@@ -1119,7 +1128,7 @@ if ($_GET["show_external_page"] != "") {
                                 $taskDescription = $task->task_name;
                                 $projectTaskEstimation = new ProjectTaskEstimation();
                                 $projectTaskEstimation->load($task_id);
-    
+
                                 //duration and start/end dates.
                                 $obj = new CTask();
                                 $obj->load($task_id);
@@ -1136,8 +1145,14 @@ if ($_GET["show_external_page"] != "") {
 
                                 $taskCard = $dom->createElement('div');
                                 $taskCardClass = $dom->createAttribute('class');
-                                $taskCardClass->value = 'card inner-card';
+                                $taskCardClass->value = 'card inner-card draggable droppable';
                                 $taskCard->appendChild($taskCardClass);
+                                $taskCardData = $dom->createAttribute('data');
+                                $taskCardData->value = $task_id;
+                                $taskCard->appendChild($taskCardData);
+                                $taskCardDT = $dom->createAttribute('data-toggle');
+                                $taskCardDT->value = 'tooltip';
+                                $taskCard->appendChild($taskCardDT);
 
                                 $taskCardBody = $dom->createElement('div');
                                 $taskCardBodyId = $dom->createAttribute('id');
@@ -1155,26 +1170,35 @@ if ($_GET["show_external_page"] != "") {
                                 $taskCardRowClass->value = 'row';
                                 $taskCardRow->appendChild($taskCardRowClass);
 
+                                $carCol1Icon = $dom->createElement('i');
+                                $carCol1IconClass = $dom->createAttribute('class');
+                                $carCol1IconClass->value = 'fas fa-grip-vertical';
+                                $carCol1Icon->appendChild($carCol1IconClass);
+                                $carCol1IconStyle = $dom->createAttribute('style');
+                                $carCol1IconStyle->value = 'float: left;margin-right: 10px;color: #cecece;cursor: crosshair;';
+                                $carCol1Icon->appendChild($carCol1IconStyle);
+
                                 $carCol8 = $dom->createElement('div');
                                 $carCol8Class = $dom->createAttribute('class');
                                 $carCol8Class->value = 'col-md-10';
                                 $carCol8->appendChild($carCol8Class);
+                                $carCol8->appendChild($carCol1Icon);
 
                                 switch ($obj->task_percent_complete) {
                                     case 0:
-                                        $activityStatus = $dom->createElement('span', 'Iniciada'); 
+                                        $activityStatus = $dom->createElement('span', 'Iniciada');
                                         $activityStatusClass = $dom->createAttribute('class');
                                         $activityStatusClass->value = 'badge badge-primary';
                                         $activityStatus->appendChild($activityStatusClass);
                                         break;
                                     case 100:
-                                        $activityStatus = $dom->createElement('span', 'Finalizada'); 
+                                        $activityStatus = $dom->createElement('span', 'Finalizada');
                                         $activityStatusClass = $dom->createAttribute('class');
                                         $activityStatusClass->value = 'badge badge-success';
                                         $activityStatus->appendChild($activityStatusClass);
                                         break;
                                     default:
-                                        $activityStatus = $dom->createElement('span', 'Não iniciada'); 
+                                        $activityStatus = $dom->createElement('span', 'Não iniciada');
                                         $activityStatusClass = $dom->createAttribute('class');
                                         $activityStatusClass->value = 'badge badge-info';
                                         $activityStatus->appendChild($activityStatusClass);
@@ -1191,7 +1215,7 @@ if ($_GET["show_external_page"] != "") {
                                 for ($res; !$res->EOF; $res->MoveNext()) {
                                     $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
                                 }
-                                
+
                                 $h6 = $dom->createElement('h6', 'A.' . $activitiesIdsForDisplay[$task_id] . ' ' . $taskDescription . ' ');
                                 $h6Class = $dom->createAttribute('class');
                                 $h6Class->value = 'mouse-cursor-pointer';
@@ -1202,28 +1226,32 @@ if ($_GET["show_external_page"] != "") {
                                 $h6Target = $dom->createAttribute('data-target');
                                 $h6Target->value = '#card_'.$task_id;
                                 $h6->appendChild($h6Target);
-                                
+                                $h6Style = $dom->createAttribute('style');
+                                $h6Style->value = 'float: left;';
+                                $h6->appendChild($h6Style);
+
                                 $icon = $dom->createElement('i', '&nbsp;');
                                 $iconClass = $dom->createAttribute('class');
                                 $iconClass->value = 'fas fa-caret-down title';
                                 $icon->appendChild($iconClass);
-                                $h6->appendChild($icon);
+//                                $h6->appendChild($icon);
                                 $carCol8->appendChild($h6);
+                                $carCol8->appendChild($icon);
+//
+//                                // Responsável
+//                                $span = $dom->createElement('span', 'Responsável: ' . $user_name);
+//                                $spanClass = $dom->createAttribute('class');
+//                                $spanClass->value = 'responsible';
+//                                $span->appendChild($spanClass);
+//                                $h6->appendChild($span);
+//
+//                                // Período
+//                                $span = $dom->createElement('span', ' | Período: ' . $startDateTxt . ' até ' . $endDateTxt);
+//                                $spanClass = $dom->createAttribute('class');
+//                                $spanClass->value = 'task-date';
+//                                $span->appendChild($spanClass);
+//                                $h6->appendChild($span);
 
-                                // Responsável
-                                $span = $dom->createElement('span', 'Responsável: ' . $user_name); 
-                                $spanClass = $dom->createAttribute('class');
-                                $spanClass->value = 'responsible';
-                                $span->appendChild($spanClass);
-                                $h6->appendChild($span);                                
-
-                                // Período
-                                $span = $dom->createElement('span', ' | Período: ' . $startDateTxt . ' até ' . $endDateTxt); 
-                                $spanClass = $dom->createAttribute('class');
-                                $spanClass->value = 'task-date';
-                                $span->appendChild($spanClass);
-                                $h6->appendChild($span);
-                                
                                 $carCol4 = $dom->createElement('div');
                                 $carCol4Class = $dom->createAttribute('class');
                                 $carCol4Class->value = 'col-md-2 text-right';
@@ -1362,21 +1390,21 @@ if ($_GET["show_external_page"] != "") {
                                 $carCol6->appendChild($carCol6Class);
 
                                 // Data início
-                                $span = $dom->createElement('span', 'Início: ' . $startDateTxt); 
+                                $span = $dom->createElement('span', 'Início: ' . $startDateTxt);
                                 $spanClass = $dom->createAttribute('class');
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
                                 $carCol6->appendChild($span);
 
                                 // Data fim
-                                $span = $dom->createElement('span', 'Fim: ' . $endDateTxt); 
+                                $span = $dom->createElement('span', 'Fim: ' . $endDateTxt);
                                 $spanClass = $dom->createAttribute('class');
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
                                 $carCol6->appendChild($span);
 
                                 // Duração
-                                $span = $dom->createElement('span', 'Duração: ' . $duration); 
+                                $span = $dom->createElement('span', 'Duração: ' . $duration);
                                 $spanClass = $dom->createAttribute('class');
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
@@ -1391,7 +1419,7 @@ if ($_GET["show_external_page"] != "") {
                                 $taskCardRow->appendChild($carCol6);
 
                                 // Responsável
-                                $span = $dom->createElement('span', 'Responsável: ' . $user_name); 
+                                $span = $dom->createElement('span', 'Responsável: ' . $user_name);
                                 $spanClass = $dom->createAttribute('class');
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
@@ -1413,7 +1441,7 @@ if ($_GET["show_external_page"] != "") {
                                     }
                                     $i++;
                                 }
-                                $span = $dom->createElement('span', 'Esforço: ' . $effort . $mett); 
+                                $span = $dom->createElement('span', 'Esforço: ' . $effort . $mett);
                                 $spanClass = $dom->createAttribute('class');
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
@@ -1459,20 +1487,20 @@ if ($_GET["show_external_page"] != "") {
                                          $hasFilteredRH = true;
                                      }
                                 }
-                                $span = $dom->createElement('span', 'Recursos humanos: ' . $estimatedRolesTxt); 
+                                $span = $dom->createElement('span', 'Recursos humanos: ' . $estimatedRolesTxt);
                                 $spanClass = $dom->createAttribute('class');
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
                                 $carCol6->appendChild($span);
-                                
-                                $divCollapse = $dom->createElement('div'); 
+
+                                $divCollapse = $dom->createElement('div');
                                 $divCollapseClass = $dom->createAttribute('class');
                                 $divCollapseClass->value = 'collapse';
                                 $divCollapse->appendChild($divCollapseClass);
                                 $divCollapseId = $dom->createAttribute('id');
                                 $divCollapseId->value = 'card_'.$task_id;
                                 $divCollapse->appendChild($divCollapseId);
-                                
+
                                 $divCollapse->appendChild($taskCardRow);
 
                                 $taskCardRow = $dom->createElement('div');
@@ -1493,7 +1521,7 @@ if ($_GET["show_external_page"] != "") {
                                 $divCollapse->appendChild($taskCardRow);
 
                                 $taskCardBody->appendChild($divCollapse);
-                                
+
                                 $taskCard->appendChild($taskCardBody);
                                 $cardBody->appendChild($taskCard);
                             }
@@ -1697,17 +1725,17 @@ if ($_GET["show_external_page"] != "") {
                 } catch (err) {
                     taskId = $(e.target).parent().attr('data-target').split('_')[1];
                 }
-                if ($(this).find('i').hasClass('fa-caret-down')) {
-                    $(this).find('i').removeClass('fa-caret-down');
-                    $(this).find('i').addClass('fa-caret-up');
-                    $(this).find('.responsible').hide();
-                    $(this).find('.task-date').hide();
+                if ($(this).next('i').hasClass('fa-caret-down')) {
+                    $(this).next('i').removeClass('fa-caret-down');
+                    $(this).next('i').addClass('fa-caret-up');
+//                    $(this).find('.responsible').hide();
+//                    $(this).find('.task-date').hide();
                     tasks.loadLogs(taskId);
                 } else {
-                    $(this).find('i').removeClass('fa-caret-up');
-                    $(this).find('i').addClass('fa-caret-down');
-                    $(this).find('.responsible').show();
-                    $(this).find('.task-date').show();
+                    $(this).next('i').removeClass('fa-caret-up');
+                    $(this).next('i').addClass('fa-caret-down');
+//                    $(this).find('.responsible').show();
+//                    $(this).find('.task-date').show();
                 }
             });
 
@@ -1745,6 +1773,8 @@ if ($_GET["show_external_page"] != "") {
                 $("#minutesList").html('').show();
                 $("#minutesForm").html('').hide();
             });
+
+            main.initDragAndDrop();
         },
 
         openDictionaryModal: function() {
@@ -1964,6 +1994,61 @@ if ($_GET["show_external_page"] != "") {
                     }
                 }
             });
+        },
+
+        initDragAndDrop: function () {
+            $( ".draggable" ).draggable({
+                axis: "y",
+                revert: true,
+                zIndex: 100,
+                handle: "i",
+            });
+
+            $( ".droppable" ).droppable({
+                activeClass: 'draggable-active',
+                hoverClass: 'daggable-over',
+                over: function (event, ui) {
+                    console.log('Sucessora', $(this).find('h6').html());
+                    console.log('Predecessora', ui.draggable.find('h6').html());
+
+                    var taskName = $(this).find('h6').html();
+                    var predecessoraName = ui.draggable.find('h6').html();
+
+                    $(this).tooltip({
+                        title: 'Adicionar ' + predecessoraName + ' como predecessora de ' + taskName
+                    });
+                },
+                drop: function(event, ui) {
+                    var taskId = $(this).attr('data')
+                    console.log('Task id', taskId);
+
+                    var dependencyId = ui.draggable.attr('data');
+                    console.log('Dependency id', dependencyId);
+
+                    var projectId = $('#projectIdHidden').val();
+                    console.log('Project id', projectId);
+
+                    $.ajax({
+                        method: 'POST',
+                        url: "?m=timeplanning",
+                        data: {
+                            dosql: 'do_project_activity_add_dependency',
+                            project_id: projectId,
+                            activity_id: taskId,
+                            dependency_id: dependencyId
+                        }
+                    }).done(function(resposta) {
+                        $.alert({
+                            title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                            content: resposta,
+                            onClose: function() {
+//                                window.location.reload(true);
+                            }
+                        });
+                    });
+
+                }
+            });
         }
     };
 
@@ -2102,7 +2187,7 @@ if ($_GET["show_external_page"] != "") {
         new: function (wbsItemId, taskId) {
             $.ajax({
                 type: "get",
-                url: "?m=dotproject_plus&template=task_addedit&task_id="+taskId+"&company_id=<?=$company_id?>&project_id=<?=$projectId?>"
+                url: "?m=dotproject_plus&template=task_addedit&task_id="+taskId+"&company_id=<?=$company_id?>&project_id=<?=$project_id?>"
             }).done(function(response) {
                 $(".task-modal").html(response);
                 $('#taskWbsItemId').val(wbsItemId);

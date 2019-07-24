@@ -21,5 +21,6 @@
  
         $controllerActivityMDP->updateDependencies($activity_id,$parameter);
         $AppUI->setMsg($AppUI->_("Atividade predecessora foi incluida com exito.",UI_OUTPUT_HTML), UI_MSG_OK, true);
-	$AppUI->redirect("m=projects&a=view&project_id=".$project_id."&show_external_page=/modules/timeplanning/view/projects_mdp.php");
+        echo $AppUI->getMsg();
+        exit();
 ?>
