@@ -1132,6 +1132,20 @@ if ($_GET["show_external_page"] != "") {
                                 //duration and start/end dates.
                                 $obj = new CTask();
                                 $obj->load($task_id);
+
+                                // Load task dependencies
+                                $arrDep = explode(",", $obj->getDependencies());
+                                $dependencies = array();
+                                foreach ($arrDep as $dep_id) {
+                                    if ($dep_id == "") {
+                                        continue;
+                                    }
+                                    $dep = new CTask();
+                                    $dep->load($dep_id);
+                                    $dependencies[$dep_id] = "A." . $activitiesIdsForDisplay[$dep_id] ." ".$dep->task_name;
+                                }
+
+                                // Start and end dates
                                 $startDateTxt = "Não informado";
                                 $endDateTxt = "Não informado";
                                 if (isset($obj->task_start_date) && isset($obj->task_end_date)) {
@@ -1143,6 +1157,7 @@ if ($_GET["show_external_page"] != "") {
                                     $duration = "" . $projectTaskEstimation->getDuration() . " dia(s)";
                                 }
 
+                                // Start creating html structure
                                 $taskCard = $dom->createElement('div');
                                 $taskCardClass = $dom->createAttribute('class');
                                 $taskCardClass->value = 'card inner-card draggable droppable';
@@ -1234,23 +1249,26 @@ if ($_GET["show_external_page"] != "") {
                                 $iconClass = $dom->createAttribute('class');
                                 $iconClass->value = 'fas fa-caret-down title';
                                 $icon->appendChild($iconClass);
-//                                $h6->appendChild($icon);
                                 $carCol8->appendChild($h6);
                                 $carCol8->appendChild($icon);
-//
-//                                // Responsável
-//                                $span = $dom->createElement('span', 'Responsável: ' . $user_name);
-//                                $spanClass = $dom->createAttribute('class');
-//                                $spanClass->value = 'responsible';
-//                                $span->appendChild($spanClass);
-//                                $h6->appendChild($span);
-//
-//                                // Período
-//                                $span = $dom->createElement('span', ' | Período: ' . $startDateTxt . ' até ' . $endDateTxt);
-//                                $spanClass = $dom->createAttribute('class');
-//                                $spanClass->value = 'task-date';
-//                                $span->appendChild($spanClass);
-//                                $h6->appendChild($span);
+
+                                $small = $span = $dom->createElement('small');
+
+                                // Responsável
+                                $span = $dom->createElement('span', 'Responsável: ' . $user_name);
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'responsible';
+                                $span->appendChild($spanClass);
+                                $small->appendChild($span);
+
+                                // Período
+                                $span = $dom->createElement('span', ' | Período: ' . $startDateTxt . ' até ' . $endDateTxt);
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'task-date';
+                                $span->appendChild($spanClass);
+                                $small->appendChild($span);
+
+                                $carCol8->appendChild($small);
 
                                 $carCol4 = $dom->createElement('div');
                                 $carCol4Class = $dom->createAttribute('class');
@@ -1512,6 +1530,75 @@ if ($_GET["show_external_page"] != "") {
                                 $carCol12Class = $dom->createAttribute('class');
                                 $carCol12Class->value = 'col-md-12';
                                 $carCol12->appendChild($carCol12Class);
+                                $carCol12Id= $dom->createAttribute('id');
+                                $carCol12Id->value = 'activity-dependency-'.$task_id;
+                                $carCol12->appendChild($carCol12Id);
+
+                                // Show activity dependencies
+                                $ul = $dom->createElement('ul');
+                                foreach ($dependencies as $depId => $depDesc) {
+                                    $li = $dom->createElement('li', $depDesc . ' ');
+                                    $liId = $dom->createAttribute('id');
+                                    $liId->value = $depId.'_'.$task_id;
+                                    $li->appendChild($liId);
+
+                                    $btn = $dom->createElement('button');
+                                    $btnT = $dom->createAttribute('type');
+                                    $btnT->value = 'button';
+                                    $btn->appendChild($btnT);
+                                    $btnOC = $dom->createAttribute('onclick');
+                                    $btnOC->value = 'tasks.deleteDependency('.$depId.','.$task_id.')';
+                                    $btnC = $dom->createAttribute('class');
+                                    $btnC->value = 'btn btn-danger btn-xs';
+                                    $btn->appendChild($btnC);
+                                    $btn->appendChild($btnOC);
+
+                                    $i = $dom->createElement('i');
+                                    $iClass = $dom->createAttribute('class');
+                                    $iClass->value = 'far fa-trash-alt';
+                                    $i->appendChild($iClass);
+
+                                    $btn->appendChild($i);
+                                    $li->appendChild($btn);
+                                    $ul->appendChild($li);
+                                }
+
+                                $alert = $dom->createElement('div');
+                                $alertClass = $dom->createAttribute('class');
+                                $alertClass->value = 'alert alert-secondary';
+                                $alert->appendChild($alertClass);
+                                $alertRole = $dom->createAttribute('role');
+                                $alertRole->value = 'alert';
+                                $alert->appendChild($alertRole);
+
+                                if (!count($dependencies)) {
+                                    $style = $dom->createAttribute('style');
+                                    $style->value = 'display: none';
+                                    $alert->appendChild($style);
+                                }
+
+                                $h6 = $dom->createElement('h6', 'Atividades predecessoras');
+                                $alert->appendChild($h6);
+
+                                $hr = $dom->createElement('hr');
+                                $alert->appendChild($hr);
+
+                                $alert->appendChild($ul);
+
+                                $carCol12->appendChild($dom->createElement('br'));
+                                $carCol12->appendChild($alert);
+                                $taskCardRow->appendChild($carCol12);
+                                $divCollapse->appendChild($taskCardRow);
+
+                                $taskCardRow = $dom->createElement('div');
+                                $taskCardRowClass = $dom->createAttribute('class');
+                                $taskCardRowClass->value = 'row';
+                                $taskCardRow->appendChild($taskCardRowClass);
+
+                                $carCol12 = $dom->createElement('div');
+                                $carCol12Class = $dom->createAttribute('class');
+                                $carCol12Class->value = 'col-md-12';
+                                $carCol12->appendChild($carCol12Class);
 
                                 $carCol12Id= $dom->createAttribute('id');
                                 $carCol12Id->value = 'activity-log-'.$task_id;
@@ -1713,8 +1800,9 @@ if ($_GET["show_external_page"] != "") {
 <script>
 
     var main = {
-        btnYes: "<?php echo $AppUI->_("LBL_YES", UI_OUTPUT_JS); ?>",
-        btnNo: "<?php echo $AppUI->_("LBL_NO", UI_OUTPUT_JS); ?>",
+        projectId: $('#projectIdHidden').val(),
+        btnYes: "Sim",
+        btnNo: "Não",
 
         init: function() {
 
@@ -1728,14 +1816,12 @@ if ($_GET["show_external_page"] != "") {
                 if ($(this).next('i').hasClass('fa-caret-down')) {
                     $(this).next('i').removeClass('fa-caret-down');
                     $(this).next('i').addClass('fa-caret-up');
-//                    $(this).find('.responsible').hide();
-//                    $(this).find('.task-date').hide();
+                    $(this).siblings('small').hide();
                     tasks.loadLogs(taskId);
                 } else {
                     $(this).next('i').removeClass('fa-caret-up');
                     $(this).next('i').addClass('fa-caret-down');
-//                    $(this).find('.responsible').show();
-//                    $(this).find('.task-date').show();
+                    $(this).siblings('small').show();
                 }
             });
 
@@ -1780,7 +1866,7 @@ if ($_GET["show_external_page"] != "") {
         openDictionaryModal: function() {
             $.ajax({
                 type: "get",
-                url: "?m=timeplanning&template=/view/projects_wbs_dictionary&project_id=<?=$project_id?>"
+                url: "?m=timeplanning&template=/view/projects_wbs_dictionary&project_id="+main.projectId
             }).done(function(response) {
                 $(".wbs-dictionary-modal").html(response);
                 $('#modalWbsDictionary').modal();
@@ -1794,7 +1880,7 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=form_wbs_dictionary]").serialize(),
                 success: function(resposta) {
                     $.alert({
-                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        title: "Sucesso",
                         content: resposta,
                         onClose: function() {
                             $('#modalWbsDictionary').modal('hide');
@@ -1803,8 +1889,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
-                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                        title: "Error",
+                        content: "Algo deu errado"
                     });
                 }
             });
@@ -1819,12 +1905,12 @@ if ($_GET["show_external_page"] != "") {
                     var resp = JSON.parse(resposta);
                     if (resp.err) {
                         $.alert({
-                            title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                            title: "Error",
                             content: resp.msg
                         });
                     } else {
                         $.alert({
-                            title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                            title: "Sucesso",
                             content: resp.msg,
                             onClose: function() {
                             window.location.reload(true);
@@ -1834,8 +1920,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
-                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                        title: "Error",
+                        content: "Algo deu errado"
                     });
                 }
             });
@@ -1844,7 +1930,7 @@ if ($_GET["show_external_page"] != "") {
         openMinutesModal: function () {
             $.ajax({
                 type: "get",
-                url: "?m=timeplanning&template=view/projects_estimations_minutes&project_id=<?=$project_id?>"
+                url: "?m=timeplanning&template=view/projects_estimations_minutes&project_id="+main.projectId
             }).done(function(response) {
                 $('#btnSaveMinute').hide();
                 $('#btnBackList').hide();
@@ -1861,7 +1947,7 @@ if ($_GET["show_external_page"] != "") {
 
             $.ajax({
                 type: "get",
-                url: "?m=timeplanning&template=view/project_minute_form&project_id=<?=$_GET["project_id"]?>"+urlSufix
+                url: "?m=timeplanning&template=view/project_minute_form&project_id="+main.projectId+urlSufix
             }).done(function(response) {
                 $('#btnSaveMinute').show();
                 $('#btnBackList').show();
@@ -1893,7 +1979,7 @@ if ($_GET["show_external_page"] != "") {
 
             if (err) {
                 $.alert({
-                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                    title: "Error",
                     content: msg.join('<br>')
                 });
                 return;
@@ -1910,7 +1996,7 @@ if ($_GET["show_external_page"] != "") {
                     resposta = JSON.parse(resposta);
                     var id = resposta.newMinuteId;
                     $.alert({
-                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        title: "Sucesso",
                         content: resposta.msg,
                         onClose: function() {
 
@@ -1948,8 +2034,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
-                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                        title: "Error",
+                        content: "Algo deu errado"
                     });
                 }
             });
@@ -1980,7 +2066,7 @@ if ($_GET["show_external_page"] != "") {
                                 }
                             }).done(function(resposta) {
                                 $.alert({
-                                    title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                    title: "Sucesso",
                                     content: resposta,
                                     onClose: function() {
                                         $('#tableMinutes_line_'+id).remove();
@@ -2008,26 +2094,24 @@ if ($_GET["show_external_page"] != "") {
                 activeClass: 'draggable-active',
                 hoverClass: 'daggable-over',
                 over: function (event, ui) {
-                    console.log('Sucessora', $(this).find('h6').html());
-                    console.log('Predecessora', ui.draggable.find('h6').html());
-
                     var taskName = $(this).find('h6').html();
                     var predecessoraName = ui.draggable.find('h6').html();
-
                     $(this).tooltip({
-                        title: 'Adicionar ' + predecessoraName + ' como predecessora de ' + taskName
+                        title: 'Adicionar ' + predecessoraName + ' como predecessora de ' + taskName,
+                        trigger: 'manual'
                     });
+                    $(this).tooltip('show');
+                },
+                out: function (event, ui) {
+                    $(this).tooltip('dispose');
                 },
                 drop: function(event, ui) {
-                    var taskId = $(this).attr('data')
-                    console.log('Task id', taskId);
-
+                    var card = $(this);
+                    card.tooltip('dispose');
+                    var taskId = $(this).attr('data');
                     var dependencyId = ui.draggable.attr('data');
-                    console.log('Dependency id', dependencyId);
-
                     var projectId = $('#projectIdHidden').val();
-                    console.log('Project id', projectId);
-
+                    var predecessoraName = ui.draggable.find('h6').html();
                     $.ajax({
                         method: 'POST',
                         url: "?m=timeplanning",
@@ -2039,14 +2123,21 @@ if ($_GET["show_external_page"] != "") {
                         }
                     }).done(function(resposta) {
                         $.alert({
-                            title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                            title: "Sucesso",
                             content: resposta,
                             onClose: function() {
-//                                window.location.reload(true);
+                                var li = $('<li id="'+dependencyId+'_'+taskId+'"></li>');
+                                li.html(predecessoraName+' ');
+                                var icon = $('<i class="far fa-trash-alt"></i>');
+                                var btn = $('<btn type="button" class="btn btn-danger btn-xs" onclick="tasks.deleteDependency('+dependencyId+','+taskId+')"></button>');
+                                btn.html(icon[0]);
+                                li.append(btn[0]);
+                                var ul = card.find('ul');
+                                ul.append(li[0]);
+                                ul.parent().show();
                             }
                         });
                     });
-
                 }
             });
         }
@@ -2075,7 +2166,7 @@ if ($_GET["show_external_page"] != "") {
                                 }
                             }).done(function(resposta) {
                                 $.alert({
-                                    title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                    title: "Sucesso",
                                     content: resposta,
                                     onClose: function() {
                                         window.location.reload(true);
@@ -2126,7 +2217,7 @@ if ($_GET["show_external_page"] != "") {
             }
             if (err) {
                 $.alert({
-                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                    title: "Error",
                     content: msg
                 });
                 return;
@@ -2140,7 +2231,7 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=wbsForm]").serialize(),
                 success: function(resposta) {
                     $.alert({
-                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        title: "Sucesso",
                         content: resposta,
                         onClose: function() {
                             $("#newWBSItemModal").modal("hide");
@@ -2150,8 +2241,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
-                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                        title: "Error",
+                        content: "Algo deu errado"
                     });
                 }
             });
@@ -2173,7 +2264,6 @@ if ($_GET["show_external_page"] != "") {
                     yes: {
                         text: main.btnYes,
                         action: function () {
-                            console.log('mandando excluir');
                             $('#formDeleteActivity_'+id).submit();
                         },
                     },
@@ -2187,7 +2277,7 @@ if ($_GET["show_external_page"] != "") {
         new: function (wbsItemId, taskId) {
             $.ajax({
                 type: "get",
-                url: "?m=dotproject_plus&template=task_addedit&task_id="+taskId+"&company_id=<?=$company_id?>&project_id=<?=$project_id?>"
+                url: "?m=dotproject_plus&template=task_addedit&task_id="+taskId+"&company_id=<?=$company_id?>&project_id="+main.projectId
             }).done(function(response) {
                 $(".task-modal").html(response);
                 $('#taskWbsItemId').val(wbsItemId);
@@ -2200,7 +2290,7 @@ if ($_GET["show_external_page"] != "") {
             var taskName = $('#taskDescription').val();
             if (!taskName) {
                 $.alert({
-                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                    title: "Error",
                     content: 'O nome da atividade é obrigatório'
                 });
                 return;
@@ -2217,7 +2307,7 @@ if ($_GET["show_external_page"] != "") {
 
                 if (date2 < date1) {
                     $.alert({
-                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        title: "Error",
                         content: 'A data de fim deve ser posterior a data da início'
                     });
                     return;
@@ -2265,7 +2355,7 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=editFrm]").serialize(),
                 success: function(resposta) {
                     $.alert({
-                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        title: "Sucesso",
                         content: resposta,
                         onClose: function() {
                             window.location.reload(true);
@@ -2274,8 +2364,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
-                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                        title: "Error",
+                        content: "Algo deu errado"
                     });
                 }
             });
@@ -2300,7 +2390,7 @@ if ($_GET["show_external_page"] != "") {
                                  },
                                  success: function(resposta) {
                                      $.alert({
-                                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                                         title: "Sucesso",
                                          content: resposta,
                                          onClose: function() {
                                              $('#table_log_'+logId).remove();
@@ -2309,8 +2399,8 @@ if ($_GET["show_external_page"] != "") {
                                  },
                                  error: function(resposta) {
                                      $.alert({
-                                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
-                                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                                         title: "Erro",
+                                         content: "Algo deu errado"
                                      });
                                  }
                              });
@@ -2350,6 +2440,55 @@ if ($_GET["show_external_page"] != "") {
                 $(".task-log").html(response);
 
                 $("#taskLogModal").modal();
+            });
+        },
+        
+        deleteDependency: function (dependencyId, taskId) {
+            var liId = dependencyId + '_' + taskId;
+            var li = $('#'+liId);
+            var ul = li.parent();
+
+            $.confirm({
+                title: '',
+                content: 'Tem certeza de que deseja apagar esta dependência?',
+                buttons: {
+                    yes: {
+                        text: main.btnYes,
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=timeplanning",
+                                data: {
+                                    dosql: 'do_project_activity_exclude_dependency',
+                                    project_id: main.projectId,
+                                    activity_id: taskId,
+                                    dependency_id: dependencyId
+                                },
+                                success: function(resposta) {
+                                    li.remove();
+                                    if (!ul.children().length) {
+                                        ul.parent().hide();
+                                    }
+
+                                    $.alert({
+                                        title: "Sucesso",
+                                        content: resposta,
+                                        onClose: function() {}
+                                    });
+                                },
+                                error: function(resposta) {
+                                    $.alert({
+                                        title: "Erro",
+                                        content: "Algo deu errado"
+                                    });
+                                }
+                            });
+                        },
+                    },
+                    no: {
+                        text: main.btnNo
+                    }
+                }
             });
         }
     }
