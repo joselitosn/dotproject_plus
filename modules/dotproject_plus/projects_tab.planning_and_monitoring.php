@@ -803,7 +803,6 @@ if ($_GET["show_external_page"] != "") {
             </form>
         </div>
         <div class="col-sm-9 text-right">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="viewSequenceActivities()"><?=$AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING")?></button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="main.openDictionaryModal()"><?=$AppUI->_("LBL_WBS_DICTIONARY")?></button>
 <!--            <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=--><?php //echo $project_id ?><!--&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';"><?//=$AppUI->_("LBL_NEED_FOR_TRAINING")?><!--</button>-->
             <button type="button" class="btn btn-secondary btn-sm" onclick="main.openMinutesModal()"><?=$AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS")?></button>
