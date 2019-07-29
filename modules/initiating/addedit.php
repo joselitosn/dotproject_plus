@@ -234,7 +234,7 @@ function authorize() {
     <input type="hidden" name="action_authorized_performed" value="0" />
     <input type="hidden" name="new_milestone" id="new_milestone" value="0" />
     <input type="hidden" name="delete_milestone_id" id="delete_milestone_id" value="0" />
-    
+
     <div class="row">
         <div class="col-md-4">
             <label for="roles"><?=$AppUI->_('Project Manager')?></label>

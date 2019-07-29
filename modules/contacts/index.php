@@ -3,8 +3,6 @@ if (!defined('DP_BASE_DIR')) {
   die('You should not access this file directly.');
 }
 
-$AppUI->savePlace();
-
 if (!($canAccess)) {
 	$AppUI->redirect('m=public&a=access_denied');
 }
@@ -77,7 +75,6 @@ if (count($allowedCompanies)) {
 	$q->addWhere('((' . $comp_where . ') OR contact_company = 0)');
 }
 $q->addOrder('contact_order_by');
-
 $sql = $q->prepare();
 $q->clear();
 
@@ -93,81 +90,140 @@ if (!($res = db_exec($sql))) {
 		}
 	}
 }
-
-$carrWidth = 4;
-$t = floor($rn / $carrWidth); //total "height"
-$r = ($rn % $carrWidth); // remainder column height
-$t += (($r == 0 && $t > 0) ? 0 : 1);
-
-$carr[] = array();
-$x = 0;
-foreach ($disp_arr as $row) {
-	$y = floor($x / $t);
-	$carr[$y][] = $row;
-	$x++;	
-}
-
-$tdw = floor(100 / $carrWidth);
-
-/**
-* Contact search form
-*/
 $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
 
-$a2z = "\n" . '<table cellpadding="2" cellspacing="1" border="0">';
-$a2z .= "\n<tr>";
-$a2z .= '<td width="100%" align="right">' . $AppUI->_('Show'). ': </td>';
-$a2z .= '<td><a href="?m=contacts&amp;where=0">' . $AppUI->_('All') . '</a></td>';
-for ($c=65; $c < 91; $c++) {
-	$cu = chr($c);
-	$cell = ((mb_strpos($let, "$cu") > 0) 
-			 ? ('<a href="?m=contacts&amp;where=' . $cu . '">' . $cu . '</a>') 
-			 : ('<font color="#999999">' . $cu . '</font>'));
-	$a2z .= "\n\t<td>$cell</td>";
-}
-$a2z .= ("\n</tr>\n<tr>" . '<td colspan="28">' 
-         . '<form action="./index.php" method="get">' . $AppUI->_('Search for') 
-         . '<input type="text" name="search_string" value="' . $default_search_string . '" />' 
-         . '<input type="hidden" name="m" value="contacts" /><input type="submit" value=">" />'
-         . '<a href="./index.php?m=contacts&amp;search_string=">' . $AppUI->_('Reset search') 
-		 . '</a></form></td></tr>' 
-		 . "\n</table>\n");
-
-// setup the title block
-
-// what purpose is the next line for? Commented out by gregorerhardt, Bug #892912
-// $contact_id = $carr[$z][$x]["contact_id"];
-
-$titleBlock = new CTitleBlock('Contacts', 'monkeychat-48.png', $m, "$m.$a");
-$titleBlock->addCell($a2z);
-if ($canAuthor) {
-	$titleBlock->addCell(('<input type="submit" class="button" value="' . $AppUI->_('new contact') 
-	                      . '">'), '', '<form action="?m=contacts&amp;a=addedit" method="post">', 
-	                     '</form>');
-	$titleBlock->addCrumbRight('<a href="?m=contacts&amp;a=csvexport&amp;suppressHeaders=true">' 
-	                           . $AppUI->_('CSV Download'). '</a> | ' 
-	                           . '<a href="?m=contacts&amp;a=vcardimport&amp;dialog=0">' 
-	                           . $AppUI->_('Import vCard') . '</a>');
-}
-$titleBlock->show();
-// TODO: Check to see that the Edit function is separated.
-
 ?>
-<script language="javascript" type="text/javascript">
-// Callback function for the generic selector
-function goProject(key, val) {
-	var f = document.modProjects;
-	if (val != '') {
-		f.project_id.value = key;
-		f.submit();
+<div id="content">
+    <fieldset>
+        <legend><?=$AppUI->_('Contacts')?></legend>
+        <div class="row">
+            <div class="col-md-4">
+                <form action="./index.php" method="get">
+                    <div class="form-group">
+                        <input type="text" class="form-control form-control-sm" placeholder="<?=$AppUI->_('Search for')?>" name="search_string" value="<?=$default_search_string?>" />
+                        <input type="hidden" name="m" value="contacts" />
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-8 text-right">
+                <a href="?m=contacts&amp;a=csvexport&amp;suppressHeaders=true" class="btn btn-sm btn-secondary">
+                    <?=$AppUI->_('CSV Download')?>
+                </a>
+                <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#vcardModal">
+                    <?=$AppUI->_('Import vCard')?>
+                </button>
+                <button type="button" class="btn btn-sm btn-secondary" onclick="contact.new()">
+                    <?=$AppUI->_('new contact')?>
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <?php
+                    foreach ($disp_arr as $contact) {
+                ?>
+                        <div class="card inner-card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-5 action mouse-cursor-pointer">
+                                        <h5><a href="?m=companies&a=view&company_id=<?=$contact['contact_id']?>"><?=$contact['contact_first_name'].' '.$contact['contact_last_name']?></a></h5>
+
+                                        <!-- TODO listar detalhes do contato em collapse, criar menu para: 1-Alterar; 2-Download vcard; 3-Excluir -->
+
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <?php
+                    }
+                ?>
+            </div>
+        </div>
+    </fieldset>
+</div>
+
+<div id="vcardModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_('Import vCard')?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="vcfFrm">
+                    <input type="hidden" name="max_file_size" value="109605000" />
+                    <input type="hidden" name="dosql" value="vcardimport" />
+                    <div class="form-group">
+                        <label for="<?=$AppUI->_('Fetch vCard(s) File')?>"><?=$AppUI->_('Fetch vCard(s) File')?></label>
+                        <input type="File" class="form-control-file" name="file" id="fileInput" accept="text/x-vcard" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="contact.importVCard()"><?=$AppUI->_("Enviar")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    var contact = {
+        
+        init: function () {
+            
+        },
+        
+        new: function () {
+            
+        },
+        
+        importVCard: function () {
+            var file = $('#fileInput')[0].files;
+
+            if (file.length == 0) {
+                $.alert({
+                    title: "Error",
+                    content: "Nenhum arquivo selecionado"
+                });
+                return;
+            }
+            var data = new FormData($("form[name=vcfFrm]")[0]);
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=contacts",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
         }
-}
+    };
+
+    $(document).ready(contact.init);
 </script>
-<form action="./index.php" method='get' name="modProjects">
-  <input type='hidden' name='m' value='projects' />
-  <input type='hidden' name='a' value='view' />
-  <input type='hidden' name='project_id' />
-</form>
+
+
+
 <table width="100%" border="0" cellpadding="1" cellspacing="1" style="height:400px;" class="contacts" summary="Contacts">
 <tr>
 <?php
