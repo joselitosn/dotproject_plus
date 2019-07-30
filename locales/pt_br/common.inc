@@ -80,7 +80,7 @@
 "Permission"=>"Permissão",
 "Phone"=>"Telefone",
 "Private"=>"Fone",
-"Private Entry"=>"Entrada Restrita *",
+"Private Entry"=>"Entrada Restrita",
 "Project"=>"Projeto",
 "Projects"=>"Projetos",
 "Proposed"=>"Proposto",

@@ -125,12 +125,100 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
                         <div class="card inner-card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-5 action mouse-cursor-pointer">
-                                        <h5><a href="?m=companies&a=view&company_id=<?=$contact['contact_id']?>"><?=$contact['contact_first_name'].' '.$contact['contact_last_name']?></a></h5>
+                                    <div class="col-md-10 action mouse-cursor-pointer">
+                                        <h5 data-toggle="collapse" data-target="#contactDetails_<?=$contact['contact_id']?>">
+                                            <?=$contact['contact_first_name'].' '.$contact['contact_last_name']?>
+                                            <i class="fa fa-caret-down"></i>
+                                        </h5>
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <div class="dropdown">
+                                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-bars"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                                <a class="dropdown-item" href="javascript:void(0)" onclick="">
+                                                    <i class="far fa-edit"></i>
+                                                    Alterar
+                                                </a>
+                                                <?php
+                                                    $row = new CContact();
+                                                    $canDelete = $row->canDelete($msg, $contact_id);
+                                                    if ($canDelete) {
+                                                        ?>
+                                                        <a class="dropdown-item" href="javascript:void(0)"
+                                                           onclick="contact.delete(<?= $contact['contact_id'] ?>)">
+                                                            <i class="far fa-trash-alt"></i>
+                                                            Excluir
+                                                        </a>
+                                                        <?php
+                                                    }
+                                                    ?>
+                                                <a class="dropdown-item" href="?m=contacts&a=vcardexport&suppressHeaders=true&contact_id=<?=$contact['contact_id']?>">
+                                                    <i class="fas fa-download"></i>
+                                                    Baixar vCard
+                                                </a>
+                                            </div>
+                                        </div>
 
-                                        <!-- TODO listar detalhes do contato em collapse, criar menu para: 1-Alterar; 2-Download vcard; 3-Excluir -->
-
-                                        
+                                    </div>
+                                </div>
+                                <div class="collapse" id="contactDetails_<?=$contact['contact_id']?>">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-5 text-right"><b>Nome:</b></div>
+                                                <div class="col-md-7">
+                                                    <?=$contact['contact_first_name'] . ' ' . $contact['contact_last_name']?>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-right"><b>Endereço:</b></div>
+                                                <div class="col-md-7">
+                                                    <?=$contact['contact_address1']?>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-right"><b>Telefone:</b></div>
+                                                <div class="col-md-7">
+                                                    <?=$contact['contact_phone']?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-5 text-right"><b>Celular:</b></div>
+                                                <div class="col-md-7">
+                                                    <?=$contact['contact_mobile']?>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-right"><b>Email:</b></div>
+                                                <div class="col-md-7">
+                                                    <?=$contact['contact_email']?>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-right"><b>Empresa:</b></div>
+                                                <div class="col-md-7">
+                                                    <?=$contact['company_name']?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="row">
+                                                <div class="col-md-5 text-right"><b>Cargo:</b></div>
+                                                <div class="col-md-7">
+                                                    <?=$contact['contact_job']?>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5 text-right"><b>Observações:</b></div>
+                                                <div class="col-md-7">
+                                                    <?=$contact['contact_notes']?>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -170,16 +258,87 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
     </div>
 </div>
 
+<div id="addEditModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body addEditContact">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="contact.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     
     var contact = {
         
         init: function () {
-            
+            $('.inner-card').find('h5').on('click', function(e) {;
+                if ($(this).find('i').hasClass('fa-caret-down')) {
+                    $(this).find('i').removeClass('fa-caret-down');
+                    $(this).find('i').addClass('fa-caret-up');
+                } else {
+                    $(this).find('i').removeClass('fa-caret-up');
+                    $(this).find('i').addClass('fa-caret-down');
+                }
+            });
+
         },
         
         new: function () {
-            
+            $.ajax({
+                type: "get",
+                url: "?m=contacts&template=addedit"
+            }).done(function(response) {
+                var modal = $('#addEditModal');
+                modal.find('h5').html('Adicionar contato');
+                $('.addEditContact').html(response);
+                modal.modal();
+            });
+        },
+
+        delete: function (id) {
+            $.confirm({
+                title: 'Excluir contato',
+                content: 'Você tem certeza de que quer excluir esse contato?',
+                buttons: {
+                    yes: {
+                        text: 'Sim',
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=contacts",
+                                data: {
+                                    dosql: 'do_contact_aed',
+                                    del: 1,
+                                    contact_id: id
+                                }
+                            }).done(function(resposta) {
+                                $.alert({
+                                    title: "Sucesso",
+                                    content: resposta,
+                                    onClose: function() {
+                                        window.location.reload(true);
+                                    }
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: 'Não'
+                    }
+                }
+            });
         },
         
         importVCard: function () {
@@ -223,79 +382,79 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
 </script>
 
 
-
-<table width="100%" border="0" cellpadding="1" cellspacing="1" style="height:400px;" class="contacts" summary="Contacts">
-<tr>
+<!---->
+<!--<table width="100%" border="0" cellpadding="1" cellspacing="1" style="height:400px;" class="contacts" summary="Contacts">-->
+<!--<tr>-->
 <?php
-for ($z = 0; $z < $carrWidth; $z++) {
-?>
-	<td valign="top" align="left" bgcolor="#f4efe3" width="<?php echo $tdw;?>%">
-	<?php
-	for ($x = 0; $x < @count($carr[$z]); $x++) {
-	?>
-		<table width="100%" cellspacing="1" cellpadding="1" summary="contact info">
-		<tr>
-			<td width="100%">
-				<?php $contactid = $carr[$z][$x]['contact_id']; ?>
-				<a href="?m=contacts&amp;a=view&amp;contact_id=<?php 
-		echo $contactid; 
-?>"><strong><?php 
-		echo $AppUI->___(($carr[$z][$x]['contact_order_by']) 
-		      ? $carr[$z][$x]['contact_order_by'] 
-		      : ($carr[$z][$x]['contact_first_name'] . ' ' . $carr[$z][$x]['contact_last_name'])); 
-?></strong></a>&nbsp;
-				&nbsp;<a title="<?php 
-		echo $AppUI->___($AppUI->_('Export vCard for') . ' ' . $carr[$z][$x]['contact_first_name'] . ' ' 
-		      . $carr[$z][$x]['contact_last_name']); 
-?>" href="?m=contacts&amp;a=vcardexport&amp;suppressHeaders=true&amp;contact_id=<?php 
-		echo $contactid; ?>" >(vCard)</a>
-				&nbsp;<a title="<?php 
-		echo $AppUI->_('Edit'); ?>" href="?m=contacts&amp;a=addedit&amp;contact_id=<?php 
-		echo $contactid; ?>"><?php echo $AppUI->_('Edit'); ?></a>
+//for ($z = 0; $z < $carrWidth; $z++) {
+//?>
+<!--	<td valign="top" align="left" bgcolor="#f4efe3" width="--><?php //echo $tdw;?><!--%">-->
+<!--	--><?php
+//	for ($x = 0; $x < @count($carr[$z]); $x++) {
+//	?>
+<!--		<table width="100%" cellspacing="1" cellpadding="1" summary="contact info">-->
+<!--		<tr>-->
+<!--			<td width="100%">-->
+<!--				--><?php //$contactid = $carr[$z][$x]['contact_id']; ?>
+<!--				<a href="?m=contacts&amp;a=view&amp;contact_id=--><?php //
+//		echo $contactid;
+//?><!--"><strong>--><?php //
+//		echo $AppUI->___(($carr[$z][$x]['contact_order_by'])
+//		      ? $carr[$z][$x]['contact_order_by']
+//		      : ($carr[$z][$x]['contact_first_name'] . ' ' . $carr[$z][$x]['contact_last_name']));
+//?><!--</strong></a>&nbsp;-->
+<!--				&nbsp;<a title="--><?php //
+//		echo $AppUI->___($AppUI->_('Export vCard for') . ' ' . $carr[$z][$x]['contact_first_name'] . ' '
+//		      . $carr[$z][$x]['contact_last_name']);
+//?><!--" href="?m=contacts&amp;a=vcardexport&amp;suppressHeaders=true&amp;contact_id=--><?php //
+//		echo $contactid; ?><!--" >(vCard)</a>-->
+<!--				&nbsp;<a title="--><?php //
+//		echo $AppUI->_('Edit'); ?><!--" href="?m=contacts&amp;a=addedit&amp;contact_id=--><?php //
+//		echo $contactid; ?><!--">--><?php //echo $AppUI->_('Edit'); ?><!--</a>-->
 <?php
-		$q = new DBQuery;
-		$q->addTable('projects');
-		$q->addQuery('count(*)');
-		$q->addWhere('project_contacts LIKE "' . $carr[$z][$x]['contact_id'] 
-		             .',%" OR project_contacts LIKE "%,' . $carr[$z][$x]['contact_id'] 
-		             .',%" OR project_contacts LIKE "%,' . $carr[$z][$x]['contact_id'] 
-		             .'" OR project_contacts LIKE "' . $carr[$z][$x]['contact_id'] .'"');
-		
-		$res = $q->exec();
-		$projects_contact = db_fetch_row($res);
-		$q->clear();
-		if ($projects_contact[0] > 0) {
-			echo ('&nbsp;<a href="" onclick="javascript:window.open(' 
-			      . "'?m=public&amp;a=selector&amp;dialog=1&amp;callback=goProject&amp;table=projects" 
-			      . '&user_id=' . $carr[$z][$x]['contact_id'] 
-			      . "', 'selector', 'left=50,top=50,height=250,width=400,resizable');" 
-			      . 'return false;">' . $AppUI->_('Projects') . '</a>');
-		}
-?>
-			</td>
-		</tr>
-		<tr>
-			<td class="hilite">
-			<?php
-		reset($showfields);
-		while (list($key, $val) = each($showfields)) {
-			if (mb_strlen($carr[$z][$x][$key]) > 0) {
-				if ($val == "contact_email") {
-					echo ('<a href="mailto:' . $carr[$z][$x][$key] . '" class="mailto">' 
-					      . $carr[$z][$x][$key] . "</a>\n");
-				} else if (!($val == "contact_company" && is_numeric($carr[$z][$x][$key]))) {
-					echo  $carr[$z][$x][$key]. "<br />";
-				}
-			}
-		} ?>
-			</td>
-		</tr>
-		</table>
-		<br />&nbsp;<br />
-	<?php 
-	} ?>
-	</td>
-<?php 
-} ?>
-</tr>
-</table>
+//		$q = new DBQuery;
+//		$q->addTable('projects');
+//		$q->addQuery('count(*)');
+//		$q->addWhere('project_contacts LIKE "' . $carr[$z][$x]['contact_id']
+//		             .',%" OR project_contacts LIKE "%,' . $carr[$z][$x]['contact_id']
+//		             .',%" OR project_contacts LIKE "%,' . $carr[$z][$x]['contact_id']
+//		             .'" OR project_contacts LIKE "' . $carr[$z][$x]['contact_id'] .'"');
+//
+//		$res = $q->exec();
+//		$projects_contact = db_fetch_row($res);
+//		$q->clear();
+//		if ($projects_contact[0] > 0) {
+//			echo ('&nbsp;<a href="" onclick="javascript:window.open('
+//			      . "'?m=public&amp;a=selector&amp;dialog=1&amp;callback=goProject&amp;table=projects"
+//			      . '&user_id=' . $carr[$z][$x]['contact_id']
+//			      . "', 'selector', 'left=50,top=50,height=250,width=400,resizable');"
+//			      . 'return false;">' . $AppUI->_('Projects') . '</a>');
+//		}
+//?>
+<!--			</td>-->
+<!--		</tr>-->
+<!--		<tr>-->
+<!--			<td class="hilite">-->
+<!--			--><?php
+//		reset($showfields);
+//		while (list($key, $val) = each($showfields)) {
+//			if (mb_strlen($carr[$z][$x][$key]) > 0) {
+//				if ($val == "contact_email") {
+//					echo ('<a href="mailto:' . $carr[$z][$x][$key] . '" class="mailto">'
+//					      . $carr[$z][$x][$key] . "</a>\n");
+//				} else if (!($val == "contact_company" && is_numeric($carr[$z][$x][$key]))) {
+//					echo  $carr[$z][$x][$key]. "<br />";
+//				}
+//			}
+//		} ?>
+<!--			</td>-->
+<!--		</tr>-->
+<!--		</table>-->
+<!--		<br />&nbsp;<br />-->
+<!--	--><?php //
+//	} ?>
+<!--	</td>-->
+<?php //
+//} ?>
+<!--</tr>-->
+<!--</table>-->

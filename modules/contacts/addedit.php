@@ -32,15 +32,6 @@ if (!$row->load($contact_id) && $contact_id > 0) {
 	$AppUI->redirect('m=public&a=access_denied');
 }
 
-// setup the title block
-$ttl = $contact_id > 0 ? "Edit Contact" : "Add Contact";
-$titleBlock = new CTitleBlock($ttl, 'monkeychat-48.png', $m, "$m.$a");
-$titleBlock->addCrumb("?m=contacts", "contacts list");
-if ($canDelete && $contact_id) {
-	$titleBlock->addCrumbDelete('delete contact', $canDelete, $msg);
-}
-
-$titleBlock->show();
 $company_detail = $row->getCompanyDetails();
 $dept_detail = $row->getDepartmentDetails();
 if ($contact_id == 0 && $company_id > 0) {
@@ -49,98 +40,110 @@ if ($contact_id == 0 && $company_id > 0) {
 	echo $company_name;
 }
 
+$q  = new DBQuery;
+$q->addTable('companies');
+$q->addQuery('company_id, company_name');
+$q->addOrder('company_name');
+$company_list = $q->loadHashList();
+
+$q  = new DBQuery;
+$q->addTable('departments');
+$q->addQuery('dept_id, dept_name, dept_company');
+$q->addOrder('dept_name');
+$department_list = $q->loadHashList();
+
 ?>
 
 <script language="javascript" type="text/javascript">
 <?php
-	echo "window.company_id=" . (int)dPgetParam($company_detail, 'company_id', 0) . ";\n";
-	echo "window.company_value='" . dPgetCleanParam($company_detail, 'company_name', "") . "';\n";
-?>
+//	echo "window.company_id=" . (int)dPgetParam($company_detail, 'company_id', 0) . ";\n";
+//	echo "window.company_value='" . dPgetCleanParam($company_detail, 'company_name', "") . "';\n";
+//?>
+//
+//function submitIt() {
+//	var form = document.changecontact;
+//	if (form.contact_last_name.value.length < 1) {
+//		alert("<?php //echo $AppUI->_('contactsValidName', UI_OUTPUT_JS);?>//");
+//		form.contact_last_name.focus();
+//	} else if (form.contact_order_by.value.length < 1) {
+//		alert("<?php //echo $AppUI->_('contactsOrderBy', UI_OUTPUT_JS);?>//");
+//		form.contact_order_by.focus();
+//	} else {
+//		form.submit();
+//	}
+//}
 
-function submitIt() {
-	var form = document.changecontact;
-	if (form.contact_last_name.value.length < 1) {
-		alert("<?php echo $AppUI->_('contactsValidName', UI_OUTPUT_JS);?>");
-		form.contact_last_name.focus();
-	} else if (form.contact_order_by.value.length < 1) {
-		alert("<?php echo $AppUI->_('contactsOrderBy', UI_OUTPUT_JS);?>");
-		form.contact_order_by.focus();
-	} else {
-		form.submit();
-	}
-}
+//function popDepartment() {
+////due to a bug in Firefox we CANNOT do a window open with &amp; separating the parameters
+////this bug does not occur if the window open occurs in an onclick event
+////this bug does NOT occur in Internet explorer
+////        window.open('./index.php?m=public&amp;a=selector&amp;dialog=1&amp;callback=setDepartment&amp;table=departments&amp;hide_company=1&amp;company_id=' + window.company_id, 'department','left=50,top=50,height=250,width=400,resizable');
+//	window.open("?m=contacts&a=select_contact_company&dialog=1&table_name=departments&company_id="+window.company_id, "company", "left=50,top=50,height=250,width=400,resizable");
+//}
 
-function popDepartment() {
-//due to a bug in Firefox we CANNOT do a window open with &amp; separating the parameters
-//this bug does not occur if the window open occurs in an onclick event
-//this bug does NOT occur in Internet explorer
-//        window.open('./index.php?m=public&amp;a=selector&amp;dialog=1&amp;callback=setDepartment&amp;table=departments&amp;hide_company=1&amp;company_id=' + window.company_id, 'department','left=50,top=50,height=250,width=400,resizable');
-	window.open("?m=contacts&a=select_contact_company&dialog=1&table_name=departments&company_id="+window.company_id, "company", "left=50,top=50,height=250,width=400,resizable");
-}
+//function setDepartment(key, val) {
+//	var f = document.changecontact;
+// 	if (val != '') {
+//    	f.contact_department.value = key;
+//			f.contact_department_name.value = val;
+//    }
+//}
 
-function setDepartment(key, val) {
-	var f = document.changecontact;
- 	if (val != '') {
-    	f.contact_department.value = key;
-			f.contact_department_name.value = val;
-    }
-}
+//function popCompany() {
+////due to a bug in Firefox we CANNOT do a window open with &amp; separating the parameters
+////this bug does not occur if the window open occurs in an onclick event
+////this bug does NOT occur in Internet explorer
+////        window.open('./index.php?m=public&amp;a=selector&amp;dialog=1&amp;callback=setCompany&amp;table=companies', 'company','left=50,top=50,height=250,width=400,resizable');
+//	window.open("?m=contacts&a=select_contact_company&dialog=1&table_name=companies&company_id=<?php //echo $company_detail['company_id'];?>//", "company", "left=50,top=50,height=250,width=400,resizable");
+//}
 
-function popCompany() {
-//due to a bug in Firefox we CANNOT do a window open with &amp; separating the parameters
-//this bug does not occur if the window open occurs in an onclick event
-//this bug does NOT occur in Internet explorer
-//        window.open('./index.php?m=public&amp;a=selector&amp;dialog=1&amp;callback=setCompany&amp;table=companies', 'company','left=50,top=50,height=250,width=400,resizable');
-	window.open("?m=contacts&a=select_contact_company&dialog=1&table_name=companies&company_id=<?php echo $company_detail['company_id'];?>", "company", "left=50,top=50,height=250,width=400,resizable");
-}
+//function setCompany(key, val) {
+//	var f = document.changecontact;
+// 	if (val != '') {
+//    	f.contact_company.value = key;
+//			f.contact_company_name.value = val;
+//    	if (window.company_id != key) {
+//    		f.contact_department.value = "";
+//				f.contact_department_name.value = "";
+//    	}
+//    	window.company_id = key;
+//    	window.company_value = val;
+//    }
+//}
 
-function setCompany(key, val) {
-	var f = document.changecontact;
- 	if (val != '') {
-    	f.contact_company.value = key;
-			f.contact_company_name.value = val;
-    	if (window.company_id != key) {
-    		f.contact_department.value = "";
-				f.contact_department_name.value = "";
-    	}
-    	window.company_id = key;
-    	window.company_value = val;
-    }
-}
-
-function delIt() {
+//function delIt() {
 <?php
-if ($userDeleteProtect) {
-?>
-	alert("<?php echo $AppUI->_('contactsDeleteUserError', UI_OUTPUT_JS);?>");
+//if ($userDeleteProtect) {
+//?>
+//	alert("<?php //echo $AppUI->_('contactsDeleteUserError', UI_OUTPUT_JS);?>//");
 <?php
-} else {
-?>
-	var form = document.changecontact;
-	if (confirm("<?php echo $AppUI->_('contactsDelete', UI_OUTPUT_JS);?>")) {
-		form.del.value = "<?php echo $contact_id;?>";
-		form.submit();
-	}
+//} else {
+//?>
+//	var form = document.changecontact;
+//	if (confirm("<?php //echo $AppUI->_('contactsDelete', UI_OUTPUT_JS);?>//")) {
+//		form.del.value = "<?php //echo $contact_id;?>//";
+//		form.submit();
+//	}
 <?php
-} 
-?>
-}
+//}
+//?>
+//}
 
-function orderByName(x) {
-	var form = document.changecontact;
-	if (x == "name") {
-		form.contact_order_by.value = form.contact_last_name.value + ", " + form.contact_first_name.value;
-	} else {
-		form.contact_order_by.value = form.contact_company_name.value;
-	}
-}
-
-function companyChange() {
-	var f = document.changecontact;
-	if (f.contact_company.value != window.company_value) {
-		f.contact_department.value = "";
-	} 
-}
+//function orderByName(x) {
+//	var form = document.changecontact;
+//	if (x == "name") {
+//		form.contact_order_by.value = form.contact_last_name.value + ", " + form.contact_first_name.value;
+//	} else {
+//		form.contact_order_by.value = form.contact_company_name.value;
+//	}
+//}
+//
+//function companyChange() {
+//	var f = document.changecontact;
+//	if (f.contact_company.value != window.company_value) {
+//		f.contact_department.value = "";
+//	}
+//}
 
 </script>
 
@@ -152,67 +155,118 @@ function companyChange() {
 	<input type="hidden" name="contact_id" value="<?php echo $contact_id;?>" />
 	<input type="hidden" name="contact_owner" value="<?php echo $row->contact_owner ? $row->contact_owner : $AppUI->user_id;?>" />
 
+    <div class="form-group">
+        <span class="required"></span>
+        <?=$AppUI->_('requiredField');?>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="first_name" class="required">
+                    <?php echo $AppUI->_('First Name'); ?>
+                </label>
+                <input type="text" class="form-control form-control-sm" name="contact_first_name" value="<?=@$row->contact_first_name?>" maxlength="50" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="last_name" class="required">
+                    <?php echo $AppUI->_('Last Name'); ?>
+                </label>
+                <input type="text" class="form-control form-control-sm" name="contact_last_name" value="<?=@$row->contact_last_name?>" maxlength="50" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="display_name">
+                    <?php echo $AppUI->_('Display Name'); ?>
+                </label>
+                <input type="text" class="form-control form-control-sm" name="contact_order_by" value="<?=@$row->contact_order_by?>" maxlength="50" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <br>
+                <div class="form-check form-check-inline">
+                    <label for="private_entry" class="form-check-label">
+                        <?php echo $AppUI->_('Private Entry'); ?>&nbsp;
+                    </label>
+                    <input type="checkbox" class="form-check-input" name="contact_private" id="contact_private" <?=@$row->contact_private ? 'checked="checked"' : ''?> />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="job_title">
+                    <?php echo $AppUI->_('Job Title'); ?>
+                </label>
+                <input type="text" class="form-control form-control-sm" name="contact_job" value="<?=@$row->contact_job?>" maxlength="100" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="company">
+                    <?php echo $AppUI->_('Company'); ?>
+                </label>
+
+                <select class="form-control form-control-sm" name="contact_company" id="companySelect">
+                    <?php
+                    foreach ($company_list as $key=>$value) {
+                        ?>
+                        <option value="<?=$key?>"><?=$value?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="department">
+                    <?php echo $AppUI->_('Department'); ?>
+                </label>
+                <!-- TODO FILTRAR DEPARTAMENTO BASEADO NA SELELEÇÃO DA EMPRESA -->
+                <select class="form-control form-control-sm" name="contact_department" id="departmentSelect">
+                    <?php
+                    foreach ($department_list as $key=>$value) {
+                        ?>
+                        <option value="<?=$key?>"><?=$value?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="company">
+                    <?php echo $AppUI->_('Company'); ?>
+                </label>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
 <table border="0" cellpadding="4" cellspacing="0" width="100%" class="std" summary="contact information">
 <tr>
-	<td colspan="2">
-		<table border="0" cellpadding="1" cellspacing="1" summary="contact name">
-		<tr>
-			<td align="right"><?php echo $AppUI->_('First Name');?>:</td>
-			<td>
-				<input type="text" class="text" size="25" name="contact_first_name" value="<?php echo @$row->contact_first_name;?>" maxlength="50" />
-			</td>
-		</tr>
-		<tr>
-			<td align="right">&nbsp;&nbsp;<?php echo $AppUI->_('Last Name');?>:</td>
-			<td>
-				<input type="text" class="text" size="25" name="contact_last_name" value="<?php echo @$row->contact_last_name;?>" maxlength="50" <?php if ($contact_id==0) {?> onblur="javascript:orderByName('name')"<?php }?> />
-				<a href="#" onclick="javascript:orderByName('name')">[<?php echo $AppUI->_('use in display');?>]</a>
-			</td>
-		</tr>
-		<tr>
-			<td align="right" width="100"><?php echo $AppUI->_('Display Name');?>: </td>
-			<td>
-				<input type="text" class="text" size="25" name="contact_order_by" value="<?php echo @$row->contact_order_by;?>" maxlength="50" />
-			</td>
-		</tr>
-		<tr>
-			<td align="right" width="100"><label for="contact_private"><?php echo $AppUI->_('Private Entry');?>:</label> </td>
-			<td>
-				<input type="checkbox" value="1" name="contact_private" id="contact_private" <?php echo (@$row->contact_private ? 'checked="checked"' : '');?> />
-			</td>
-		</tr>
-		</table>
-	</td>
-</tr>
-<tr>
-	<td valign="top" width="50%">
-		<table border="0" cellpadding="1" cellspacing="1" class="details" width="100%" summary="contact details">
-		<tr>
-			<td align="right" width="100"><?php echo $AppUI->_('Job Title');?>:</td>
-			<td nowrap="nowrap">
-				<input type="text" class="text" name="contact_job" value="<?php echo @$row->contact_job;?>" maxlength="100" size="25" />
-			</td>
-		</tr>
-		<tr>
-			<td align="right" width="100"><?php echo $AppUI->_('Company');?>:</td>
-			<td nowrap="nowrap">
-				<input type="text" class="text" name="contact_company_name" value="<?php 
-					echo $company_detail['company_name'];
-					?>" maxlength="100" size="25" />
-				<input type="button" class="button" value="<?php echo $AppUI->_('select company...');?>..." onclick="popCompany()" />
-				<input type='hidden' name='contact_company' value="<?php echo $company_detail['company_id']; ?>" />
-				<a href="#" onclick="orderByName('company')">[<?php echo $AppUI->_('use in display');?>]</a>
-				</td>
-		</tr>
-		<tr>
-			<td align="right" width="100"><?php echo $AppUI->_('Department');?>:</td>
-			<td nowrap="nowrap">
-				<input type="text" class="text" name="contact_department_name" value="<?php echo $dept_detail['dept_name'];?>" maxlength="100" size="25" />
-
-				<input type='hidden' name='contact_department' value='<?php echo $dept_detail['dept_id'];?>' />
-				<input type="button" class="button" value="<?php echo $AppUI->_('select department...');?>" onclick="popDepartment()" />
-				</td>
-		</tr>
 		<tr>
 			<td align="right"><?php echo $AppUI->_('Title');?>:</td>
 			<td><input type="text" class="text" name="contact_title" value="<?php echo @$row->contact_title;?>" maxlength="50" size="25" /></td>
@@ -340,3 +394,27 @@ function companyChange() {
 </tr>
 </table>
 </form>
+
+<script>
+
+    $(document).ready(function() {
+        $('#companySelect').select2({
+            placeholder: '',
+            allowClear: true,
+            theme: "bootstrap",
+            dropdownParent: $("#addEditModal")
+
+        });
+        $('#departmentSelect').select2({
+            placeholder: '',
+            allowClear: true,
+            theme: "bootstrap",
+            dropdownParent: $("#addEditModal")
+
+        });
+    });
+
+</script>
+<?php
+    exit();
+?>

@@ -18,10 +18,8 @@ $AppUI->setMsg('Contact');
 if ($del) {
 	if (($msg = $obj->delete())) {
 		$AppUI->setMsg($msg, UI_MSG_ERROR);
-		$AppUI->redirect();
 	} else {
-		$AppUI->setMsg("deleted", UI_MSG_ALERT, true);
-		$AppUI->redirect("m=contacts");
+		$AppUI->setMsg("deleted", UI_MSG_OK, true);
 	}
 } else {
 	$isNotNew = @$_POST['contact_id'];
@@ -31,6 +29,7 @@ if ($del) {
 	} else {
 		$AppUI->setMsg($isNotNew ? 'updated' : 'added', UI_MSG_OK, true);
 	}
-	$AppUI->redirect();
 }
+echo $AppUI->getMsg();
+exit();
 ?>

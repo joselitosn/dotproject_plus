@@ -8,7 +8,7 @@
 "Export vCard for"=>"Exportar vCard para",
 "Fetch vCard(s) File"=>"Selecionar arquivo vCard(s)",
 "Import vCard"=>"Importar vCard",
-"CSV Download"=>"Baixar CSV",
+"CSV Download"=>"Exportar CSV",
 "Reset search"=>"Limpa procura",
 "Search for"=>"Procurar por",
 "contactIdError"=>"Um manipulador invalido de contato foi passado a funcao",
