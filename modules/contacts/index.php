@@ -13,21 +13,15 @@ $search_string = dPgetCleanParam($_GET, 'search_string', null);
 
 // To configure an aditional filter to use in the search string
 $additional_filter = '';
-// retrieve any state parameters
 if ($search_string) {
-	$AppUI->setState('ContIdxWhere', $search_string);
 	$get_search = $q->quote_sanitised('%' . $search_string . '%');
 	$additional_filter = ("contact_first_name LIKE " . $get_search
 	                      . " OR contact_last_name LIKE " . $get_search
 	                      . " OR company_name LIKE " . $get_search
 	                      . " OR contact_notes LIKE " . $get_search
 	                      . " OR contact_email LIKE " . $get_search);
-} else if (isset($_GET['where'])) {
-	$AppUI->setState('ContIdxWhere', $_GET['where']);
 }
-
-$where = $q->quote_sanitised( $AppUI->getState('ContIdxWhere') ? ( $AppUI->getState('ContIdxWhere') . '%') : '%');
-
+$where = $q->quote_sanitised( $search_string . '%');
 // Pull First Letters
 $let = ":";
 $search_map = array('contact_order_by', 'contact_first_name', 'contact_last_name');
@@ -59,7 +53,7 @@ $q->addTable('contacts', 'a');
 $q->leftJoin('companies', 'b', 'a.contact_company = b.company_id');
 $q->leftJoin('users', 'u', 'u.user_contact=a.contact_id');
 $q->addQuery('contact_id, contact_order_by');
-$q->addQuery('contact_first_name, contact_last_name, contact_phone, contact_owner');
+$q->addQuery('contact_first_name, contact_last_name, contact_address1, contact_phone, contact_owner, contact_mobile, contact_email, contact_notes, contact_job');
 $q->addQuery($showfields);
 $q->addQuery('user_id');
 foreach ($search_map as $search_name) {
@@ -90,7 +84,6 @@ if (!($res = db_exec($sql))) {
 		}
 	}
 }
-$default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
 
 ?>
 <div id="content">
@@ -100,7 +93,7 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
             <div class="col-md-4">
                 <form action="./index.php" method="get">
                     <div class="form-group">
-                        <input type="text" class="form-control form-control-sm" placeholder="<?=$AppUI->_('Search for')?>" name="search_string" value="<?=$default_search_string?>" />
+                        <input type="text" class="form-control form-control-sm" placeholder="<?=$AppUI->_('Search for')?>" name="search_string" value="<?=$search_string?>" />
                         <input type="hidden" name="m" value="contacts" />
                     </div>
                 </form>
@@ -137,7 +130,7 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
                                                 <i class="fas fa-bars"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                                <a class="dropdown-item" href="javascript:void(0)" onclick="">
+                                                <a class="dropdown-item" href="javascript:void(0)" onclick="contact.update(<?= $contact['contact_id'] ?>)">
                                                     <i class="far fa-edit"></i>
                                                     Alterar
                                                 </a>
@@ -167,9 +160,9 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="row">
-                                                <div class="col-md-5 text-right"><b>Nome:</b></div>
+                                                <div class="col-md-5 text-right"><b>Cargo:</b></div>
                                                 <div class="col-md-7">
-                                                    <?=$contact['contact_first_name'] . ' ' . $contact['contact_last_name']?>
+                                                    <?=$contact['contact_job']?>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -206,12 +199,6 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
                                             </div>
                                         </div>
                                         <div class="col-md-4">
-                                            <div class="row">
-                                                <div class="col-md-5 text-right"><b>Cargo:</b></div>
-                                                <div class="col-md-7">
-                                                    <?=$contact['contact_job']?>
-                                                </div>
-                                            </div>
                                             <div class="row">
                                                 <div class="col-md-5 text-right"><b>Observações:</b></div>
                                                 <div class="col-md-7">
@@ -307,6 +294,45 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
             });
         },
 
+        update: function (id) {
+            $.ajax({
+                type: "get",
+                url: "?m=contacts&template=addedit&contact_id="+id
+            }).done(function(response) {
+                var modal = $('#addEditModal');
+                modal.find('h5').html('Alterar contato');
+                $('.addEditContact').html(response);
+                modal.modal();
+            });
+        },
+
+        save: function () {
+
+            var cfn = $('input[name=contact_first_name]').val();
+            var cln = $('input[name=contact_last_name]').val();
+            if (!cfn || !cln) {
+                $.alert({
+                    title: "Erro",
+                    content: "O primeiro e último nome são obrigatórios"
+                });
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=contacts",
+                data: $("form[name=changecontact]").serialize(),
+            }).done(function(resposta) {
+                $.alert({
+                    title: "Sucesso",
+                    content: resposta,
+                    onClose: function() {
+                        window.location.reload(true);
+                    }
+                });
+            });
+        },
+
         delete: function (id) {
             $.confirm({
                 title: 'Excluir contato',
@@ -346,7 +372,7 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
 
             if (file.length == 0) {
                 $.alert({
-                    title: "Error",
+                    title: "Erro",
                     content: "Nenhum arquivo selecionado"
                 });
                 return;
@@ -380,81 +406,3 @@ $default_search_string = dPformSafe($AppUI->getState('ContIdxWhere'), true);
 
     $(document).ready(contact.init);
 </script>
-
-
-<!---->
-<!--<table width="100%" border="0" cellpadding="1" cellspacing="1" style="height:400px;" class="contacts" summary="Contacts">-->
-<!--<tr>-->
-<?php
-//for ($z = 0; $z < $carrWidth; $z++) {
-//?>
-<!--	<td valign="top" align="left" bgcolor="#f4efe3" width="--><?php //echo $tdw;?><!--%">-->
-<!--	--><?php
-//	for ($x = 0; $x < @count($carr[$z]); $x++) {
-//	?>
-<!--		<table width="100%" cellspacing="1" cellpadding="1" summary="contact info">-->
-<!--		<tr>-->
-<!--			<td width="100%">-->
-<!--				--><?php //$contactid = $carr[$z][$x]['contact_id']; ?>
-<!--				<a href="?m=contacts&amp;a=view&amp;contact_id=--><?php //
-//		echo $contactid;
-//?><!--"><strong>--><?php //
-//		echo $AppUI->___(($carr[$z][$x]['contact_order_by'])
-//		      ? $carr[$z][$x]['contact_order_by']
-//		      : ($carr[$z][$x]['contact_first_name'] . ' ' . $carr[$z][$x]['contact_last_name']));
-//?><!--</strong></a>&nbsp;-->
-<!--				&nbsp;<a title="--><?php //
-//		echo $AppUI->___($AppUI->_('Export vCard for') . ' ' . $carr[$z][$x]['contact_first_name'] . ' '
-//		      . $carr[$z][$x]['contact_last_name']);
-//?><!--" href="?m=contacts&amp;a=vcardexport&amp;suppressHeaders=true&amp;contact_id=--><?php //
-//		echo $contactid; ?><!--" >(vCard)</a>-->
-<!--				&nbsp;<a title="--><?php //
-//		echo $AppUI->_('Edit'); ?><!--" href="?m=contacts&amp;a=addedit&amp;contact_id=--><?php //
-//		echo $contactid; ?><!--">--><?php //echo $AppUI->_('Edit'); ?><!--</a>-->
-<?php
-//		$q = new DBQuery;
-//		$q->addTable('projects');
-//		$q->addQuery('count(*)');
-//		$q->addWhere('project_contacts LIKE "' . $carr[$z][$x]['contact_id']
-//		             .',%" OR project_contacts LIKE "%,' . $carr[$z][$x]['contact_id']
-//		             .',%" OR project_contacts LIKE "%,' . $carr[$z][$x]['contact_id']
-//		             .'" OR project_contacts LIKE "' . $carr[$z][$x]['contact_id'] .'"');
-//
-//		$res = $q->exec();
-//		$projects_contact = db_fetch_row($res);
-//		$q->clear();
-//		if ($projects_contact[0] > 0) {
-//			echo ('&nbsp;<a href="" onclick="javascript:window.open('
-//			      . "'?m=public&amp;a=selector&amp;dialog=1&amp;callback=goProject&amp;table=projects"
-//			      . '&user_id=' . $carr[$z][$x]['contact_id']
-//			      . "', 'selector', 'left=50,top=50,height=250,width=400,resizable');"
-//			      . 'return false;">' . $AppUI->_('Projects') . '</a>');
-//		}
-//?>
-<!--			</td>-->
-<!--		</tr>-->
-<!--		<tr>-->
-<!--			<td class="hilite">-->
-<!--			--><?php
-//		reset($showfields);
-//		while (list($key, $val) = each($showfields)) {
-//			if (mb_strlen($carr[$z][$x][$key]) > 0) {
-//				if ($val == "contact_email") {
-//					echo ('<a href="mailto:' . $carr[$z][$x][$key] . '" class="mailto">'
-//					      . $carr[$z][$x][$key] . "</a>\n");
-//				} else if (!($val == "contact_company" && is_numeric($carr[$z][$x][$key]))) {
-//					echo  $carr[$z][$x][$key]. "<br />";
-//				}
-//			}
-//		} ?>
-<!--			</td>-->
-<!--		</tr>-->
-<!--		</table>-->
-<!--		<br />&nbsp;<br />-->
-<!--	--><?php //
-//	} ?>
-<!--	</td>-->
-<?php //
-//} ?>
-<!--</tr>-->
-<!--</table>-->

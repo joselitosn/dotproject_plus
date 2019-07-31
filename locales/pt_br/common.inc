@@ -6,6 +6,7 @@
 "Active Projects"=>"Projetos Ativos",
 "Add"=>"Adicionar",
 "Address"=>"Endereco",
+"Address2"=>"Endereco complementar",
 "Administration"=>"Administracao",
 "All"=>"Todos",
 "All Companies"=>"Todas Empresas",
