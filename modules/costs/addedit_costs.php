@@ -48,24 +48,12 @@ $dateEP = (string) $dateTemp;
 $projectEndDate=new CDate($datesProject->fields["project_end_date"]);
 $projectEndDateUserFormat=$projectEndDate->format($df);
 
-require_once (DP_BASE_DIR . '/modules/timeplanning/view/link_to_project.php');
-// setup the title block
-$ttl = $cost_id ? "Edit" : "Add";
-$titleBlock = new CTitleBlock($ttl, 'costs.png', $m, "$m.$a");
-
-/* There is no sense to delete cost with human resource, because it is automatially included/exclude by the system when the cost baseline page is loaded.
-if ($canDelete && $cost_id > 0) {
-    $titleBlock->addCrumbDelete('delete human resource', $canDelete, $msg);
-}
-*/
-
-$titleBlock->show();
 ?>
-<link href="modules/timeplanning/css/table_form.css" type="text/css" rel="stylesheet" />
+<!--<link href="modules/timeplanning/css/table_form.css" type="text/css" rel="stylesheet" />-->
 <!-- import the calendar script -->
-<script type="text/javascript" src="<?php echo DP_BASE_URL; ?>/lib/calendar/calendar.js"></script>
+<!--<script type="text/javascript" src="--><?php //echo DP_BASE_URL; ?><!--/lib/calendar/calendar.js"></script>-->
 <!-- import the language module -->
-<script type="text/javascript" src="<?php echo DP_BASE_URL; ?>/lib/calendar/lang/calendar-<?php echo $AppUI->user_locale; ?>.js"></script>
+<!--<script type="text/javascript" src="--><?php //echo DP_BASE_URL; ?><!--/lib/calendar/lang/calendar---><?php //echo $AppUI->user_locale; ?><!--.js"></script>-->
 <script language="javascript">
     function submitIt() {
         
@@ -158,31 +146,35 @@ $titleBlock->show();
         document.getElementById("text_total").innerHTML= total;
     }
     
-    function popCalendar( field ){
-        calendarField = field;
-        idate = eval( 'document.uploadFrm.cost_' + field + '.value' );
-        window.open( 'index.php?m=public&a=calendar&dialog=1&callback=setCalendar&date=' + idate, 'calwin', 'width=280, height=250, scrollbars=no' );
-    }
-
-    /**
-     *	@param string Input date in the format YYYYMMDD
-     *	@param string Formatted date
-     */
-    function setCalendar( idate, fdate ) {
-        fld_date = eval( 'document.uploadFrm.cost_' + calendarField );
-        fld_fdate = eval( 'document.uploadFrm.' + calendarField );
-        fld_date.value = idate;
-        fld_fdate.value = fdate;
-
-        // set end date automatically with start date if start date is after end date
-        if (calendarField == 'cost_date_end') {
-            if( document.uploadFrm.date_end.value < idate) {
-                document.uploadFrm.cost_date_end.value = idate;
-                document.uploadFrm.date_end.value = fdate;
-            }
-        }
-    }
+//    function popCalendar( field ){
+//        calendarField = field;
+//        idate = eval( 'document.uploadFrm.cost_' + field + '.value' );
+//        window.open( 'index.php?m=public&a=calendar&dialog=1&callback=setCalendar&date=' + idate, 'calwin', 'width=280, height=250, scrollbars=no' );
+//    }
+//
+//    /**
+//     *	@param string Input date in the format YYYYMMDD
+//     *	@param string Formatted date
+//     */
+//    function setCalendar( idate, fdate ) {
+//        fld_date = eval( 'document.uploadFrm.cost_' + calendarField );
+//        fld_fdate = eval( 'document.uploadFrm.' + calendarField );
+//        fld_date.value = idate;
+//        fld_fdate.value = fdate;
+//
+//        // set end date automatically with start date if start date is after end date
+//        if (calendarField == 'cost_date_end') {
+//            if( document.uploadFrm.date_end.value < idate) {
+//                document.uploadFrm.cost_date_end.value = idate;
+//                document.uploadFrm.date_end.value = fdate;
+//            }
+//        }
+//    }
 </script>
+
+<div class="alert alert-secondary" role="alert">
+    <?=$AppUI->_('Name') . ': ' . dPformSafe($obj->cost_description)?>
+</div>
 
 <form name="uploadFrm" action="?m=costs" method="post">
     <input type="hidden" name="dosql" value="do_costs_aed" />
@@ -190,75 +182,147 @@ $titleBlock->show();
     <input type="hidden" name="cost_id" value="<?php echo $cost_id; ?>" />
     <input type="hidden" name="cost_project_id" value="<?php echo $project_id ?>" />
     <input type="hidden" name="cost_type_id" value="0" />
-    <table width="100%" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form">
-        <tr>
-            <th colspan="2"><?php echo $AppUI->_("LBL_COST_HUMAN_RESOURCE_REGISTER"); ?></th>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Name'); ?>:</td>
-            <td>
-                <?php
-                echo dPformSafe($obj->cost_description);
-                ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Date Begin'); ?><span class="span_mandatory">*</span>:</td>
-            <td>
-                <input type="hidden" name="cost_date_begin" id="cost_date_begin"  value="<?php echo (($date_begin) ? $date_begin->format(FMT_TIMESTAMP_DATE) : ''); ?>"/>
-                <!-- format(FMT_TIMESTAMP_DATE) -->
-                <input type="text" style="width:85px" class="text" name="date_begin" id="date0" value="<?php echo (($date_begin) ? $date_begin->format($df) : ''); ?>" disabled="disabled"  />
 
-                <a href="#" onclick="popCalendar( 'date_begin', 'date_begin');">
-                    <img src="./images/calendar.gif" width="24" height="12" alt="{dPtranslate word='Calendar'}" border="0" />
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Date End'); ?><span class="span_mandatory">*</span>:</td>
-            <td>
-                <input type="hidden" name="cost_date_end" id="cost_date_end"  value="<?php echo (($date_end) ? $date_end->format(FMT_TIMESTAMP_DATE) : ''); ?>"/>
-                <!-- format(FMT_TIMESTAMP_DATE) -->
-                <input type="text" style="width:85px" class="text" name="date_end" id="date1" value="<?php echo (($date_end) ? $date_end->format($df) : ''); ?>" disabled="disabled" />
+    <div class="form-group">
+        <span class="required"></span>
+        <?=$AppUI->_('requiredField');?>
+    </div>
 
-                <a href="#" onclick="popCalendar( 'date_end', 'date_end');">
-                    <img src="./images/calendar.gif" width="24" height="12" alt="{dPtranslate word='Calendar'}" border="0" />
-                </a>
-                
-                &nbsp;<?php echo $AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT")?>&nbsp; (<?php echo $projectEndDateUserFormat ?>)
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Hours per Month'); ?>*:</td>
-            <td>
-                <input name="cost_quantity"  id="cost_quantity" value="<?php echo dPformSafe($obj->cost_quantity); ?>" />
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Unitary Value'); ?> &nbsp;(<?php echo dPgetConfig("currency_symbol") ?>):</td>
-            <td>
-                <span id="text_unit_value"><?php echo dPformSafe($obj->cost_value_unitary); ?></span>
-                <input type="hidden" name="cost_value_unitary"  id="cost_value_unitary" value="<?php echo dPformSafe($obj->cost_value_unitary); ?>" />
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label"><?php echo $AppUI->_('Total Value'); ?> &nbsp;(<?php echo dPgetConfig("currency_symbol") ?>):</td>
-            <td>
-                <span id="text_total" > <?php echo dPformSafe($obj->cost_value_total); ?> </span>
-                <input type="hidden" name="cost_value_total"  id="cost_value_total" value="<?php echo dPformSafe($obj->cost_value_total); ?>" />
-                <span style="color: #6E6E6E">(<?php echo $AppUI->_("LBL_COST_HR_RULE_OF_CALCULUS"); ?>)</span>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2" align="right">
-                <input type="button" class="button" value="<?php echo ucfirst($AppUI->_("LBL_SUBMIT")); ?>" onclick="sumTotalValue();submitIt()" />        
-               <script> var targetScreenOnProject="/modules/costs/view_costs.php";</script>
-               <?php require_once (DP_BASE_DIR . "/modules/timeplanning/view/subform_back_button_project.php"); ?>
-            </td>
-        </tr>
-    </table>
-    <br />
-    <span class="span_mandatory">*</span> <?php echo $AppUI->_('Required Fields'); ?>
-    <br />
-    <span style='color:red'>*</span> <?php echo $AppUI->_("LBL_RH_AUTOMATICALLY_ADDED_COST_BASELINE") ?>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="data_begin" class="required">
+                    <?=$AppUI->_('Date Begin')?>
+                </label>
+                <input type="hidden" name="cost_date_begin" id="cost_date_begin"  value="<?=(($date_begin) ? $date_begin->format(FMT_TIMESTAMP_DATE) : '')?>" />
+                <input type="text" class="form-control form-control-sm datepicker-start" name="date_begin" id="date0" value="<?=(($date_begin) ? $date_begin->format($df) : '')?>" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="data_end" class="required">
+                    <?=$AppUI->_('Date End')?>
+                </label>
+                <input type="hidden" name="cost_date_end" id="cost_date_end"  value="<?=(($date_end) ? $date_end->format(FMT_TIMESTAMP_DATE) : '')?>" />
+                <input type="text" class="form-control form-control-sm datepicker-end" name="date_end" id="date1" value="<?=(($date_end) ? $date_end->format($df) : '')?>" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="cost_quantity" class="required">
+                    <?=$AppUI->_('Hours per Month')?>
+                </label>
+                <input name="cost_quantity" class="form-control form-control-sm" id="cost_quantity" value="<?=dPformSafe($obj->cost_quantity)?>" />
+            </div>
+        </div>
+        <div class="col-md-12">
+            <small><?=$AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT")?>&nbsp; (<?php echo $projectEndDateUserFormat ?>)</small>
+        </div>
+    </div>
+    <hr>
+    <span><b><?=$AppUI->_('Unitary Value'). ':</b> ' . dPgetConfig("currency_symbol") . dPformSafe($obj->cost_value_unitary)?></span>
+    <input type="hidden" name="cost_value_unitary"  id="cost_value_unitary" value="<?=dPformSafe($obj->cost_value_unitary)?>" />
+    <br>
+    <span><b><?=$AppUI->_('Total Value'). ':</b> ' . dPgetConfig("currency_symbol") . dPformSafe($obj->cost_value_total)?></span>
+    <input type="hidden" name="cost_value_total"  id="cost_value_total" value="<?=dPformSafe($obj->cost_value_total)?>" />
+    <br>
+    <small><?=$AppUI->_("LBL_COST_HR_RULE_OF_CALCULUS")?></small>
+<!--    <div class="alert alert-secondary" role="alert">-->
+<!--    </div>-->
+
+<!--    <table width="100%" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form">-->
+<!--        <tr>-->
+<!--            <th colspan="2">--><?php //echo $AppUI->_("LBL_COST_HUMAN_RESOURCE_REGISTER"); ?><!--</th>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td class="td_label">--><?php //echo $AppUI->_('Name'); ?><!--:</td>-->
+<!--            <td>-->
+<!--                --><?php
+//                echo dPformSafe($obj->cost_description);
+//                ?>
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td class="td_label">--><?php //echo $AppUI->_('Date Begin'); ?><!--<span class="span_mandatory">*</span>:</td>-->
+<!--            <td>-->
+<!--                <input type="hidden" name="cost_date_begin" id="cost_date_begin"  value="--><?php //echo (($date_begin) ? $date_begin->format(FMT_TIMESTAMP_DATE) : ''); ?><!--"/>-->
+<!--                <!-- format(FMT_TIMESTAMP_DATE) -->
+<!--                <input type="text" style="width:85px" class="text" name="date_begin" id="date0" value="--><?php //echo (($date_begin) ? $date_begin->format($df) : ''); ?><!--" disabled="disabled"  />-->
+<!---->
+<!--                <a href="#" onclick="popCalendar( 'date_begin', 'date_begin');">-->
+<!--                    <img src="./images/calendar.gif" width="24" height="12" alt="{dPtranslate word='Calendar'}" border="0" />-->
+<!--                </a>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td class="td_label">--><?php //echo $AppUI->_('Date End'); ?><!--<span class="span_mandatory">*</span>:</td>-->
+<!--            <td>-->
+<!--                <input type="hidden" name="cost_date_end" id="cost_date_end"  value="--><?php //echo (($date_end) ? $date_end->format(FMT_TIMESTAMP_DATE) : ''); ?><!--"/>-->
+<!--                <!-- format(FMT_TIMESTAMP_DATE) -->
+<!--                <input type="text" style="width:85px" class="text" name="date_end" id="date1" value="--><?php //echo (($date_end) ? $date_end->format($df) : ''); ?><!--" disabled="disabled" />-->
+<!---->
+<!--                <a href="#" onclick="popCalendar( 'date_end', 'date_end');">-->
+<!--                    <img src="./images/calendar.gif" width="24" height="12" alt="{dPtranslate word='Calendar'}" border="0" />-->
+<!--                </a>-->
+<!--                -->
+<!--                &nbsp;--><?php //echo $AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT")?><!--&nbsp; (--><?php //echo $projectEndDateUserFormat ?><!--)-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td class="td_label">--><?php //echo $AppUI->_('Hours per Month'); ?><!--*:</td>-->
+<!--            <td>-->
+<!--                <input name="cost_quantity"  id="cost_quantity" value="--><?php //echo dPformSafe($obj->cost_quantity); ?><!--" />-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td class="td_label">--><?php //echo $AppUI->_('Unitary Value'); ?><!-- &nbsp;(--><?php //echo dPgetConfig("currency_symbol") ?><!--):</td>-->
+<!--            <td>-->
+<!--                <span id="text_unit_value">--><?php //echo ; ?><!--</span>-->
+<!--                <input type="hidden" name="cost_value_unitary"  id="cost_value_unitary" value="--><?php //echo dPformSafe($obj->cost_value_unitary); ?><!--" />-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td class="td_label">--><?php //echo $AppUI->_('Total Value'); ?><!-- &nbsp;(--><?php //echo dPgetConfig("currency_symbol") ?><!--):</td>-->
+<!--            <td>-->
+<!--                <span id="text_total" > --><?php //echo dPformSafe($obj->cost_value_total); ?><!-- </span>-->
+<!--                <input type="hidden" name="cost_value_total"  id="cost_value_total" value="--><?php //echo dPformSafe($obj->cost_value_total); ?><!--" />-->
+<!--                <span style="color: #6E6E6E">(--><?php //echo $AppUI->_("LBL_COST_HR_RULE_OF_CALCULUS"); ?><!--)</span>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td colspan="2" align="right">-->
+<!--                <input type="button" class="button" value="--><?php //echo ucfirst($AppUI->_("LBL_SUBMIT")); ?><!--" onclick="sumTotalValue();submitIt()" />        -->
+<!--               <script> var targetScreenOnProject="/modules/costs/view_costs.php";</script>-->
+<!--               --><?php //require_once (DP_BASE_DIR . "/modules/timeplanning/view/subform_back_button_project.php"); ?>
+<!--            </td>-->
+<!--        </tr>-->
+<!--    </table>-->
+<!--    <br />-->
+<!--    <span class="span_mandatory">*</span> --><?php //echo $AppUI->_('Required Fields'); ?>
+<!--    <br />-->
+<!--    <span style='color:red'>*</span> --><?php //echo $AppUI->_("LBL_RH_AUTOMATICALLY_ADDED_COST_BASELINE") ?>
 </form>
+<script>
+
+    $(document).ready(function() {
+        $( ".datepicker-start" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: function () {
+                var dateArr = $(this).val().split('/');
+                $('#cost_date_begin').val(dateArr[2]+dateArr[1]+dateArr[0]);
+            }
+        });
+
+        $( ".datepicker-end" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: function () {
+                var dateArr = $(this).val().split('/');
+                $('#cost_date_end').val(dateArr[2]+dateArr[1]+dateArr[0]);
+            }
+        });
+    });
+
+</script>
+<?php
+    exit();
+?>
