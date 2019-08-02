@@ -153,7 +153,7 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
 <div class="row">
     <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="costs.nhr.new(<?=$projectSelected?>)">
             <!-- ?m=costs&a=addedit_costs_not_human&project_id=<?php //echo $projectSelected ?> -->
             <?=$AppUI->_("LBL_INCLUDE_NON_HUMAN_RESOURCE")?>
         </button>
@@ -219,26 +219,47 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
     <?=$AppUI->_("Subtotal Not Human Estimatives")?>: <?=dPgetConfig("currency_symbol") . number_format($sumNH, 2, ',', '.')?>
 </p>
 
-<!-- MODAL EDIT HUMMAN COSTS -->
-<div id="hrCostModal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Alterar custo - Recurso humano</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body cost-modal">
+    <!-- MODAL EDIT HUMMAN COSTS -->
+    <div id="hrCostModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Alterar custo - Recurso humano</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body cost-modal">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
-                <button type="button" class="btn btn-primary btn-sm" onclick=""><?=$AppUI->_("LBL_SAVE")?></button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="costs.hr.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- MODAL ADD/EDIT NON HUMMAN COSTS -->
+    <div id="nhrCostModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body nhr-cost-modal">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="costs.nhr.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <script>
     var costs = {
@@ -257,6 +278,165 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                     $('.cost-modal').html(response);
                     modal.modal();
                 });
+            },
+            save: function () {
+                var dateStart = $('#date0').val();
+                var dateEnd = $('#date1').val();
+                var hours = $('#cost_quantity').val();
+
+                var msg = [];
+                var err = false;
+
+                if (!dateStart) {
+                    err = true;
+                    msg.push('Preencha a data de início');
+                }
+                if (!dateEnd) {
+                    err = true;
+                    msg.push('Preencha a data de fim');
+                }
+                if (!hours) {
+                    err = true;
+                    msg.push('Preencha a quantidade de horas');
+                }
+
+                var projectEndDate = $('#projectEndDate').val();
+                var arrProjectEndDate = projectEndDate.split('-');
+                var objProjectEndDate = new Date(arrProjectEndDate[0], arrProjectEndDate[1]-1, arrProjectEndDate[2]);
+
+                var arrDateStart = dateStart.split('/');
+                var arrDateEnd = dateEnd.split('/');
+
+                var objDateStart = new Date(arrDateStart[2], arrDateStart[1]-1, arrDateStart[0]);
+                var objDateEnd = new Date(arrDateEnd[2], arrDateEnd[1]-1, arrDateEnd[0]);
+
+                if(objDateEnd > objProjectEndDate) {
+                    err = true;
+                    msg.push("<?=$AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT", UI_OUTPUT_JS)?>");
+                }
+                if (objDateStart > objDateEnd) {
+                    err = true;
+                    msg.push("A data de início não pode ser maior que a data de fim");
+                }
+                if (hours == 0 || hours < 0) {
+                    err = true;
+                    msg.push("Favor informe um valor válido de horas por mês (maior do que 0)");
+                }
+
+                if (err) {
+                    $.alert({
+                        title: "Erro",
+                        content: msg.join('<br>')
+                    });
+                    return;
+                }
+                sumTotalValue();
+
+
+                $.ajax({
+                    method: 'POST',
+                    url: "?m=costs",
+                    data: $("#hrCostsForm").serialize(),
+                    success: function(resposta) {
+                        $.alert({
+                            title: "Sucesso",
+                            content: resposta,
+                            onClose: function() {
+                                window.location.reload(true);
+                            }
+                        });
+                    },
+                    error: function(resposta) {
+                        $.alert({
+                            title: "Erro",
+                            content: "Algo deu errado"
+                        });
+                    }
+                });
+            }
+        },
+
+        nhr: {
+            new: function (projectId) {
+                console.log(projectId);
+                $.ajax({
+                    type: "get",
+                    url: "?m=costs&template=addedit_costs_not_human&&project_id="+projectId
+                }).done(function(response) {
+                    var modal = $('#nhrCostModal');
+                    modal.find('h5').html('Adicionar custo - Recurso não humano');
+                    $('.nhr-cost-modal').html(response);
+                    modal.modal();
+                });
+            },
+
+            save: function () {
+                var name = $('input[name=cost_description]').val();
+                var qtd = $('input[name=cost_quantity]').val();
+                var dateStart = $('#date0').val();
+                var dateEnd = $('#date1').val();
+                var uniValue = $('#cost_value_unitary').val();
+
+                var msg = [];
+                var err = false;
+
+                if (!name) {
+                    err = true;
+                    msg.push('Preencha o nome');
+                }
+                if (!qtd) {
+                    err = true;
+                    msg.push('Informe a quantidade');
+                } else {
+                    if (Number.isNaN(parseInt(qtd)) || parseInt(qtd) <= 0) {
+                        err = true;
+                        msg.push('A quantidade deve ser maior que 0');
+                    }
+                }
+                if (!dateStart) {
+                    err = true;
+                    msg.push('Preencha a data de início');
+                }
+                if (!dateEnd) {
+                    err = true;
+                    msg.push('Preencha a data de fim');
+                }
+                if (!uniValue) {
+                    err = true;
+                    msg.push('Informe valor unitário');
+                } else {
+                    if (Number.isNaN(parseInt(uniValue)) || parseInt(uniValue) <= 0) {
+                        err = true;
+                        msg.push('O valor unitário deve ser maior que 0');
+                    }
+                }
+
+                var projectEndDate = $('#projectEndDate').val();
+                var arrProjectEndDate = projectEndDate.split('-');
+                var objProjectEndDate = new Date(arrProjectEndDate[0], arrProjectEndDate[1]-1, arrProjectEndDate[2]);
+
+                var arrDateStart = dateStart.split('/');
+                var arrDateEnd = dateEnd.split('/');
+
+                var objDateStart = new Date(arrDateStart[2], arrDateStart[1]-1, arrDateStart[0]);
+                var objDateEnd = new Date(arrDateEnd[2], arrDateEnd[1]-1, arrDateEnd[0]);
+
+                if(objDateEnd > objProjectEndDate) {
+                    err = true;
+                    msg.push("<?=$AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT", UI_OUTPUT_JS)?>");
+                }
+                if (objDateStart > objDateEnd) {
+                    err = true;
+                    msg.push("A data de início não pode ser maior que a data de fim");
+                }
+
+                if (err) {
+                    $.alert({
+                        title: "Erro",
+                        content: msg.join('<br>')
+                    });
+                    return;
+                }
             }
         }
     };

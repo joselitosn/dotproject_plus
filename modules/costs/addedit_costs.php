@@ -49,139 +49,17 @@ $projectEndDate=new CDate($datesProject->fields["project_end_date"]);
 $projectEndDateUserFormat=$projectEndDate->format($df);
 
 ?>
-<!--<link href="modules/timeplanning/css/table_form.css" type="text/css" rel="stylesheet" />-->
-<!-- import the calendar script -->
-<!--<script type="text/javascript" src="--><?php //echo DP_BASE_URL; ?><!--/lib/calendar/calendar.js"></script>-->
-<!-- import the language module -->
-<!--<script type="text/javascript" src="--><?php //echo DP_BASE_URL; ?><!--/lib/calendar/lang/calendar---><?php //echo $AppUI->user_locale; ?><!--.js"></script>-->
-<script language="javascript">
-    function submitIt() {
-        
-        var f = document.uploadFrm;
-        //f.submit();
-        
-        var trans = "<?php echo $dateEP; ?>";
-        var str1 = String(trans);
-        var str2 = document.getElementById("cost_date_end").value;
-        
-        
-        var yr1  = parseInt(str1.substring(0,4),10);
-        var mon1 = parseInt(str1.substring(5,7),10);
-        var dt1  = parseInt(str1.substring(8,10),10);
-       
-        var yr2  = parseInt(str2.substring(0,4),10);
-        var mon2 = parseInt(str2.substring(4,6),10);
-        var dt2  = parseInt(str2.substring(6,8),10);
-            
-        var date1 = new Date(yr1, mon1, dt1);
-        var date2 = new Date(yr2, mon2, dt2);
-        if(date2 > date1)
-        {
-            msg = "\n<?php echo $AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT", UI_OUTPUT_JS); ?>";
-            alert(msg);
-            return false;
-        }
-        
-        var msg = '';        
-        var foc=false;
-        if (f.cost_quantity.value == 0 || f.cost_quantity.value < 0) {
-            msg += "\n<?php echo $AppUI->_("LBL_VALIDATION_HOURS_PER_MONTH", UI_OUTPUT_JS); ?>";
-            if ((foc==false) && (navigator.userAgent.indexOf('MSIE')== -1)) {
-                f.cost_quantity.focus();
-                foc=true;
-            }
-        }
-        if (msg.length < 1) {
-            sumTotalValue();
-            f.submit();
-        } else {
-            alert(msg);
-        }
-        
-    }
-    
-    function delIt() {
-        if (confirm("<?php echo $AppUI->_("LBL_DELETE_HUMAN_RESOURCE_COST_ESTIMATIVE", UI_OUTPUT_JS); ?>")) {
-            var f = document.uploadFrm;
-            f.del.value='1';
-            f.submit();
-        }
-    }
-    
-    function monthDiff(d1, d2) {
-        var months;
-        months = (d2.getFullYear() - d1.getFullYear()) * 12;
-        months -= d1.getMonth() + 1;
-        months += d2.getMonth();
-        return months;
-    }
-    
-    function sumTotalValue(){ 
-        var VU = document.getElementById('cost_value_unitary').value; 
-        var HM = document.getElementById('cost_quantity').value;
-        var date1 = document.getElementById('cost_date_begin').value;
-        var date2 = document.getElementById('cost_date_end').value;
-        var total = 0;
-        
-        
-        var year1 =  date1.substring(0,4);
-        var month1 =  date1.substring(4,6);
-        var day1 = date1.substring(6);
-        
-        var year2 =  date2.substring(0,4);
-        var month2 =  date2.substring(4,6);
-        var day2 = date2.substring(6);
-        
-        var diffMonths = monthDiff(new Date(year1,month1,day1),new Date(year2,month2,day2)); 
-        
-        var diff_date = new Date(year2,month2,day2) - new Date(year1,month1,day1) ;
-        var num_months = (diff_date % 31536000000)/2628000000;   
-        
-        if(diffMonths < 0)
-            total = VU * HM;
-        else
-            total = (VU * HM) * (Math.floor(num_months)+1);
-            
-        document.getElementById("cost_value_total").value = total; 
-        document.getElementById("text_total").innerHTML= total;
-    }
-    
-//    function popCalendar( field ){
-//        calendarField = field;
-//        idate = eval( 'document.uploadFrm.cost_' + field + '.value' );
-//        window.open( 'index.php?m=public&a=calendar&dialog=1&callback=setCalendar&date=' + idate, 'calwin', 'width=280, height=250, scrollbars=no' );
-//    }
-//
-//    /**
-//     *	@param string Input date in the format YYYYMMDD
-//     *	@param string Formatted date
-//     */
-//    function setCalendar( idate, fdate ) {
-//        fld_date = eval( 'document.uploadFrm.cost_' + calendarField );
-//        fld_fdate = eval( 'document.uploadFrm.' + calendarField );
-//        fld_date.value = idate;
-//        fld_fdate.value = fdate;
-//
-//        // set end date automatically with start date if start date is after end date
-//        if (calendarField == 'cost_date_end') {
-//            if( document.uploadFrm.date_end.value < idate) {
-//                document.uploadFrm.cost_date_end.value = idate;
-//                document.uploadFrm.date_end.value = fdate;
-//            }
-//        }
-//    }
-</script>
-
 <div class="alert alert-secondary" role="alert">
     <?=$AppUI->_('Name') . ': ' . dPformSafe($obj->cost_description)?>
 </div>
 
-<form name="uploadFrm" action="?m=costs" method="post">
+<form name="hrCostsForm" id="hrCostsForm" method="post">
     <input type="hidden" name="dosql" value="do_costs_aed" />
     <input type="hidden" name="del" value="0" />
-    <input type="hidden" name="cost_id" value="<?php echo $cost_id; ?>" />
-    <input type="hidden" name="cost_project_id" value="<?php echo $project_id ?>" />
+    <input type="hidden" name="cost_id" value="<?=$cost_id?>" />
+    <input type="hidden" name="cost_project_id" value="<?=$project_id?>" />
     <input type="hidden" name="cost_type_id" value="0" />
+    <input type="hidden" name="project_end_date" id="projectEndDate" value="<?=$dateEP?>" />
 
     <div class="form-group">
         <span class="required"></span>
@@ -212,18 +90,18 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
                 <label for="cost_quantity" class="required">
                     <?=$AppUI->_('Hours per Month')?>
                 </label>
-                <input name="cost_quantity" class="form-control form-control-sm" id="cost_quantity" value="<?=dPformSafe($obj->cost_quantity)?>" />
+                <input name="cost_quantity" class="form-control form-control-sm" id="cost_quantity" onblur="sumTotalValue()" value="<?=dPformSafe($obj->cost_quantity)?>" />
             </div>
         </div>
         <div class="col-md-12">
-            <small><?=$AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT")?>&nbsp; (<?php echo $projectEndDateUserFormat ?>)</small>
+            <small><?=$AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT")?>&nbsp; (<?=$projectEndDateUserFormat?>)</small>
         </div>
     </div>
     <hr>
-    <span><b><?=$AppUI->_('Unitary Value'). ':</b> ' . dPgetConfig("currency_symbol") . dPformSafe($obj->cost_value_unitary)?></span>
+    <span><b><?=$AppUI->_('Unitary Value'). ':</b> ' . dPgetConfig("currency_symbol") . '</span><span id="text_unit_value">' . dPformSafe($obj->cost_value_unitary)?></span>
     <input type="hidden" name="cost_value_unitary"  id="cost_value_unitary" value="<?=dPformSafe($obj->cost_value_unitary)?>" />
     <br>
-    <span><b><?=$AppUI->_('Total Value'). ':</b> ' . dPgetConfig("currency_symbol") . dPformSafe($obj->cost_value_total)?></span>
+    <span><b><?=$AppUI->_('Total Value'). ':</b> ' . dPgetConfig("currency_symbol") . '</span><span id="text_total">' . dPformSafe($obj->cost_value_total)?></span>
     <input type="hidden" name="cost_value_total"  id="cost_value_total" value="<?=dPformSafe($obj->cost_value_total)?>" />
     <br>
     <small><?=$AppUI->_("LBL_COST_HR_RULE_OF_CALCULUS")?></small>
@@ -322,6 +200,44 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
         });
     });
 
+    function monthDiff(d1, d2) {
+        var months;
+        months = (d2.getFullYear() - d1.getFullYear()) * 12;
+        months -= d1.getMonth() + 1;
+        months += d2.getMonth();
+        return months;
+    }
+
+    function sumTotalValue(){
+        console.log('Atualizando custo total...');
+        var VU = document.getElementById('cost_value_unitary').value;
+        var HM = document.getElementById('cost_quantity').value;
+        var date1 = document.getElementById('cost_date_begin').value;
+        var date2 = document.getElementById('cost_date_end').value;
+        var total = 0;
+
+
+        var year1 =  date1.substring(0,4);
+        var month1 =  date1.substring(4,6);
+        var day1 = date1.substring(6);
+
+        var year2 =  date2.substring(0,4);
+        var month2 =  date2.substring(4,6);
+        var day2 = date2.substring(6);
+
+        var diffMonths = monthDiff(new Date(year1,month1,day1),new Date(year2,month2,day2));
+
+        var diff_date = new Date(year2,month2,day2) - new Date(year1,month1,day1) ;
+        var num_months = (diff_date % 31536000000)/2628000000;
+
+        if(diffMonths < 0)
+            total = VU * HM;
+        else
+            total = (VU * HM) * (Math.floor(num_months)+1) + '.00';
+
+        document.getElementById("cost_value_total").value = total;
+        document.getElementById("text_total").innerHTML= total;
+    }
 </script>
 <?php
     exit();

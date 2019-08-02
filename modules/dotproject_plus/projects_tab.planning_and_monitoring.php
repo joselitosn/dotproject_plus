@@ -1888,7 +1888,7 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "Error",
+                        title: "Erro",
                         content: "Algo deu errado"
                     });
                 }
@@ -1904,7 +1904,7 @@ if ($_GET["show_external_page"] != "") {
                     var resp = JSON.parse(resposta);
                     if (resp.err) {
                         $.alert({
-                            title: "Error",
+                            title: "Erro",
                             content: resp.msg
                         });
                     } else {
@@ -1919,7 +1919,7 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "Error",
+                        title: "Erro",
                         content: "Algo deu errado"
                     });
                 }

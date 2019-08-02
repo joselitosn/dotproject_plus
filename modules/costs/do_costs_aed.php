@@ -31,13 +31,10 @@ if ($del) {
 		$AppUI->redirect();
 	} else {
 		if ($not=='1') {
-                    $obj->notify();
-                }
-                
-                if ($projectSelected != null) {                    
-                    $AppUI->redirect("m=projects&a=view&project_id=" . $projectSelected."&tab=1&targetScreenOnProject=/modules/costs/view_costs.php");
-                }
-                $AppUI->setMsg("deleted", UI_MSG_ALERT, true);
+            $obj->notify();
+        }
+
+        $AppUI->setMsg("deleted", UI_MSG_ALERT, true);
 	}
 }
 
@@ -50,6 +47,6 @@ if (($msg = $obj->store())) {
         }
         $AppUI->setMsg("LBL_DATA_SUCCESSFULLY_PROCESSED", UI_MSG_OK, true);
 }
-$pageReturn=$_POST["cost_type_id"]!="1"?"addedit_costs":"addedit_costs_not_human";
-$AppUI->redirect("m=costs&a=".$pageReturn."&cost_id=".$obj->cost_id."&project_id=".$projectSelected);
+echo $AppUI->getMsg();
+exit();
 ?>
