@@ -65,7 +65,7 @@ function diasemana($data) {
 
     echo "$diasemana";
 }
-//$tipo: 0 - estimativa de custos; $tipo: 1 - dura��o baseline de custos: muda o arredondamento ceil ou floor
+//$tipo: 0 - estimativa de custos; $tipo: 1 - dura��o baseline de custos: muda o arredondamento ceil ou floor
 function diferencaMeses($d1, $d2,$tipo) {
     //forçar sempre do dia 1 do mes, pois o que importa é a diferença dos meses, e não dos dias
     $d1 = substr($d1,0,7)."-01";
@@ -514,6 +514,7 @@ function costsContingency($meses, $c, $row, $mStartProject, $mEndProject, $mtz, 
     $yearEnd = substr($row["budget_reserve_final_month"], 0, -15);
     $key = $yearStart . "_" . $monthStart;
     $startIndex = $monthsYearsIndex[$key];
+
     $d1=substr($row["budget_reserve_inicial_month"], 0, -9);    
     $diffMonths = diferencaMeses(substr($row["budget_reserve_inicial_month"], 0, -9), substr($row["budget_reserve_final_month"], 0, -9),0);
     
@@ -528,15 +529,18 @@ function costsContingency($meses, $c, $row, $mStartProject, $mEndProject, $mtz, 
         if ($i == $startIndex) {
             if ($monthStart == $monthEnd && $yearEnd == $yearStart) { //exception for resources which lasts just a month
                 echo "<td style=\"text-align:right;width:1%;\">";
-		$k = $i;
+		        $k = $i;
                 $mtz[$c][$k] = $row["budget_reserve_financial_impact"];
                 echo formatCellContent(number_format($mtz[$c][$k], 2, ",", "."));
                 echo "</td>";
             } else {
                 $k = $i;
-                for ($j = 0; $j <= $diffMonths; $j++) {
+                for ($j = 1; $j <= $diffMonths; $j++) {
                     echo "<td style=\"text-align:right;width:1%;\">";
-                    $mtz[$c][$k] = $row["budget_reserve_financial_impact"] / ($diffMonths + 1);
+
+//                    var_dump($row["budget_reserve_financial_impact"]);
+//                    var_dump($diffMonths);
+                    $mtz[$c][$k] = $row["budget_reserve_financial_impact"] / $diffMonths;
                     echo formatCellContent(number_format($mtz[$c][$k], 2, ",", "."));
                     echo "</td>";
                     $k++;

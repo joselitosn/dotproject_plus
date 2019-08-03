@@ -29,15 +29,10 @@ if ($del) {
 	$obj->load($budget_reserve_id);
 	if (($msg = $obj->delete())) {
 		$AppUI->setMsg("LBL_CONTINGENCY_RESERVE_EXCLUDED", UI_MSG_ERROR);
-		$AppUI->redirect("m=projects&a=view&project_id=" . $projectSelected."&targetScreenOnProject=/modules/costs/addedit_budget.php");
 	} else {
 		if ($not=='1') {
-                    $obj->notify();
-                }  
-                if ($projectSelected != null) {                    
-                    $AppUI->redirect("m=projects&a=view&project_id=" . $projectSelected."&targetScreenOnProject=/modules/costs/addedit_budget.php");
-                }
-                
+            $obj->notify();
+        }
 	}
 }
 
@@ -50,9 +45,7 @@ if (($msg = $obj->store())) {
         }
         $AppUI->setMsg("LBL_CONTINGENCY_RESERVE_SAVED", UI_MSG_OK, true);
 }
-
-$AppUI->redirect("m=costs&a=addedit_budget_reserve&budget_reserve_id=".$obj->budget_reserve_id."&project_id=".$projectSelected);
-
-//$AppUI->redirect("m=projects&a=view&project_id=" . $projectSelected."&targetScreenOnProject=/modules/costs/view_budget.php");
+echo $AppUI->getMsg();
+exit();
 
 ?>

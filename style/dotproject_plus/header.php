@@ -36,6 +36,7 @@ mysql_query('SET character_set_results=utf8');
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/jquery-loading/jquery.loading.min.js"></script>
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/orgchart/getorgchart.js"></script>
         <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/select-2/select2.min.js"></script>
+        <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/js/moment.js"></script>
         <script>
             //set user language to be globaly acessible
             if ("<?php echo $AppUI->user_prefs["LOCALE"]; ?>" == "pt_br") {

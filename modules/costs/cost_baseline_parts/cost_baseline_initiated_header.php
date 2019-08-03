@@ -52,7 +52,7 @@
         <?php
         for ($i = 0; $i <= $years; $i++) {
             ?>
-            <th nowrap="nowrap" colspan="<?php echo $tempMeses ?>">
+            <th nowrap="nowrap" colspan="<?php echo $tempMeses + 2?>">
                 <?php echo $tempYear; ?>
             </th>
             <?php
@@ -63,5 +63,4 @@
             $tempYear++;
         }
         ?>
-        <th></th>
     </tr>

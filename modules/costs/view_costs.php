@@ -11,6 +11,7 @@ $compartionDateFunction= strtotime($project->project_start_date) != false && str
 $compartionEmptyFormat= $project->project_start_date!="0000-00-00 00:00:00" && $project->project_end_date != "0000-00-00 00:00:00";
 if ($compartionDateFunction && $compartionEmptyFormat) {
     require_once DP_BASE_DIR . "/modules/costs/costs_functions.php";
+    require_once DP_BASE_DIR . "/modules/costs/costs.class.php";
     $cost_id = intval(dPgetParam($_GET, 'cost_id', 0));
 
     $perms = & $AppUI->acl();
@@ -49,13 +50,13 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
 // Get non humans estimatives
     $notHumanCost = getResources("Non-Human", $whereProject);
-    ?>
+
+?>
 <h4><?=$AppUI->_("5LBLCUSTO",UI_OUTPUT_HTML)?></h4>
 <hr>
 <div class="row">
     <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
-            <!-- /modules/costs/view_budget.php -->
+        <button type="button" class="btn btn-sm btn-secondary" onclick="costs.showBudget(<?=$projectSelected?>)">
             <?=$AppUI->_("LBL_PROJECT_BUDGET")?>
         </button>
     </div>
@@ -76,10 +77,9 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
 <div class="row">
     <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
-            <!-- ?m=companies&a=view&company_id=<?php //echo $company_id; ?>&rh_config=1&tab=3 -->
+        <a class="btn btn-sm btn-secondary" href="?m=companies&a=view&company_id=<?=$company_id?>&tab=3">
             <?=$AppUI->_("LBL_CONFIG_RH")?>
-        </button>
+        </a>
     </div>
 </div>
 
@@ -154,7 +154,6 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 <div class="row">
     <div class="col-md-12 text-right">
         <button type="button" class="btn btn-sm btn-secondary" onclick="costs.nhr.new(<?=$projectSelected?>)">
-            <!-- ?m=costs&a=addedit_costs_not_human&project_id=<?php //echo $projectSelected ?> -->
             <?=$AppUI->_("LBL_INCLUDE_NON_HUMAN_RESOURCE")?>
         </button>
     </div>
@@ -166,6 +165,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
         /* transform date to dd/mm/yyyy */
         $date_begin = intval($row['cost_date_begin']) ? new CDate($row['cost_date_begin']) : null;
         $date_end = intval($row['cost_date_end']) ? new CDate($row['cost_date_end']) : null;
+        $obj = new CCosts();
+        $canDelete = $obj->canDelete($msg, $row['cost_id']);
         ?>
         <div class="card inner-card">
             <div class="card-body">
@@ -199,10 +200,20 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                                 <i class="fas fa-bars"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="javascript:void(0)" onclick="contact.update(<? ?>)">
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="costs.nhr.edit(<?=$row['cost_id'].','.$projectSelected?>)">
                                     <i class="far fa-edit"></i>
                                     Alterar
                                 </a>
+                                <?php
+                                    if ($canDelete) {
+                                    ?>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="costs.nhr.delete(<?=$row['cost_id']?>)">
+                                            <i class="far fa-trash-alt"></i>
+                                            Excluir
+                                        </a>
+                                    <?php
+                                    }
+                                ?>
                             </div>
                         </div>
 
@@ -261,11 +272,222 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
         </div>
     </div>
 
+    <!-- MODAL BUDGET -->
+    <div id="budgetModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_("LBL_PROJECT_BUDGET")?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="budget-modal"></div>
+                    <div class="reserva-gerencial-form">
+
+                    </div>
+                    <div class="reserva-contingencia-form">
+                        dl;g,dlg,
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-sm" id="btnBackBudget" onclick="costs.backToBudget(<?=$projectSelected?>)">Voltar</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btSaveBudgetReserve" onclick="costs.saveReserve()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    <button type="button" class="btn btn-primary btn-sm" id="btSaveBudgetContReserve" onclick="costs.saveContingencyReserve()"><?=$AppUI->_("LBL_SAVE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <script>
     var costs = {
 
         init: function () {
 
+        },
+
+        backToBudget: function (projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=costs&template=view_budget&project_id="+projectId
+            }).done(function(response) {
+                $('#budgetModal').find('h5').html('Orçamento');
+                $('.reserva-gerencial-form').html('').hide();
+                $('.reserva-contingencia-form').html('').hide();
+                $('#btnBackBudget').hide();
+                $('#btSaveBudgetReserve').hide();
+                $('#btSaveBudgetContReserve').hide();
+                $('.budget-modal').html(response).show();
+            });
+        },
+
+        showBudget: function (projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=costs&template=view_budget&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#budgetModal');
+                modal.on('hidden.bs.modal', function () {
+                    modal.off('hidden.bs.modall');
+                    $('.reserva-gerencial-form').hide();
+                    $('.reserva-contingencia-form').hide();
+                    $('#btnBackBudget').hide();
+                    $('#btSaveBudgetReserve').hide();
+                    $('#btSaveBudgetContReserve').hide();
+                    $('.budget-modal').show();
+                });
+                $('.reserva-gerencial-form').hide();
+                $('.reserva-contingencia-form').hide();
+                $('#btnBackBudget').hide();
+                $('#btSaveBudgetReserve').hide();
+                $('#btSaveBudgetContReserve').hide();
+                $('.budget-modal').html(response);
+                modal.modal();
+            });
+        },
+
+        editReserve: function (budgetId, projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=costs&template=addedit_budget&budget_id="+budgetId+"&project_id="+projectId
+            }).done(function(response) {
+                $('#budgetModal').find('h5').html('Orçamento - Reserva Gerencial');
+                $('.budget-modal').hide();
+                $('#btnBackBudget').show();
+                $('#btSaveBudgetReserve').show();
+                $('#btSaveBudgetContReserve').hide();
+                $('.reserva-gerencial-form').html(response).show();
+            });
+
+        },
+
+        saveReserve: function () {
+
+            var perc = $('#budget_reserve_management').val();
+
+            if (!perc || Number.isNaN(parseInt(perc)) || parseInt(perc) < 0) {
+                $.alert({
+                    title: "Erro",
+                    content: "Percentual inválido"
+                });
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=costs",
+                data: $("#managReserveForm").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            costs.backToBudget(<?=$projectSelected?>)
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
+        editContingencyReserve: function (budgetId, projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=costs&template=addedit_budget_reserve&budget_reserve_id="+budgetId+"&project_id="+projectId
+            }).done(function(response) {
+                $('#budgetModal').find('h5').html('Orçamento - Reserva de contingência');
+                $('.budget-modal').hide();
+                $('#btnBackBudget').show();
+                $('#btSaveBudgetReserve').hide();
+                $('#btSaveBudgetContReserve').show();
+                $('.reserva-contingencia-form').html(response).show();
+            });
+        },
+
+        saveContingencyReserve: function () {
+            var dateStart = $('#date0').val();
+            var dateEnd = $('#date1').val();
+            var impact = $('#budget_reserve_financial_impact').val();
+
+            var msg = [];
+            var err = false;
+
+            if (!impact) {
+                err = true;
+                msg.push('Preencha o valor do impacto financeiro');
+            } else if (Number.isNaN(parseInt(impact)) || parseInt(impact) < 0) {
+                err = true;
+                msg.push('Valor do impacto financeiro é inválido');
+            }
+            if (!dateStart) {
+                err = true;
+                msg.push('Preencha a data de início');
+            } else if (!moment(dateStart, 'DD/MM/YYYY', true).isValid()) {
+                err = true;
+                msg.push('Data de início inválida');
+            }
+            if (!dateEnd) {
+                err = true;
+                msg.push('Preencha a data de fim');
+            } else if (!moment(dateEnd, 'DD/MM/YYYY', true).isValid()) {
+                err = true;
+                msg.push('Data de fim inválida');
+            }
+
+            var projectEndDate = $('#projectEndDate').val();
+            var arrProjectEndDate = projectEndDate.split('-');
+            var objProjectEndDate = new Date(arrProjectEndDate[0], arrProjectEndDate[1]-1, arrProjectEndDate[2]);
+
+            var arrDateStart = dateStart.split('/');
+            var arrDateEnd = dateEnd.split('/');
+
+            var objDateStart = new Date(arrDateStart[2], arrDateStart[1]-1, arrDateStart[0]);
+            var objDateEnd = new Date(arrDateEnd[2], arrDateEnd[1]-1, arrDateEnd[0]);
+
+            if(objDateEnd > objProjectEndDate) {
+                err = true;
+                msg.push("<?=$AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT", UI_OUTPUT_JS)?>");
+            }
+            if (objDateStart > objDateEnd) {
+                err = true;
+                msg.push("A data de início não pode ser maior que a data de fim");
+            }
+
+            if (err) {
+                $.alert({
+                    title: "Erro",
+                    content: msg.join('<br>')
+                });
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=costs",
+                data: $("#contingencyReserveForm").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            costs.backToBudget(<?=$projectSelected?>)
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
         },
         
         hr: {
@@ -275,6 +497,10 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                     url: "?m=costs&template=addedit_costs&cost_id="+costId+"&project_id="+projectId
                 }).done(function(response) {
                     var modal = $('#hrCostModal');
+                    modal.on('hidden.bs.modal', function () {
+                       modal.off('hidden.bs.modall');
+                        $('.cost-modal').html('');
+                    });
                     $('.cost-modal').html(response);
                     modal.modal();
                 });
@@ -290,10 +516,16 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                 if (!dateStart) {
                     err = true;
                     msg.push('Preencha a data de início');
+                } else if (!moment(dateStart, 'DD/MM/YYYY', true).isValid()) {
+                    err = true;
+                    msg.push('Data de início inválida');
                 }
                 if (!dateEnd) {
                     err = true;
                     msg.push('Preencha a data de fim');
+                } else if (!moment(dateEnd, 'DD/MM/YYYY', true).isValid()) {
+                    err = true;
+                    msg.push('Data de fim inválida');
                 }
                 if (!hours) {
                     err = true;
@@ -332,7 +564,6 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                 }
                 sumTotalValue();
 
-
                 $.ajax({
                     method: 'POST',
                     url: "?m=costs",
@@ -358,15 +589,68 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
         nhr: {
             new: function (projectId) {
-                console.log(projectId);
                 $.ajax({
                     type: "get",
-                    url: "?m=costs&template=addedit_costs_not_human&&project_id="+projectId
+                    url: "?m=costs&template=addedit_costs_not_human&project_id="+projectId
                 }).done(function(response) {
                     var modal = $('#nhrCostModal');
+                    modal.on('hidden.bs.modal', function () {
+                        modal.off('hidden.bs.modal');
+                        $('.cost-modal').html('');
+                    });
                     modal.find('h5').html('Adicionar custo - Recurso não humano');
                     $('.nhr-cost-modal').html(response);
                     modal.modal();
+                });
+            },
+
+            edit: function (costId, projectId) {
+                $.ajax({
+                    type: "get",
+                    url: "?m=costs&template=addedit_costs_not_human&cost_id="+costId+"&project_id="+projectId
+                }).done(function(response) {
+                    var modal = $('#nhrCostModal');
+                    modal.on('hidden.bs.modal', function () {
+                        modal.off('hidden.bs.modal');
+                        $('.cost-modal').html('');
+                    });
+                    modal.find('h5').html('Alterar custo - Recurso não humano');
+                    $('.nhr-cost-modal').html(response);
+                    modal.modal();
+                });
+            },
+
+            delete: function (costId) {
+                $.confirm({
+                    title: 'Excluir Custo',
+                    content: 'Você tem certeza de que quer excluir este custo?',
+                    buttons: {
+                        yes: {
+                            text: 'Sim',
+                            action: function () {
+                                $.ajax({
+                                    method: 'POST',
+                                    url: "?m=costs",
+                                    data: {
+                                        dosql: 'do_costs_aed',
+                                        del: 1,
+                                        cost_id: costId
+                                    }
+                                }).done(function(resposta) {
+                                    $.alert({
+                                        title: "Sucesso",
+                                        content: resposta,
+                                        onClose: function() {
+                                            window.location.reload(true);
+                                        }
+                                    });
+                                });
+                            },
+                        },
+                        no: {
+                            text: 'Não'
+                        }
+                    }
                 });
             },
 
@@ -396,10 +680,16 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                 if (!dateStart) {
                     err = true;
                     msg.push('Preencha a data de início');
+                } else if (!moment(dateStart, 'DD/MM/YYYY', true).isValid()) {
+                    err = true;
+                    msg.push('Data de início inválida');
                 }
                 if (!dateEnd) {
                     err = true;
                     msg.push('Preencha a data de fim');
+                } else if (!moment(dateEnd, 'DD/MM/YYYY', true).isValid()) {
+                    err = true;
+                    msg.push('Data de fim inválida');
                 }
                 if (!uniValue) {
                     err = true;
@@ -437,6 +727,27 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                     });
                     return;
                 }
+
+                $.ajax({
+                    method: 'POST',
+                    url: "?m=costs",
+                    data: $("#nonHrCostForm").serialize(),
+                    success: function(resposta) {
+                        $.alert({
+                            title: "Sucesso",
+                            content: resposta,
+                            onClose: function() {
+                                window.location.reload(true);
+                            }
+                        });
+                    },
+                    error: function(resposta) {
+                        $.alert({
+                            title: "Erro",
+                            content: "Algo deu errado"
+                        });
+                    }
+                });
             }
         }
     };

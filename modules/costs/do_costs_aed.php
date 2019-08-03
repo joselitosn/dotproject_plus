@@ -11,6 +11,7 @@ $not = dPgetParam($_POST, 'notify', '0');
 if ($not!='0') {
     $not='1';
 }
+
 $obj = new CCosts();
 if ($cost_id) { 
 	$obj->_message = 'updated';
@@ -20,7 +21,6 @@ if ($cost_id) {
 
 if (!$obj->bind($_POST)) {
 	$AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
-	$AppUI->redirect();
 }
 
 // delete the item
@@ -28,25 +28,25 @@ if ($del) {
 	$obj->load($cost_id);
 	if (($msg = $obj->delete())) {
 		$AppUI->setMsg($msg, UI_MSG_ERROR);
-		$AppUI->redirect();
 	} else {
 		if ($not=='1') {
             $obj->notify();
         }
-
-        $AppUI->setMsg("deleted", UI_MSG_ALERT, true);
+        $msg = 'Custo removido';
+        $AppUI->setMsg($msg, UI_MSG_ALERT, true);
 	}
-}
-
-if (($msg = $obj->store())) {
-        $AppUI->setMsg($msg, UI_MSG_ERROR);
 } else {
+    if (($msg = $obj->store())) {
+        $AppUI->setMsg($msg, UI_MSG_ERROR);
+    } else {
         $obj->load($obj->cost_id);
         if ($not=='1') {
         $obj->notify();
         }
         $AppUI->setMsg("LBL_DATA_SUCCESSFULLY_PROCESSED", UI_MSG_OK, true);
+    }
 }
+
 echo $AppUI->getMsg();
 exit();
 ?>

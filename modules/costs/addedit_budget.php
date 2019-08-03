@@ -24,99 +24,55 @@ if (!db_loadObject($q->prepare(), $obj) && ($budget_id > 0)) {
     $AppUI->setMsg("invalidID", UI_MSG_ERROR, true);
     $AppUI->redirect();
 }
-require_once (DP_BASE_DIR . '/modules/timeplanning/view/link_to_project.php');
-// setup the title block
-$ttl = $budget_id ? "Edit" : "Add";
-$titleBlock = new CTitleBlock($ttl, 'costs.png', $m, "$m.$a");
-$titleBlock->show();
 ?>
 <script language="javascript">
-    function submitIt() {
-        
-        var f = document.uploadFrm;
-       
-        var msg = '';        
-        var foc=false;
-        if (f.budget_reserve_management.value < 0) {
-            msg += "\n<?php echo $AppUI->_("LBL_VALIDATION_MANAGEMENT_RESERVE", UI_OUTPUT_JS); ?>";
-            if ((foc==false) && (navigator.userAgent.indexOf('MSIE')== -1)) {
-                f.budget_reserve_management.focus();
-                foc=true;
-            }
-        }
-        
-        if (msg.length < 1) {
-            f.submit();
-        } else {
-            alert(msg);
-        }
-        
-        
-    }
-    
-    function delIt() {
-        if (confirm("<?php echo $AppUI->_('Delete this budget?', UI_OUTPUT_JS); ?>")) {
-            var f = document.uploadFrm;
-            f.del.value='1';
-            f.submit();
-        }
-    }
-    
+
     function budgetTotal(){
-        var management = document.getElementById('budget_reserve_management').value; 
+        var management = document.getElementById('budget_reserve_management').value;
         var subtotal = <?php echo $obj->budget_sub_total ?>;
         var total = (management/100) * subtotal;
         total = total + subtotal;
-        
-        document.getElementById('budget_total').value = total; 
-       document.getElementById('text_total').innerHTML = total; 
+
+        document.getElementById('budget_total').value = total;
+        document.getElementById('text_total').innerHTML = total;
     }
 </script>
 
-<link href="modules/timeplanning/css/table_form.css" type="text/css" rel="stylesheet" />
-
-<form name="uploadFrm" action="?m=costs" method="post">
+<form name="managReserveForm" id="managReserveForm" method="post">
     <input type="hidden" name="dosql" value="do_budget_aed" />
     <input type="hidden" name="project_id" value="<?php echo $_GET["project_id"]; ?>" />
-    
     <input type="hidden" name="del" value="0" />
     <input type="hidden" name="budget_id" value="<?php echo $budget_id; ?>" />
-    <table width="100%" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form" >
-          <tr>
-            <th colspan="2">
-                <?php echo $AppUI->_("LBL_COST_MANAGEMENT_RESERVE",UI_OUTPUT_HTML); ?>
-            </th>
-        </tr>
-        <tr>
-            <td  class="td_label"><?php echo $AppUI->_("Management Reserve"); ?> (%)<span class="span_mandatory">*</span>:</td>
-            <td>
-                <input name="budget_reserve_management" id="budget_reserve_management" value="<?php echo dPformSafe($obj->budget_reserve_management); ?>" />
-            </td>
-        </tr>
-        <tr>
-            <td  class="td_label"><?php echo $AppUI->_('SubTotal'); ?>:</td>
-            <td>
-                <span id="text_subtotal"><?php echo dPformSafe($obj->budget_sub_total); ?></span>
-                <input type="hidden" name="budget_sub_total" id="budget_sub_total" value="<?php echo dPformSafe($obj->budget_sub_total); ?>" />
-            </td>
-        </tr>
-        <tr>
-            <td  class="td_label"><?php echo $AppUI->_('Total Budget'); ?>&nbsp;(<?php echo dPgetConfig("currency_symbol") ?>):</td>
-            <td>
-                <span id="text_total"><?php echo dPformSafe($obj->budget_total); ?></span>
-                <input type="hidden" name="budget_total" id="budget_total" value="<?php echo dPformSafe($obj->budget_total); ?>"  />
-            </td>
-        </tr>
 
-        <tr>         
-            <td align="right" colspan="2">
-               <input type="button" class="button" value="<?php echo $AppUI->_("LBL_SUBMIT"); ?>" onclick="budgetTotal();submitIt();" />
-               <script> var targetScreenOnProject="/modules/costs/view_budget.php";</script>
-               <?php require_once (DP_BASE_DIR . "/modules/timeplanning/view/subform_back_button_project.php"); ?>
-            </td>
-        </tr>
-    </table>
+    <div class="form-group">
+        <span class="required"></span>
+        <?=$AppUI->_('requiredField');?>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="Management Reserve" class="required">
+                    <?=$AppUI->_('Management Reserve')?> (%)
+                </label>
+                <input name="budget_reserve_management"
+                   class="form-control form-control-sm "
+                   id="budget_reserve_management"
+                   onblur="budgetTotal()"
+                   value="<?=dPformSafe($obj->budget_reserve_management)?>" />
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <span><b><?=$AppUI->_('SubTotal'). ':</b> ' . dPgetConfig("currency_symbol") . '</span><span id="text_subtotal">' . dPformSafe($obj->budget_sub_total)?></span>
+    <input type="hidden" name="budget_sub_total"  id="budget_sub_total" value="<?=dPformSafe($obj->budget_sub_total)?>" />
+    <br>
+    <span><b><?=$AppUI->_('Total Budget'). ':</b> ' . dPgetConfig("currency_symbol") . '</span><span id="text_total">' . dPformSafe($obj->budget_total)?></span>
+    <input type="hidden" name="budget_total"  id="budget_total" value="<?=dPformSafe($obj->budget_total)?>" />
 </form>
-<span class="span_mandatory">*</span> <?php echo $AppUI->_("Required Fields"); ?>
+<?php
+    exit();
+?>
 
 

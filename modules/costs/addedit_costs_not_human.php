@@ -47,65 +47,6 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
 <script type="text/javascript" src="<?php echo DP_BASE_URL; ?>/lib/calendar/lang/calendar-<?php echo $AppUI->user_locale; ?>.js"></script>
 
 <script language="javascript">
-    function submitIt() {
-        
-        var f = document.uploadFrm;
-        //f.submit();
-        
-        var trans = "<?php echo $dateEP; ?>";
-        var str1 = String(trans);
-        var str2 = document.getElementById("cost_date_end").value;
-        
-        
-        var yr1  = parseInt(str1.substring(0,4),10);
-        var mon1 = parseInt(str1.substring(5,7),10);
-        var dt1  = parseInt(str1.substring(8,10),10);
-       
-        var yr2  = parseInt(str2.substring(0,4),10);
-        var mon2 = parseInt(str2.substring(4,6),10);
-        var dt2  = parseInt(str2.substring(6,8),10);
-        
-        
-        var date1 = new Date(yr1, mon1, dt1);
-        var date2 = new Date(yr2, mon2, dt2);
-        if(date2 > date1){
-            msg = "\n<?php echo $AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT", UI_OUTPUT_JS); ?>";
-            alert(msg);
-            return false;
-        }
-        
-        var quant=parseInt(f.cost_quantity.value);
-        if(isNaN(quant)){
-            msg = "\n<?php echo $AppUI->_("LBL_VALIDATION_QUANTITY", UI_OUTPUT_JS); ?>";
-            alert(msg);
-            return false;
-        }
-        
-        var name=f.cost_description.value;
-        if(name==""){
-            msg = "\n<?php echo $AppUI->_("LBL_RESOURCE_VALIDATION_DESCRIPTION", UI_OUTPUT_JS); ?>";
-            alert(msg);
-            return false;
-        }
-        
-        var msg = '';        
-        var foc=false;
-        if (f.cost_value_unitary.value == 0 || f.cost_value_unitary.value < 0) {
-            msg += "\n<?php echo $AppUI->_("LBL_VALIDATION_UNITARY_VALUE", UI_OUTPUT_JS); ?>";
-            
-            if ((foc==false) && (navigator.userAgent.indexOf('MSIE')== -1)) {
-                f.cost_value_unitary.focus();
-                foc=true;
-            }
-        }else{
-            sumTotalValueNH();
-        }
-        if (msg.length < 1) {
-            f.submit();
-        } else {
-            alert(msg);
-        }
-    }
     
     function delIt() {
         if (confirm("<?php echo $AppUI->_("LBL_DELETE_NON_HUMAN_RESOURCE_COST_ESTIMATIVE", UI_OUTPUT_JS); ?>")) {
@@ -127,7 +68,7 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
     }
 ?>
 
-<form name="uploadFrm" action="?m=costs" method="post">
+<form name="nonHrCostForm" id="nonHrCostForm" method="post">
     <input type="hidden" name="dosql" value="do_costs_aed" />
     <input type="hidden" name="del" value="0" />
     <input type="hidden" name="cost_id" value="<?=$cost_id?>" />
@@ -166,7 +107,7 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
                     <?=$AppUI->_('Date Begin')?>
                 </label>
                 <input type="hidden" name="cost_date_begin" id="cost_date_begin"  value="<?=(($date_begin) ? $date_begin->format(FMT_TIMESTAMP_DATE) : '')?>"/>
-                <input type="text" class="form-control form-control-sm datepicker-start" name="date_begin" id="date0" value="<?=(($date_begin) ? $date_begin->format($df) : '')?>" />
+                <input type="text" class="form-control form-control-sm datepicker-start" onblur="selectDateStart()" name="date_begin" id="date0" value="<?=(($date_begin) ? $date_begin->format($df) : '')?>" />
 
             </div>
         </div>
@@ -176,7 +117,7 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
                     <?=$AppUI->_('Date End')?>
                 </label>
                 <input type="hidden" name="cost_date_end" id="cost_date_end"  value="<?=(($date_end) ? $date_end->format(FMT_TIMESTAMP_DATE) : '')?>"/>
-                <input type="text" class="form-control form-control-sm datepicker-end" name="date_end" id="date1" value="<?=(($date_end) ? $date_end->format($df) : '')?>" />
+                <input type="text" class="form-control form-control-sm datepicker-end" onblur="selectDateEnd()" name="date_end" id="date1" value="<?=(($date_end) ? $date_end->format($df) : '')?>" />
 
             </div>
         </div>
@@ -197,90 +138,30 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
     <input type="hidden" name="cost_value_total"  id="cost_value_total" value="<?=dPformSafe($obj->cost_value_total)?>" />
     <br>
     <small><?=$AppUI->_("LBL_COST_NHR_RULE_OF_CALCULUS")?></small>
-
-
-
-
-
-
-<!--    <table width="100%" border="0" cellpadding="3" cellspacing="3" class="std" name="table_form">-->
-<!--        <tr>-->
-<!--            <td class="td_label">--><?php //echo $AppUI->_('Name'); ?><!--<span class="span_mandatory">*</span>:</td>-->
-<!--            <td>-->
-<!--                <input type="text" name="cost_description" value="--><?php //echo $obj->cost_description ?><!--" />-->
-<!--            </td>-->
-<!--        </tr>-->
-
-<!--        <tr>-->
-<!--            <td class="td_label">--><?php //echo $AppUI->_('Quantity'); ?><!--<span class="span_mandatory">*</span>:</td>-->
-<!--            <td id="cost_quantity">-->
-<!--                <input type="text" name="cost_quantity" value="--><?php //echo $obj->cost_quantity ?><!--" />-->
-<!--            </td>-->
-<!--        </tr>-->
-
-<!--        <tr>-->
-<!--            <td class="td_label">--><?php //echo $AppUI->_('Date Begin'); ?><!--<span class="span_mandatory">*</span>:</td>-->
-<!--            <td>-->
-<!--                <input type="hidden" name="cost_date_begin" id="cost_date_begin"  value="--><?php //echo (($date_begin) ? $date_begin->format(FMT_TIMESTAMP_DATE) : ''); ?><!--"/>-->
-<!--                <!-- format(FMT_TIMESTAMP_DATE) -->
-<!--                <input type="text" style="width:85px" class="text" name="date_begin" id="date0" value="--><?php //echo (($date_begin) ? $date_begin->format($df) : ''); ?><!--" disabled="disabled" />-->
-<!---->
-<!--                <a href="#" onclick="popCalendar( 'date_begin', 'date_begin');">-->
-<!--                    <img src="./images/calendar.gif" width="24" height="12" alt="{dPtranslate word='Calendar'}" border="0" />-->
-<!--                </a>-->
-<!--            </td>-->
-<!--        </tr>-->
-
-<!--        <tr>-->
-<!--            <td class="td_label">--><?php //echo $AppUI->_('Date End'); ?><!--<span class="span_mandatory">*</span>:</td>-->
-<!--            <td>-->
-<!--                <input type="hidden" name="cost_date_end" id="cost_date_end"  value="--><?php //echo (($date_end) ? $date_end->format(FMT_TIMESTAMP_DATE) : ''); ?><!--"/>-->
-<!--                <!-- format(FMT_TIMESTAMP_DATE) -->
-<!--                <input type="text" style="width:85px" class="text" name="date_end" id="date1" value="--><?php //echo (($date_end) ? $date_end->format($df) : ''); ?><!--" disabled="disabled" />-->
-<!---->
-<!--                <a href="#" onclick="popCalendar( 'date_end', 'date_end');">-->
-<!--                    <img src="./images/calendar.gif" width="24" height="12" alt="{dPtranslate word='Calendar'}" border="0" />-->
-<!--                </a>-->
-<!--                &nbsp;--><?php //echo $AppUI->_("LBL_VALIDATION_DATE_CONTINGENCY_PROJECT")?><!--&nbsp; (--><?php //echo $projectEndDateUserFormat ?><!--)-->
-<!--            </td>-->
-<!--        </tr>-->
-
-<!--        <tr>-->
-<!--            <td class="td_label">--><?php //echo $AppUI->_('Unitary Value'); ?><!-- &nbsp;(--><?php //echo dPgetConfig("currency_symbol") ?><!--)<span class="span_mandatory">*</span>:</td>-->
-<!--            <td>-->
-<!--                <input name="cost_value_unitary" id="cost_value_unitary"  onchange="sumTotalValueNH()" value="--><?php //echo dPformSafe($obj->cost_value_unitary); ?><!--" /> -->
-<!--            </td>-->
-<!--        </tr>-->
-
-<!--        <tr>-->
-<!--            <td class="td_label">--><?php //echo $AppUI->_('Total Value'); ?><!-- &nbsp;(--><?php //echo dPgetConfig("currency_symbol") ?><!--):</td>-->
-<!--            <td>-->
-<!--                <span id="text_total">--><?php //echo number_format($obj->cost_value_total, 2, ',', '.'); ?><!--</span>-->
-<!--                <input type="hidden" name="cost_value_total"  id="cost_value_total" value="--><?php //echo dPformSafe($obj->cost_value_total); ?><!--"  />-->
-<!--                <span style="color: #6E6E6E">(--><?php //echo $AppUI->_("LBL_COST_NHR_RULE_OF_CALCULUS", UI_OUTPUT_HTML ); ?><!--)</span>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--    </table>-->
 </form>
     <script>
 
         $(document).ready(function() {
             $( ".datepicker-start" ).datepicker({
                 dateFormat: 'dd/mm/yy',
-                onSelect: function () {
-                    var dateArr = $(this).val().split('/');
-                    $('#cost_date_begin').val(dateArr[2]+dateArr[1]+dateArr[0]);
-                }
+                onSelect: selectDateStart
             });
 
             $( ".datepicker-end" ).datepicker({
                 dateFormat: 'dd/mm/yy',
-                onSelect: function () {
-                    var dateArr = $(this).val().split('/');
-                    $('#cost_date_end').val(dateArr[2]+dateArr[1]+dateArr[0]);
-                }
+                onSelect: selectDateEnd
             });
         });
+
+        function selectDateStart() {
+            var dateArr = $('#date0').val().split('/');
+            $('#cost_date_begin').val(dateArr[2]+dateArr[1]+dateArr[0]);
+        }
+
+        function selectDateEnd() {
+            var dateArr = $('#date1').val().split('/');
+            $('#cost_date_end').val(dateArr[2]+dateArr[1]+dateArr[0]);
+        }
 
         function calcTotalCost() {
             var qtd =  $('input[name=cost_quantity]').val();
