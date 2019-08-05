@@ -36,6 +36,12 @@ if ($del) {
         $AppUI->setMsg($msg, UI_MSG_ALERT, true);
 	}
 } else {
+
+    $unitaryCost = $obj->cost_value_unitary;
+    $floatValue = str_replace(".", "", $unitaryCost);
+    $floatValue = str_replace(",", ".", $floatValue);
+    $obj->cost_value_unitary = $floatValue;
+
     if (($msg = $obj->store())) {
         $AppUI->setMsg($msg, UI_MSG_ERROR);
     } else {

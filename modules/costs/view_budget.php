@@ -4,23 +4,10 @@ if (!defined('DP_BASE_DIR')) {
 }
 require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_setup.php";
 ?>
-<script language="javascript">
-//    function submitIt() {
-//        var f = document.uploadFrm;
-//        f.submit();
-//    }
-//    function delIt() {
-//        if (confirm("<?php //echo $AppUI->_('Delete this registry?', UI_OUTPUT_JS); ?>//")) {
-//            var f = document.uploadFrm;
-//            f.del.value = '1';
-//            f.submit();
-//        }
-//    }
-</script>
 
 <!-- ############################## ESTIMATIVAS CUSTOS HUMANOS ############################################ -->
 
-<table class="table table-sm table-bordered text-center">
+<table class="table table-sm table-bordered table-responsive text-center">
     <thead class="thead-dark">
     <?php require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_initiated_header.php"; ?>
         <tr>

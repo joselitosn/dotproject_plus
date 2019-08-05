@@ -35,6 +35,11 @@ if ($del) {
         }
 	}
 }
+$value = $obj->budget_reserve_financial_impact;
+$intValue = substr($value, 0, strlen($value)-3);
+$intValue = str_replace(".", "", $intValue);
+$obj->budget_reserve_financial_impact = $intValue;
+
 
 if (($msg = $obj->store())) {
         $AppUI->setMsg($msg, UI_MSG_ERROR);

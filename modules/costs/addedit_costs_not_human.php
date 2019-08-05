@@ -46,18 +46,6 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
 <!-- import the language module -->
 <script type="text/javascript" src="<?php echo DP_BASE_URL; ?>/lib/calendar/lang/calendar-<?php echo $AppUI->user_locale; ?>.js"></script>
 
-<script language="javascript">
-    
-    function delIt() {
-        if (confirm("<?php echo $AppUI->_("LBL_DELETE_NON_HUMAN_RESOURCE_COST_ESTIMATIVE", UI_OUTPUT_JS); ?>")) {
-            var f = document.uploadFrm;
-            f.del.value='1';
-            f.submit();
-        }
-    }
-</script>
-<!--<link href="modules/timeplanning/css/table_form.css" type="text/css" rel="stylesheet" />-->
-
 <?php
     if ($cost_id != 0) {
         ?>
@@ -153,6 +141,13 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
             });
         });
 
+        $("#cost_value_unitary").mask(
+            "000.000.000,00",
+            {
+                reverse: true
+            }
+        );
+
         function selectDateStart() {
             var dateArr = $('#date0').val().split('/');
             $('#cost_date_begin').val(dateArr[2]+dateArr[1]+dateArr[0]);
@@ -170,11 +165,17 @@ $projectEndDateUserFormat=$projectEndDate->format($df);
                 return;
             }
 
+            var floatValue = uniValue.replace('.', '');
+            floatValue = floatValue.replace(',', '.');
+            floatValue = parseFloat(floatValue);
+
             qtd = parseInt(qtd);
-            var total = qtd * uniValue;
+            var total = qtd * floatValue;
 
             $('#cost_value_total').val(total);
-            $('#text_total').html(total+',00');
+            var stringTotal = new String(total);
+            stringTotal = stringTotal.replace('.', ',');
+            $('#text_total').html(stringTotal+',00');
         }
 
     </script>
