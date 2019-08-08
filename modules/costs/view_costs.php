@@ -67,7 +67,7 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 <div class="row">
     <div class="col-md-12">
         <div class="alert alert-secondary" role="alert">
-            <h4 class="alert-heading"><?=$AppUI->_("Human Resource Estimative")?></h4>
+            <h5 class="alert-heading"><?=$AppUI->_("Human Resource Estimative")?></h5>
             <?=$AppUI->_("LBL_COST_HUMAN_RESOURCE_HELP", UI_OUTPUT_JS)?>
             <hr>
             <small><?=$AppUI->_("LBL_RH_AUTOMATICALLY_ADDED_COST_BASELINE")?></small>
@@ -146,7 +146,7 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 <div class="row">
     <div class="col-md-12">
         <div class="alert alert-secondary" role="alert">
-            <h4 class="alert-heading"><?=$AppUI->_("Non-Human Resource Estimative")?></h4>
+            <h5 class="alert-heading"><?=$AppUI->_("Non-Human Resource Estimative")?></h5>
         </div>
     </div>
 </div>

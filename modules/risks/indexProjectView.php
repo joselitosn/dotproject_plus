@@ -2,12 +2,12 @@
 if (!defined('DP_BASE_DIR')) {
     die('You should not access this file directly.');
 }
-$AppUI->savePlace();
-//require_once (DP_BASE_DIR . "/modules/risks/translations.php");
-// retrieve any state parameters
-if (isset($_REQUEST['project_id'])) {
-    $AppUI->setState('RisksIdxProject', intval($_REQUEST['project_id']));
-}
+//$AppUI->savePlace();
+////require_once (DP_BASE_DIR . "/modules/risks/translations.php");
+//// retrieve any state parameters
+//if (isset($_REQUEST['project_id'])) {
+//    $AppUI->setState('RisksIdxProject', intval($_REQUEST['project_id']));
+//}
 $project_id = $AppUI->getState('RisksIdxProject') !== NULL ? $AppUI->getState('RisksIdxProject') : 0;
 if (dPgetParam($_GET, 'tab', -1) != -1) {
     $AppUI->setState('RisksIdxTab', intval(dPgetParam($_GET, 'tab')));
@@ -22,38 +22,40 @@ $project = new CProject();
 $projects = $project->getAllowedRecords($AppUI->user_id, 'project_id,project_name', 'project_name', null, $extra);
 $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projects);
 
-// setup the title block
-$titleBlock = new CTitleBlock('LBL_RISKS', "../modules/risks/images/risks.png", $m, "$m.$a");
-    
-$titleBlock->addCell(
-        '<input type="submit" class="button" style="font-weight: bold" value="' . $AppUI->_("LBL_RISK_MANAGEMENT_PLAN") . '">', '', 
-        '<form action="?m=risks&a=risk_management_plan&project_id='. $project_id .'" method="post">', '</form>'
-      );
-        
-$titleBlock->addCell(
-        '<input type="submit" class="button" value="' . $AppUI->_('LBL_CHECKLIST_ANALYSIS') . '">', '', 
-        '<form action="?m=risks&a=checklist_risks_model&project_id='. $project_id .'" method="post">', '</form>'
-      );
-     $titleBlock->addCell(
-        '<input type="submit" class="button" value="' . $AppUI->_('LBL_WATCHLIST') . '">', '', 
-        '<form action="?m=risks&a=vw_watchlist&project_id=' . $project_id . '&tab='. $tab.'" method="post">', '</form>'
-    );
-    $titleBlock->addCell(
-        '<input type="submit" class="button" value="' . $AppUI->_('LBL_NEARTERM') . '">', '', 
-        '<form action="?m=risks&a=vw_near_term_responses_list&project_id=' . $project_id . '&tab='. $tab.'" method="post">', '</form>'
-    );  
-    $titleBlock->addCell(
-        '<input type="submit" class="button" value="' . $AppUI->_('LBL_LESSONS_LIST') . '">', '', 
-        '<form action="?m=risks&a=vw_lessons_learned_list&project_id=' . $project_id . '&tab='. $tab.'" method="post">', '</form>'
-    ); 
-    $titleBlock->addCell(
-        '<input type="submit" class="button" value="' . $AppUI->_('LBL_STRATEGYS_LIST') . '">', '', 
-        '<form action="?m=risks&a=vw_strategys_list&project_id=' . $project_id . '&tab='. $tab.'" method="post">', '</form>'
-    ); 
-    $titleBlock->addCell(
-        '<input type="submit" class="button" style="font-weight:bold" value="' . $AppUI->_('LBL_NEW') . '">', '', 
-        '<form action="?m=risks&a=addedit&project_id=' . $project_id . '&tab='. $tab.'" method="post">', '</form>'
-    );   
-$titleBlock->show();
-include("index_table.php");
+?>
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+            <?=$AppUI->_("LBL_RISK_MANAGEMENT_PLAN")?>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+            <?=$AppUI->_("LBL_CHECKLIST_ANALYSIS")?>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+            <?=$AppUI->_("LBL_WATCHLIST")?>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+            <?=$AppUI->_("LBL_NEARTERM")?>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+            <?=$AppUI->_("LBL_LESSONS_LIST")?>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+            <?=$AppUI->_("LBL_STRATEGYS_LIST")?>
+        </button>
+
+        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.new(<?=$project_id?>)">
+            <?=$AppUI->_("LBL_NEW")?>
+        </button>
+    </div>
+</div>
+
+<?php
+    include("index_table.php");
 ?>

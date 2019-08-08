@@ -21,7 +21,6 @@ if ($risk_id) {
 
 if (!$obj->bind($_POST)) {
     $AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
-    $AppUI->redirect();
 }
 
 // delete the item
@@ -36,7 +35,6 @@ if ($del) {
         $projectSelected = intval(dPgetParam($_GET, "project_id"));
         $AppUI->setMsg("LBL_RISK_EXCLUDED", UI_MSG_ALERT, true);
     }
-    $AppUI->redirect("m=projects&a=view&project_id=" . $projectSelected."&targetScreenOnProject=/modules/risks/projects_risks.php");
    
 } else {
     if (($msg = $obj->store())) {
@@ -48,6 +46,7 @@ if ($del) {
         }
         $AppUI->setMsg($risk_id ? "LBL_RISK_UPDATE" : "LBL_RISK_INCLUDED", UI_MSG_OK, true);
     }
-   
-    $AppUI->redirect("m=projects&a=view&project_id=" . $projectSelected."&targetScreenOnProject=/modules/risks/projects_risks.php"); 
+
 }
+echo $AppUI->getMsg();
+exit();

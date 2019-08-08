@@ -69,9 +69,6 @@ foreach ($riskPriority as $key => $value) {
     $riskPriority[$key] = str_replace("&amp;eacute;", "é", htmlspecialchars($AppUI->_($value)));
 }
 
-$bgRed = "FF6666";
-$bgYellow = "FFFF66";
-$bgGreen = "33CC66";
 $valid_ordering = array(
     'risk_id',
     'risk_name',
@@ -120,343 +117,290 @@ $q->addTable('risks');
 $q->addWhere("risk_active = '1' $whereProject");
 $q->addOrder($orderbyy . ' ' . $orderdire);
 $inactiveList = $q->loadList();
+require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
+?>
+<br>
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-secondary" role="alert">
+            <h5><?=$AppUI->_('LBL_ACTIVE_RISKS')?></h5>
+        </div>
+    </div>
+</div>
+
+<?php
+    foreach ($activeList as $row) {
+        $obj = new CRisks();
+        $canDelete = $obj->canDelete($msg, $row['risk_id']);
+        ?>
+        <div class="card inner-card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>
+                            <a id="<?= $row['risk_id'] ?>" data-toggle="collapse"
+                               href="#active_risk_details_<?= $row['risk_id'] ?>">
+                                <?= $row['risk_name'] ?>
+                                <i class="fas fa-caret-down"></i>
+                            </a>
+                        </h5>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <?php
+                        switch ($row['risk_priority']) {
+                            case 0:
+                                $labelClass = 'badge badge-success';
+                                break;
+                            case 1:
+                                $labelClass = 'badge badge-warning';
+                                break;
+                            case 2:
+                                $labelClass = 'badge badge-danger';
+                                break;
+                        }
+                        ?>
+                        <span class="<?= $labelClass ?>">
+                            <?= $AppUI->_('LBL_PRIORITY') . ': ' . $textExpositionFactor[$row['risk_priority']] ?>
+                        </span>
+                    </div>
+                    <div class="col-md-1 text-right">
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bars"></i>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                   onclick="risks.edit(<?=$row['risk_id']?>)">
+                                    <i class="far fa-edit"></i>
+                                    Alterar
+                                </a>
+                                <?php
+                                if ($canDelete) {
+                                    ?>
+                                    <a class="dropdown-item" href="javascript:void(0)"
+                                       onclick="risks.delete(<?=$row['risk_id']?>)">
+                                        <i class="far fa-trash-alt"></i>
+                                        Excluir
+                                    </a>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="active_risk_details_<?= $row['risk_id'] ?>" class="collapse">
+                    <div class="row">
+                        <table class="table table-sm no-border">
+                            <tr>
+                                <th class="text-right" width="15%"><?= $AppUI->_('LBL_DESCRIPTION') ?>:</th>
+                                <td colspan="5"><?= $row['risk_description'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-right" width="15%"><?= $AppUI->_("LBL_PROBABILITY") ?>:</th>
+                                <td width="18%"><?= $riskProbability[$row['risk_probability']] ?></td>
+                                <th class="text-right" width="15%"><?php echo $AppUI->_("LBL_IMPACT"); ?>:</th>
+                                <td width="18%"><?= $riskImpact[$row['risk_impact']] ?></td>
+                                <th class="text-right" width="15%"><?php echo $AppUI->_("LBL_STATUS"); ?>:</th>
+                                <td width="19%"><?= $riskStatus[$row['risk_status']] ?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
 ?>
 
-<table width="95%" align="center"  border="0" cellpadding="2" cellspacing="1" class="tbl">
-    <summary><?php echo $AppUI->_('LBL_ACTIVE_RISKS'); ?></summary>
-    <tr>
-        <th nowrap="nowrap"width="25"></th>
-        <th nowrap="nowrap"><a href="<?php
-if ($projectSelected != null) {
-    echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-} else {
-    echo '?m=risks';
-}
-?>&orderbyy=risk_id" class="hdr"><?php echo $AppUI->_('LBL_ID'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-            if ($projectSelected != null) {
-                echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-            } else {
-                echo '?m=risks';
-            }
-?>&orderbyy=risk_name" class="hdr"><?php echo $AppUI->_('LBL_RISK_NAME'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-            if ($projectSelected != null) {
-                echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-            } else {
-                echo '?m=risks';
-            }
-?>&orderbyy=risk_description" class="hdr"><?php echo $AppUI->_('LBL_DESCRIPTION'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-                               if ($projectSelected != null) {
-                                   echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-                               } else {
-                                   echo '?m=risks';
-                               }
-?>&orderbyy=risk_probability" class="hdr"><?php echo $AppUI->_('LBL_PROBABILITY'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-            if ($projectSelected != null) {
-                echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-            } else {
-                echo '?m=risks';
-            }
-?>&orderbyy=risk_impact" class="hdr"><?php echo $AppUI->_('LBL_IMPACT'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-                               if ($projectSelected != null) {
-                                   echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-                               } else {
-                                   echo '?m=risks';
-                               }
-?>&orderbyy=risk_priority" class="hdr"><?php echo $AppUI->_('LBL_PRIORITY'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-        if ($projectSelected != null) {
-            echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-        } else {
-            echo '?m=risks';
-        }
-?>&orderbyy=risk_status" class="hdr"><?php echo $AppUI->_('LBL_STATUS'); ?></a></th>
-        <!--
-        <th nowrap="nowrap"><a href="<?php
-        if ($projectSelected != null) {
-            echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-        } else {
-            echo '?m=risks';
-        }
-?>&orderbyy=risk_responsible" class="hdr"><?php echo $AppUI->_('LBL_OWNER'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-        if ($projectSelected != null) {
-            echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-        } else {
-            echo '?m=risks';
-        }
-?>&orderbyy=risk_project" class="hdr"><?php echo $AppUI->_('LBL_PROJECT'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-    if ($projectSelected != null) {
-        echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-    } else {
-        echo '?m=risks';
+
+<br>
+<div class="row">
+    <div class="col-md-12">
+        <div class="alert alert-secondary" role="alert">
+            <h5><?=$AppUI->_('LBL_INACTIVE_RISKS')?></h5>
+        </div>
+    </div>
+</div>
+<?php
+    foreach ($inactiveList as $row) {
+        $obj = new CRisks();
+        $canDelete = $obj->canDelete($msg, $row['risk_id']);
+        ?>
+        <div class="card inner-card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>
+                            <a id="<?= $row['risk_id'] ?>" data-toggle="collapse"
+                               href="#active_risk_details_<?=$row['risk_id']?>">
+                                <?= $row['risk_name'] ?>
+                                <i class="fas fa-caret-down"></i>
+                            </a>
+                        </h5>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <?php
+                        switch ($row['risk_priority']) {
+                            case 0:
+                                $labelClass = 'badge badge-success';
+                                break;
+                            case 1:
+                                $labelClass = 'badge badge-warning';
+                                break;
+                            case 2:
+                                $labelClass = 'badge badge-danger';
+                                break;
+                        }
+                        ?>
+                        <span class="<?= $labelClass ?>">
+                                <?= $AppUI->_('LBL_PRIORITY') . ': ' . $textExpositionFactor[$row['risk_priority']] ?>
+                            </span>
+                    </div>
+                    <div class="col-md-1 text-right">
+                        <div class="dropdown">
+                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown"
+                               aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-bars"></i>
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                   onclick="risks.edit(<?=$row['risk_id']?>)">
+                                    <i class="far fa-edit"></i>
+                                    Alterar
+                                </a>
+                                <?php
+                                if ($canDelete) {
+                                    ?>
+                                    <a class="dropdown-item" href="javascript:void(0)"
+                                       onclick="risks.delete(<?=$row['risk_id']?>)">
+                                        <i class="far fa-trash-alt"></i>
+                                        Excluir
+                                    </a>
+                                    <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="active_risk_details_<?= $row['risk_id'] ?>" class="collapse">
+                    <div class="row">
+                        <table class="table table-sm no-border">
+                            <tr>
+                                <th class="text-right" width="15%"><?= $AppUI->_('LBL_DESCRIPTION') ?>:</th>
+                                <td colspan="5"><?= $row['risk_description'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-right" width="15%"><?= $AppUI->_("LBL_PROBABILITY") ?>:</th>
+                                <td width="18%"><?= $riskProbability[$row['risk_probability']] ?></td>
+                                <th class="text-right" width="15%"><?php echo $AppUI->_("LBL_IMPACT"); ?>:</th>
+                                <td width="18%"><?= $riskImpact[$row['risk_impact']] ?></td>
+                                <th class="text-right" width="15%"><?php echo $AppUI->_("LBL_STATUS"); ?>:</th>
+                                <td width="19%"><?= $riskStatus[$row['risk_status']] ?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
     }
-?>&orderbyy=risk_task" class="hdr"><?php echo $AppUI->_('LBL_TASK'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-               if ($projectSelected != null) {
-                   echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-               } else {
-                   echo '?m=risks';
-               }
-?>&orderbyy=risk_potential_other_projects" class="hdr"><?php echo $AppUI->_('LBL_POTENTIAL'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-               if ($projectSelected != null) {
-                   echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-               } else {
-                   echo '?m=risks';
-               }
-?>&orderbyy=risk_strategy" class="hdr"><?php echo $AppUI->_('LBL_STRATEGY'); ?></a></th>
-        -->
-    </tr>
-        <?php foreach ($activeList as $row) {
-            ?>
-        <tr>
-            <td nowrap style="background-color:#<?php echo $bg; ?>">
-                <a href="index.php?m=risks&a=addedit&id=<?php
-        echo($row['risk_id']);
-        if ($projectSelected != null) {
-            echo('&project_id=' . $projectSelected . '&tab=' . $t);
-        }
-            ?>">
-                    <img src="./modules/risks/images/stock_edit-16.png" border="0" width="12" height="12">
-                </a>
-                <a href="index.php?m=risks&a=view&id=<?php
-            echo($row['risk_id']);
-            if ($projectSelected != null) {
-                echo('&project_id=' . $projectSelected . '&tab=' . $t);
-            }
-            ?>">
-                    <img src="./modules/risks/images/view_icon.gif" border="0" width="12" height="12">
-                </a>
-            </td>
-            <td><?php echo $row['risk_id'] ?></td>
-            <td><?php echo $row['risk_name'] ?></td>
-            <td><?php echo $row['risk_description'] ?></td>
-            <td><?php echo $riskProbability[$row['risk_probability']] ?></td>
-            <td><?php echo $riskImpact[$row['risk_impact']] ?></td>
+?>
 
+<!-- MODAL ADD/EDIT RISK -->
+<div id="riskModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body risk-modal">
 
-            <td style="text-align:center">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="risks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            <?php echo $textExpositionFactor[ $row['risk_priority'] ] ?>
-            </td>
-            <td><?php echo $riskStatus[$row['risk_status']] ?></td>
-            <!--
-            <?php
-            $ResponsibleDefined;
-            foreach ($users as $k => $v) {
-                if ($k == $row['risk_responsible']) {
-                    $row['risk_responsible'] = $v;
-                    $ResponsibleDefined = 'yes';
+<script>
+    var risks = {
+
+        init: function() {
+            $('a[data-toggle=collapse]').on('click', risks.show);
+        },
+
+        show: function (e) {
+            const collapseRisk = $(e.target);
+            $('#active_risk_details_'+e.target.id).on('shown.bs.collapse', function () {
+                collapseRisk.find('i').removeClass('fa-caret-down');
+                collapseRisk.find('i').addClass('fa-caret-up');
+            });
+            $('#active_risk_details_'+e.target.id).on('hidden.bs.collapse', function () {
+                collapseRisk.find('i').removeClass('fa-caret-up');
+                collapseRisk.find('i').addClass('fa-caret-down');
+            });
+        },
+
+        delete: function (id) {
+            $.confirm({
+                title: 'Excluir Risco',
+                content: 'Você tem certeza de que quer excluir este risco?',
+                buttons: {
+                    yes: {
+                        text: 'Sim',
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=risks",
+                                data: {
+                                    dosql: 'do_risks_aed',
+                                    del: 1,
+                                    risk_id: id
+                                }
+                            }).done(function(resposta) {
+                                $.alert({
+                                    title: "Sucesso",
+                                    content: resposta,
+                                    onClose: function() {
+                                        window.location.reload(true);
+                                    }
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: 'Não'
+                    }
                 }
-            }
-            if ($ResponsibleDefined != 'yes') {
-                $row['risk_responsible'] = $AppUI->_('LBL_NOT_DEFINED');
-            }
-            $ResponsibleDefined = 'no';
-            ?>
-            <td><?php echo $row['risk_responsible'] ?></td>
-    <?php
-    $ProjectDefined;
-    foreach ($projects as $k => $v) {
-        if ($k == $row['risk_project']) {
-            $row['risk_project'] = $v;
-            $ProjectDefined = 'yes';
-        }
-    }
-    if ($ProjectDefined != 'yes') {
-        $row['risk_project'] = $AppUI->_('LBL_NOT_DEFINED');
-    }
-    $ProjectDefined = 'no';
-    ?>
-            <td><?php echo $row['risk_project'] ?></td>
-                                   <?php
-                                   foreach ($tasks as $k => $v) {
-                                       if ($k == $row['risk_task']) {
-                                           $row['risk_task'] = $v;
-                                       }
-                                   }
-                                   if ($row['risk_task'] == '0') {
-                                       $row['risk_task'] = $AppUI->_('LBL_NOT_DEFINED');
-                                   } else {
-                                       if ($row['risk_task'] == '-1') {
-                                           $row['risk_task'] = $AppUI->_('LBL_ALL_TASKS');
-                                       }
-                                   }
-                                   ?>
-            <td><?php echo $row['risk_task'] ?></td>
-            <td><?php echo $riskPotential[$row['risk_potential_other_projects']] ?></td>
-            <td><?php echo $riskStrategy[$row['risk_strategy']] ?></td>
-            -->
-        </tr>
-            <?php } ?>
-</table>
-
-<table width="95%" align="center"  border="0" cellpadding="2" cellspacing="1" class="tbl">
-    <summary> <?php echo $AppUI->_('LBL_INACTIVE_RISKS'); ?> </summary>
-    <tr>
-        <th nowrap="nowrap"width="25"></th>
-        <th nowrap="nowrap"><a href="<?php
-            if ($projectSelected != null) {
-                echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-            } else {
-                echo '?m=risks';
-            }
-            ?>&orderbyy=risk_id" class="hdr"><?php echo $AppUI->_('LBL_ID'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-            if ($projectSelected != null) {
-                echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-            } else {
-                echo '?m=risks';
-            }
-            ?>&orderbyy=risk_name" class="hdr"><?php echo $AppUI->_('LBL_RISK_NAME'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-        if ($projectSelected != null) {
-            echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-        } else {
-            echo '?m=risks';
-        }
-            ?>&orderbyy=risk_description" class="hdr"><?php echo $AppUI->_('LBL_DESCRIPTION'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-        if ($projectSelected != null) {
-            echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-        } else {
-            echo '?m=risks';
-        }
-            ?>&orderbyy=risk_probability" class="hdr"><?php echo $AppUI->_('LBL_PROBABILITY'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-        if ($projectSelected != null) {
-            echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-        } else {
-            echo '?m=risks';
-        }
-            ?>&orderbyy=risk_impact" class="hdr"><?php echo $AppUI->_('LBL_IMPACT'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-    if ($projectSelected != null) {
-        echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-    } else {
-        echo '?m=risks';
-    }
-            ?>&orderbyy=risk_priority" class="hdr"><?php echo $AppUI->_('LBL_PRIORITY'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-               if ($projectSelected != null) {
-                   echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-               } else {
-                   echo '?m=risks';
-               }
-            ?>&orderbyy=risk_status" class="hdr"><?php echo $AppUI->_('LBL_STATUS'); ?></a></th>
-        <!--
-        <th nowrap="nowrap"><a href="<?php
-               if ($projectSelected != null) {
-                   echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-               } else {
-                   echo '?m=risks';
-               }
-            ?>&orderbyy=risk_responsible" class="hdr"><?php echo $AppUI->_('LBL_OWNER'); ?></a></th>
+            });
+        },
         
-        <th nowrap="nowrap"><a href="<?php
-               if ($projectSelected != null) {
-                   echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-               } else {
-                   echo '?m=risks';
-               }
-            ?>&orderbyy=risk_project" class="hdr"><?php echo $AppUI->_('LBL_PROJECT'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-            if ($projectSelected != null) {
-                echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-            } else {
-                echo '?m=risks';
-            }
-            ?>&orderbyy=risk_task" class="hdr"><?php echo $AppUI->_('LBL_TASK'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-        if ($projectSelected != null) {
-            echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-        } else {
-            echo '?m=risks';
+        new: function (projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=risks&template=addedit&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#riskModal');
+//                modal.on('hidden.bs.modal', function () {
+//                    modal.off('hidden.bs.modal');
+//                    $('.cost-modal').html('');
+//                });
+                modal.find('h5').html('Adicionar risco');
+                $('.risk-modal').html(response);
+                modal.modal();
+            });
         }
-            ?>&orderbyy=risk_potential_other_projects" class="hdr"><?php echo $AppUI->_('LBL_POTENTIAL'); ?></a></th>
-        <th nowrap="nowrap"><a href="<?php
-        if ($projectSelected != null) {
-            echo '?m=projects&a=view&project_id=' . $projectSelected . 'tab=' . $t;
-        } else {
-            echo '?m=risks';
-        }
-            ?>&orderbyy=risk_strategy" class="hdr"><?php echo $AppUI->_('LBL_STRATEGY'); ?></a></th>
-        -->
-    </tr>
-        <?php foreach ($inactiveList as $row) {
-            ?>
-        <tr>
-            <td nowrap style="background-color:#<?php echo $bg; ?>">
-                <a href="index.php?m=risks&a=addedit&id=<?php
-        echo($row['risk_id']);
-        if ($projectSelected != null) {
-            echo('&project_id=' . $projectSelected . '&tab=' . $t);
-        }
-            ?>">
-                    <img src="./modules/risks/images/stock_edit-16.png" border="0" width="12" height="12">
-                </a>
+    };
 
-                <a href="index.php?m=risks&a=view&id=<?php
-        echo($row['risk_id']);
-        if ($projectSelected != null) {
-            echo('&project_id=' . $projectSelected . '&tab=' . $t);
-        }
-        ?>">
-                    <img src="./modules/risks/images/view_icon.gif" border="0" width="12" height="12">
-                </a>
-
-            </td>
-            <td><?php echo $row['risk_id'] ?></td>
-            <td><?php echo $row['risk_name'] ?></td>
-            <td><?php echo $row['risk_description'] ?></td>
-            <td><?php echo $riskProbability[$row['risk_probability']] ?></td>
-            <td><?php echo $riskImpact[$row['risk_impact']] ?></td>
-            <td style="text-align:center"><?php echo $riskPriority[$row['risk_priority']] ?></td>
-            <td><?php echo $riskStatus[$row['risk_status']] ?></td>
-            <!--
-    <?php
-    foreach ($users as $k => $v) {
-        if ($k == $row['risk_responsible']) {
-            $row['risk_responsible'] = $v;
-        }
-    }
-    ?>
-                    <td><?php echo $row['risk_responsible'] ?></td>
-    <?php
-    foreach ($projects as $k => $v) {
-        if ($k == $row['risk_project']) {
-            $row['risk_project'] = $v;
-        }
-    }
-    if ($row['risk_project'] == '0') {
-        $row['risk_project'] = $AppUI->_('LBL_NOT_DEFINED');
-    }
-    ?>
-                    <td><?php echo $row['risk_project'] ?></td>
-    <?php
-    foreach ($tasks as $k => $v) {
-        if ($k == $row['risk_task']) {
-            $row['risk_task'] = $v;
-        }
-    }
-    if ($row['risk_task'] == '0') {
-        $row['risk_task'] = $AppUI->_('LBL_NOT_DEFINED');
-    } else {
-        if ($row['risk_task'] == '-1') {
-            $row['risk_task'] = $AppUI->_('LBL_ALL_TASKS');
-        }
-    }
-    ?>
-                    <td><?php echo $row['risk_task'] ?></td>
-                    <td><?php echo $riskPotential[$row['risk_potential_other_projects']] ?></td>
-                    <td><?php echo $riskStrategy[$row['risk_strategy']] ?></td>
-            -->
-        </tr>
-<?php } ?>
-</table>
+    $(document).ready(risks.init);
+</script>

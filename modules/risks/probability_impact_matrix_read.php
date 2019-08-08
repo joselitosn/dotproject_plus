@@ -35,7 +35,7 @@ $impactProbabilityMatrix[4][3] = $riskManagementPlan->matrix_high_superhigh;
 $impactProbabilityMatrix[4][4] = $riskManagementPlan->matrix_superhigh_superhigh;
 
 $textExpositionFactor = array();
-$textExpositionFactor[0] = "<span style=\"color:#006400\">" . $AppUI->_("LBL_LOW_F") . "</span>";
-$textExpositionFactor[1] = "<span style=\"color:#B8860B\">" . $AppUI->_("LBL_MEDIUM_F") . "</span>";
-$textExpositionFactor[2] = "<span style=\"color:#FF0000\">" . $AppUI->_("LBL_HIGH_F") . "</span>";
+$textExpositionFactor[0] = $AppUI->_("LBL_LOW_M");
+$textExpositionFactor[1] = $AppUI->_("LBL_MEDIUM_M");
+$textExpositionFactor[2] = $AppUI->_("LBL_HIGH_M");
 ?>
