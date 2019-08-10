@@ -2,18 +2,7 @@
 if (!defined('DP_BASE_DIR')) {
     die('You should not access this file directly.');
 }
-//$AppUI->savePlace();
-////require_once (DP_BASE_DIR . "/modules/risks/translations.php");
-//// retrieve any state parameters
-//if (isset($_REQUEST['project_id'])) {
-//    $AppUI->setState('RisksIdxProject', intval($_REQUEST['project_id']));
-//}
-$project_id = $AppUI->getState('RisksIdxProject') !== NULL ? $AppUI->getState('RisksIdxProject') : 0;
-if (dPgetParam($_GET, 'tab', -1) != -1) {
-    $AppUI->setState('RisksIdxTab', intval(dPgetParam($_GET, 'tab')));
-}
-$tab = $AppUI->getState('RisksIdxTab') !== NULL ? $AppUI->getState('RisksIdxTab') : 0;
-$active = intval(!$AppUI->getState('RisksIdxTab'));
+$project_id = intval(dPgetParam($_GET, "project_id", 0));
 
 require_once($AppUI->getModuleClass('projects'));
 
@@ -26,7 +15,8 @@ $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projec
 
 <div class="row">
     <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+
+        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openRisksManagementPlan(<?=$project_id?>)">
             <?=$AppUI->_("LBL_RISK_MANAGEMENT_PLAN")?>
         </button>
 
@@ -55,6 +45,29 @@ $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projec
         </button>
     </div>
 </div>
+
+<!-- MODAL RISK MANAGEMENT PLAN -->
+<div id="riskManagementPlanModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_RISK_MANAGEMENT_PLAN")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body risk-management-plan-modal">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="riskManagementPlanModal_SaveBtn"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <?php
     include("index_table.php");

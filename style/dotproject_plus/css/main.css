@@ -115,3 +115,10 @@ footer {
 .btn-xs {
     padding: .10rem .5rem;
 }
+
+@media (min-width: 768px) {
+    .modal-xl {
+        width: 90%;
+        max-width: 1200px;
+    }
+}

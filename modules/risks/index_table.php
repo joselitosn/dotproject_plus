@@ -172,7 +172,7 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                   onclick="risks.edit(<?=$row['risk_id']?>)">
+                                   onclick="risks.edit(<?=$row['risk_id']?>,<?=$projectSelected?>)">
                                     <i class="far fa-edit"></i>
                                     Alterar
                                 </a>
@@ -268,7 +268,7 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                   onclick="risks.edit(<?=$row['risk_id']?>)">
+                                   onclick="risks.edit(<?=$row['risk_id']?>,<?=$projectSelected?>)">
                                     <i class="far fa-edit"></i>
                                     Alterar
                                 </a>
@@ -384,19 +384,100 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
                 }
             });
         },
-        
+
         new: function (projectId) {
             $.ajax({
                 type: "get",
                 url: "?m=risks&template=addedit&project_id="+projectId
             }).done(function(response) {
                 var modal = $('#riskModal');
-//                modal.on('hidden.bs.modal', function () {
-//                    modal.off('hidden.bs.modal');
-//                    $('.cost-modal').html('');
-//                });
                 modal.find('h5').html('Adicionar risco');
                 $('.risk-modal').html(response);
+                modal.modal();
+            });
+        },
+
+        edit: function (riskId, projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=risks&template=addedit&id="+riskId+"&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#riskModal');
+                modal.find('h5').html('Alterar risco');
+                $('.risk-modal').html(response);
+                modal.modal();
+            });
+        },
+
+        save: function () {
+            var name = $('input[name=risk_name]').val();
+            var desc = $('textarea[name=risk_description]').val();
+            var dateStart = $('input[name=risk_start_date]').val();
+            var dateEnd = $('input[name=risk_end_date]').val();
+
+            var msg = [];
+            var err = false;
+
+            if (!name) {
+                err = true;
+                msg.push('Preencha o nome');
+            }
+
+            if (!desc) {
+                err = true;
+                msg.push('Preencha a descrição');
+            }
+
+            if (!moment(dateStart, 'DD/MM/YYYY', true).isValid()) {
+                err = true;
+                msg.push('Data de início do período de vigência é inválida');
+            }
+
+            if (!moment(dateEnd, 'DD/MM/YYYY', true).isValid()) {
+                err = true;
+                msg.push('Data de fim do período de vigência é inválida');
+            }
+
+            if (err) {
+                $.alert({
+                    title: "Erro",
+                    content: msg.join('<br>')
+                });
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=risks",
+                data: $("#riskForm").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
+        openRisksManagementPlan: function (projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=risks&template=risk_management_plan&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#riskManagementPlanModal');
+                modal.on('hidden.bs.modal', function () {
+                    $('#riskManagementPlanModal_SaveBtn').off('click');
+                });
+                $('.risk-management-plan-modal').html(response);
                 modal.modal();
             });
         }

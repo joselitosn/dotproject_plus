@@ -79,95 +79,8 @@ $projects = $q->loadHashList();
 $projectSelected = intval(dPgetParam($_GET, "project_id"));
 $t = intval(dPgetParam($_GET, "tab"));
 $vw = dPgetParam($_GET, "vw");
-// setup the title block
-//$ttl = $risk_id ? "LBL_EDIT" : "LBL_ADD";
-//$titleBlock = new CTitleBlock($ttl, "risks.png", $m, "$m.$a");
-//if ($projectSelected == null || $projectSelected == "") {
-//    $titleBlock->addCrumb("?m=$m", "LBL_RISK_LIST");
-//    $href = "?m=$m";
-//    $projectSelected = $obj->risk_project;
-//} else {
-//        $titleBlock->addCrumb("?m=projects&a=view&project_id=" . $projectSelected . "&tab=" . $t."&targetScreenOnProject=/modules/risks/projects_risks.php", "LBL_RISK_LIST");
-//        $href = "?m=projects&a=view&project_id=" . $projectSelected . "&tab=" . $t."&targetScreenOnProject=/modules/risks/projects_risks.php";
-//}
-//
-////$canDelete = getPermission($m, "delete", $risk_id);
-//if (/*$canDelete &&*/ $risk_id > 0) {
-//    $titleBlock->addCrumbDelete("LBL_DELETE", $canDelete, $msg);
-//}
-//
-//$titleBlock->show();
 ?>
-<script language="javascript">
-    function submitIt() {
-
-        //    var f = document.uploadFrm;
-        //    f.submit();
-        var f = document.uploadFrm;
-        var msg = "";
-        var foc = false;
-        if (f.risk_name.value.length < 3) {
-            msg += "\n<?php echo $AppUI->_("LBL_VALID_RISK_NAME", UI_OUTPUT_JS); ?>";
-            if ((foc == false) && (navigator.userAgent.indexOf("MSIE") == -1)) {
-                f.risk_name.focus();
-                foc = true;
-            }
-        }
-        if (f.risk_description.value.length < 3) {
-            msg += "\n<?php echo $AppUI->_("LBL_VALID_RISK_DESCRIPTION", UI_OUTPUT_JS); ?>";
-            if ((foc == false) && (navigator.userAgent.indexOf("MSIE") == -1)) {
-                f.risk_description.focus();
-                foc = true;
-            }
-        }
-        if (msg.length < 1) {
-            document.getElementById("risk_period_start_date").disabled = false;
-            document.getElementById("risk_period_end_date").disabled = false;
-            f.submit();
-        } else {
-            alert(msg);
-        }
-    }
-    function delIt() {
-        if (confirm("<?php echo $AppUI->_("LBL_DELETE_MSG", UI_OUTPUT_JS); ?>")) {
-            var f = document.uploadFrm;
-            f.del.value = "1";
-            f.submit();
-        }
-    }
-
-    function cancelFormChanges() {
-        if (confirm("<?php echo $AppUI->_("Are you sure you want to cancel?", UI_OUTPUT_JS); ?>")) {
-            window.location.href = "<?php echo $href; ?>";
-        }
-    }
-
-    function updateRisksReponseFieldsBasedOnStartegy() {
-        var riskStrategy = document.uploadFrm.risk_strategy.value;
-        if (riskStrategy == 0) {
-            with (document.uploadFrm) {
-                risk_prevention_actions.disabled = true;
-                //risk_contingency_plan.disabled = true;
-                //risk_responsible.disabled = true;
-                //risk_triggers.disabled = true;
-            }
-        } else {
-            with (document.uploadFrm) {
-                risk_prevention_actions.disabled = false;
-                risk_contingency_plan.disabled = false;
-                risk_responsible.disabled = false;
-                //risk_triggers.disabled = false;
-            }
-        }
-    }
-
-</script>
-<!--<link href="modules/timeplanning/css/table_form.css" type="text/css" rel="stylesheet" />-->
-<!--<!-- calendar goodies -->
-<!--<link type="text/css" rel="stylesheet" href="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css?random=20051112" media="screen"></link>-->
-<!--<script type="text/javascript" src="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js?random=20060118"></script>-->
-
-<form name="uploadFrm" action="?m=risks" method="post">
+<form name="riskForm" id="riskForm">
     <input type="hidden" name="dosql" value="do_risks_aed" />
     <input type="hidden" name="del" value="0" />
     <input type="hidden" name="risk_id" value="<?php echo $risk_id; ?>" />
@@ -210,302 +123,406 @@ $vw = dPgetParam($_GET, "vw");
         <textarea name="risk_consequence" rows="2" maxlength="255" class="form-control form-control-sm"><?=$obj->risk_consequence?></textarea>
     </div>
 
-    <table  width="100%" border="0" class="std" name="table_form">
-<!--        <tr>-->
-<!--            <td colspan="2" class="td_section">-->
-<!--                --><?php //echo $AppUI->_("LBL_RISK_IDENTIFICATION"); ?>
-<!--            </td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td class="td_label">-->
-<!--                <label for="risk_name">--><?php //echo $AppUI->_("LBL_RISK_NAME"); ?><!--</label><span class="span_mandatory">*</span>:-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <input type="text" name="risk_name" value="--><?php //echo $obj->risk_name; ?><!--"  maxlength="100" />-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td class="td_label">-->
-<!--                <label for="risk_cause">--><?php //echo $AppUI->_("LBL_RISK_CAUSE"); ?><!--</label>:-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <textarea name="risk_cause" cols="50" rows="2" style="wrap:virtual;" maxlength="255" class="textarea">--><?php //echo $obj->risk_cause; ?><!--</textarea>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td class="td_label">-->
-<!--                <label for="risk_consequence">--><?php //echo $AppUI->_("LBL_RISK_CONSEQUENCE"); ?><!--</label>:-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <textarea name="risk_consequence" cols="50" rows="2" style="wrap:virtual;" maxlength="255" class="textarea">--><?php //echo $obj->risk_consequence; ?><!--</textarea>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td class="td_label">-->
-<!--                <label for="risk_description">--><?php //echo $AppUI->_("LBL_DESCRIPTION"); ?><!--</label><span class="span_mandatory">*</span>:-->
-<!--            </td>-->
-<!--            <td>-->
-<!--                <textarea name="risk_description" cols="50" rows="2" style="wrap:virtual;" maxlength="255" class="textarea">--><?php //echo $obj->risk_description; ?><!--</textarea>-->
-<!--            </td>-->
-<!--        </tr>-->
-
-        <!--
-        <tr>
-            <td class="td_label">
-                <label for="risk_project"><?php echo $AppUI->_("LBL_PROJECT"); ?></label>:
-            </td>
-            <td>
-        <?php
-        $q = new DBQuery();
-        $q->addQuery("project_id, project_name");
-        $q->addTable("projects");
-        $q->addWhere("project_id = " . $projectSelected);
-        $project = $q->loadHashList();
-        if ($projectSelected == null) {
-            $projectSelected = @$obj->risk_project;
-            $projectName = $projects[@$obj->risk_project];
-            $project[@$obj->risk_project] = $projectName;
+    <?php
+        $tasks = array();
+        $results = array();
+        $perms = $AppUI->acl();
+        if ($perms->checkModule("tasks", "view")) {
+            $q = new DBQuery();
+            $q->addQuery("t.task_id, t.task_name");
+            $q->addTable("tasks", "t");
+            $q->addWhere("task_project = " . (int) $projectSelected);
+            $results = $q->loadHashList("task_id");
         }
-        echo arraySelect($project, "risk_project", "size=\"1\" class=\"text\"", (@$obj->risk_project ? $obj->risk_project : $projectSelected));
-        ?>         
-            </td>
-        </tr>
-        -->
-        <tr>
-            <td class="td_label">
-                <label for="risk_task"><?php echo $AppUI->_("LBL_TASK"); ?></label>:
-            </td>
-            <td>
-                <?php
-                $tasks = array();
-                $results = array();
-                $perms = $AppUI->acl();
-                if ($perms->checkModule("tasks", "view")) {
-                    $q = new DBQuery();
-                    $q->addQuery("t.task_id, t.task_name");
-                    $q->addTable("tasks", "t");
-                    $q->addWhere("task_project = " . (int) $projectSelected);
-                    $results = $q->loadHashList("task_id");
+        $taskList = $results;
+
+        foreach ($taskList as $key => $value) {
+            $tasks[$key] = $value["task_name"];
+        }
+        $tasks[0] = str_replace("&atilde;", "ã", $AppUI->_("LBL_NOT_DEFINED"));
+    ?>
+
+    <div class="form-group risk-activity">
+        <label for="risk_task">
+            <?=$AppUI->_("LBL_TASK")?>
+        </label>
+        <select class="form-control form-control-sm select-activity" name="risk_task">
+            <option value="-1"><?=$AppUI->_("LBL_ALL_TASKS")?></option>
+            <?php
+                foreach ($tasks as $key => $value) {
+                    $selected = ($key ==  dPformSafe(@$obj->risk_task)) ? 'selected' : '';
+                    ?>
+                    <option value="<?=$key?>" <?=$selected?>><?=$value?></option>
+                    <?php
                 }
-                $taskList = $results;
-
-                foreach ($taskList as $key => $value) {
-                    $tasks[$key] = $value["task_name"];
-                }
-                $tasks[-1] = $AppUI->_("LBL_ALL_TASKS");
-                $tasks[0] = str_replace("&atilde;", "ã", $AppUI->_("LBL_NOT_DEFINED"));
-                echo arraySelect($tasks, "risk_task", "size=\"1\" class=\"text\"", dPformSafe(@$obj->risk_task));
-                ?>
-            </td>
-        </tr>
-
-        <tr>
-            <td class="td_label">
-                <label for="risk_period_start_date"><?php echo $AppUI->_("LBL_RISK_PERIOD"); ?></label>:
-            </td>
-            <td>
-                <input type="text" class="text" style="width:80px;" disabled="true" name="risk_period_start_date" value="<?php echo dPformSafe(@$obj->risk_period_start_date); ?>" id="risk_period_start_date" />
-                <img src="./modules/timeplanning/images/img.gif" id="calendar_trigger" style="cursor:pointer" onclick="displayCalendar(document.getElementById('risk_period_start_date'), 'yyyy-mm-dd', this)" />
-    
-                <input type="text" class="text" style="width:80px;" disabled="true" name="risk_period_end_date" value="<?php echo dPformSafe(@$obj->risk_period_end_date); ?>" id="risk_period_end_date" />
-                <img src="./modules/timeplanning/images/img.gif" id="calendar_trigger" style="cursor:pointer" onclick="displayCalendar(document.getElementById('risk_period_end_date'), 'yyyy-mm-dd', this)" />
-            </td>
-        </tr>
-
-        <tr>
-            <td class="td_label">
-                <label for="risk_ear_classification"><?php echo $AppUI->_("LBL_RISK_EAR_CLASSIFICATION"); ?></label>:
-            </td>
-            <td>
-                <?php
-                require_once DP_BASE_DIR . "/modules/risks/controlling/risks_controlling.php";
-                $rcontrolling = new RisksControlling();
-                $options_ear = $rcontrolling->getRisksEARCategories($projectSelected);
-                echo arraySelect($options_ear, "risk_ear_classification", "size=\"1\" class=\"text\"", dPformSafe(@$obj->risk_ear_classification));
-                ?>
-            </td>
-        </tr>
-
-        <tr>
-            <td class="td_label">
-                <label for="risk_notes"><?php echo $AppUI->_("LBL_NOTES"); ?></label>:
-            </td>
-            <td>
-                <textarea name="risk_notes" cols="50" rows="2" maxlength="100" style="wrap:virtual;" class="textarea"><?php echo $obj->risk_notes; ?></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label for="risk_potential_other_projects"><?php echo $AppUI->_("LBL_POTENTIAL"); ?></label>:
-            </td>
-            <td>
-                <?php
-                echo arraySelect($riskPotential, "risk_potential_other_projects", "size=\"1\" class=\"text\"", $obj->risk_potential_other_projects);
-                ?>
-            </td>
-        </tr>
+            ?>
+        </select>
+    </div>
 
 
-
-        <div class="alert alert-secondary" role="alert">
-            <?=$AppUI->_("LBL_QUALITATYVE_ANALISYS")?>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="risk_period_period">
+                    <?=$AppUI->_("LBL_RISK_PERIOD")?>
+                </label>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="hidden" name="risk_period_start_date" id="riskStartDate" value="<?=dPformSafe(@$obj->risk_period_start_date)?>" />
+                        <input type="text"
+                           class="form-control form-control-sm datepicker-start"
+                           name="risk_start_date"
+                           onchange="formatStartDate()" />
+                    </div>
+                    <div class="col-md-6">
+                        <input type="hidden" name="risk_period_end_date" id="riskEndDate" value="<?=dPformSafe(@$obj->risk_period_end_date)?>" />
+                        <input type="text"
+                           class="form-control form-control-sm datepicker-end"
+                           name="risk_end_date"
+                           onchange="formatEndDate()" />
+                    </div>
+                </div>
+            </div>
         </div>
-<!--        <tr>-->
-<!--            <td colspan="2" class="td_section">-->
-<!--                --><?php //echo $AppUI->_("LBL_QUALITATYVE_ANALISYS"); ?>
-<!--            </td>-->
-<!--        </tr>-->
-
-        <tr>
-            <td class="td_label">
-                <label for="risk_probability"><?php echo $AppUI->_("LBL_PROBABILITY"); ?></label>:
-            </td>
-            <td>
-                <?php
-                echo arraySelect($riskProbability, "risk_probability", "size=\"1\" class=\"text\"", $obj->risk_probability);
-                ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label for="risk_impact"><?php echo $AppUI->_("LBL_IMPACT"); ?></label>:
-            </td>
-            <td>
-                <?php
-                echo arraySelect($riskImpact, "risk_impact", "size=\"1\" class=\"text\"", $obj->risk_impact);
-                ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label for="risk_importance"><?php echo $AppUI->_("LBL_RISK_IMPORTANCE"); ?></label>:
-            </td>
-            <td>
-                <?php
-                $expositionImpact = $impactProbabilityMatrix[$obj->risk_probability][$obj->risk_impact];
-                echo $textExpositionFactor[$expositionImpact];
-                ?>
-            </td>
-        </tr>
-
-        <div class="alert alert-secondary" role="alert">
-            <?=$AppUI->_("LBL_RESPONSE_PLAN")?>
+        <?php
+            require_once DP_BASE_DIR . "/modules/risks/controlling/risks_controlling.php";
+            $rcontrolling = new RisksControlling();
+            $options_ear = $rcontrolling->getRisksEARCategories($projectSelected);
+        ?>
+        <div class="col-md-4 risk-classification">
+            <div class="form-group">
+                <label for="risk_period_end_date">
+                    <?=$AppUI->_("LBL_RISK_EAR_CLASSIFICATION")?>
+                </label>
+                <select class="form-control form-control-sm select-classification" name="risk_ear_classification">
+                    <?php
+                        foreach ($options_ear as $key => $value) {
+                            $selected = ($key ==  dPformSafe(@$obj->risk_ear_classification)) ? 'selected' : '';
+                            ?>
+                            <option value="<?=$key?>" <?=$selected?>><?=$value?></option>
+                            <?php
+                        }
+                    ?>
+                </select>
+            </div>
         </div>
-<!--        <tr>-->
-<!--            <td colspan="2" class="td_section">-->
-<!--                --><?php //echo $AppUI->_("LBL_RESPONSE_PLAN"); ?>
-<!--            </td>-->
-<!--        </tr>-->
-        <tr>
+    </div>
 
-            <td class="td_label">
-                <label for="risk_strategy"><?php echo $AppUI->_("LBL_STRATEGY"); ?></label>:
-            </td>
-            <td>
-                <?php
-                echo arraySelect($riskStrategy, "risk_strategy", "size=\"1\" class=\"text\" onchange=\"updateRisksReponseFieldsBasedOnStartegy()\"", $obj->risk_strategy);
-                ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label for="risk_prevention_actions"><?php echo $AppUI->_("LBL_PREVENTION_ACTIONS"); ?></label>:
-            </td>
-            <td>
-                <textarea name="risk_prevention_actions" cols="50" rows="4" style="wrap:virtual;" class="textarea" maxlength="255"><?php echo $obj->risk_prevention_actions; ?></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label for="risk_is_contingency"><?php echo $AppUI->_("LBL_INCLUDE_IN_CONTINGENCY_RESERVE"); ?></label>:
-            </td>
-            <td>
-                <input type="radio" name="risk_is_contingency" value="1" <?php echo $obj->risk_is_contingency == 1 ? "checked=true" : "" ?> /> <?php echo $AppUI->_("LBL_YES"); ?>
-                <input type="radio" name="risk_is_contingency" value="0" <?php echo $obj->risk_is_contingency != 1 ? "checked=true" : "" ?> /> <?php echo $AppUI->_("LBL_NO"); ?>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label for="risk_contingency_plan"><?php echo $AppUI->_("LBL_CONTINGENCY_PLAN"); ?></label>:
-            </td>
-            <td>
-                <textarea name="risk_contingency_plan" cols="50" rows="4" style="wrap:virtual;" class="textarea" maxlength="255"><?php echo $obj->risk_contingency_plan; ?></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label for="risk_triggers"><?php echo $AppUI->_("LBL_TRIGGER"); ?></label>:
-            </td>
-            <td>
-                <textarea name="risk_triggers" cols="50" rows="4" style="wrap:virtual;" class="textarea" maxlength="255"><?php echo $obj->risk_triggers; ?></textarea>
-            </td>
-        </tr>
-        <tr>
-            <td class="td_label">
-                <label for="risk_responsible"><?php echo $AppUI->_("LBL_OWNER"); ?></label>:
-            </td>
-            <td>
-                <?php
-                echo arraySelect($owners, "risk_responsible", "size=\"1\" class=\"text\"", $obj->risk_responsible);
-                ?>
-            </td>
-        </tr>
-
-        <div class="alert alert-secondary" role="alert">
-            <?=$AppUI->_("LBL_RISK_CONTROLING")?>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="risk_notes">
+                    <?=$AppUI->_("LBL_NOTES")?>
+                </label>
+                <textarea name="risk_notes" rows="2" maxlength="100" class="form-control form-control-sm"><?=$obj->risk_notes?></textarea>
+            </div>
         </div>
-<!--        <tr>-->
-<!--            <td colspan="2" class="td_section">-->
-<!--                --><?php //echo $AppUI->_("LBL_RISK_CONTROLING"); ?>
-<!--            </td>-->
-<!--        </tr>-->
-        <tr>
-            <td class="td_label">
-                <label for="risk_status"><?php echo $AppUI->_("LBL_RISK_STATUS"); ?></label>:
-            </td>
-            <td>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="risk_potencial">
+                    <?=$AppUI->_("LBL_POTENTIAL")?>
+                </label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="risk_potential_other_projects" value="1" <?=$obj->risk_potential_other_projects == 1 ? "checked=true" : ""?>>
+                    <label class="form-check-label" for="inlineRadio1">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="risk_potential_other_projects" value="0" <?=$obj->risk_potential_other_projects != 1 ? "checked=true" : ""?>>
+                    <label class="form-check-label" for="inlineRadio2">Não</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-secondary" role="alert">
+        <?=$AppUI->_("LBL_QUALITATYVE_ANALISYS")?>
+    </div>
+
+    <div class="row risk-probability">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="risk_probability">
+                    <?=$AppUI->_("LBL_PROBABILITY")?>
+                </label>
+                <select class="form-control form-control-sm select-probability" name="risk_probability">
+                    <option></option>
+                    <?php
+                    foreach ($riskProbability as $key => $value) {
+                        $selected = ($key ==  dPformSafe(@$obj->risk_probability)) ? 'selected' : '';
+                        ?>
+                        <option value="<?=$key?>" <?=$selected?>><?=$value?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4 risk-impact">
+            <div class="form-group">
+                <label for="risk_impact">
+                    <?=$AppUI->_("LBL_IMPACT")?>
+                </label>
+                <select class="form-control form-control-sm select-impact" name="risk_impact">
+                    <option></option>
+                    <?php
+                    foreach ($riskImpact as $key => $value) {
+                        $selected = ($key ==  dPformSafe(@$obj->risk_impact)) ? 'selected' : '';
+                        ?>
+                        <option value="<?=$key?>" <?=$selected?>><?=$value?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="risk_importance">
+                    <?=$AppUI->_("LBL_RISK_IMPORTANCE")?>
+                </label>
                 <?php
-                $options = array();
-                $options[0] = $AppUI->_("LBL_RISK_STATUS_IDENTIFIED");
-                $options[1] = $AppUI->_("LBL_RISK_STATUS_MONITORED");
-                $options[2] = $AppUI->_("LBL_RISK_STATUS_MATERIALIZED");
-                $options[3] = $AppUI->_("LBL_RISK_STATUS_FINISHED");
-                echo arraySelect($options, "risk_status", "size=\"1\" class=\"text\"", dPformSafe(@$obj->risk_status));
+                    $expositionImpact = $impactProbabilityMatrix[$obj->risk_probability][$obj->risk_impact];
+                    echo $textExpositionFactor[$expositionImpact];
                 ?>
-            </td>
-        </tr>
+            </div>
+        </div>
+    </div>
 
+    <div class="alert alert-secondary" role="alert">
+        <?=$AppUI->_("LBL_RESPONSE_PLAN")?>
+    </div>
 
-        <!--
-        <tr>
-            <td class="td_label">
-                <label for="risk_lessons_learned"><?php echo $AppUI->_("LBL_LESSONS"); ?></label>:
-            </td>
-            <td>
-                <textarea name="risk_lessons_learned" cols="50" rows="4" style="wrap:virtual;" class="textarea" maxlength="100"><?php echo dPformSafe(@$obj->risk_lessons_learned); ?></textarea>
-            </td>
-        </tr>
-        -->
-        <tr>
-            <td class="td_label">
-                <label for="risk_active"><?php echo $AppUI->_("LBL_ACTIVE"); ?></label>:
-            </td>
-            <td>
+    <div class="row risk-strategy">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="risk_strategy">
+                    <?=$AppUI->_("LBL_STRATEGY")?>
+                </label>
+                <select class="form-control form-control-sm select-strategy" name="risk_strategy">
+                    <option></option>
+                    <?php
+                    foreach ($riskStrategy as $key => $value) {
+                        $selected = ($key ==  dPformSafe(@$obj->risk_strategy)) ? 'selected' : '';
+                        ?>
+                        <option value="<?=$key?>" <?=$selected?>><?=$value?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="form-group">
+                <label for="risk_is_contingency">
+                    <?=$AppUI->_("LBL_INCLUDE_IN_CONTINGENCY_RESERVE")?>
+                </label>
+                <br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="risk_is_contingency" id="inlineRadio1" value="1" <?=$obj->risk_is_contingency == 1 ? "checked=true" : ""?>>
+                    <label class="form-check-label" for="inlineRadio1">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="risk_is_contingency" id="inlineRadio2" value="0" <?=$obj->risk_is_contingency != 1 ? "checked=true" : ""?>>
+                    <label class="form-check-label" for="inlineRadio2">Não</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="risk_prevention_actions">
+            <?=$AppUI->_("LBL_PREVENTION_ACTIONS")?>
+        </label>
+        <textarea name="risk_prevention_actions" rows="2" class="form-control form-control-sm" maxlength="255"><?=$obj->risk_prevention_actions?></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="risk_contingency_plan">
+            <?=$AppUI->_("LBL_CONTINGENCY_PLAN")?>
+        </label>
+        <textarea name="risk_contingency_plan" rows="2" class="form-control form-control-sm" maxlength="255"><?=$obj->risk_contingency_plan?></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="risk_triggers">
+            <?=$AppUI->_("LBL_TRIGGER")?>
+        </label>
+        <textarea name="risk_triggers" rows="2" class="form-control form-control-sm" maxlength="255"><?=$obj->risk_triggers?></textarea>
+    </div>
+
+    <div class="row risk-owner">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="risk_responsible">
+                    <?=$AppUI->_("LBL_OWNER")?>
+                </label>
+                <select class="form-control form-control-sm select-owner" name="risk_responsible">
+                    <option></option>
+                    <?php
+                    foreach ($owners as $key => $value) {
+                        $selected = ($key ==  dPformSafe(@$obj->risk_responsible)) ? 'selected' : '';
+                        ?>
+                        <option value="<?=$key?>" <?=$selected?>><?=$value?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-secondary" role="alert">
+        <?=$AppUI->_("LBL_RISK_CONTROLING")?>
+    </div>
+
+    <div class="row risk-status">
+        <div class="col-md-4">
+            <div class="form-group">
                 <?php
-                echo arraySelect($riskActive, "risk_active", "size=\"1\" class=\"text\"", dPformSafe(@$obj->risk_active));
+                    $options = array();
+                    $options[0] = $AppUI->_("LBL_RISK_STATUS_IDENTIFIED");
+                    $options[1] = $AppUI->_("LBL_RISK_STATUS_MONITORED");
+                    $options[2] = $AppUI->_("LBL_RISK_STATUS_MATERIALIZED");
+                    $options[3] = $AppUI->_("LBL_RISK_STATUS_FINISHED");
                 ?>
-            </td>
-        </tr>
-<!--        <tr>-->
-<!--            <td colspan="2" align="right">-->
-<!--                 <input type="button" class="button" value="--><?php //echo $AppUI->_("LBL_SUBMIT"); ?><!--" onclick="submitIt()" />-->
-<!--            </td>-->
-<!--        </tr>-->
-
-    </table>
+                <label for="risk_responsible">
+                    <?=$AppUI->_("LBL_RISK_STATUS")?>
+                </label>
+                <select class="form-control form-control-sm select-status" name="risk_status">
+                    <option></option>
+                    <?php
+                    foreach ($options as $key => $value) {
+                        $selected = ($key ==  dPformSafe(@$obj->risk_status)) ? 'selected' : '';
+                        ?>
+                        <option value="<?=$key?>" <?=$selected?>><?=$value?></option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="risk_active">
+                    <?=$AppUI->_("LBL_ACTIVE")?>
+                </label>
+                <br>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="risk_active" value="0" <?=$obj->risk_active != 1 ? "checked=true" : ""?>>
+                    <label class="form-check-label" for="inlineRadio1">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="risk_active" value="1" <?=$obj->risk_active == 1 ? "checked=true" : ""?>>
+                    <label class="form-check-label" for="inlineRadio2">Não</label>
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
+
 <script>
-    updateRisksReponseFieldsBasedOnStartegy();
+
+    function updateRisksReponseFieldsBasedOnStartegy() {
+        var riskStrategy = $('.select-strategy').val();
+        if (riskStrategy == 0) {
+            $('textarea[name=risk_prevention_actions]').attr('readonly', true);
+        } else {
+            $('textarea[name=risk_prevention_actions]').attr('readonly', false);
+        }
+    }
+
+    function formatStartDate() {
+        var date = $('.datepicker-start').val();
+        var arrDate = date.split('/');
+        $('#riskStartDate').val(arrDate[2] + '-' + arrDate[1] + '-' + arrDate[0]);
+    }
+
+    function formatEndDate() {
+        var date = $('.datepicker-end').val();
+        var arrDate = date.split('/');
+        $('#riskEndDate').val(arrDate[2] + '-' + arrDate[1] + '-' + arrDate[0]);
+    }
+
+    function getStartDate() {
+        var date = $('#riskStartDate').val();
+        if (!date) return;
+        var arrDate = date.split('-');
+        $('.datepicker-start').val(arrDate[2] + '/' + arrDate[1] + '/' + arrDate[0]);
+    }
+
+    function getEndDate() {
+        var date = $('#riskEndDate').val();
+        if (!date) return;
+        var arrDate = date.split('-');
+        $('.datepicker-end').val(arrDate[2] + '/' + arrDate[1] + '/' + arrDate[0]);
+    }
+
+    $(document).ready(function() {
+
+        $(".select-activity").select2({
+            allowClear: true,
+            placeholder: "",
+            theme: "bootstrap",
+            dropdownParent: $(".risk-activity")
+        });
+
+        $(".select-classification").select2({
+            allowClear: true,
+            placeholder: "",
+            theme: "bootstrap",
+            dropdownParent: $(".risk-classification")
+        });
+
+        $(".select-probability").select2({
+            allowClear: true,
+            placeholder: "",
+            theme: "bootstrap",
+            dropdownParent: $(".risk-probability")
+        });
+
+        $(".select-impact").select2({
+            allowClear: true,
+            placeholder: "",
+            theme: "bootstrap",
+            dropdownParent: $(".risk-impact")
+        });
+
+        $(".select-strategy").select2({
+            allowClear: true,
+            placeholder: "",
+            theme: "bootstrap",
+            dropdownParent: $(".risk-strategy")
+        });
+
+        $(".select-owner").select2({
+            allowClear: true,
+            placeholder: "",
+            theme: "bootstrap",
+            dropdownParent: $(".risk-owner")
+        });
+
+        $(".select-status").select2({
+            allowClear: true,
+            placeholder: "",
+            theme: "bootstrap",
+            dropdownParent: $(".risk-status")
+        });
+
+        $(".select-strategy").on("change", updateRisksReponseFieldsBasedOnStartegy);
+
+        $( ".datepicker-start" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: formatStartDate
+        });
+        $( ".datepicker-end" ).datepicker({
+            dateFormat: 'dd/mm/yy',
+            onSelect: formatEndDate
+        });
+
+        updateRisksReponseFieldsBasedOnStartegy();
+        getStartDate();
+        getEndDate();
+    });
 </script>
 <?php
     exit();

@@ -42,15 +42,18 @@ function addItem(id, itemName, index, identation) {
     var td = row.insertCell(1);
     td.noWrap = true;
     var div = document.createElement("div");
-    div.innerHTML = "<input type='button' value='&uarr;' class='button' onclick=moveRow(-1,'" + row.id + "')>";
-    div.innerHTML += "<input type='button' class='button' value='&darr;' onclick=moveRow(1,'" + row.id + "')>";
+    div.innerHTML = "<button type='button' class='btn btn-sm' onclick=moveRow(-1,'" + row.id + "')><i class='fas fa-arrow-up'></i></button>";
+    div.innerHTML += "<button type='button' class='btn btn-sm' onclick=moveRow(1,'" + row.id + "')><i class='fas fa-arrow-down'></i></button>";
+
     td.appendChild(div);
     //Identation
     var td = row.insertCell(2);
     td.noWrap = true;
     var div = document.createElement("div");
-    div.innerHTML = "<input type=\"button\" value=\"&#8592;\" class=\"button\" onclick=identation(\"" + id + "\",-1)>";
-    div.innerHTML = div.innerHTML + "<input type=\"button\" value=\"&#8594;\" class=\"button\" onclick=identation(\"" + id + "\",1)>";
+
+    div.innerHTML = "<button type='button' class='btn btn-sm' onclick=identation(\"" + id + "\",-1)><i class='fas fa-arrow-left'></i></button>";
+    div.innerHTML += "<button type='button' class='btn btn-sm' onclick=identation(\"" + id + "\",1)><i class='fas fa-arrow-right'></i></button>";
+
     td.appendChild(div);
     //Identation inputs
     var td = row.insertCell(3);
@@ -81,7 +84,12 @@ function addItem(id, itemName, index, identation) {
     td.width = "50";
     div = field = document.createElement("div");
 
-    div.innerHTML = "<img src='modules/timeplanning/images/stock_delete-16.png' border='0' style='cursor:pointer' onclick=deleteRole('" + row.id + "') /> <img src='modules/timeplanning/images/stock_new_small.png'  style='cursor:pointer' onclick=addItem('','','" + row.id + "','') />";
+
+    div.innerHTML = "<button type='button' class='btn btn-sm btn-danger' onclick=deleteRole('" + row.id + "')><i class='far fa-trash-alt'></i></button>";
+    div.innerHTML += "&nbsp;";
+    div.innerHTML += "<button type='button' class='btn btn-sm btn-secondary' onclick=addItem('','','" + row.id + "','')><i class='far fa-plus-square'></i></button>";
+
+    // div.innerHTML = "<img src='modules/timeplanning/images/stock_delete-16.png' border='0' style='cursor:pointer' onclick=deleteRole('" + row.id + "') /> <img src='modules/timeplanning/images/stock_new_small.png'  style='cursor:pointer' onclick=addItem('','','" + row.id + "','') />";
     td.appendChild(div);
 
     updateEAPItemsNumbers();

@@ -23,7 +23,6 @@ if (!db_loadObject($q->prepare(), $obj)) {
 
 if (!$obj->bind($_POST)) {
     $AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
-    $AppUI->redirect();
 }
 
 // prepare (and translate) the module name ready for the suffix
@@ -48,7 +47,6 @@ if ($eap_items_ids != "") {
     for ($i = 0; $i < sizeof($eap_items_ids); $i++) {
         $id = $eap_items_ids[$i];
         $description = dPgetParam($_POST, 'description_' . $id, array());
-        echo $description;
         $identation = dPgetParam($_POST, 'identation_field_' . $id, array());
         $number = dPgetParam($_POST, 'number_field_' . $id, array());
         $isLeaf = dPgetParam($_POST, 'leaf_field_' . $id, array());
@@ -64,9 +62,6 @@ if ($items_ids_to_delete != "") {
         $controllerWBSItem->delete($items_ids_to_delete[$i]);
     }
 }
-if ($projectSelected == "") {
-    $AppUI->redirect("m=risks");
-} else {
-    $AppUI->redirect("m=projects&a=view&project_id=" . $projectSelected."&targetScreenOnProject=/modules/risks/projects_risks.php");
-}
+echo $AppUI->getMsg();
+exit();
 ?>
