@@ -198,34 +198,9 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                 <?=$AppUI->_('Target Budget')?>(<?php echo $dPconfig['currency_symbol']?>):
                 <?=number_format(@$obj->project_target_budget, 2, ',', '.')?>
             </small>
-            <small class="float-right">
-                <a href="javascript:void(0)" data-toggle="modal" data-target="#modalScopeDeclaration">
-                    <?=$AppUI->_('LBL_PROJECT_SCOPE_DECLARATION')?>
-                </a>
-            </small>
-        </div>
-    </div>
-    <div class="modal" tabindex="-1" role="dialog" id="modalScopeDeclaration">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><?=$AppUI->_('LBL_PROJECT_SCOPE_DECLARATION')?></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h6><?=$AppUI->_("LBL_DESCRIPTION")?></h6>
-                    <p><?=$obj->project_description?></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
-                </div>
-            </div>
         </div>
     </div>
 </div>
-
 <div class="wrapper">
     <!-- start main section - left project menu and EAP and tasks tree -->
     <!-- Sidebar -->
@@ -269,7 +244,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                 <ul class="collapse list-unstyled<?=$tab == 1 ? ' show' : ' hide'?>" id="pmSubmenu">
                     <li class="<?=$tab == 1 && $subtab == 0 ? 'active' : '' ?>">
                         <a href="?m=projects&amp;a=view&amp;project_id=<?=$project_id?>&amp;tab=1&amp;subtab=0">
-                            <?=$AppUI->_("Tasks",UI_OUTPUT_HTML)?>
+                            <?=$AppUI->_("LBL_WBS",UI_OUTPUT_HTML)?>
                         </a>
                     </li>
                     <li class="<?=$tab == 1 && $subtab == 1 ? 'active' : '' ?>">
@@ -377,16 +352,6 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
     <script type="text/javascript">
         $(document).ready(function(e) {
 
-            let collapseProject = $('#projectDetailsLink');
-            $('#project_details').on('shown.bs.collapse', function () {
-                collapseProject.find('i').removeClass('fa-caret-down');
-                collapseProject.find('i').addClass('fa-caret-up');
-            });
-            $('#project_details').on('hidden.bs.collapse', function () {
-                collapseProject.find('i').removeClass('fa-caret-up');
-                collapseProject.find('i').addClass('fa-caret-down');
-            });
-
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
 
@@ -399,4 +364,5 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                 }
             });
         });
+
     </script>

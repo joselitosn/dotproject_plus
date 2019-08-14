@@ -64,16 +64,12 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
 <!-- ############################## ESTIMATIVAS CUSTOS HUMANOS ############################################ -->
 <br>
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert alert-secondary" role="alert">
-            <h5 class="alert-heading"><?=$AppUI->_("Human Resource Estimative")?></h5>
-            <?=$AppUI->_("LBL_COST_HUMAN_RESOURCE_HELP", UI_OUTPUT_JS)?>
-            <hr>
-            <small><?=$AppUI->_("LBL_RH_AUTOMATICALLY_ADDED_COST_BASELINE")?></small>
-        </div>
-    </div>
-</div>
+<!--<div class="row">-->
+<!--    <div class="col-md-12">-->
+<!--        -->
+<!--    </div>-->
+<!--</div>-->
+
 
 <div class="row">
     <div class="col-md-12 text-right">
@@ -83,59 +79,63 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
     </div>
 </div>
 
-<?php
-    foreach ($humanCost as $row) {
-        /* transform date to dd/mm/yyyy */
-        $date_begin = intval($row['cost_date_begin']) ? new CDate($row['cost_date_begin']) : null;
-        $date_end = intval($row['cost_date_end']) ? new CDate($row['cost_date_end']) : null;
-        ?>
-        <div class="card inner-card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <h5>
-                            <?=$row['cost_description']?>
-                        </h5>
-                    </div>
-                    <div class="col-md-8">
-                        <span>
-                            <?=$AppUI->_('Date Begin')?>: <?=$date_begin ? $date_begin->format($df) : ''?> |
-                        </span>
-                        <span>
-                            <?=$AppUI->_('Date End')?>: <?=$date_end ? $date_end->format($df) : ''?> |
-                        </span>
-                        <span>
-                            <?=$AppUI->_('Hours/Month')?>: <?=$row['cost_quantity']?> |
-                        </span>
-                        <span>
-                            <?=$AppUI->_('Hour Cost')?>: <?=dPgetConfig("currency_symbol") . number_format($row['cost_value_unitary'], 2, ',', '.')?> |
-                        </span>
-                        <span>
-                            <?=$AppUI->_('Total Cost')?>: <?=dPgetConfig("currency_symbol") . number_format($row['cost_value_total'], 2, ',', '.')?>
-                        </span>
-                    </div>
-                    <div class="col-md-1 text-right">
-                        <div class="dropdown">
-                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bars"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="javascript:void(0)" onclick="costs.hr.edit(<?=$row['cost_id']?>,<?=$projectSelected?>)">
-                                    <i class="far fa-edit"></i>
-                                    Alterar
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+<div class="card inner-card">
+    <div class="card-body">
+        <h5 class="card-title"><?=$AppUI->_("Human Resource Estimative")?></h5>
+        <h6 class="card-subtitle mb-2 text-muted"><?=$AppUI->_("LBL_COST_HUMAN_RESOURCE_HELP", UI_OUTPUT_JS)?></h6>
+        <hr>
+        <small><?=$AppUI->_("LBL_RH_AUTOMATICALLY_ADDED_COST_BASELINE")?></small>
+        <br>
+        <br>
+        
+        <div class="row">
+            <div class="col-md-12">
+                <table class="ttable table-sm table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="20%"><?=$AppUI->_('Name')?></th>
+                            <th><?=$AppUI->_('Date Begin')?></th>
+                            <th><?=$AppUI->_('Date End')?></th>
+                            <th width="10%"><?=$AppUI->_('Hours/Month')?></th>
+                            <th width="15%"><?=$AppUI->_('Hour Cost')?>  &nbsp;(<?=dPgetConfig("currency_symbol")?>)</th>
+                            <th ><?=$AppUI->_("Total Cost")?>&nbsp;(<?=dPgetConfig("currency_symbol")?>)</th>
+                            <th width="3%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            foreach ($humanCost as $row) {
+                                $date_begin = intval($row['cost_date_begin']) ? new CDate($row['cost_date_begin']) : null;
+                                $date_end = intval($row['cost_date_end']) ? new CDate($row['cost_date_end']) : null;
+                                ?>
+                                <tr>
+                                    <td><?php echo $row['cost_description']; ?></td>
+                                    <td><?php echo $date_begin ? $date_begin->format($df) : ''; ?></td>
+                                    <td><?php echo $date_end ? $date_end->format($df) : ''; ?></td>
+                                    <td class="text-center"><?php echo $row['cost_quantity']; ?></td>
+                                    <td class="text-right"><?php echo number_format($row['cost_value_unitary'], 2, ',', '.'); ?></td>
+                                    <td class="text-right"><?php echo number_format($row['cost_value_total'], 2, ',', '.'); ?></td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-xs btn-secondary" onclick="costs.hr.edit(<?=$row['cost_id']?>,<?=$projectSelected?>)">
+                                            <i class="far fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <?php
+                                $sumH = $sumH + $row['cost_value_total'];
+                            }
+                        ?>
+                        <tr>
+                            <td align="right" colspan="6" cellpadding="3"> <b><?php echo $AppUI->_("Subtotal Human Estimatives"); ?> &nbsp;(<?php echo dPgetConfig("currency_symbol") ?>):  </b> </td>
+                            <td cellpadding="3" style="text-align: right"><b><?php echo number_format($sumH, 2, ',', '.'); ?></b></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <?php
-        $sumH = $sumH + $row['cost_value_total'];
-    }
-?>
+    </div>
+</div>
+
     <br>
     <p>
         <?=$AppUI->_("Subtotal Human Estimatives")?>: <?=dPgetConfig("currency_symbol") . number_format($sumH, 2, ',', '.')?>

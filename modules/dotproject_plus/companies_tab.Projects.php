@@ -93,12 +93,15 @@ if (!($rows = $q->loadList())) {
                 $badgeClass = ' badge-dark';
                 break;
         }
+
+        $urlPrefix = "?m=projects&a=view&project_id=$project_id";
+        $urlSufix = ($pstatus[$row["project_status"]] == 'Proposed') ? '&tab=0&subtab=0' : '&tab=1&subtab=0';
         ?>
         <div class="card inner-card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-11 mouse-cursor-pointer card-project">
-                        <h5><a class="project-link" href="?m=projects&a=view&project_id=<?=$project_id?>"><?=$project_name?></a></h5>
+                        <h5><a class="project-link" href="<?=$urlPrefix . $urlSufix?>"><?=$project_name?></a></h5>
                     </div>
                     <div class="col-md-1 text-right">
                         <div class="dropdown">

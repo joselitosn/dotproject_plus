@@ -766,7 +766,7 @@ if ($_GET["show_external_page"] != "") {
 
     ?>
 
-    <h4><?=$AppUI->_("Tasks",UI_OUTPUT_HTML)?></h4>
+    <h4><?=$AppUI->_("LBL_WBS",UI_OUTPUT_HTML)?></h4>
     <hr>
     <input type="hidden" value="<?=$project_id?>" id="projectIdHidden" />
     <!-- Filter section -->
@@ -802,7 +802,9 @@ if ($_GET["show_external_page"] != "") {
                 <input type="hidden" name="activities_count" id="activities_count" value="<?php echo $activitiesCount ?>" />
             </form>
         </div>
+
         <div class="col-sm-9 text-right">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="main.openScopeDeclaration()"><?=$AppUI->_("LBL_PROJECT_SCOPE_DECLARATION")?></button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="main.openDictionaryModal()"><?=$AppUI->_("LBL_WBS_DICTIONARY")?></button>
 <!--            <button type="button" class="btn btn-secondary btn-sm" onclick="window.location = 'index.php?a=view&m=projects&project_id=--><?php //echo $project_id ?><!--&tab=1&show_external_page=/modules/timeplanning/view/need_for_training.php#gqs_anchor';"><?//=$AppUI->_("LBL_NEED_FOR_TRAINING")?><!--</button>-->
             <button type="button" class="btn btn-secondary btn-sm" onclick="main.openMinutesModal()"><?=$AppUI->_("LBL_MINUTES_ESTIMATION_MEETINGS")?></button>
@@ -1723,27 +1725,6 @@ if ($_GET["show_external_page"] != "") {
         </div>
     </div>
 
-    <!-- MODAL NEW TASK FORM -->
-    <div id="taskModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_ACTIVITY")?></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body task-modal">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="tasks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL TASK LOG FORM -->
     <div id="taskLogModal" class="modal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
@@ -1792,6 +1773,26 @@ if ($_GET["show_external_page"] != "") {
             </div>
         </div>
     </div>
+
+    <!-- MODAL SCOPE DECLARATION -->
+    <div class="modal" tabindex="-1" role="dialog" id="modalScopeDeclaration">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><?=$AppUI->_('LBL_PROJECT_SCOPE_DECLARATION')?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="main.saveScopeDeclaration()"><?=$AppUI->_("LBL_SAVE")?></button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
     }
 ?>
@@ -1822,6 +1823,7 @@ if ($_GET["show_external_page"] != "") {
                     $(this).next('i').addClass('fa-caret-down');
                     $(this).siblings('small').show();
                 }
+
             });
 
             $('#project_resources_filter').select2({
@@ -1860,6 +1862,40 @@ if ($_GET["show_external_page"] != "") {
             });
 
             main.initDragAndDrop();
+        },
+
+        openScopeDeclaration: function () {
+            $.ajax({
+                type: "get",
+                url: "?m=timeplanning&template=/view/scope_declaration&project_id="+main.projectId
+            }).done(function(response) {
+                var modal = $('#modalScopeDeclaration');
+                modal.find('.modal-body').html(response);
+                modal.modal();
+            });
+        },
+
+        saveScopeDeclaration: function () {
+            $.ajax({
+                method: 'POST',
+                url: "?m=timeplanning",
+                data: $("form[name=form_scope_declaration]").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            $('#modalScopeDeclaration').modal('hide');
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
         },
 
         openDictionaryModal: function() {
@@ -2085,14 +2121,21 @@ if ($_GET["show_external_page"] != "") {
             $( ".draggable" ).draggable({
                 axis: "y",
                 revert: true,
-                zIndex: 100,
+//                zIndex: 1000,
                 handle: "i",
+                snap: true,
+                refreshPositions: true,
+                stack: '.draggable'
             });
 
             $( ".droppable" ).droppable({
                 activeClass: 'draggable-active',
                 hoverClass: 'daggable-over',
                 over: function (event, ui) {
+//                    $(this).removeClass('daggable-over');
+//                    $(this).find('.alert').addClass('daggable-over');
+//                    $(this).find('.collapse').collapse('toggle');
+
                     var taskName = $(this).find('h6').html();
                     var predecessoraName = ui.draggable.find('h6').html();
                     $(this).tooltip({
@@ -2103,9 +2146,12 @@ if ($_GET["show_external_page"] != "") {
                 },
                 out: function (event, ui) {
                     $(this).tooltip('dispose');
+//                    $(this).find('.collapse').collapse('hide');
+//                    $(this).find('.alert').removeClass('daggable-over');
                 },
                 drop: function(event, ui) {
                     var card = $(this);
+//                    card.find('.alert').removeClass('daggable-over');
                     card.tooltip('dispose');
                     var taskId = $(this).attr('data');
                     var dependencyId = ui.draggable.attr('data');

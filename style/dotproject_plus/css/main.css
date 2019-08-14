@@ -49,9 +49,8 @@
     color: #212529;
 }
 
-table thead th {
-    font-size: 0.8em;
-    font-weight: lighter;
+table {
+    font-size: 0.9em;
 }
 
 fieldset {
