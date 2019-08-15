@@ -41,7 +41,7 @@ require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_set
         foreach ($humanCost as $row) {
         ?>
         <tr>
-            <td nowrap="nowrap"><?php echo $row['cost_description']; ?></td>
+            <td width="20%"><?php echo $row['cost_description']; ?></td>
             <?php
             //The function costsBudget prints the <td> tags for every month.
             $mtz = costsBudget($meses, $c, $row, substr($datesProject->fields['project_start_date'], 5, -12), substr($datesProject->fields['project_end_date'], 5, -12), $mtz,$monthsYearsIndex);
@@ -75,7 +75,7 @@ require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_set
     foreach ($notHumanCost as $row) {
         ?>
         <tr>
-            <td nowrap="nowrap"><?php echo $row['cost_description']; ?></td>
+            <td width="20%"><?php echo $row['cost_description']; ?></td>
             <?php
             //The function costsBudget prints the <td> tags for every month.
             $mtzNH = costsBudget($meses, $c, $row, substr($datesProject->fields['project_start_date'], 5, -12), substr($datesProject->fields['project_end_date'], 5, -12), $mtzNH, $monthsYearsIndex);
@@ -116,7 +116,7 @@ require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_set
     foreach ($risks as $row) {
         ?>
         <tr>
-            <td nowrap="nowrap">
+            <td width="20%">
                 <?php echo $row['budget_reserve_description'] ?>
             </td>
 

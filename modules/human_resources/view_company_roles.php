@@ -66,7 +66,7 @@ if (count($roles) === 0) {
         ?>
 
         <div class="card inner-card">
-            <div class="card-body">
+            <div class="card-body shrink">
                 <div class="row">
                     <div class="col-md-11">
                         <h5>

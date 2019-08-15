@@ -1175,11 +1175,11 @@ if ($_GET["show_external_page"] != "") {
                                 $taskCardBodyId->value = $branch['number'];
                                 $taskCardBody->appendChild($taskCardBodyId);
                                 $taskCardBodyClass = $dom->createAttribute('class');
-                                $taskCardBodyClass->value = 'card-body';
+                                $taskCardBodyClass->value = 'card-body shrink';
                                 $taskCardBody->appendChild($taskCardBodyClass);
-                                $taskCardBodyStyle = $dom->createAttribute('style');
-                                $taskCardBodyStyle->value = 'padding: 10px 20px 1px 20px';
-                                $taskCardBody->appendChild($taskCardBodyStyle);
+//                                $taskCardBodyStyle = $dom->createAttribute('style');
+//                                $taskCardBodyStyle->value = 'padding: 10px 20px 1px 20px';
+//                                $taskCardBody->appendChild($taskCardBodyStyle);
 
                                 $taskCardRow = $dom->createElement('div');
                                 $taskCardRowClass = $dom->createAttribute('class');

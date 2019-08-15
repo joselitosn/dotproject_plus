@@ -134,7 +134,7 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
         $canDelete = $obj->canDelete($msg, $row['risk_id']);
         ?>
         <div class="card inner-card">
-            <div class="card-body">
+            <div class="card-body shrink">
                 <div class="row">
                     <div class="col-md-8">
                         <h5>
@@ -230,7 +230,7 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
         $canDelete = $obj->canDelete($msg, $row['risk_id']);
         ?>
         <div class="card inner-card">
-            <div class="card-body">
+            <div class="card-body shrink">
                 <div class="row">
                     <div class="col-md-8">
                         <h5>

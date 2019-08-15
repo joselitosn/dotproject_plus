@@ -111,7 +111,7 @@ if (!$res->fields) {
         ?>
 
         <div class="card inner-card">
-            <div class="card-body">
+            <div class="card-body shrink">
                 <div class="row">
                     <div class="col-md-10">
                         <h5>

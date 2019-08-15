@@ -55,7 +55,7 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
                 $canDelete = $obj->canDelete($msg, $stakeholderId);
     ?>
                 <div class="card inner-card">
-                    <div class="card-body">
+                    <div class="card-body shrink">
                         <div class="row">
                             <div class="col-md-11">
                                 <h5>

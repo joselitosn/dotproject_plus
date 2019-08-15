@@ -148,7 +148,7 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                     }
                     ?>
                     <div class="card inner-card">
-                        <div class="card-body">
+                        <div class="card-body shrink">
                             <div class="row">
                                 <div class="col-md-5 action mouse-cursor-pointer">
                                     <h5><a href="?m=companies&a=view&company_id=<?=$id?>"><?=$company['company_name']?></a></h5>
@@ -182,10 +182,6 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                                                 <?php
                                             }
                                             ?>
-                                            <a class="dropdown-item" href="?m=admin"">
-                                                <i class="fas fa-users"></i>
-                                                Usuários
-                                            </a>
                                             <a class="dropdown-item" href="?m=contacts"">
                                                 <i class="fas fa-address-book"></i>
                                                 Contatos

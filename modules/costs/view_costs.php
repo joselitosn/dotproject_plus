@@ -59,25 +59,17 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
         <button type="button" class="btn btn-sm btn-secondary" onclick="costs.showBudget(<?=$projectSelected?>)">
             <?=$AppUI->_("LBL_PROJECT_BUDGET")?>
         </button>
+        <a class="btn btn-sm btn-secondary" href="?m=companies&a=view&company_id=<?=$company_id?>&tab=3">
+            <?=$AppUI->_("LBL_CONFIG_RH")?>
+        </a>
+        <button type="button" class="btn btn-sm btn-secondary" onclick="costs.nhr.new(<?=$projectSelected?>)">
+            <?=$AppUI->_("LBL_INCLUDE_NON_HUMAN_RESOURCE")?>
+        </button>
     </div>
 </div>
 
 <!-- ############################## ESTIMATIVAS CUSTOS HUMANOS ############################################ -->
 <br>
-<!--<div class="row">-->
-<!--    <div class="col-md-12">-->
-<!--        -->
-<!--    </div>-->
-<!--</div>-->
-
-
-<div class="row">
-    <div class="col-md-12 text-right">
-        <a class="btn btn-sm btn-secondary" href="?m=companies&a=view&company_id=<?=$company_id?>&tab=3">
-            <?=$AppUI->_("LBL_CONFIG_RH")?>
-        </a>
-    </div>
-</div>
 
 <div class="card inner-card">
     <div class="card-body">
@@ -87,13 +79,13 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
         <small><?=$AppUI->_("LBL_RH_AUTOMATICALLY_ADDED_COST_BASELINE")?></small>
         <br>
         <br>
-        
+
         <div class="row">
             <div class="col-md-12">
-                <table class="ttable table-sm table-bordered">
+                <table class="table table-sm table-bordered">
                     <thead class="thead-dark">
                         <tr>
-                            <th width="20%"><?=$AppUI->_('Name')?></th>
+                            <th width="40%"><?=$AppUI->_('Name')?></th>
                             <th><?=$AppUI->_('Date Begin')?></th>
                             <th><?=$AppUI->_('Date End')?></th>
                             <th width="10%"><?=$AppUI->_('Hours/Month')?></th>
@@ -126,8 +118,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                             }
                         ?>
                         <tr>
-                            <td align="right" colspan="6" cellpadding="3"> <b><?php echo $AppUI->_("Subtotal Human Estimatives"); ?> &nbsp;(<?php echo dPgetConfig("currency_symbol") ?>):  </b> </td>
-                            <td cellpadding="3" style="text-align: right"><b><?php echo number_format($sumH, 2, ',', '.'); ?></b></td>
+                            <td class="text-right" colspan="6"> <b><?php echo $AppUI->_("Subtotal Human Estimatives"); ?> &nbsp;(<?php echo dPgetConfig("currency_symbol") ?>):  </b> </td>
+                            <td class="text-right"><b><?php echo number_format($sumH, 2, ',', '.'); ?></b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -136,170 +128,144 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
     </div>
 </div>
 
-    <br>
-    <p>
-        <?=$AppUI->_("Subtotal Human Estimatives")?>: <?=dPgetConfig("currency_symbol") . number_format($sumH, 2, ',', '.')?>
-    </p>
-
 <!-- ############################## ESTIMATIVAS CUSTOS NAO HUMANOS ############################################ -->
 <br>
-<div class="row">
-    <div class="col-md-12">
-        <div class="alert alert-secondary" role="alert">
-            <h5 class="alert-heading"><?=$AppUI->_("Non-Human Resource Estimative")?></h5>
-        </div>
-    </div>
-</div>
 
-<div class="row">
-    <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-sm btn-secondary" onclick="costs.nhr.new(<?=$projectSelected?>)">
-            <?=$AppUI->_("LBL_INCLUDE_NON_HUMAN_RESOURCE")?>
-        </button>
-    </div>
-</div>
+<div class="card inner-card">
+    <div class="card-body">
+        <h5 class="card-title"><?=$AppUI->_("Non-Human Resource Estimative")?></h5>
 
-
-<?php
-    foreach ($notHumanCost as $row) {
-        /* transform date to dd/mm/yyyy */
-        $date_begin = intval($row['cost_date_begin']) ? new CDate($row['cost_date_begin']) : null;
-        $date_end = intval($row['cost_date_end']) ? new CDate($row['cost_date_end']) : null;
-        $obj = new CCosts();
-        $canDelete = $obj->canDelete($msg, $row['cost_id']);
-        ?>
-        <div class="card inner-card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <h5>
-                            <?=$row['cost_description']?>
-                        </h5>
-                    </div>
-                    <div class="col-md-8">
-                        <span>
-                            <?=$AppUI->_('Date Begin')?>: <?=$date_begin ? $date_begin->format($df) : ''?> |
-                        </span>
-                        <span>
-                            <?=$AppUI->_('Date End')?>: <?=$date_end ? $date_end->format($df) : ''?> |
-                        </span>
-                        <span>
-                            <?=$AppUI->_('Quantity')?>: <?=$row['cost_quantity']?> |
-                        </span>
-                        <span>
-                            <?=$AppUI->_('Unitary Cost')?>: <?=dPgetConfig("currency_symbol") . number_format($row['cost_value_unitary'], 2, ',', '.')?> |
-                        </span>
-                        <span>
-                            <?=$AppUI->_('Total Cost')?>: <?=dPgetConfig("currency_symbol") . number_format($row['cost_value_total'], 2, ',', '.')?>
-                        </span>
-                    </div>
-                    <div class="col-md-1 text-right">
-                        <div class="dropdown">
-                            <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown"
-                               aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bars"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="javascript:void(0)" onclick="costs.nhr.edit(<?=$row['cost_id'].','.$projectSelected?>)">
-                                    <i class="far fa-edit"></i>
-                                    Alterar
-                                </a>
-                                <?php
-                                    if ($canDelete) {
-                                    ?>
-                                        <a class="dropdown-item" href="javascript:void(0)" onclick="costs.nhr.delete(<?=$row['cost_id']?>)">
-                                            <i class="far fa-trash-alt"></i>
-                                            Excluir
-                                        </a>
-                                    <?php
-                                    }
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-sm table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="40%"><?php echo $AppUI->_('Description')?></th>
+                            <th><?=$AppUI->_('Date Begin')?></th>
+                            <th><?=$AppUI->_('Date End')?></th>
+                            <th width="10%"><?=$AppUI->_('Quantity')?></th>
+                            <th width="15%"><?=$AppUI->_('Unitary Cost')?>  &nbsp;(<?=dPgetConfig("currency_symbol") ?>)</th>
+                            <th><?=$AppUI->_('Total Cost')?> &nbsp;(<?=dPgetConfig("currency_symbol") ?>)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            foreach ($notHumanCost as $row) {
+                                /* transform date to dd/mm/yyyy */
+                                $date_begin = intval($row['cost_date_begin']) ? new CDate($row['cost_date_begin']) : null;
+                                $date_end = intval($row['cost_date_end']) ? new CDate($row['cost_date_end']) : null;
+                                $obj = new CCosts();
+                                $canDelete = $obj->canDelete($msg, $row['cost_id']);
                                 ?>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+                                <tr>
+                                    <td><?=$row['cost_description']?></td>
+                                    <td><?=$date_begin ? $date_begin->format($df) : ''?></td>
+                                    <td><?=$date_end ? $date_end->format($df) : ''?></td>
+                                    <td class="text-center"><?=$row['cost_quantity']?></td>
+                                    <td class="text-right"><?=number_format($row['cost_value_unitary'], 2, ',', '.')?></td>
+                                    <td class="text-right"><?=number_format($row['cost_value_total'], 2, ',', '.')?></td>
+                                    <td class="text-center" width="<?=$canDelete ? '8%' : '3%'?>">
+                                        <button type="button" class="btn btn-xs btn-danger" onclick="costs.nhr.delete(<?=$row['cost_id']?>)">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                        <?php
+                                            if ($canDelete) {
+                                            ?>
+                                                <button type="button" class="btn btn-xs btn-secondary" onclick="costs.nhr.edit(<?=$row['cost_id']?>,<?=$projectSelected?>)">
+                                                    <i class="far fa-edit"></i>
+                                                </button>
+                                            <?php
+                                            }
+                                        ?>
+                                    </td>
+                                </tr>
+                                <?php
+                                $sumNH = $sumNH + $row['cost_value_total'];
+                            }
+                        ?>
+                        <tr>
+                            <td class="text-right" colspan="6"> <b><?=$AppUI->_("Subtotal Not Human Estimatives")?> &nbsp;(<?=dPgetConfig("currency_symbol") ?>): </b> </td>
+                            <td class="text-right"><b><?=number_format($sumNH, 2, ',', '.')?></b></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <?php
-        $sumNH = $sumNH + $row['cost_value_total'];
-    }
-?>
+
+    </div>
+</div>
 <br>
-<p>
-    <?=$AppUI->_("Subtotal Not Human Estimatives")?>: <?=dPgetConfig("currency_symbol") . number_format($sumNH, 2, ',', '.')?>
-</p>
+<!-- MODAL EDIT HUMMAN COSTS -->
+<div id="hrCostModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Alterar custo - Recurso humano</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body cost-modal">
 
-    <!-- MODAL EDIT HUMMAN COSTS -->
-    <div id="hrCostModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Alterar custo - Recurso humano</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body cost-modal">
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="costs.hr.save()"><?=$AppUI->_("LBL_SAVE")?></button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="costs.hr.save()"><?=$AppUI->_("LBL_SAVE")?></button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- MODAL ADD/EDIT NON HUMMAN COSTS -->
-    <div id="nhrCostModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body nhr-cost-modal">
+<!-- MODAL ADD/EDIT NON HUMMAN COSTS -->
+<div id="nhrCostModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body nhr-cost-modal">
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
-                    <button type="button" class="btn btn-primary btn-sm" onclick="costs.nhr.save()"><?=$AppUI->_("LBL_SAVE")?></button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="costs.nhr.save()"><?=$AppUI->_("LBL_SAVE")?></button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- MODAL BUDGET -->
-    <div id="budgetModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><?=$AppUI->_("LBL_PROJECT_BUDGET")?></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="budget-modal"></div>
-                    <div class="reserva-gerencial-form">
+<!-- MODAL BUDGET -->
+<div id="budgetModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_PROJECT_BUDGET")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="budget-modal"></div>
+                <div class="reserva-gerencial-form">
 
-                    </div>
-                    <div class="reserva-contingencia-form">
-                        dl;g,dlg,
-                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light btn-sm" id="btnBackBudget" onclick="costs.backToBudget(<?=$projectSelected?>)">Voltar</button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
-                    <button type="button" class="btn btn-primary btn-sm" id="btSaveBudgetReserve" onclick="costs.saveReserve()"><?=$AppUI->_("LBL_SAVE")?></button>
-                    <button type="button" class="btn btn-primary btn-sm" id="btSaveBudgetContReserve" onclick="costs.saveContingencyReserve()"><?=$AppUI->_("LBL_SAVE")?></button>
+                <div class="reserva-contingencia-form">
+                    dl;g,dlg,
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" id="btnBackBudget" onclick="costs.backToBudget(<?=$projectSelected?>)">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btSaveBudgetReserve" onclick="costs.saveReserve()"><?=$AppUI->_("LBL_SAVE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btSaveBudgetContReserve" onclick="costs.saveContingencyReserve()"><?=$AppUI->_("LBL_SAVE")?></button>
             </div>
         </div>
     </div>
+</div>
 
 <script>
     var costs = {

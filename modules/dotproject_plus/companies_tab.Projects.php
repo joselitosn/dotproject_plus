@@ -98,7 +98,7 @@ if (!($rows = $q->loadList())) {
         $urlSufix = ($pstatus[$row["project_status"]] == 'Proposed') ? '&tab=0&subtab=0' : '&tab=1&subtab=0';
         ?>
         <div class="card inner-card">
-            <div class="card-body">
+            <div class="card-body shrink">
                 <div class="row">
                     <div class="col-md-11 mouse-cursor-pointer card-project">
                         <h5><a class="project-link" href="<?=$urlPrefix . $urlSufix?>"><?=$project_name?></a></h5>
