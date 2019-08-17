@@ -1,6 +1,7 @@
 <?php
 require_once (DP_BASE_DIR . "/modules/timeplanning/control/controller_company_role.class.php");
 require_once (DP_BASE_DIR . "/modules/projects/projects.class.php");
+require_once (DP_BASE_DIR . "/modules/tasks/tasks.class.php");
 
 $taskId = $_GET['task_id'];
 $itemId = $_GET['item_id'];
@@ -19,12 +20,6 @@ $project = new CProject();
 $project->load($projectId);
 $controllerCompanyRole = new ControllerCompanyRole();
 $rolesArr = $controllerCompanyRole->getCompanyRoles($project->project_company);
-
-
-// Todo carregar lista de papéis
-// human_resources_role
-
-
 
 $roles = array();
 foreach ($rolesArr as $r) {
@@ -46,8 +41,29 @@ $q->addOrder("u.user_username");
 $sql = $q->prepare();
 $hr = db_loadList($sql);
 
+$obj = new CTask();
+$tasksEstimations = array('effort' => '', 'effort_unit' => '');
 if ($taskId) {
-    // TODO buscar dados da atividade
+    $obj->task_id = $taskId;
+    $obj->load();
+
+    $q = new DBQuery();
+    $q->addQuery("t.effort, t.effort_unit");
+    $q->addTable("project_tasks_estimations", "t");
+    $q->addWhere("t.task_id= " . $taskId);
+    $sql = $q->prepare();
+    $tasksEstimations = db_loadList($sql);
+    $tasksEstimations = current($tasksEstimations);
+
+    // select r.role_id, hra.human_resource_id from dot_project.dotp_project_tasks_estimated_roles r
+    // left join dot_project.dotp_human_resource_allocation hra on hra.project_tasks_estimated_roles_id = r.id;
+    $q = new DBQuery();
+    $q->addQuery("r.role_id, hra.human_resource_id");
+    $q->addTable("project_tasks_estimated_roles", "r");
+    $q->addJoin("human_resource_allocation", "hra", "hra.project_tasks_estimated_roles_id = r.id");
+    $q->addWhere("r.task_id= " . $taskId);
+    $sql = $q->prepare();
+    $resources = db_loadList($sql);
 }
 
 $effortMetrics = array();
@@ -71,7 +87,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
            id="taskDescription"
            class="form-control form-control-sm"
            maxlength="50"
-           value="<?=$arrData['activity_description']?>" />
+           value="<?=$obj->task_name?>" />
     </div>
     <div class="row">
         <div class="col-md-6">
@@ -82,7 +98,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
                    class="form-control form-control-sm datepicker"
                    id="planned_start_date_activity"
                    placeholder="dd/mm/yyyy"
-                   value="<?=$arrData['planned_start_date_activity']?>" />
+                   value="<?=date("d/m/Y", strtotime($obj->task_start_date))?>" />
             </div>
         </div>
         <div class="col-md-6">
@@ -93,7 +109,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
                     class="form-control form-control-sm datepicker"
                     id="planned_end_date_activity"
                     placeholder="dd/mm/yyyy"
-                    value="<?=$arrData['planned_end_date_activity']?>" />
+                    value="<?=date("d/m/Y", strtotime($obj->task_end_date))?>" />
             </div>
         </div>
     </div>
@@ -106,7 +122,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
                     name="planned_effort"
                     id="taskDuration"
                     class="form-control form-control-sm"
-                    value="<?=$arrData['planned_effort']?>" />
+                    value="<?=$tasksEstimations['effort']?>" />
             </div>
         </div>
         <div class="col-md-6">
@@ -114,14 +130,13 @@ $effortMetrics[2] = 'Pessoas/Dia';
                 <label for="empty">&nbsp;</label>
                 <select class="form-control form-control-sm"
                     name="planned_effort_unit"
-                    id="effortSelect"
-                    value="<?=$arrData['planned_effort_unit']?>">
+                    id="effortSelect">
                     <option></option>
                     <?php
                         $i = 0;
                         foreach ($effortMetrics as $metric) {
-//                        $selected = $i == $projectTaskEstimation->getEffortUnit() ? "selected" : "";
-                            echo "<option value=\"$i\">$metric</option>";
+                            $selected = $tasksEstimations['effort_unit'] == $i ? " selected" : "";
+                            echo "<option value=\"$i\" $selected>$metric</option>";
                             $i++;
                         }
 
@@ -134,8 +149,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
         <label for="<?=$AppUI->_("LBL_OWNER")?>"><?=$AppUI->_("LBL_OWNER")?></label>
         <select class="form-control form-control-sm"
             id="taskOwner"
-            name="task_owner"
-            value="<?=$arrData['task_owner']?>">
+            name="task_owner">
             <?php
             $query = new DBQuery();
             $query->addTable("users", "u");
@@ -147,9 +161,10 @@ $effortMetrics[2] = 'Pessoas/Dia';
             for ($res; !$res->EOF; $res->MoveNext()) {
                 $user_id = $res->fields["user_id"];
                 $user_name = $res->fields["contact_first_name"] . " " . $res->fields["contact_last_name"];
+                $selected = $obj->task_owner == $user_id ? " selected" : "";
                 ?>
                 <option></option>
-                <option value="<?php echo $user_id; ?>">
+                <option value="<?php echo $user_id; ?>" <?=$selected?>>
                     <?php echo $user_name; ?>
                 </option>
                 <?php
@@ -159,17 +174,19 @@ $effortMetrics[2] = 'Pessoas/Dia';
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 resources-container">
             <label for="roles">Recursos</label>
-            <div class="row row-role-hr">
+            <div class="row">
+
                 <div class="col-md-6">
                     <div class="form-group">
                         <select class="form-control form-control-sm select-role">
                             <?php
                             foreach ($roles as $r) {
+                                $selected = $resources[0]['role_id'] == $r['id'] ? " selected" : "";
                                 ?>
                                 <option></option>
-                                <option value="<?=$r['id']?>">
+                                <option value="<?=$r['id']?>"<?=$selected?>>
                                     <?=$r['name']?>
                                 </option>
                                 <?php
@@ -183,9 +200,10 @@ $effortMetrics[2] = 'Pessoas/Dia';
                         <select class="form-control form-control-sm select-hr">
                             <?php
                             foreach ($hr as $record) {
+                                $selected = $resources[0]['human_resource_id'] == $record['human_resource_id'] ? " selected" : "";
                                 ?>
                                 <option></option>
-                                <option value="<?=$record["human_resource_id"]?>">
+                                <option value="<?=$record["human_resource_id"]?>"<?=$selected?>>
                                     <?=$record["user_username"]?>
                                 </option>
                                 <?php
@@ -195,16 +213,17 @@ $effortMetrics[2] = 'Pessoas/Dia';
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <button type="button" class="btn btn-secondary btn-sm" id="btnAddResource">Adicionar recurso</button>
-                </div>
-            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-secondary btn-sm" id="btnAddResource">Adicionar recurso</button>
         </div>
     </div>
     <input name="dosql" type="hidden" value="do_save_activity_estimations" />
-    <input name="roles_human_resources" type="hidden" value="" id="rolesHrHidden"/>
+    <input name="roles_human_resources" type="hidden" value='<?=$resources ? json_encode($resources) : ''?>' id="rolesHrHidden"/>
     <input type="hidden" id="taskWbsItemId" name="item_id" value="<?=$itemId?>" />
+    <input type="hidden" id="taskId" name="task_id" value="<?=$taskId?>" />
 </form>
 <?php
 ?>
@@ -228,19 +247,29 @@ $effortMetrics[2] = 'Pessoas/Dia';
             form.initSelect($("#taskOwner"), '');
             form.initSelect($("#effortSelect"), 'Unidade de medida');
 
-            var selectsRoleHr = $(".row-role-hr").find('select');
+            var selectsRoleHr = $(".resources-container").find('select');
             form.initSelect($(selectsRoleHr[0]), 'Papel');
-            form.initSelect($(selectsRoleHr[1]), 'Recurso humano');
 
+            var dis = ($(selectsRoleHr[0]).val() || $(selectsRoleHr[1]).val()) ? false : true;
+            form.initSelect($(selectsRoleHr[1]), 'Recurso humano', null, dis);
+
+            var resourcesJson = $('#rolesHrHidden').val();
+            if (resourcesJson) {
+                var res = JSON.parse(resourcesJson);
+                res.splice(0, 1);
+                res.forEach(function(r) {
+                   form.addResource(r.role_id, r.human_resource_id, false);
+                });
+            }
         },
 
-        initSelect: function (select, placeholder) {
+        initSelect: function (select, placeholder, parent, disabled) {
             select.select2({
                 placeholder: placeholder,
                 allowClear: true,
-                disabled: select.hasClass('select-hr') ? true : false,
+                disabled: (select.hasClass('select-hr') && disabled) ? true : false,
                 theme: "bootstrap",
-                dropdownParent: $("#taskModal")
+                dropdownParent: parent || $(".resources-container")
             });
             if (select.hasClass('select-role')) {
                 var selectHr = select.parent().parent().next().children().children();
@@ -254,38 +283,58 @@ $effortMetrics[2] = 'Pessoas/Dia';
             }
         },
 
-        addResource: function() {
+        addResource: function(roleId, hrId, disabled) {
+            var container = $('.resources-container');
 
-            var row = $('.row-role-hr');
+            var row = $('<div class="row"></div>');
 
             var colRole = $('<div class="col-md-6"></div>');
             var groupRole = $('<div class="form-group"></div>');
             var selectRole = $('<select class="form-control form-control-sm select-role"></select>');
             $('<option></option>').appendTo(selectRole);
             form.roles.forEach(function(role) {
-                $('<option value="'+role.id+'">'+role.name+'</option>').appendTo(selectRole);
+                var selected = role.id == roleId ? ' selected' : '';
+                $('<option value="'+role.id+'"'+selected+'>'+role.name+'</option>').appendTo(selectRole);
             });
 
             selectRole.appendTo(groupRole);
             groupRole.appendTo(colRole);
 
-            var colHr = $('<div class="col-md-6"></div>');
+            var colHr = $('<div class="col-md-5"></div>');
             var groupHr = $('<div class="form-group"></div>');
             var selectHr = $('<select class="form-control form-control-sm select-hr" disabled></select>');
             $('<option></option>').appendTo(selectHr);
             form.hrs.forEach(function(hr) {
-                $('<option value="'+hr.human_resource_id+'">'+hr.user_username+'</option>').appendTo(selectHr);
+                var selected = hr.human_resource_id == hrId ? ' selected' : '';
+                $('<option value="'+hr.human_resource_id+'"'+selected+'>'+hr.user_username+'</option>').appendTo(selectHr);
             });
+
+            var colBtn = $('<div class="col-md-1"></div>');
+            var groupBtn = $('<div class="form-group"></div>');
+            var btn = $('<button type="button" class="btn btn-sm btn-danger" title="Remover recurso"></button>');
+            btn.on('click', form.removeResource);
+            var icon = $('<i class="far fa-trash-alt"></i>');
+            icon.appendTo(btn);
+            btn.appendTo(groupBtn);
+            groupBtn.appendTo(colBtn);
 
             selectHr.appendTo(groupHr);
             groupHr.appendTo(colHr);
 
             colRole.appendTo(row);
             colHr.appendTo(row);
+            colBtn.appendTo(row);
 
-            form.initSelect(selectRole, 'Papel');
-            form.initSelect(selectHr, 'Recurso humano');
+            row.appendTo(container);
 
+            form.initSelect(selectRole, 'Papel', row, disabled);
+            var dis = (disabled != null && disabled != undefined) ? disabled : true;
+            form.initSelect(selectHr, 'Recurso humano', row, dis);
+
+        },
+
+        removeResource: function () {
+            $(this).parent().parent().parent().remove();
         }
     };
 

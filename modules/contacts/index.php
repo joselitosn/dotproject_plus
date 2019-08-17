@@ -116,7 +116,7 @@ if (!($res = db_exec($sql))) {
                     foreach ($disp_arr as $contact) {
                 ?>
                         <div class="card inner-card">
-                            <div class="card-body">
+                            <div class="card-body shrink">
                                 <div class="row">
                                     <div class="col-md-10 action mouse-cursor-pointer">
                                         <h5 data-toggle="collapse" data-target="#contactDetails_<?=$contact['contact_id']?>">

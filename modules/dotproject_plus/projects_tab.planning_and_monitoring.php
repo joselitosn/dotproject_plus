@@ -1071,50 +1071,6 @@ if ($_GET["show_external_page"] != "") {
                         $dropdownItemSpan = $dom->createElement('span', ' Excluir Item EAP');
                         $dropdownItem->appendChild($dropdownItemSpan);
                         $dropdownMenu->appendChild($dropdownItem);
-
-//                        // Divider
-//                        $dropdownItem = $dom->createElement('div');
-//                        $dropdownItemClass = $dom->createAttribute('class');
-//                        $dropdownItemClass->value = 'dropdown-divider';
-//                        $dropdownItem->appendChild($dropdownItemClass);
-//                        $dropdownMenu->appendChild($dropdownItem);
-
-//                        // Dropdown item
-//                        $dropdownItem = $dom->createElement('a');
-//                        $dropdownItemClass = $dom->createAttribute('class');
-//                        $dropdownItemClass->value = 'dropdown-item';
-//                        $dropdownItem->appendChild($dropdownItemClass);
-//                        $dropdownItemhref = $dom->createAttribute('href');
-//                        $dropdownItemhref->value = 'javascript:void(0)';
-//                        $dropdownItem->appendChild($dropdownItemhref);
-//                        $icon = $dom->createElement('i');
-//                        $iconClass = $dom->createAttribute('class');
-//                        $iconClass->value = 'fas fa-paste';
-//                        $icon->appendChild($iconClass);
-//                        $dropdownItem->appendChild($icon);
-//                        $dropdownItemSpan = $dom->createElement('span', ' Declaração do escopo');
-//                        $dropdownItem->appendChild($dropdownItemSpan);
-//                        $dropdownMenu->appendChild($dropdownItem);
-
-//                        // Dropdown item
-//                        $dropdownItem = $dom->createElement('a');
-//                        $dropdownItemClass = $dom->createAttribute('class');
-//                        $dropdownItemClass->value = 'dropdown-item';
-//                        $dropdownItem->appendChild($dropdownItemClass);
-//                        $dropdownItemhref = $dom->createAttribute('href');
-//                        $dropdownItemhref->value = 'javascript:void(0)';
-//                        $dropdownItem->appendChild($dropdownItemhref);
-//                        $dropdownItemOC = $dom->createAttribute('onclick');
-//                        $dropdownItemOC->value = 'main.openDictionary()';
-//                        $dropdownItem->appendChild($dropdownItemOC);
-//                        $icon = $dom->createElement('i');
-//                        $iconClass = $dom->createAttribute('class');
-//                        $iconClass->value = 'fas fa-book';
-//                        $icon->appendChild($iconClass);
-//                        $dropdownItem->appendChild($icon);
-//                        $dropdownItemSpan = $dom->createElement('span', ' Dicionário da EAP');
-//                        $dropdownItem->appendChild($dropdownItemSpan);
-//                        $dropdownMenu->appendChild($dropdownItem);
                         
                         $dropdown->appendChild($dropdownMenu);
                         $carCol4->appendChild($dropdown);
@@ -1324,12 +1280,9 @@ if ($_GET["show_external_page"] != "") {
                                 $dropdownItemhref = $dom->createAttribute('href');
                                 $dropdownItemhref->value = 'javascript:void(0)';
                                 $dropdownItem->appendChild($dropdownItemhref);
-                                $dropdownItemDT = $dom->createAttribute('data-toggle');
-                                $dropdownItemDT->value = 'modal';
-                                $dropdownItem->appendChild($dropdownItemDT);
-                                $dropdownItemDT = $dom->createAttribute('data-target');
-                                $dropdownItemDT->value = '#taskModal';
-                                $dropdownItem->appendChild($dropdownItemDT);
+                                $dropdownItemOC = $dom->createAttribute('onclick');
+                                $dropdownItemOC->value = 'tasks.edit('.$branch['id'].','.$task_id.')';
+                                $dropdownItem->appendChild($dropdownItemOC);
                                 $icon = $dom->createElement('i');
                                 $iconClass = $dom->createAttribute('class');
                                 $iconClass->value = 'far fa-edit';
@@ -1706,7 +1659,7 @@ if ($_GET["show_external_page"] != "") {
 
     <!-- MODAL NEW TASK FORM -->
     <div id="taskModal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title"><?=$AppUI->_("LBL_MENU_NEW_ACTIVITY")?></h5>
@@ -2319,14 +2272,29 @@ if ($_GET["show_external_page"] != "") {
             });
         },
 
-        new: function (wbsItemId, taskId) {
+        new: function (wbsItemId) {
+            $.ajax({
+                type: "get",
+                url: "?m=dotproject_plus&template=task_addedit&company_id=<?=$company_id?>&project_id="+main.projectId
+            }).done(function(response) {
+                var modal = $('#taskModal');
+                modal.find('.modal-title').html('Nova atividade');
+                $(".task-modal").html(response);
+                $('#taskWbsItemId').val(wbsItemId);
+                modal.modal();
+            });
+        },
+
+        edit: function (wbsItemId, taskId) {
             $.ajax({
                 type: "get",
                 url: "?m=dotproject_plus&template=task_addedit&task_id="+taskId+"&company_id=<?=$company_id?>&project_id="+main.projectId
             }).done(function(response) {
+                var modal = $('#taskModal');
+                modal.find('.modal-title').html('Alterar atividade');
                 $(".task-modal").html(response);
                 $('#taskWbsItemId').val(wbsItemId);
-                $('#taskModal').modal();
+                modal.modal();
             });
         },
 
@@ -2360,25 +2328,41 @@ if ($_GET["show_external_page"] != "") {
             }
 
             var rolesHr = [];
-            var row = $('.row-role-hr')[0];
+            var rows = $('.resources-container').find('.row');
 
-            for (var i = 0; i < row.childElementCount; i+=2) {
+            var control = 0;
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
                 var obj = {};
-                var roleId = $(row.children[i]).find('select').val();
-                var hrId = $(row.children[i+1]).find('select').val();
+                var roleId = $(row.children[control]).find('select').val();
+                var hrId = $(row.children[control+1]).find('select').val();
                 if (roleId) {
                     obj.role = roleId;
                     obj.hr = hrId || null;
                     rolesHr.push(obj);
                 }
             }
+
             $('#rolesHrHidden').val(JSON.stringify(rolesHr));
             $.ajax({
                 method: 'POST',
                 url: "?m=dotproject_plus",
                 data: $("form[name=taskForm]").serialize(),
-            }).done(function() {
-
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Error",
+                        content: "Algo deu errado"
+                    });
+                }
             });
         },
 
