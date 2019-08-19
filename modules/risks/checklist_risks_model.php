@@ -93,9 +93,9 @@ $valid_ordering = array(
     'risk_notes',
     'risk_potential_other_projects',
     'risk_lessons_learned',
-    `risk_strategy`,
-    `risk_prevention_action`,
-    `risk_contingency_plan`,
+    'risk_strategy',
+    'risk_prevention_action',
+    'risk_contingency_plan',
 );
 
 
@@ -114,61 +114,56 @@ $activeList = $q->loadList();
 ?>
 <form name="checklist_analisys" action="?m=risks" method="post">
     <input type="hidden" name="dosql" value="do_checklist_analysis" />
-    <input type="hidden" name="project_id" value="<?php echo $projectSelected; ?>" />
-    <table width="95%" align="center"  border="0" cellpadding="2" cellspacing="1" class="tbl">
-        <tr><th align="center" colspan="6"><b><?php echo $AppUI->_('LBL_CHECKLIST_ANALYSIS'); ?></b></th></tr>
-        <tr>
-            <th nowrap="nowrap"width=""></th>
-            <th nowrap="nowrap"><?php echo $AppUI->_('LBL_ID'); ?></th>
-            <th nowrap="nowrap"><?php echo $AppUI->_('LBL_RISK_NAME'); ?></th>
-            <th nowrap="nowrap"><?php echo $AppUI->_('LBL_DESCRIPTION'); ?></th>
-            <th nowrap="nowrap"><?php echo $AppUI->_('LBL_PRIORITY'); ?></th>      
-            <th nowrap="nowrap"><?php echo $AppUI->_('LBL_STRATEGY'); ?></th>
-        </tr>
-        <?php
-        require_once DP_BASE_DIR . "/modules/risks/controlling/risks_controlling.php";
-        $rcontrolling = new RisksControlling();
-        $options = $rcontrolling->getRisksEARCategories($projectSelected);
-        $earClassification = "";
-        foreach ($activeList as $row) {
-            ?>
-            <?php if ($row["risk_ear_classification"] != $earClassification) { ?>
-                <tr><th colspan="6"><?php echo $options[$row["risk_ear_classification"]] ?></th></tr>
-                <?php
-            }
-            $earClassification = $row["risk_ear_classification"];
-            ?>
+    <input type="hidden" name="project_id" value="<?=$projectSelected?>" />
+    <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
             <tr>
-                <td>
-                    <input type="checkbox" value="<?php echo $row['risk_id'] ?>" name="risks[]" />
-                </td>
-                <td><?php echo $row['risk_id'] ?></td>
-                <td><?php echo $row['risk_name'] ?></td>
-                <td><?php echo $row['risk_description'] ?></td>
-                <td style="background-color:#<?php
-        if ($row['risk_priority'] == 0) {
-            echo $bgGreen;
-        } else {
-            if ($row['risk_priority'] == 1) {
-                echo $bgYellow;
-            } else {
-                if ($row['risk_priority']) {
-                    echo $bgRed;
-                }
-            }
-        }
-            ?>"><?php echo $riskPriority[$row['risk_priority']] ?></td>
-                <td><?php echo $riskStrategy[$row['risk_strategy']] ?></td>
+                <th nowrap="nowrap"width=""></th>
+                <th nowrap="nowrap"><?php echo $AppUI->_('LBL_RISK_NAME'); ?></th>
+                <th nowrap="nowrap"><?php echo $AppUI->_('LBL_DESCRIPTION'); ?></th>
+                <th nowrap="nowrap"><?php echo $AppUI->_('LBL_PRIORITY'); ?></th>
+                <th nowrap="nowrap"><?php echo $AppUI->_('LBL_STRATEGY'); ?></th>
             </tr>
+        </thead>
+        <tbody>
+            <?php
+            require_once DP_BASE_DIR . "/modules/risks/controlling/risks_controlling.php";
+            $rcontrolling = new RisksControlling();
+            $options = $rcontrolling->getRisksEARCategories($projectSelected);
+            $earClassification = "";
+            foreach ($activeList as $row) {
+                $bgColor;
+                if ($row['risk_priority'] == 0) {
+                    $bgColor = $bgGreen;
+                } else if ($row['risk_priority'] == 1) {
+                    $bgColor = $bgYellow;
+                } else if ($row['risk_priority']) {
+                    $bgColor = $bgRed;
+                }
+
+                if ($row["risk_ear_classification"] != $earClassification) {
+                    ?>
+                    <tr>
+                        <th colspan="6"><?=$options[$row["risk_ear_classification"]]?></th>
+                    </tr>
+                    <?php
+                }
+                $earClassification = $row["risk_ear_classification"];
+                ?>
+                <tr>
+                    <td>
+                        <input type="checkbox" value="<?php echo $row['risk_id'] ?>" name="risks[]" />
+                    </td>
+                    <td><?php echo $row['risk_name'] ?></td>
+                    <td><?php echo $row['risk_description'] ?></td>
+                    <td style="background-color:<?='#'.$bgColor?>"><?php echo $riskPriority[$row['risk_priority']] ?></td>
+                    <td><?php echo $riskStrategy[$row['risk_strategy']] ?></td>
+                </tr>
+        </tbody>
 
         <?php } ?>
-        <tr>
-            <td>
-                <?php require_once (DP_BASE_DIR . "/modules/timeplanning/view/subform_back_button_project.php"); ?>        
-            </td>
-            <td colspan="5" align="right">
-                <input type="submit" value="<?php echo $AppUI->_("LBL_RISKS_CHECKLIST_ACTION"); ?>" class="button" />
-            </td>
-        </tr>
     </table>
 </form>
+<?php
+    exit();
+?>

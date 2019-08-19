@@ -480,7 +480,75 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
                 $('.risk-management-plan-modal').html(response);
                 modal.modal();
             });
+        },
+
+        openChecklistAnalisis: function (projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=risks&template=checklist_risks_model&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#riskChecklistAnalisis');
+                $('.risk-checklist-analisis-modal').html(response);
+                modal.modal();
+            });
+        },
+        
+        confirmIdentifiedRisks: function () {
+            $.ajax({
+                method: 'POST',
+                url: "?m=risks",
+                data: $('form[name=checklist_analisys]').serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
+        openWatchList: function (projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=risks&template=vw_watchlist&project_id="+projectId
+            }).done(function(response) {
+                $('#btnBack_watchList').hide();
+                var modal = $('#riskWatchList');
+                modal.find('h5').html('Lista de observação');
+                $('.risk-watch-list-table').html(response);
+                $('.risk-watch-list-table').show();
+                modal.modal();
+            });
+        },
+
+        switchEdit: function (riskId, projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=risks&template=addedit&id="+riskId+"&project_id="+projectId
+            }).done(function(response) {
+                $('#riskWatchList').find('h5').html('Alterar risco');
+                $('#btnBack_watchList').show();
+                $('.risk-watch-list-table').hide();
+                $('.risk-watch-list-form').html(response).show();
+            });
+        },
+
+        backToWatchList: function () {
+            $('#riskWatchList').find('h5').html('Lista de observação');
+            $('#btnBack_watchList').hide();
+            $('.risk-watch-list-form').html('').hide();
+            $('.risk-watch-list-table').show();
         }
+
     };
 
     $(document).ready(risks.init);

@@ -20,11 +20,11 @@ $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projec
             <?=$AppUI->_("LBL_RISK_MANAGEMENT_PLAN")?>
         </button>
 
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openChecklistAnalisis(<?=$project_id?>)">
             <?=$AppUI->_("LBL_CHECKLIST_ANALYSIS")?>
         </button>
 
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openWatchList(<?=$project_id?>)">
             <?=$AppUI->_("LBL_WATCHLIST")?>
         </button>
 
@@ -62,6 +62,50 @@ $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projec
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 <button type="button" class="btn btn-primary btn-sm" id="riskManagementPlanModal_SaveBtn"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RISK CHECKLIST ANALISIS -->
+<div id="riskChecklistAnalisis" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_CHECKLIST_ANALYSIS")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body risk-checklist-analisis-modal">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="risks.confirmIdentifiedRisks()"><?=$AppUI->_("LBL_RISKS_CHECKLIST_ACTION")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RISK WATCH LIST -->
+<div id="riskWatchList" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_WATCHLIST")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="risk-watch-list-table"></div>
+                <div class="risk-watch-list-form"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" id="btnBack_watchList" onclick="risks.backToWatchList()">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="risks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
             </div>
         </div>
     </div>

@@ -44,17 +44,6 @@ $df = $AppUI->getPref('SHDATEFORMAT');
 $start_date = new CDate($obj->initiating_start_date);
 $end_date = new CDate($obj->initiating_end_date);
 ?>
-
-<!--<link rel="stylesheet" type="text/css" media="all" href="./modules/initiating/libraries/modal/modal.css"  />-->
-<!--<link rel="stylesheet" type="text/css" media="all" href="./modules/initiating/libraries/modal/table_form.css"  />-->
-<!--<!-- include libraries for lightweight messages -->
-<!--<link type="text/css" rel="stylesheet" href="./modules/initiating/libraries/alertifyjs/alertify.min.css" media="screen"></link>-->
-<!--<script type="text/javascript" src="./modules/initiating/libraries/alertifyjs/alertify.min.js"></script>-->
-<!--<!-- jquery -->
-<!--<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-3.2.1.min.js"></script>-->
-<!--<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-ui.js"></script>-->
-<!--<link type="text/css" rel="stylesheet" href="./modules/initiating/libraries/jquery/jquery-ui.css" media="screen"></link>-->
-<!--<script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery-datepicker-customizations.js"></script>-->
 <script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery.maskMoney.js"></script>
 <?php
 //get user dateformat preference
@@ -67,6 +56,7 @@ $userDateFormat=str_replace("%Y", "YY", $userDateFormat);
 $userDateFormat=strtolower($userDateFormat); 
 $_SESSION["dateFormat"]=$userDateFormat;
 $formReadOnly = $initiating_completed ? 'readonly' : '';
+$btnDisabled = $initiating_completed ? 'disabled' : '';
 
 ?>
 <script language="javascript">
@@ -356,7 +346,7 @@ function authorize() {
                 </label>
                 <br>
                 <div class="form-group">
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="newMilestone()" title="Adicionar marco" <?=$formReadOnly?>>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="newMilestone()" title="Adicionar marco" <?=$btnDisabled?>>
                         <i class="far fa-plus-square"></i>
                     </button>
                 </div>
@@ -389,7 +379,7 @@ function authorize() {
                                        <?=$formReadOnly?> />
                                 </div>
                                 <div class="col-md-1">
-                                    <button type="button" class="btn btn-sm btn-danger" onclick="delMilestone(<?=$milestone->task_id?>)" title="Remover marco" <?=$formReadOnly?>>
+                                    <button type="button" class="btn btn-sm btn-danger" onclick="delMilestone(<?=$milestone->task_id?>)" title="Remover marco" <?=$btnDisabled?>>
                                         <i class="far fa-trash-alt"></i>
                                     </button>
                                 </div>
@@ -509,6 +499,7 @@ function authorize() {
 <hr>
 
 <?php require_once DP_BASE_DIR . "/modules/initiating/authorization_workflow.php" ?>
+<br>
 
 <script>
 
