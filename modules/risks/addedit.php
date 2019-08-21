@@ -280,9 +280,22 @@ $vw = dPgetParam($_GET, "vw");
                 <label for="risk_importance">
                     <?=$AppUI->_("LBL_RISK_IMPORTANCE")?>
                 </label>
+                <br>
                 <?php
                     $expositionImpact = $impactProbabilityMatrix[$obj->risk_probability][$obj->risk_impact];
-                    echo $textExpositionFactor[$expositionImpact];
+
+                    switch ($expositionImpact) {
+                        case 0:
+                            $badgeClass = 'badge badge-success';
+                            break;
+                        case 1:
+                            $badgeClass = 'badge badge-warning';
+                            break;
+                        case 2:
+                            $badgeClass = 'badge badge-danger';
+                            break;
+                    }
+                    echo '<span class="'.$badgeClass.'" style="font-size: 1.1em">'.$textExpositionFactor[$expositionImpact].'</span>';
                 ?>
             </div>
         </div>
