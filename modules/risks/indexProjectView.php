@@ -28,15 +28,15 @@ $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projec
             <?=$AppUI->_("LBL_WATCHLIST")?>
         </button>
 
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openShortTimeResponseList(<?=$project_id?>)">
             <?=$AppUI->_("LBL_NEARTERM")?>
         </button>
 
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openLessonLearntList(<?=$project_id?>)">
             <?=$AppUI->_("LBL_LESSONS_LIST")?>
         </button>
 
-        <button type="button" class="btn btn-sm btn-secondary" onclick="">
+        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openResponsesList(<?=$project_id?>)">
             <?=$AppUI->_("LBL_STRATEGYS_LIST")?>
         </button>
 
@@ -105,11 +105,81 @@ $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projec
             <div class="modal-footer">
                 <button type="button" class="btn btn-light btn-sm" id="btnBack_watchList" onclick="risks.backToWatchList()">Voltar</button>
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
-                <button type="button" class="btn btn-primary btn-sm" onclick="risks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnSave_watchList" onclick="risks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- MODAL RISK SHORT TIME RESPONSE LIST -->
+<div id="riskShortTimeRespList" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_WATCHLIST")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="risk-short-time-list-table"></div>
+                <div class="risk-short-time-list-form"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" id="btnBack_shortTimeList" onclick="risks.backToShortTimeResponseList()">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnSave_shortTimeList" onclick="risks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RISK LESSON LEARNT LIST -->
+<div id="riskLessonLearntList" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_STRATEGYS_LIST")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="risk-lesson-learnt-list-table"></div>
+                <div class="risk-lesson-learnt-list-form"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" id="btnBack_lessonLearntList" onclick="risks.backToLessonLearntList()">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnSave_lessonLearntList" onclick="risks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL RISK RESPONSES LIST -->
+<div id="riskResponsestList" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_LESSONS_LIST")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="risk-responses-list-table"></div>
+                <div class="risk-responses-list-form"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" id="btnBack_responsesList" onclick="risks.backToResponsesList()">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnSave_responsesList" onclick="risks.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 

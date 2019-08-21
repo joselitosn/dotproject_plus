@@ -102,7 +102,7 @@ $inactiveList = $q->loadList();
                             <td style="background-color:<?='#'.$bgColor?>"><?php echo $riskPriority[$row['risk_priority']] ?></td>
                             <td><?php echo $riskStatus[$row['risk_status']] ?></td>
                             <td>
-                                <button type="button" class="btn btn-xs btn-secondary" onclick="risks.switchEdit(<?=$row['risk_id']?>, <?=$projectSelected?>)">
+                                <button type="button" class="btn btn-xs btn-secondary" onclick="risks.switchEditWatchList(<?=$row['risk_id']?>, <?=$projectSelected?>)">
                                     <i class="far fa-edit"></i>
                                 </button>
                                 <button type="button" class="btn btn-xs btn-danger" onclick="risks.delete(<?=$row['risk_id']?>)">
@@ -155,7 +155,7 @@ $inactiveList = $q->loadList();
                             <td style="background-color:<?='#'.$bgColor?>"><?php echo $riskPriority[$row['risk_priority']] ?></td>
                             <td><?php echo $riskStatus[$row['risk_status']] ?></td>
                             <td>
-                                <button type="button" class="btn btn-xs btn-secondary" onclick="risks.switchEdit(<?=$row['risk_id']?>, <?=$projectSelected?>)">
+                                <button type="button" class="btn btn-xs btn-secondary" onclick="risks.switchEditWatchList(<?=$row['risk_id']?>, <?=$projectSelected?>)">
                                     <i class="far fa-edit"></i>
                                 </button>
                                 <button type="button" class="btn btn-xs btn-danger" onclick="risks.delete(<?=$row['risk_id']?>)">

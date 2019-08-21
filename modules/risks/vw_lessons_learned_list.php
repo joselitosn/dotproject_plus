@@ -1,14 +1,6 @@
 <?php
 $projectSelected = intval(dPgetParam($_GET, 'project_id'));
-$whereProject ='';
-if ($projectSelected != null) {
-    $t = intval(dPgetParam($_GET, 'tab'));
-    // setup the title block
-    $titleBlock = new CTitleBlock($AppUI->_('LBL_RISKS').' - '.str_replace("&ccedil;&otilde;", "çõ",$AppUI->_('LBL_LESSONS_LIST')), 'risks.png', $m, "$m.$a");
-    $titleBlock->addCrumb("?m=projects&a=view&project_id=".$projectSelected."&tab=".$t."&targetScreenOnProject=/modules/risks/projects_risks.php", "LBL_RETURN_LIST");
-    $titleBlock->show();
-    $whereProject = ' and risk_project='.$projectSelected;
-}
+$whereProject = ' and risk_project='.$projectSelected;
     
 $projectSelected = intval(dPgetParam($_GET, 'project_id'));
 $whereProject ='';
@@ -29,55 +21,94 @@ $q->addTable('risks');
 $q->addWhere("risk_active = '1' and NOT risk_lessons_learned='' $whereProject");
 $inactiveList = $q->loadList();
 ?>
+<div class="card inner-card">
+    <div class="card-header"><?=$AppUI->_("LBL_ACTIVE_RISKS")?></div>
+    <div class="card-body">
 
-<?php echo $AppUI->_('LBL_ACTIVE_RISKS');?>
-<table width="100%" border="0" cellpadding="2" cellspacing="1" class="tbl">
-<tr>
-    <th nowrap="nowrap"></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_ID');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_RISK_NAME');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_LESSONS');?></th>
-</tr>
-<?php foreach ($activeList as $row) {
+        <div class="row">
+            <div class="col-md-12">
+
+                <table class="table table-sm table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th width="40%"><?php echo $AppUI->_('LBL_RISK_NAME');?></th>
+                        <th width="52%"><?php echo $AppUI->_('LBL_LESSONS');?></th>
+                        <th width="8%"></th>
+                    </tr>
+                    </thead>
+                    <tboody>
+                        <?php
+                        foreach ($activeList as $row) {
+                            ?>
+                            <tr>
+                                <td><?php echo $row['risk_name'] ?></td>
+                                <td><?php echo $row['risk_lessons_learned'] ?></td>
+                                <td>
+                                    <button type="button" class="btn btn-xs btn-secondary"
+                                            onclick="risks.switchEditLessonLearnt(<?=$row['risk_id'] ?>, <?=$projectSelected?>)">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-xs btn-danger"
+                                            onclick="risks.delete(<?=$row['risk_id'] ?>)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tboody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="card inner-card">
+    <div class="card-header"><?=$AppUI->_("LBL_INACTIVE_RISKS")?></div>
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <table class="table table-sm table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th width="40%"><?php echo $AppUI->_('LBL_RISK_NAME');?></th>
+                        <th width="52%"><?php echo $AppUI->_('LBL_LESSONS');?></th>
+                        <th width="8%"></th>
+                    </tr>
+                    </thead>
+                    <tboody>
+                        <?php
+                        foreach ($inactiveList as $row) {
+                            ?>
+                            <tr>
+                                <td><?php echo $row['risk_name'] ?></td>
+                                <td><?php echo $row['risk_lessons_learned'] ?></td>
+                                <td>
+                                    <button type="button" class="btn btn-xs btn-secondary"
+                                            onclick="risks.switchEditLessonLearnt(<?=$row['risk_id'] ?>, <?=$projectSelected?>)">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-xs btn-danger"
+                                            onclick="risks.delete(<?=$row['risk_id'] ?>)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tboody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+    exit();
 ?>
-<tr>
-    <td nowrap style="background-color:#<?php echo $bg; ?>" width="30">
-        <a href="index.php?m=risks&a=addedit&id=<?php echo($row['risk_id']); if ($projectSelected!=null) {echo('&project_id=' . $projectSelected . '&tab='. $t.'&vw=vw_lessons_learned_list');}?>">
-            <img src="./modules/risks/images/stock_edit-16.png" border="0" width="12" height="12">
-        </a>
-        <a href="index.php?m=risks&a=view&id=<?php echo($row['risk_id']); if ($projectSelected!=null) {echo('&project_id=' . $projectSelected . '&tab='. $t.'&vw=vw_lessons_learned_list');}?>">
-           <img src="./modules/risks/images/view_icon.gif" border="0" width="12" height="12">
-        </a>
-    </td>
-    <td width="25"><?php echo $row['risk_id'];?></td>
-    <td ><?php echo $row['risk_name'];?></td>
-    <td><?php echo $row['risk_lessons_learned'];?></td>
-</tr>
-<?php } ?>
-</table>
-</br>
-<?php echo $AppUI->_('LBL_INACTIVE_RISKS');?>
-<table width="100%" border="0" cellpadding="2" cellspacing="1" class="tbl">
-<tr>
-    <th nowrap="nowrap"></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_ID');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_RISK_NAME');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_LESSONS');?></th>
-</tr>
-<?php foreach ($inactiveList as $row) {
-?>
-<tr>
-    <td nowrap style="background-color:#<?php echo $bg; ?>" width="30">
-        <a href="index.php?m=risks&a=addedit&id=<?php echo($row['risk_id']); if ($projectSelected!=null) {echo('&project_id=' . $projectSelected . '&tab='. $t.'&vw=vw_lessons_learned_list');}?>">
-            <img src="./modules/risks/images/stock_edit-16.png" border="0" width="12" height="12">
-        </a>
-        <a href="index.php?m=risks&a=view&id=<?php echo($row['risk_id']); if ($projectSelected!=null) {echo('&project_id=' . $projectSelected . '&tab='. $t.'&vw=vw_lessons_learned_list');}?>">
-            <img src="./modules/risks/images/view_icon.gif" border="0" width="12" height="12">
-        </a>
-    </td>
-    <td><?php echo $row['risk_id'];?></td>
-    <td ><?php echo $row['risk_name'];?></td>
-    <td><?php echo $row['risk_lessons_learned'];?></td>
-</tr>
-<?php } ?>
-</table>

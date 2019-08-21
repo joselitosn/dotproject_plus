@@ -517,36 +517,158 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
         },
 
         openWatchList: function (projectId) {
-            $.ajax({
-                type: "get",
-                url: "?m=risks&template=vw_watchlist&project_id="+projectId
-            }).done(function(response) {
+            var url = "?m=risks&template=vw_watchlist&project_id="+projectId;
+
+            var callback = function(response) {
+                $('.risk-watch-list-form').html('').hide();
                 $('#btnBack_watchList').hide();
+                $('#btnSave_watchList').hide();
                 var modal = $('#riskWatchList');
                 modal.find('h5').html('Lista de observação');
                 $('.risk-watch-list-table').html(response);
                 $('.risk-watch-list-table').show();
                 modal.modal();
-            });
+            }
+            risks.execRequest(url, callback);
         },
 
-        switchEdit: function (riskId, projectId) {
-            $.ajax({
-                type: "get",
-                url: "?m=risks&template=addedit&id="+riskId+"&project_id="+projectId
-            }).done(function(response) {
+        switchEditWatchList: function (riskId, projectId) {
+            var url = "?m=risks&template=addedit&id="+riskId+"&project_id="+projectId;
+
+            var callback = function(response) {
                 $('#riskWatchList').find('h5').html('Alterar risco');
                 $('#btnBack_watchList').show();
+                $('#btnSave_watchList').show();
                 $('.risk-watch-list-table').hide();
                 $('.risk-watch-list-form').html(response).show();
-            });
+            }
+            risks.execRequest(url, callback);
         },
 
         backToWatchList: function () {
             $('#riskWatchList').find('h5').html('Lista de observação');
             $('#btnBack_watchList').hide();
+            $('#btnSave_watchList').hide();
             $('.risk-watch-list-form').html('').hide();
             $('.risk-watch-list-table').show();
+        },
+
+        openShortTimeResponseList: function (projectId) {
+            var url = "?m=risks&template=vw_near_term_responses_list&project_id="+projectId;
+
+            var callback = function (response) {
+                $('.risk-short-time-list-form').html('').hide();
+                $('#btnBack_shortTimeList').hide();
+                $('#btnSave_shortTimeList').hide();
+                var modal = $('#riskShortTimeRespList');
+                modal.find('h5').html('Lista de resposta a curto prazo');
+                $('.risk-short-time-list-table').html(response);
+                $('.risk-short-time-list-table').show();
+                modal.modal();
+            }
+            risks.execRequest(url, callback);
+        },
+
+        switchEditShortTerm: function (riskId, projectId) {
+            var url = "?m=risks&template=addedit&id="+riskId+"&project_id="+projectId;
+
+            var callback = function(response) {
+                $('#riskShortTimeRespList').find('h5').html('Alterar risco');
+                $('#btnBack_shortTimeList').show();
+                $('#btnSave_shortTimeList').show();
+                $('.risk-short-time-list-table').hide();
+                $('.risk-short-time-list-form').html(response).show();
+            }
+            risks.execRequest(url, callback);
+        },
+
+        backToShortTimeResponseList: function () {
+            $('#riskShortTimeRespList').find('h5').html('Lista de resposta a curto prazo');
+            $('#btnBack_shortTimeList').hide();
+            $('#btnSave_shortTimeList').hide();
+            $('.risk-short-time-list-form').html('').hide();
+            $('.risk-short-time-list-table').show();
+        },
+
+        openLessonLearntList: function (projectId) {
+            var url = "?m=risks&template=vw_lessons_learned_list&project_id="+projectId;
+
+            var callback = function (response) {
+                $('.risk-lesson-learnt-list-form').html('').hide();
+                $('#btnBack_lessonLearntList').hide();
+                $('#btnSave_lessonLearntList').hide();
+                var modal = $('#riskLessonLearntList');
+                modal.find('h5').html('Lista de lições aprendidas');
+                $('.risk-lesson-learnt-list-table').html(response);
+                $('.risk-lesson-learnt-list-table').show();
+                modal.modal();
+            }
+            risks.execRequest(url, callback);
+        },
+
+        switchEditLessonLearnt: function (riskId, projectId) {
+            var url = "?m=risks&template=addedit&id="+riskId+"&project_id="+projectId;
+
+            var callback = function(response) {
+                $('#riskLessonLearntList').find('h5').html('Alterar risco');
+                $('#btnBack_lessonLearntList').show();
+                $('#btnSave_lessonLearntList').show();
+                $('.risk-lesson-learnt-list-table').hide();
+                $('.risk-lesson-learnt-list-form').html(response).show();
+            }
+            risks.execRequest(url, callback);
+        },
+
+        backToLessonLearntList: function () {
+            $('#riskLessonLearntList').find('h5').html('Lista de lições aprendidas');
+            $('#btnBack_lessonLearntList').hide();
+            $('#btnSave_lessonLearntList').hide();
+            $('.risk-lesson-learnt-list-form').html('').hide();
+            $('.risk-lesson-learnt-list-table').show();
+        },
+
+        openResponsesList: function (projectId) {
+            var url = "?m=risks&template=vw_strategys_list&project_id="+projectId;
+
+            var callback = function (response) {
+                $('.risk-responses-list-form').html('').hide();
+                $('#btnBack_responsesList').hide();
+                $('#btnSave_responsesList').hide();
+                var modal = $('#riskResponsestList');
+                modal.find('h5').html('Lista de resposta aos riscos');
+                $('.risk-responses-list-table').html(response);
+                $('.risk-responses-list-table').show();
+                modal.modal();
+            }
+            risks.execRequest(url, callback);
+        },
+
+        switchResponses: function (riskId, projectId) {
+            var url = "?m=risks&template=addedit&id="+riskId+"&project_id="+projectId;
+
+            var callback = function(response) {
+                $('#riskResponsestList').find('h5').html('Alterar risco');
+                $('#btnBack_responsesList').show();
+                $('#btnSave_responsesList').show();
+                $('.risk-responses-list-table').hide();
+                $('.risk-responses-list-form').html(response).show();
+            }
+            risks.execRequest(url, callback);
+        },
+
+        backToResponsesList: function () {
+            $('#riskResponsestList').find('h5').html('Lista de resposta aos riscos');
+            $('#btnBack_responsesList').hide();
+            $('#btnSave_responsesList').hide();
+            $('.risk-responses-list-form').html('').hide();
+            $('.risk-responses-list-table').show();
+        },
+
+        execRequest: function (url, callback) {
+            $.ajax({
+                type: "get",
+                url: url
+            }).done(callback);
         }
 
     };

@@ -45,15 +45,7 @@ foreach ($riskStrategy as $key => $value) {
 }
 
 $projectSelected = intval(dPgetParam($_GET, 'project_id'));
-$whereProject ='';
-if ($projectSelected!=null) {
-    $t = intval(dPgetParam($_GET, 'tab'));
-    // setup the title block
-    $titleBlock = new CTitleBlock($AppUI->_('LBL_RISKS').' - '.$AppUI->_('LBL_NEARTERM'), 'risks.png', $m, "$m.$a");
-    $titleBlock->addCrumb("?m=projects&a=view&project_id=".$projectSelected."&tab=".$t."&targetScreenOnProject=/modules/risks/projects_risks.php", "LBL_RETURN_LIST");
-    $titleBlock->show();
-    $whereProject = ' and risk_project='.$projectSelected;
-}
+$whereProject = ' and risk_project='.$projectSelected;
 
 $bgRed = "FF6666";
 
@@ -69,157 +61,110 @@ $q->addTable('risks');
 $q->addWhere("risk_active = '1' and risk_priority = '2' $whereProject");
 $inactiveList = $q->loadList();
 ?>
+<div class="card inner-card">
+    <div class="card-header"><?=$AppUI->_("LBL_ACTIVE_RISKS")?></div>
+    <div class="card-body">
 
-<?php echo $AppUI->_('LBL_ACTIVE_RISKS');?>
-<table width="100%" border="0" cellpadding="2" cellspacing="1" class="tbl">
-<tr>    
-    <th nowrap="nowrap"></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('Id');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_RISK_NAME');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_DESCRIPTION');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_PROBABILITY');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_IMPACT');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_PRIORITY');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_STATUS');?></th>
-    <!--
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_OWNER');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_PROJECT');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_TASK');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_POTENTIAL');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_STRATEGY');?></th>
-    -->
-</tr>
-<?php foreach ($activeList as $row) {
+        <div class="row">
+            <div class="col-md-12">
+
+                <table class="table table-sm table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="20%"><?php echo $AppUI->_('LBL_RISK_NAME');?></th>
+                            <th width="32%"><?php echo $AppUI->_('LBL_DESCRIPTION');?></th>
+                            <th width="10%"><?php echo $AppUI->_('LBL_PROBABILITY');?></th>
+                            <th width="8%"><?php echo $AppUI->_('LBL_IMPACT');?></th>
+                            <th width="14%"><?php echo $AppUI->_('LBL_PRIORITY');?></th>
+                            <th width="8%"><?php echo $AppUI->_('LBL_STATUS');?></th>
+                            <th width="8%"></th>
+                        </tr>
+                    </thead>
+                    <tboody>
+                        <?php
+                            foreach ($activeList as $row) {
+                                ?>
+                                <tr>
+                                    <td><?php echo $row['risk_name'] ?></td>
+                                    <td><?php echo $row['risk_description'] ?></td>
+                                    <td><?php echo $riskProbability[$row['risk_probability']] ?></td>
+                                    <td><?php echo $riskImpact[$row['risk_impact']] ?></td>
+                                    <td style="background-color:<?= '#' . $bgRed ?>"><?php echo $riskPriority[$row['risk_priority']] ?></td>
+                                    <td><?php echo $riskStatus[$row['risk_status']] ?></td>
+                                    <td>
+                                        <button type="button" class="btn btn-xs btn-secondary"
+                                                onclick="risks.switchEditShortTerm(<?=$row['risk_id'] ?>, <?=$projectSelected?>)">
+                                            <i class="far fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-xs btn-danger"
+                                                onclick="risks.delete(<?=$row['risk_id'] ?>)">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <?php
+                            }
+                        ?>
+                    </tboody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="card inner-card">
+    <div class="card-header"><?=$AppUI->_("LBL_INACTIVE_RISKS")?></div>
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <table class="table table-sm table-bordered">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th width="20%"><?php echo $AppUI->_('LBL_RISK_NAME');?></th>
+                        <th width="32%"><?php echo $AppUI->_('LBL_DESCRIPTION');?></th>
+                        <th width="10%"><?php echo $AppUI->_('LBL_PROBABILITY');?></th>
+                        <th width="8%"><?php echo $AppUI->_('LBL_IMPACT');?></th>
+                        <th width="14%"><?php echo $AppUI->_('LBL_PRIORITY');?></th>
+                        <th width="8%"><?php echo $AppUI->_('LBL_STATUS');?></th>
+                        <th width="8%"></th>
+                    </tr>
+                    </thead>
+                    <tboody>
+                        <?php
+                        foreach ($inactiveList as $row) {
+                            ?>
+                            <tr>
+                                <td><?php echo $row['risk_name'] ?></td>
+                                <td><?php echo $row['risk_description'] ?></td>
+                                <td><?php echo $riskProbability[$row['risk_probability']] ?></td>
+                                <td><?php echo $riskImpact[$row['risk_impact']] ?></td>
+                                <td style="background-color:<?= '#' . $bgRed ?>"><?php echo $riskPriority[$row['risk_priority']] ?></td>
+                                <td><?php echo $riskStatus[$row['risk_status']] ?></td>
+                                <td>
+                                    <button type="button" class="btn btn-xs btn-secondary"
+                                            onclick="risks.switchEditShortTerm(<?=$row['risk_id'] ?>, <?=$projectSelected?>)">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-xs btn-danger"
+                                            onclick="risks.delete(<?=$row['risk_id'] ?>)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tboody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+    exit();
 ?>
-<tr>
-    <td nowrap style="background-color:#<?php echo $bg; ?>" width="30">
-        <a href="index.php?m=risks&a=addedit&id=<?php echo($row['risk_id']); if ($projectSelected!=null) {echo('&project_id=' . $projectSelected . '&tab='. $t.'&vw=vw_near_term_responses_list');}?>">
-            <img src="./modules/risks/images/stock_edit-16.png" border="0" width="12" height="12">
-        </a>
-        <a href="index.php?m=risks&a=view&id=<?php echo($row['risk_id']); if ($projectSelected!=null) {echo('&project_id=' . $projectSelected . '&tab='. $t.'&vw=vw_near_term_responses_list');}?>">
-            <img src="./modules/risks/images/view_icon.gif" border="0" width="12" height="12">
-        </a>
-    </td>
-    <td width="25"><?php echo $row['risk_id'];?></td>
-    <td><?php echo $row['risk_name'] ?></td>
-    <td><?php echo $row['risk_description'] ?></td>
-    <td><?php echo $riskProbability[$row['risk_probability']] ?></td>
-    <td><?php echo $riskImpact[$row['risk_impact']] ?></td>
-    <td style="background-color:#<?php echo $bgRed;?>"><?php echo  $riskPriority[$row['risk_priority']] ?></td>
-    <td><?php echo $riskStatus[$row['risk_status']] ?></td>
-    <!--
-    <?php
-    foreach ($users as $k => $v ) {
-        if ($k==$row['risk_responsible']) {
-            $row['risk_responsible'] = $v;
-        }
-    }
-    ?>
-    <td><?php echo $row['risk_responsible'] ?></td>
-    <?php
-    foreach ($projects as $k => $v ) {
-        if ($k==$row['risk_project']) {
-            $row['risk_project'] = $v;
-        }
-    }
-    if ($row['risk_project']=='0') {
-        $row['risk_project'] = $AppUI->_('LBL_NOT_DEFINED');
-    }
-   ?>
-    <td><?php echo $row['risk_project'] ?></td>
-    <?php
-    foreach ($tasks as $k => $v ) {
-        if ($k==$row['risk_task']) {
-            $row['risk_task'] = $v;
-        }
-    }
-    if ($row['risk_task']=='0') {
-        $row['risk_task'] = $AppUI->_('LBL_NOT_DEFINED');
-    }
-   ?>
-    <td><?php echo $row['risk_task'] ?></td>
-    <td><?php echo $riskPotential[$row['risk_potential_other_projects']] ?></td>
-    <td><?php echo $riskStrategy[$row['risk_strategy']] ?></td>
-    -->
-</tr>
-<?php } ?>
-</table>
-</br>
-<?php echo $AppUI->_('LBL_INACTIVE_RISKS');?>
-<table width="100%" border="0" cellpadding="2" cellspacing="1" class="tbl">
-<tr>    
-    <th nowrap="nowrap"></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('Id');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_RISK_NAME');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_DESCRIPTION');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_PROBABILITY');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_IMPACT');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_PRIORITY');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_STATUS');?></th>
-    <!--
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_OWNER');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_PROJECT');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_TASK');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_POTENTIAL');?></th>
-    <th nowrap="nowrap"><?php echo $AppUI->_('LBL_STRATEGY');?></th>
-    -->
-</tr>
-<?php foreach ($inactiveList as $row) {
-?>
-<tr>
-    <td nowrap style="background-color:#<?php echo $bg; ?>" width="30">
-        <a href="index.php?m=risks&a=addedit&id=<?php echo($row['risk_id']); if ($projectSelected!=null) {echo('&project_id=' . $projectSelected . '&tab='. $t.'&vw=vw_near_term_responses_list');}?>">
-            <img src="./modules/risks/images/stock_edit-16.png" border="0" width="12" height="12">
-        </a>
-        <a href="index.php?m=risks&a=view&id=<?php echo($row['risk_id']); if ($projectSelected!=null) {echo('&project_id=' . $projectSelected . '&tab='. $t.'&vw=vw_near_term_responses_list');}?>">
-            <img src="./modules/risks/images/view_icon.gif" border="0" width="12" height="12">
-        </a>
-    </td>
-    <td width="25"><?php echo $row['risk_id'];?></td>
-    <td><?php echo $row['risk_name'] ?></td>
-    <td><?php echo $row['risk_description'] ?></td>
-    <td><?php echo $riskProbability[$row['risk_probability']] ?></td>
-    <td><?php echo $riskImpact[$row['risk_impact']] ?></td>
-    <td style="background-color:#<?php echo $bgRed;?>"><?php echo  $riskPriority[$row['risk_priority']] ?></td>
-    <td><?php echo $riskStatus[$row['risk_status']] ?></td>
-    <!--
-    <?php
-    foreach ($users as $k => $v ) {
-        if ($k==$row['risk_responsible']) {
-            $row['risk_responsible'] = $v;
-        }
-    }
-    ?>
-    <td><?php echo $row['risk_responsible'] ?></td>
-    <?php
-    foreach ($projects as $k => $v ) {
-        if ($k==$row['risk_project']) {
-            $row['risk_project'] = $v;
-        }
-    }
-    if ($row['risk_project']=='0') {
-        $row['risk_project'] = $AppUI->_('LBL_NOT_DEFINED');
-    }
-   ?>
-    <td><?php echo $row['risk_project'] ?></td>
-    <?php
-    foreach ($tasks as $k => $v ) {
-        if ($k==$row['risk_task']) {
-            $row['risk_task'] = $v;
-        }
-    }
-    if ($row['risk_task']=='0') {
-        $row['risk_task'] = $AppUI->_('LBL_NOT_DEFINED');
-    } else {
-        if ($row['risk_task']=='-1') {
-            $row['risk_task'] = $AppUI->_('LBL_ALL_TASKS');
-        }
-    }        
-   ?>
-    <td><?php echo $row['risk_task'] ?></td>
-    <td><?php echo $riskPotential[$row['risk_potential_other_projects']] ?></td>
-    <td><?php echo $riskStrategy[$row['risk_strategy']] ?></td>
-    -->
-</tr>
-<?php } ?>
-</table>
