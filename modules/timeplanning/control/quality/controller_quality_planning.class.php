@@ -12,6 +12,14 @@ class ControllerQualityPlanning {
         
     }
 
+    public function storeQualityPolicies($id, $projectId, $qualityPolicies) {
+        $object = new QualityPlanning();
+        $object->setId($id);
+        $object->setProjectId($projectId);
+        $object->setQualityPolicies($qualityPolicies);
+        $object->store();
+    }
+
     public function sendDataToBeStored($id, $projectId, $qualityAssurance, $qualityPolicies, $qualityControlling) {
         $object = new QualityPlanning();
         $object->setId($id);

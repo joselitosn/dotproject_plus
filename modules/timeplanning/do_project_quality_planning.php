@@ -1,19 +1,57 @@
 <?php
 require_once (DP_BASE_DIR . "/modules/timeplanning/control/quality/controller_quality_planning.class.php");
-$projectId = dPgetParam($_POST, "project_id");
-$qualityPolicies = dPgetParam($_POST,"quality_policies");
-$qualityAssurance= dPgetParam($_POST,"quality_assurance");
-$qualityControlling= dPgetParam($_POST,"quality_controlling");
-$id= dPgetParam($_POST,"quality_planning_id");
-$controller  = new ControllerQualityPlanning (); 
-$controller->sendDataToBeStored($id, $projectId, $qualityAssurance, $qualityPolicies, $qualityControlling);
+try {
+    $projectId = dPgetParam($_POST, "project_id");
+
+    $section = $_POST["form_section"];
+    $controller  = new ControllerQualityPlanning ();
+    $id= dPgetParam($_POST,"quality_planning_id");
+    if (null === $id) {
+        $id = -1;
+    }
+    switch ($section) {
+        case 'quality_policies':
+            $qualityPolicies = dPgetParam($_POST,"quality_policies");
+            $controller->storeQualityPolicies($id, $projectId, $qualityPolicies);
+            echo 'Política de qualidade registrada';
+            break;
+
+        case 'quality_assurance':
+            if ($_POST['del'] == 1) {
+                $auditId = $_POST["audit_item_id"];
+                $controller->deleteAssuranceItem($auditId);
+                echo 'Item de garantia de qualidade excluído';
+            } else {
+                $what = $_POST["what_audit"];
+                $who = $_POST["who_audit"];
+                $when = $_POST["when_audit"];
+                $how = $_POST["how_audit"];
+                $auditId = $_POST["audit_item_id"];
+                $controller->saveAssuranceItem($id, $what, $who, $when, $how, $auditId);
+                echo 'Item de garantia de qualidade registrado';
+            }
+            break;
+
+    }
+
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
+
+exit();
+
+
+
+//$qualityAssurance= dPgetParam($_POST,"quality_assurance");
+//$qualityControlling= dPgetParam($_POST,"quality_controlling");
+//$controller->sendDataToBeStored($id, $projectId, $qualityAssurance, $qualityPolicies, $qualityControlling);
 
 //1. get audit items - Cost: n - number of audit itens
 
-$n=$_POST["number_audit_items"];
-for($i=0;$i<$n;$i++){
-    $controller->saveAssuranceItem($id, $_POST["what_audit_$i"], $_POST["who_audit_$i"], $_POST["when_audit_$i"], $_POST["how_audit_$i"], $_POST["audit_item_id_$i"]);
-}
+//$n=$_POST["number_audit_items"];
+//for($i=0;$i<$n;$i++){
+//    $controller->saveAssuranceItem($id, $_POST["what_audit_$i"], $_POST["who_audit_$i"], $_POST["when_audit_$i"], $_POST["how_audit_$i"], $_POST["audit_item_id_$i"]);
+//}
 
 //2. get requirements - Cost: n - number of requirements
 $n = $_POST["number_requirements"];

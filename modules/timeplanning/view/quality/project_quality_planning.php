@@ -1,7 +1,8 @@
 <?php
 require_once (DP_BASE_DIR . "/modules/timeplanning/control/quality/controller_quality_planning.class.php");
 $controller = new ControllerQualityPlanning();
-$object = $controller->getQualityPlanningPerProject($_GET["project_id"]);
+$projectId = $_GET["project_id"];
+$object = $controller->getQualityPlanningPerProject($projectId);
 $quality_planning_id = $object->getId();
 ?>
 <a name="project_quality_planning"></a>
@@ -47,7 +48,127 @@ $quality_planning_id = $object->getId();
     }
 
 </script>
-<link href="modules/timeplanning/css/table_form.css" type="text/css" rel="stylesheet" />
+
+<h4><?=$AppUI->_("7LBLQUALIDADE",UI_OUTPUT_HTML)?></h4>
+<hr>
+
+<div class="card inner-card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-11">
+                <h5 class="card-title"><?=$AppUI->_("LBL_QUALITY_POLICIES")?></h5>
+            </div>
+            <div class="col-md-1 text-right">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#qualityPoliciesModal">
+                            <i class="far fa-edit"></i>
+                            Incluir/alterar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-11">
+                <?=$object->getQualityPolicies()?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+
+<div class="card inner-card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-11">
+                <h5 class="card-title"><?=$AppUI->_("LBL_QUALITY_ASSURANCE")?></h5>
+                <small><?=$AppUI->_("LBL_QUALITY_ASSURANCE_DESCRIPTION")?></small>
+            </div>
+            <div class="col-md-1 text-right">
+                <div class="dropdown">
+                    <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#qualityAssuranceModal">
+                            <i class="far fa-edit"></i>
+                            <?=$AppUI->_("LBL_QUALITY_ADD_ITEM_TO_AUDIT")?>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-11">
+                <table class="table table-sm table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="23%"><?php echo $AppUI->_("LBL_WHAT_AUDIT"); ?></th>
+                            <th width="23%"><?php echo $AppUI->_("LBL_WHO_AUDIT"); ?></th>
+                            <th width="23%"><?php echo $AppUI->_("LBL_WHEN_AUDIT"); ?></th>
+                            <th width="23%"><?php echo $AppUI->_("LBL_HOW_AUDIT"); ?></th>
+                            <th width="8%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $assuranceItems = $controller->loadAssuranceItems($quality_planning_id);
+                        foreach ($assuranceItems as $id => $data) {
+                            $ai_id = $data[0] != '' ? $data[0] : null;
+                            $what = $data[1] != '' ? $data[1] : null;
+                            $who = $data[2] != '' ? $data[2] : null;
+                            $when = $data[3] != '' ? $data[3] : null;
+                            $how = $data[4] != '' ? $data[4] : null;
+                            ?>
+                            <tr>
+                                <td>
+                                    <?=$what?>
+                                </td>
+                                <td>
+                                    <?=$who?>
+                                </td>
+                                <td>
+                                    <?=$when?>
+                                </td>
+                                <td>
+                                    <?=$how?>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-xs btn-secondary"
+                                            onclick="quality.editQualityAssuranceItem(<?=$ai_id?>, '<?=$what?>', '<?=$who?>', '<?=$when?>', '<?=$how?>')">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-xs btn-danger"
+                                            onclick="quality.deleteQualityAssuranceItem(<?=$ai_id?>)">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+<!--                                    <img style="cursor:pointer" src="./modules/dotproject_plus/images/trash_small.gif" onclick="deleteRecord(10,<?php //echo $ai_id ?>//)" />-->
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 <form name="quality_form" method="post" action="?m=timeplanning">
     <input name="dosql" type="hidden" value="do_project_quality_planning" />
     <input name="project_id" type="hidden" value="<?php echo $_GET["project_id"]; ?>" />
@@ -58,121 +179,6 @@ $quality_planning_id = $object->getId();
     <input name="quality_planning_id" type="hidden" value="<?php echo $object->getId() ?>" />
     <br/>
     <table class="tbl" align="center" cellpadding="10" width="95%" style="border: 0px solid black">
-        <!--
-        <tr>
-            <th  align="center" colspan="2"><?php echo $AppUI->_("LBL_QUALITY_PLANNING"); ?></th>
-        </tr>
-
-        <tr>
-            <td class="td_label"><label for="quality_norms">Normas:</label></td>
-            <td>
-        
-                <input type="text" name="quality_norms" style="width:97%;" />
-            </td>
-        </tr>
-
-        <tr>
-            <td class="td_label"><label for="quality_policies">Políticas:</label></td>
-            <td>
-                <input type="text" name="quality_policies" style="width:97%;" />
-            </td>
-        </tr>
-
-        <tr>
-            <td class="td_label"><label for="quality_guidelines">Diretrizes:</label></td>
-            <td>
-                <input type="text" name="quality_guidelines" style="width:97%;" />
-            </td>
-        </tr>
-        -->
-
-        <tr>
-            <th colspan="2" style="font-weight: bold"><?php echo $AppUI->_("LBL_QUALITY_POLICIES"); ?>:</th>
-        </tr>
-        <tr>
-            <td colpsan="2">
-                <input type="hidden" name="quality_norms" value="" />
-                <input type="hidden" name="quality_policies"  value="" />
-                <textarea name="quality_policies" style="width:99%;height: 100px; resize: none;" ><?php echo $object->getQualityPolicies() ?></textarea>
-            </td>
-
-        </tr>
-
-
-        <!-- Quality assurance -->
-        <tr>
-            <th colspan="2" style="font-weight: bold">
-                <?php echo $AppUI->_("LBL_QUALITY_ASSURANCE"); ?>
-        <div style="font-weight: normal;font-size: 9px">
-            <span style="color:red">*</span><?php echo $AppUI->_("LBL_QUALITY_ASSURANCE_DESCRIPTION"); ?>
-        </div>            
-        </th>
-        <!--
-        <td nowrap>
-            <textarea name="quality_assurance"><?php echo $object->getQualityAssurance() ?></textarea>
-        </td>
-        -->
-        </tr>
-        <tr>
-            <td colspan="2">
-                <br />
-                <table width="100%" align="center">
-                    <tr>
-                        <td>
-                            &nbsp;
-                         <input type="button" value="<?php echo $AppUI->_("LBL_QUALITY_ADD_ITEM_TO_AUDIT"); ?>" onclick="newAuditItem()" />
-                        </td>
-                    </tr>
-                </table>
-                <br />
-                <input name="number_audit_items" type="hidden" value="3"  /><!-- computed on page load - the count of entries on db when click to new: submission --> 
-                <table class="tbl" style="border: 0px solid black;" width="100%" align="center" cellpadding="10">
-                    <tr>
-                        <th><?php echo $AppUI->_("LBL_WHAT_AUDIT"); ?></th>
-                        <th><?php echo $AppUI->_("LBL_WHO_AUDIT"); ?></th> 
-                        <th><?php echo $AppUI->_("LBL_WHEN_AUDIT"); ?></th> 
-                        <th><?php echo $AppUI->_("LBL_HOW_AUDIT"); ?></th> 
-                        <th style="width:4%">&nbsp;</th>
-                    </tr>
-                    <?php
-                    $assuranceItems = $controller->loadAssuranceItems($quality_planning_id);
-                    $i = 0;
-                    foreach ($assuranceItems as $id => $data) {
-                        $ai_id = $data[0];
-                        $what = $data[1];
-                        $who = $data[2];
-                        $when = $data[3];
-                        $how = $data[4];
-                        ?>
-                        <tr >
-                            <td valign="top" >
-                                <input name="audit_item_id_<?php echo $i ?>" value="<?php echo $ai_id; ?>" type="hidden" />
-                                <textarea  type="text" name="what_audit_<?php echo $i ?>" style="width:97%;height: 38px;resize: none"><?php echo $what; ?></textarea>
-                            </td>
-                            <td valign="top" >
-                                <textarea  type="text" name="who_audit_<?php echo $i ?>" style="width:97%;height: 38px;resize: none"><?php echo $who; ?></textarea>
-                            </td>
-
-                            <td valign="top" >
-                                <textarea  type="text" name="when_audit_<?php echo $i ?>" style="width:97%;height: 38px;resize: none"><?php echo $when; ?></textarea>
-                            </td>
-
-                            <td valign="top">
-                                <textarea name="how_audit_<?php echo $i ?>" style="width:97%;height: 38px;resize: none"><?php echo $how; ?></textarea>
-                            </td>
-                            <td style="vertical-align:top">
-                                <img style="cursor:pointer" src="./modules/dotproject_plus/images/trash_small.gif" onclick="deleteRecord(10,<?php echo $ai_id ?>)" />
-                            </td>
-                        </tr>  
-                        <?php
-                        $i++;
-                    }
-                    ?>
-                </table>
-                <input type="hidden" name="number_audit_items" value="<?php echo $i ?>">
-                <br /><br />
-            </td>  
-        </tr>
 
         <tr>
             <th colspan="2" style="font-weight: bold;">
@@ -444,3 +450,191 @@ $quality_planning_id = $object->getId();
         </tr>
     </table>
 </form>
+
+
+
+
+<!-- MODAL POLITICAS DE QUALIDADE -->
+<div id="qualityPoliciesModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_QUALITY_POLICIES")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="quality_policies_form">
+                    <input name="dosql" type="hidden" value="do_project_quality_planning" />
+                    <input name="project_id" type="hidden" value="<?=$projectId?>" />
+                    <input name="quality_planning_id" type="hidden" value="<?=$quality_planning_id?>" />
+                    <input name="form_section" type="hidden" value="quality_policies" />
+
+                    <div class="form-group">
+                        <label for="quality_policies">
+                            &nbsp;
+                        </label>
+                        <textarea name="quality_policies" rows="7" class="form-control form-control-sm" ><?php echo $object->getQualityPolicies() ?></textarea>
+                    </div>
+
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="quality.saveQualityPolicy()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL GARANTIA DE QUALIDADE -->
+<div id="qualityAssuranceModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_("LBL_QUALITY_ASSURANCE")?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="quality_assurance_form">
+                    <input name="dosql" type="hidden" value="do_project_quality_planning" />
+                    <input name="project_id" type="hidden" value="<?=$projectId?>" />
+                    <input name="quality_planning_id" type="hidden" value="<?=$quality_planning_id?>" />
+                    <input name="form_section" type="hidden" value="quality_assurance" />
+                    <input name="audit_item_id" type="hidden" value="" />
+
+                    <div class="form-group">
+                        <label for="quality_policies">
+                            <?=$AppUI->_("LBL_WHAT_AUDIT")?>
+                        </label>
+                        <textarea name="what_audit" rows="2" class="form-control form-control-sm"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="quality_policies">
+                            <?=$AppUI->_("LBL_WHO_AUDIT")?>
+                        </label>
+                        <textarea name="who_audit" rows="2" class="form-control form-control-sm"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="quality_policies">
+                            <?=$AppUI->_("LBL_WHEN_AUDIT")?>
+                        </label>
+                        <textarea name="when_audit" rows="2" class="form-control form-control-sm"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="quality_policies">
+                            <?=$AppUI->_("LBL_HOW_AUDIT")?>
+                        </label>
+                        <textarea name="how_audit" rows="2" class="form-control form-control-sm"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="quality.saveQualityAssurance()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+    var quality = {
+        
+        init: function () {
+            $('#qualityAssuranceModal').on('hidden.bs.modal', function () {
+                $('input[name=audit_item_id]').val('');
+                $('textarea[name=what_audit]').val('');
+                $('textarea[name=who_audit]').val('');
+                $('textarea[name=when_audit]').val('');
+                $('textarea[name=how_audit]').val('');
+            });
+
+        },
+
+        submitForm: function (formName) {
+            console.log(formName);
+            $.ajax({
+                method: 'POST',
+                url: "?m=timeplanning",
+                data: $("form[name="+formName+"]").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
+        saveQualityPolicy: function () {
+            quality.submitForm('quality_policies_form');
+        },
+
+        saveQualityAssurance: function () {
+            console.log('sjhfjlsfn');
+            quality.submitForm('quality_assurance_form');
+        },
+
+        deleteQualityAssuranceItem: function (id) {
+            $.confirm({
+                title: 'Excluir item de controle de qualidade',
+                content: 'Você tem certeza de que quer excluir este item?',
+                buttons: {
+                    yes: {
+                        text: 'Sim',
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=timeplanning",
+                                data: {
+                                    dosql: 'do_project_quality_planning',
+                                    del: 1,
+                                    audit_item_id: id,
+                                    form_section: 'quality_assurance'
+                                }
+                            }).done(function(resposta) {
+                                $.alert({
+                                    title: "Sucesso",
+                                    content: resposta,
+                                    onClose: function() {
+                                        window.location.reload(true);
+                                    }
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: 'Não'
+                    }
+                }
+            });
+        },
+
+        editQualityAssuranceItem: function (id, what, who, when, how) {
+            $('input[name=audit_item_id]').val(id);
+            $('textarea[name=what_audit]').val(what);
+            $('textarea[name=who_audit]').val(who);
+            $('textarea[name=when_audit]').val(when);
+            $('textarea[name=how_audit]').val(how);
+
+            $('#qualityAssuranceModal').modal();
+        }
+    };
+    
+    $(document).ready(quality.init);
+</script>
