@@ -86,10 +86,28 @@ mysql_query('SET character_set_results=utf8');
                 <img src="style/<?php echo $uistyle; ?>/img/dotproject_plus_logo_header.png" style="width: 150px;height: 40px" />
             </a>
             <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="javascript:void(0)"
+                       data-container="body"
+                       data-toggle="popover"
+                       data-placement="bottom">
+                        <i class="far fa-bell"></i>
+                    </a>
+
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://www.gqs.ufsc.br/evolution-of-dotproject/"  target="_blank">
+                        <i class="far fa-question-circle"></i>
+                        <?php echo $AppUI->_("Help")  ?>
+                    </a>
+                </li>
                 <!-- Dropdown -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown">
                         <?=$AppUI->user_first_name . ' ' . $AppUI->user_last_name; ?>
+                        <i class="fas fa-caret-down"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="./index.php?m=admin&amp;a=viewuser&amp;user_id=<?php echo $AppUI->user_id ?>">
@@ -109,25 +127,6 @@ mysql_query('SET character_set_results=utf8');
                             <?php echo $AppUI->_("LBL_EXIT")  ?>
                         </a>
                     </div>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link feedback"
-                       href="javascript:void(0)"
-                       data-container="body"
-                       data-toggle="popover"
-                       data-placement="bottom">
-                        <i class="far fa-bell"></i>
-                    </a>
-
-
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="http://www.gqs.ufsc.br/evolution-of-dotproject/"  target="_blank">
-                        <i class="far fa-question-circle"></i>
-                        <?php echo $AppUI->_("Help")  ?>
-                    </a>
                 </li>
             </ul>
         </nav>
