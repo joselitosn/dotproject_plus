@@ -394,7 +394,7 @@ function authorize() {
             </div>
         </div>
 
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-secondary" role="alert">
             <strong><?=$AppUI->_("Status")?>: </strong>
             <?=$AppUI->_($obj->getStatus())?>
         </div>

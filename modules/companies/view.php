@@ -72,7 +72,7 @@ if ($company_policies_id != "") {
 
 
 <div class="container-fluid">
-    <div class="row header-2">
+    <div class="row header-2 bg-primary">
         <div class="col-md-12">
             <h4><?=htmlspecialchars($obj->company_name)?></h4>
             <small>

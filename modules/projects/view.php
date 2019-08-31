@@ -170,7 +170,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 ?>
 
 <div class="container-fluid">
-    <div class="row header-2">
+    <div class="row header-2 bg-primary">
         <div class="col-md-12">
             <h4><?=$obj->project_name?></h4>
             <small>
@@ -220,7 +220,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
         ?>
 
         <ul class="list-unstyled components">
-            <li class="<?=$tab == 0 ? 'active' : '' ?>">
+            <li class="<?=$tab == 0 ? '' : '' ?>">
                 <a href="#iniciacaoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <?=$AppUI->_("1initiation", UI_OUTPUT_HTML);?>
                 </a>
@@ -237,7 +237,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                     </li>
                 </ul>
             </li>
-            <li class="<?=$tab == 1 ? 'active' : '' ?>">
+            <li class="<?=$tab == 1 ? '' : '' ?>">
                 <a href="#pmSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <?=$AppUI->_("Planning and monitoring", UI_OUTPUT_HTML);?>
                 </a>

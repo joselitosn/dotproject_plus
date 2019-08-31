@@ -6,9 +6,9 @@ if (!defined('DP_BASE_DIR')) {
 unset($_SESSION['receptors']);
 unset($_SESSION['emitters']);
 $project_id = $_GET["project_id"];
-?>
 
-<?php
+require_once DP_BASE_DIR . '/modules/communication/communication.class.php';
+
 $q = new DBQuery();
 $q->addQuery('c.communication_id, c.communication_title, c.communication_information, ch.*, fr.*, p.project_name');
 $q->addTable('communication', 'c');
@@ -40,63 +40,230 @@ $list_Receptor = $q->loadList();
 $q->clear();
 ?>
 
-<br />
-<table width="95%" align="center">
-    <tr>
-        <td style="width:150px">
-            <form action="?m=communication&a=addedit&project_id=<?php echo $project_id; ?>" method="post">
-                <input type="submit" class="button" style="font-weight:bold" value="<?php echo ucfirst($AppUI->_("LBL_NEW_COMMUNICATION")) ?>" /> 
-            </form>
-        </td>
-        <td style="width:150px">
-            <form action="?m=communication&a=addedit_channel&project_id=<?php echo $project_id; ?>" method="post">
-                <input type="submit" class="button" value="<?php echo ucfirst($AppUI->_("LBL_NEW_CCHANNEL")) ?>" />
-            </form>
-        </td>
-        <td style="width: fit-content">
-            <form action="?m=communication&a=addedit_frequency&project_id=<?php echo $project_id; ?>" method="post">
-                <input type="submit" class="button" value="<?php echo ucfirst($AppUI->_("LBL_NEW_CFREQUENCY")) ?>" /> 
-            </form>
-        </td>
-    </tr>
-</table>
-<table width="95%" align="center" border="0" cellpadding="2" cellspacing="1" class="tbl">
-    <tr>
-        <!--<th nowrap="nowrap"><?php echo $AppUI->_("LBL_PROJECT"); ?></th>-->
-        <th nowrap="nowrap"><?php echo $AppUI->_("LBL_TITLE"); ?></th>
-        <!-- <th nowrap="nowrap"><//?php echo $AppUI->_('Issuing');?></th> -->
-        <!--<th nowrap="nowrap"><//?php echo $AppUI->_('Receptor');?></th>-->
-        <th nowrap="nowrap"><?php echo $AppUI->_("LBL_COMMUNICATION"); ?></th>
-        <th nowrap="nowrap"><?php echo $AppUI->_("LBL_CHANNEL"); ?></th>
-        <th nowrap="nowrap"><?php echo $AppUI->_("LBL_FREQUENCY"); ?></th>        
-        <th nowrap="nowrap"> </th>
-    </tr>
+<h4><?=$AppUI->_('LBL_PROJECT_COMMUNICATION');?></h4>
+<hr>
 
-    <?php foreach ($list as $row) { ?>
-        <tr>
-           <!-- <td><?php echo $row['project_name'] ?></td>-->
-            <td><?php echo $row['communication_title'] ?></td>
-            <!--<td>
-            <//?php foreach($list_Emissor as $emissor){
-                if($emissor['communication_id']==$row['communication_id'])
-                {echo $emissor['emissor_first_name'].' '.$emissor['emissor_last_name'].' - '; }
-            }?> 
-            </td>
-        
-            <td>
-            <//?php foreach($list_Receptor as $receptor){
-                if($receptor['communication_id']==$row['communication_id'])
-                {echo $receptor['receptor_first_name'].' '.$receptor['receptor_last_name'].' - '; }
-            }?>
-            </td> -->      
-            <td><?php echo $row['communication_information'] ?></td>
-            <td><?php echo $row['communication_channel'] ?></td>
-            <td><?php echo $row['communication_frequency'] ?></td>
-            <td>
-                <a href="index.php?m=communication&a=addedit&communication_id=<?php echo $row['communication_id'] ?>&project_id=<?php echo $project_id; ?>">
-                    <img src="modules/communication/images/stock_edit-16.png" alt="<?php echo $AppUI->_("LBL_EDIT") ?>" border="0" />
-                </a>
-            </td>
-        </tr>
-    <?php } ?>
-</table>
+<div class="row">
+    <div class="col-md-12 text-right">
+        <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="communication.new(<?=$project_id?>)">
+            <?=ucfirst($AppUI->_("LBL_NEW_COMMUNICATION"))?>
+        </a>
+    </div>
+</div>
+<?php foreach ($list as $row) { 
+    $comId = $row['communication_id'];    
+?>
+    <div class="card inner-card">
+        <div class="card-body shrink">
+            <div class="row">
+                <div class="col-md-11">
+                    <h5>
+                        <a id="<?=$comId?>" data-toggle="collapse" href="#com_details_<?=$comId?>">
+                            <?=$row['communication_title']?>
+                            <i class="fas fa-caret-down"></i>
+                        </a>
+                    </h5>
+                </div>
+                <div class="col-md-1 text-right">
+                    <div class="dropdown">
+                        <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="javascript:void(0)" onclick="communication.edit(<?=$comId?>, <?=$project_id?>)">
+                                <i class="far fa-edit"></i>
+                                Alterar
+                            </a>
+                            <?php
+                            $obj = new CCommunication();
+                            $canDelete=true;
+                            if ($$comId != -1) {
+                                $obj->load($comId);
+                                $canDelete=$obj->canDelete($msg);
+                            }
+
+                            if ($canDelete) {
+                                ?>
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="communication.delete(<?=$comId?>)">
+                                    <i class="far fa-trash-alt"></i>
+                                    Excluir
+                                </a>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="com_details_<?=$comId?>" class="collapse">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-sm no-border">
+                            <tr>
+                                <th class="text-right" width="15%"><?=$AppUI->_("LBL_COMMUNICATION")?>:</th>
+                                <td><?=$row['communication_information']?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-right" width="15%"><?=$AppUI->_("LBL_CHANNEL")?>:</th>
+                                <td><?=$row['communication_channel']?></td>
+                            </tr>
+                            <tr>
+                                <th class="text-right" width="15%"><?=$AppUI->_('LBL_FREQUENCY')?>:</th>
+                                <td><?=$row['communication_frequency']?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } ?>
+
+<!-- MODAL ADD/EDIT COMMUNICATION -->
+<div id="communicationModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body communication-modal">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="communication.save()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var communication = {
+        init: function() {
+            $('a[data-toggle=collapse]').on('click', communication.show);  
+            $('#communicationModal').on('hidden.bs.modal', function() {
+                $(this).find('h5').html('Adicionar comunicação');
+                $('.communication-modal').html('');
+            });
+        },
+
+        show: function(e) {
+            const collapse = $(e.target);
+            $('#com_details_'+e.target.id).on('show.bs.collapse', function () {
+                collapse.find('i').removeClass('fa-caret-down');
+                collapse.find('i').addClass('fa-caret-up');
+            });
+            $('#com_details_'+e.target.id).on('hide.bs.collapse', function () {
+                collapse.find('i').removeClass('fa-caret-up');
+                collapse.find('i').addClass('fa-caret-down');
+            });
+        },
+
+        new: function(projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=communication&template=addedit&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#communicationModal');
+                modal.find('h5').html('Adicionar comunicação');
+                $('.communication-modal').html(response);
+                modal.modal();
+            });
+        },
+
+        edit: function(id, projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=communication&template=addedit&communication_id="+id+"&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#communicationModal');
+                modal.find('h5').html('Alterar comunicação');
+                $('.communication-modal').html(response);
+                modal.modal();
+            });
+        },
+
+        save: function() {
+            var name = $('input[name=communication_title]').val();
+            var desc = $('textarea[name=communication_information]').val();
+
+            var msg = [];
+            var err = false;
+            if (!name.trim()) {
+                err = true;
+                msg.push('Preencha o título');
+            }
+            if (!desc.trim()) {
+                err = true;
+                msg.push('Preencha a comunicação');
+            }
+            if (err) {
+                $.alert({
+                    title: "Erro",
+                    content: msg.join('<br>')
+                });
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=communication",
+                data: $("#communicationForm").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
+        delete: function(id) {
+            $.confirm({
+                title: '<?=$AppUI->_("LBL_CONFIRM", UI_OUTPUT_JS); ?>',
+                content: '<?=$AppUI->_("LBL_ANSWER_DELETE", UI_OUTPUT_JS); ?>',
+                buttons: {
+                    yes: {
+                        text: 'Sim',
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=communication",
+                                data: {
+                                    dosql: 'do_communication_aed',
+                                    del: 1,
+                                    communication_id: id
+                                }
+                            }).done(function(resposta) {
+                                $.alert({
+                                    title: "Sucesso",
+                                    content: resposta,
+                                    onClose: function() {
+                                        window.location.reload(true);
+                                    }
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: 'Não'
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(communication.init);
+</script>

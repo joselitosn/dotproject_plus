@@ -160,7 +160,7 @@ $costsList = $controllerResourceCost->getRecordsByUser($user_id);
             <?=$AppUI->_("LBL_NO") ?>
         <input type="radio" name="eventual" value="1" <?=$hr->eventual == "1" ? "checked=\"checked\"":""; ?> onchange="hr.displayWorkingDays()" />
             <?=$AppUI->_("LBL_YES") ?>
-        <div class="alert alert-info" role="alert">
+        <div class="alert alert-secondary" role="alert">
             <small><?=$AppUI->_("LBL_EVENTUAL_INVOLVIMENT_HINT"); ?></small>
         </div>
     </div>

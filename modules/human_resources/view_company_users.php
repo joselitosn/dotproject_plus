@@ -113,7 +113,7 @@ if (!$res->fields) {
         <div class="card inner-card">
             <div class="card-body shrink">
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-9">
                         <h5>
                             <a id="<?=$human_resource_id?>" data-toggle="collapse" href="#hr_details_<?=$human_resource_id?>">
                                 <?=$res->fields["contact_first_name"].' '.$res->fields["contact_last_name"];?>
@@ -121,15 +121,14 @@ if (!$res->fields) {
                             </a>
                         </h5>
                     </div>
-                    <div class="col-md-2 text-right">
+                    <div class="col-md-3 text-right">
                             <span class="badge <?=$badgeClass?>">
                                 <?=$status?>
                             </span>
-                        <div class="dropdown" style="width: 20%; float: right;">
+                        <div class="dropdown" style="width: 10%; float: right;">
                             <a href="javascript:void(0)" class="link-primary" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-bars"></i>
                             </a>
-
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item" href="javascript:void(0)" onclick="hr.edit(<?=$human_resource_id?>, <?=$user_id?>, <?=$contact_id?>)">
                                     <i class="far fa-edit"></i>

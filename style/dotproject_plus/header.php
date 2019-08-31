@@ -19,7 +19,7 @@ mysql_query('SET character_set_results=utf8');
         <meta name="description" content="The HTML5 Herald">
 
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/fontawesome/css/all.css" media="all" />
-        <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/bootstrap/bootstrap.min.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/bootstrap/bootstrap.css" media="all" />
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/jquery-confirm/jquery-confirm.min.css" media="all" />
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/select-2/select2.min.css" media="all" />
         <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/select-2/select2-bootstrap.min.css" media="all" />
@@ -83,7 +83,7 @@ mysql_query('SET character_set_results=utf8');
             </ul>
             <!-- Brand/logo -->
             <a class="navbar-brand mx-auto" href="#">
-                <img src="style/<?php echo $uistyle; ?>/img/dotproject_plus_logo_header.png" style="width: 150px;height: 40px" />
+                <img src="style/<?php echo $uistyle; ?>/img/logo.png" style="width: 150px;height: 40px" />
             </a>
             <ul class="navbar-nav">
                 <li class="nav-item">

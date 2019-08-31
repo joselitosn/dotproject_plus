@@ -30,7 +30,7 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
             <div class="alert alert-secondary text-center" role="alert">
                 <?=$AppUI->_("LBL_THERE_IS_NO_STAKEHOLDER") ?>
                 <?=$AppUI->_("LBL_CLICK"); ?>
-                <a class="alert-link" href="javascript:void(0)" onclick="roles.new()">
+                <a class="alert-link" href="javascript:void(0)" onclick="stakeholder.new()">
                     <?php echo $AppUI->_("LBL_HERE"); ?>
                 </a>
                 <?php echo $AppUI->_("LBL_TO_CREATE_A_STAKEHOLDER"); ?>

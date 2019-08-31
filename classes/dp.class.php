@@ -216,7 +216,6 @@ class CDpObject {
 	 *	@return null|string null if successful otherwise returns and error message
 	 */
 	public function store($updateNulls = false) {
-		
 		$this->dPTrimAll();
 		
 		$msg = $this->check();
