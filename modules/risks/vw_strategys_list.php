@@ -83,7 +83,7 @@ $inactiveList = $q->loadList();
                         <th width="8%"></th>
                     </tr>
                     </thead>
-                    <tboody>
+                    <tbody>
                         <?php
                         foreach ($activeList as $row) {
                             $bgColor;
@@ -115,7 +115,7 @@ $inactiveList = $q->loadList();
                             <?php
                         }
                         ?>
-                    </tboody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -142,7 +142,7 @@ $inactiveList = $q->loadList();
                         <th width="8%"></th>
                     </tr>
                     </thead>
-                    <tboody>
+                    <tbody>
                         <?php
                         foreach ($inactiveList as $row) {
                             $bgColor;
@@ -174,7 +174,7 @@ $inactiveList = $q->loadList();
                             <?php
                         }
                         ?>
-                    </tboody>
+                    </tbody>
                 </table>
             </div>
         </div>

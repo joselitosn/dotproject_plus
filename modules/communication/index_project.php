@@ -38,6 +38,12 @@ $q->addJoin('contacts', 'cor', 'cor.contact_id=cr.communication_stakeholder_id')
 $list_Receptor = $q->loadList();
 
 $q->clear();
+
+// list of channels
+$channels = new DBQuery();
+$channels->addQuery('c.*');
+$channels->addTable('communication_channel', 'c');
+$channels = $channels->loadList();
 ?>
 
 <h4><?=$AppUI->_('LBL_PROJECT_COMMUNICATION');?></h4>
@@ -48,6 +54,13 @@ $q->clear();
         <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="communication.new(<?=$project_id?>)">
             <?=ucfirst($AppUI->_("LBL_NEW_COMMUNICATION"))?>
         </a>
+        <a class="btn btn-sm btn-secondary" href="javascript:void(0)" data-toggle="modal" data-target="#communicationChannelModal">
+            <?=ucfirst($AppUI->_("LBL_NEW_CCHANNEL"))?>
+        </a>
+        <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="communication.newFrequency(<?=$project_id?>)">
+            <?=ucfirst($AppUI->_("LBL_NEW_CFREQUENCY"))?>
+        </a>
+        
     </div>
 </div>
 <?php foreach ($list as $row) { 
@@ -140,6 +153,70 @@ $q->clear();
     </div>
 </div>
 
+<!-- MODAL ADD/EDIT CHANNEL -->
+<div id="communicationChannelModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adicionar canal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body communication-channel-list">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="communication.newChannel(<?=$project_id?>)">Adicionar</button>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-sm table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th width="89%">Canal</th>
+                                    <th width="11%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                                foreach ($channels as $registro) {
+                                    ?>
+                                    <tr id="row_channel_<?=$registro['communication_channel_id']?>">
+                                        <td><?=$registro['communication_channel']?></td>
+                                        <td>
+                                        <button type="button" class="btn btn-xs btn-secondary"
+                                            onclick="communication.editChannel(<?=$$registro['communication_channel_id']?>)">
+                                            <i class="far fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-xs btn-danger"
+                                                onclick="communication.deleteChannel(<?=$registro['communication_channel_id']?>)">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                            ?>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body communication-channel-form">
+            channel form
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" id="communication_channelBack" onclick="communication.backToChannelList()">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="communication_saveChannel" onclick="communication.saveChannel()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var communication = {
         init: function() {
@@ -148,6 +225,17 @@ $q->clear();
                 $(this).find('h5').html('Adicionar comunicação');
                 $('.communication-modal').html('');
             });
+            $('#communicationChannelModal').on('hidden.bs.modal', function() {
+                $(this).find('h5').html('Canais de comunicação');
+                $('.communication-channel-list').show();
+                $('.communication-channel-form').hide();
+                $('#communication_channelBack').hide();
+                $('#ccommunication_saveChannel').hide();
+            });
+            
+            $('#communication_channelBack').hide();
+            $('#communication_saveChannel').hide();
+            $('.communication-channel-form').hide();
         },
 
         show: function(e) {
@@ -262,7 +350,113 @@ $q->clear();
                     }
                 }
             });
-        }
+        },
+
+        newChannel: function(projectId) {
+            $.ajax({
+                type: "get",
+                url: "?m=communication&template=addedit_channel&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#communicationChannelModal');
+                modal.find('h5').html('Adicionar canal');
+                $('#communication_channelBack').show();
+                $('#communication_saveChannel').show();
+                $('.communication-channel-list').hide();
+                $('.communication-channel-form').html(response).show();
+            });
+        },
+
+        backToChannelList: function() {
+            $(this).find('h5').html('Canais de comunicação');
+            $('#communication_channelBack').hide();
+            $('#communication_saveChannel').hide();
+            $('.communication-channel-list').show();
+            $('.communication-channel-form').html('').hide();
+        },
+
+        deleteChannel: function(id) {
+            $.confirm({
+                title: 'Excluir canal de comunicação',
+                content: 'Deseja realmente excluir este canal de comunicação?',
+                buttons: {
+                    yes: {
+                        text: 'Sim',
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=communication",
+                                data: {
+                                    dosql: 'do_channel_aed',
+                                    del: 1,
+                                    channel_id: id
+                                }
+                            }).done(function(resposta) {
+                                resposta = JSON.parse(resposta);
+                                if (resposta.sucesso) {
+                                    $('#row_channel_'+id).remove();
+                                }
+                                $.alert({
+                                    title: "Sucesso",
+                                    content: resposta.msg
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: 'Não'
+                    }
+                }
+            });
+        },
+
+        saveChannel: function() {
+            var name = $('input[name=communication_channel]').val();
+
+            var msg = [];
+            var err = false;
+            if (!name.trim()) {
+                err = true;
+                msg.push('Preencha a descrição do canal');
+            }
+            if (err) {
+                $.alert({
+                    title: "Erro",
+                    content: msg.join('<br>')
+                });
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=communication",
+                data: $("form[name=channelForm]").serialize(),
+                success: function(resposta) {
+                    resposta = JSON.parse(resposta);
+                    if (resposta.erro) {
+                        $.alert({
+                            title: "Erro",
+                            content: resposta.msg
+                        });
+                    } else {
+                        $.alert({
+                            title: "Sucesso",
+                            content: resposta.msg,
+                            onClose: function() {
+                                // TODO add table line
+                                
+                            }
+                        });
+                    }
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
     }
 
     $(document).ready(communication.init);
