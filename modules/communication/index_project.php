@@ -44,6 +44,12 @@ $channels = new DBQuery();
 $channels->addQuery('c.*');
 $channels->addTable('communication_channel', 'c');
 $channels = $channels->loadList();
+
+// list of frequencies
+$frequencies = new DBQuery();
+$frequencies->addQuery('f.*');
+$frequencies->addTable('communication_frequency', 'f');
+$frequencies = $frequencies->loadList();
 ?>
 
 <h4><?=$AppUI->_('LBL_PROJECT_COMMUNICATION');?></h4>
@@ -57,7 +63,7 @@ $channels = $channels->loadList();
         <a class="btn btn-sm btn-secondary" href="javascript:void(0)" data-toggle="modal" data-target="#communicationChannelModal">
             <?=ucfirst($AppUI->_("LBL_NEW_CCHANNEL"))?>
         </a>
-        <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="communication.newFrequency(<?=$project_id?>)">
+        <a class="btn btn-sm btn-secondary" href="javascript:void(0)" data-toggle="modal" data-target="#communicationFrequencyModal">
             <?=ucfirst($AppUI->_("LBL_NEW_CFREQUENCY"))?>
         </a>
         
@@ -166,7 +172,7 @@ $channels = $channels->loadList();
             <div class="modal-body communication-channel-list">
                 <div class="row">
                     <div class="col-md-12 text-right">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="communication.newChannel(<?=$project_id?>)">Adicionar</button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="communication.newChannel()">Adicionar</button>
                     </div>
                 </div>
                 <br>
@@ -179,7 +185,7 @@ $channels = $channels->loadList();
                                     <th width="11%"></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tableChannelList">
                             <?php
                                 foreach ($channels as $registro) {
                                     ?>
@@ -187,7 +193,7 @@ $channels = $channels->loadList();
                                         <td><?=$registro['communication_channel']?></td>
                                         <td>
                                         <button type="button" class="btn btn-xs btn-secondary"
-                                            onclick="communication.editChannel(<?=$$registro['communication_channel_id']?>)">
+                                            onclick="communication.editChannel(<?=$registro['communication_channel_id']?>)">
                                             <i class="far fa-edit"></i>
                                         </button>
                                         <button type="button" class="btn btn-xs btn-danger"
@@ -199,19 +205,81 @@ $channels = $channels->loadList();
                                     <?php
                                 }
                             ?>
-                                
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
             <div class="modal-body communication-channel-form">
-            channel form
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-light btn-sm" id="communication_channelBack" onclick="communication.backToChannelList()">Voltar</button>
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
                 <button type="button" class="btn btn-primary btn-sm" id="communication_saveChannel" onclick="communication.saveChannel()"><?=$AppUI->_("LBL_SAVE")?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ADD/EDIT FREQUENCY -->
+<div id="communicationFrequencyModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Adicionar frequência</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body communication-frequency-list">
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="communication.newFrequency()">Adicionar</button>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-sm table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th width="78%">Frequência</th>
+                                    <th width="11%">Com data</th>
+                                    <th width="11%"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableFrequencyList">
+                            <?php
+                                foreach ($frequencies as $registro) {
+                                    ?>
+                                    <tr id="row_frequency_<?=$registro['communication_frequency_id']?>">
+                                        <td><?=$registro['communication_frequency']?></td>
+                                        <td><?=$registro['communication_frequency_hasdate']?></td>
+                                        <td>
+                                        <button type="button" class="btn btn-xs btn-secondary"
+                                            onclick="communication.editFrequency(<?=$registro['communication_frequency_id']?>)">
+                                            <i class="far fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-xs btn-danger"
+                                                onclick="communication.deleteFrequency(<?=$registro['communication_frequency_id']?>)">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                }
+                            ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body communication-frequency-form">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm" id="communication_frequencyBack" onclick="communication.backToFrequencyList()">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="communication_saveFrequency" onclick="communication.saveFrequency()"><?=$AppUI->_("LBL_SAVE")?></button>
             </div>
         </div>
     </div>
@@ -230,12 +298,23 @@ $channels = $channels->loadList();
                 $('.communication-channel-list').show();
                 $('.communication-channel-form').hide();
                 $('#communication_channelBack').hide();
-                $('#ccommunication_saveChannel').hide();
+                $('#communication_saveChannel').hide();
+            });
+            $('#communicationFrequencyModal').on('hidden.bs.modal', function() {
+                $(this).find('h5').html('Frequências de comunicação');
+                $('.communication-frequency-list').show();
+                $('.communication-frequency-form').hide();
+                $('#communication_frequencyBack').hide();
+                $('#communication_saveFrequency').hide();
             });
             
             $('#communication_channelBack').hide();
             $('#communication_saveChannel').hide();
             $('.communication-channel-form').hide();
+            
+            $('#communication_frequencyBack').hide();
+            $('#communication_saveFrequency').hide();
+            $('.communication-frequency-form').hide();
         },
 
         show: function(e) {
@@ -352,13 +431,27 @@ $channels = $channels->loadList();
             });
         },
 
-        newChannel: function(projectId) {
+        newChannel: function() {
             $.ajax({
                 type: "get",
-                url: "?m=communication&template=addedit_channel&project_id="+projectId
+                url: "?m=communication&template=addedit_channel"
             }).done(function(response) {
                 var modal = $('#communicationChannelModal');
                 modal.find('h5').html('Adicionar canal');
+                $('#communication_channelBack').show();
+                $('#communication_saveChannel').show();
+                $('.communication-channel-list').hide();
+                $('.communication-channel-form').html(response).show();
+            });
+        },
+
+        editChannel: function(id) {
+            $.ajax({
+                type: "get",
+                url: "?m=communication&template=addedit_channel&channel_id="+id
+            }).done(function(response) {
+                var modal = $('#communicationChannelModal');
+                modal.find('h5').html('Alterar canal');
                 $('#communication_channelBack').show();
                 $('#communication_saveChannel').show();
                 $('.communication-channel-list').hide();
@@ -392,11 +485,13 @@ $channels = $channels->loadList();
                                 }
                             }).done(function(resposta) {
                                 resposta = JSON.parse(resposta);
+                                var titulo = 'Erro';
                                 if (resposta.sucesso) {
+                                    titulo = 'Sucesso';
                                     $('#row_channel_'+id).remove();
                                 }
                                 $.alert({
-                                    title: "Sucesso",
+                                    title: titulo,
                                     content: resposta.msg
                                 });
                             });
@@ -442,8 +537,176 @@ $channels = $channels->loadList();
                             title: "Sucesso",
                             content: resposta.msg,
                             onClose: function() {
-                                // TODO add table line
-                                
+
+                                if (resposta.update) {
+                                    $('#row_channel_'+resposta.data.id).find('td').first().html(resposta.data.name);
+                                } else {
+                                    var line = $('<tr id="row_channel_'+resposta.data.id+'"></tr>');
+                                    var tdName = $('<td>'+resposta.data.name+'</td>');
+                                    var tdActions = $('<td></td>');
+                                    var btnEdit = $('<button type="button" class="btn btn-xs btn-secondary"><i class="far fa-edit"></i></button>');
+                                    var btnDelete = $('<button type="button" class="btn btn-xs btn-danger"><i class="far fa-trash-alt"></i></button>');
+
+                                    btnEdit.click(function(){
+                                        communication.editChannel(resposta.data.id);
+                                    });
+                                    btnDelete.click(function(){
+                                        communication.deleteChannel(resposta.data.id);
+                                    });
+                                    btnEdit.appendTo(tdActions);
+                                    btnDelete.appendTo(tdActions);
+
+                                    tdName.appendTo(line);
+                                    tdActions.appendTo(line);
+                                    line.appendTo($('#tableChannelList'));
+                                }
+                                communication.backToChannelList();
+                            }
+                        });
+                    }
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
+        newFrequency: function() {
+            $.ajax({
+                type: "get",
+                url: "?m=communication&template=addedit_frequency"
+            }).done(function(response) {
+                var modal = $('#communicationFrequencyModal');
+                modal.find('h5').html('Adicionar frequência');
+                $('#communication_frequencyBack').show();
+                $('#communication_saveFrequency').show();
+                $('.communication-frequency-list').hide();
+                $('.communication-frequency-form').html(response).show();
+            });
+        },
+
+        editFrequency: function(id) {
+            $.ajax({
+                type: "get",
+                url: "?m=communication&template=addedit_frequency&frequency_id="+id
+            }).done(function(response) {
+                var modal = $('#communicationFrequencyModal');
+                modal.find('h5').html('Alterar frequência');
+                $('#communication_frequencyBack').show();
+                $('#communication_saveFrequency').show();
+                $('.communication-frequency-list').hide();
+                $('.communication-frequency-form').html(response).show();
+            });
+        },
+
+        backToFrequencyList: function() {
+            $(this).find('h5').html('Frequências de comunicação');
+            $('#communication_frequencyBack').hide();
+            $('#communication_saveFrequency').hide();
+            $('.communication-frequency-list').show();
+            $('.communication-frequency-form').html('').hide();
+        },
+
+        deleteFrequency: function(id) {
+            $.confirm({
+                title: 'Excluir frequência de comunicação',
+                content: 'Deseja realmente excluir esta frequência de comunicação?',
+                buttons: {
+                    yes: {
+                        text: 'Sim',
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=communication",
+                                data: {
+                                    dosql: 'do_frequency_aed',
+                                    del: 1,
+                                    frequency_id: id
+                                }
+                            }).done(function(resposta) {
+                                resposta = JSON.parse(resposta);
+                                var titulo = 'Erro';
+                                if (resposta.sucesso) {
+                                    titulo = 'Sucesso';
+                                    $('#row_frequency_'+id).remove();
+                                }
+                                $.alert({
+                                    title: titulo,
+                                    content: resposta.msg
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: 'Não'
+                    }
+                }
+            });
+        },
+
+        saveFrequency: function() {
+            var name = $('input[name=communication_frequency]').val();
+
+            var msg = [];
+            var err = false;
+            if (!name.trim()) {
+                err = true;
+                msg.push('Preencha a descrição da frequência');
+            }
+            if (err) {
+                $.alert({
+                    title: "Erro",
+                    content: msg.join('<br>')
+                });
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=communication",
+                data: $("form[name=frequencyForm]").serialize(),
+                success: function(resposta) {
+                    resposta = JSON.parse(resposta);
+                    if (resposta.erro) {
+                        $.alert({
+                            title: "Erro",
+                            content: resposta.msg
+                        });
+                    } else {
+                        $.alert({
+                            title: "Sucesso",
+                            content: resposta.msg,
+                            onClose: function() {
+
+                                if (resposta.update) {
+                                    $('#row_frequency_'+resposta.data.id).find('td').first().html(resposta.data.name);
+                                    $('#row_frequency_'+resposta.data.id).find('td').first().next().html(resposta.data.hasDate);
+                                } else {
+                                    var line = $('<tr id="row_frequency_'+resposta.data.id+'"></tr>');
+                                    var tdName = $('<td>'+resposta.data.name+'</td>');
+                                    var tdDate = $('<td>'+resposta.data.hasDate+'</td>');
+                                    var tdActions = $('<td></td>');
+                                    var btnEdit = $('<button type="button" class="btn btn-xs btn-secondary"><i class="far fa-edit"></i></button>');
+                                    var btnDelete = $('<button type="button" class="btn btn-xs btn-danger"><i class="far fa-trash-alt"></i></button>');
+
+                                    btnEdit.click(function(){
+                                        communication.editFrequency(resposta.data.id);
+                                    });
+                                    btnDelete.click(function(){
+                                        communication.deleteFrequency(resposta.data.id);
+                                    });
+                                    btnEdit.appendTo(tdActions);
+                                    btnDelete.appendTo(tdActions);
+
+                                    tdName.appendTo(line);
+                                    tdDate.appendTo(line);
+                                    tdActions.appendTo(line);
+                                    line.appendTo($('#tableFrequencyList'));
+                                }
+                                communication.backToFrequencyList();
                             }
                         });
                     }
