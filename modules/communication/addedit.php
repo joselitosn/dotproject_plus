@@ -137,14 +137,14 @@ if (null !== $communication_id) {
                 <label for="frequency">
                     Frequência
                 </label>
-                <select class="form-control form-control-sm select-channel-frequency" name="frequency">
+                <select class="form-control form-control-sm select-channel-frequency" name="frequency" id="communicationFrequency">
                     <option value=""></option>
                     <?php
                         foreach ($frequency as $registro) {
                             $value = $obj->communication_frequency_id;
                             $selected = $registro['communication_frequency_id'] == $value ? ' selected="selected"' : '';
                     ?>
-                            <option value="<?=$registro['communication_frequency_id']?>" <?=$selected?>>
+                            <option value="<?=$registro['communication_frequency_id']?>" <?=$selected?> data="<?=$registro['communication_frequency_hasdate']?>">
                                 <?=$registro['communication_frequency']?>
                             </option>
                     <?php
@@ -154,7 +154,16 @@ if (null !== $communication_id) {
             </div>
         </div>
     </div>
-
+    <div class="row" id="dateContainer" style="display:none">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="date">
+                    Data
+                </label>
+                <input type="text" maxlength="10" class="form-control form-control-sm datepicker" name="communication_date" value="<?=$obj->communication_date?>" />
+            </div>
+        </div>
+    </div>
     <div class="form-group">
         <label for="communication_restrictions">
             <?=$AppUI->_('LBL_RESTRICTIONS')?>
@@ -204,6 +213,27 @@ if (null !== $communication_id) {
             theme: "bootstrap",
             dropdownParent: $("#selectResponsible")
         });
+
+        $( ".datepicker" ).datepicker({
+            dateFormat: 'dd/mm/yy'
+        });
+
+        $('#communicationFrequency').on('change', function(){
+            checkFrequencyHasDate(this);
+        });
+
+        function checkFrequencyHasDate(select) {
+            var hasDate = $(select.selectedOptions[0]).attr('data');
+            if (hasDate == 'Sim') {
+                $('#dateContainer').show();
+            } else {
+                $('#dateContainer').hide();
+                $('input[name=communication_date]').val('');
+            }
+        }
+
+        checkFrequencyHasDate($('#communicationFrequency')[0]);
+
     });
 </script>
 <?php
