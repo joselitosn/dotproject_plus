@@ -43,139 +43,68 @@ class ControllerAcquisitionPlanning {
         $object->delete($id);
     }
 
-    //function to handle crud of dependent classes
-    function deleteRoles($roles) {
-        $ids = explode("#$", $roles);
-        for ($i = 0; $i < sizeof($ids); $i++) {
-            if ($ids[$i] != "") {
-                $q = new DBQuery();
-                $q->setDelete("acquisition_planning_roles");
-                $q->addWhere("id=" . $ids[$i]);
-                $q->exec();
-                $q->clear();
-            }
+    function deleteRoles($acquisitionId) {
+        $q = new DBQuery();
+        $q->setDelete("acquisition_planning_roles");
+        $q->addWhere("acquisition_id=" . $acquisitionId);
+        $q->exec();
+        $q->clear();
+    }
+
+    function deleteCriteria($aquisitionId) {
+        $q = new DBQuery();
+        $q->setDelete("acquisition_planning_criteria");
+        $q->addWhere("acquisition_id=" . $aquisitionId);
+        $q->exec();
+        $q->clear();
+    }
+
+    function deleteRequirements($aquisitionId) {
+        $q = new DBQuery();
+        $q->setDelete("acquisition_planning_requirements");
+        $q->addWhere("acquisition_id=" . $aquisitionId);
+        $q->exec();
+        $q->clear();
+    }
+
+    function storeRoles($roles, $responsabilities, $acquisitionId) {
+        $this->deleteRoles($acquisitionId);
+        foreach($roles as $key => $role) {
+            $resp = $responsabilities[$key];
+            $q = new DBQuery();
+            $q->addTable("acquisition_planning_roles");
+            $q->addInsert("acquisition_id", $acquisitionId);
+            $q->addInsert("responsability", $resp);
+            $q->addInsert("role", $role);
+            $q->exec();
         }
     }
 
-    function deleteCriteria($criteria) {
-        $ids = explode("#$", $criteria);
-        for ($i = 0; $i < sizeof($ids); $i++) {
-            if ($ids[$i] != "") {
-                $q = new DBQuery();
-                $q->setDelete("acquisition_planning_criteria");
-                $q->addWhere("id=" . $ids[$i]);
-                $q->exec();
-                $q->clear();
-            }
-        }
-    }
-
-    function deleteRequirements($requirement) {
-        $ids = explode("#$", $requirement);
-        for ($i = 0; $i < sizeof($ids); $i++) {
-            if ($ids[$i] != "") {
-                $q = new DBQuery();
-                $q->setDelete("acquisition_planning_requirements");
-                $q->addWhere("id=" . $ids[$i]);
-                $q->exec();
-                $q->clear();
-            }
-        }
-    }
-
-    function storeRoles($roles, $acquisitionId) {
-        $records = explode("#$", $roles);
-        for ($i = 0; $i < sizeof($records); $i++) {
-            $fields = explode("#!", $records[$i]);
-            $id = $fields[0];
-            if ($id != "") {
-                $role = $fields[1];
-                $responsability = $fields[2];
-                $q = new DBQuery();
-                $q->addQuery("id");
-                $q->addTable("acquisition_planning_roles");
-                $q->addWhere("id =" . $id);
-                $record = $q->loadResult();
-                $q->clear();
-                $q->addTable("acquisition_planning_roles");
-                if (empty($record)) {
-                    $q->addInsert("acquisition_id", $acquisitionId);
-                    $q->addInsert("responsability", $responsability);
-                    $q->addInsert("role", $role);
-                } else {
-                    $q->addUpdate("acquisition_id", $acquisitionId);
-                    $q->addUpdate("responsability", $responsability);
-                    $q->addUpdate("role", $role);
-                    $q->addWhere("id = " . $id);
-                }
-                $q->exec();
-                $q->clear();
-            }
-        }
-    }
-
-    function storeCriteria($criteria, $acquisitionId) {
-       
-        $records = explode("#$", $criteria);
-        for ($i = 0; $i < sizeof($records); $i++) {
-            $fields = explode("#!", $records[$i]);
-            $id = $fields[0];
-            if ($id != "") {
-                $criteria = $fields[1];
-                $weight = $fields[2];
-                $q = new DBQuery();
-                $q->addQuery("id");
-                $q->addTable("acquisition_planning_criteria");
-                $q->addWhere("id =" . $id);
-                $record = $q->loadResult();
-                $q->clear();
-                $q->addTable("acquisition_planning_criteria");
-                if (empty($record)) {
-                    $q->addInsert("acquisition_id", $acquisitionId);
-                    $q->addInsert("criteria", $criteria);
-                    $q->addInsert("weight", $weight);
-                } else {
-                    $q->addUpdate("acquisition_id", $acquisitionId);
-                    $q->addUpdate("criteria", $criteria);
-                    $q->addUpdate("weight", $weight);
-                    $q->addWhere("id = " . $id);
-                }
-                $q->exec();
-                $q->clear();
-            }
+    function storeCriteria($criterias, $weights, $acquisitionId) {
+        $this->deleteCriteria($acquisitionId);
+        foreach($criterias as $key => $criteria) {
+            $weight = $weights[$key];
+            $q = new DBQuery();
+            $q->addTable("acquisition_planning_criteria");
+            $q->addInsert("acquisition_id", $acquisitionId);
+            $q->addInsert("criteria", $criteria);
+            $q->addInsert("weight", $weight);
+            $q->exec();
         }
     }
 
     function storeRequirements($requirements, $acquisitionId) {
-        $records = explode("#$", $requirements);
-        for ($i = 0; $i < sizeof($records); $i++) {
-            $fields = explode("#!", $records[$i]);
-            $id = $fields[0];
-            if ($id != "") {
-                $requirement = $fields[1];
-                $q = new DBQuery();
-                $q->addQuery("id");
-                $q->addTable("acquisition_planning_requirements");
-                $q->addWhere("id =" . $id);
-                $record = $q->loadResult();
-                $q->clear();
-                $q->addTable("acquisition_planning_requirements");
-                if (empty($record)) {
-                    $q->addInsert("acquisition_id", $acquisitionId);
-                    $q->addInsert("requirement", $requirement);
-                } else {
-                    $q->addUpdate("acquisition_id", $acquisitionId);
-                    $q->addUpdate("requirement", $requirement);
-                    $q->addWhere("id = " . $id);
-                }
-                $q->exec();
-                $q->clear();
-            }
+        $this->deleteRequirements($acquisitionId);
+        foreach($requirements as $key => $requirement) {
+            $q = new DBQuery();
+            $q->addTable("acquisition_planning_requirements");
+            $q->addInsert("acquisition_id", $acquisitionId);
+            $q->addInsert("requirement", $requirement);
+            $q->exec();
         }
     }
     
-    
-      public function loadCriteria($acquisitionId){
+    public function loadCriteria($acquisitionId){
         $q = new DBQuery();
         $q->addQuery("c.id, c.criteria, c.weight");
         $q->addTable("acquisition_planning_criteria", "c");

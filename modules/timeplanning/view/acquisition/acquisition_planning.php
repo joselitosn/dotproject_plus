@@ -38,7 +38,7 @@ $projectId = $_GET["project_id"];
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
                                 <a class="dropdown-item" href="javascript:void(0)"
-                                   onclick="acquisition.edit(<?=$object->getId()?>)">
+                                   onclick="acquisition.edit(<?=$object->getId()?>, <?=$projectId?>)">
                                     <i class="far fa-edit"></i>
                                     Alterar
                                 </a>
@@ -139,11 +139,80 @@ $projectId = $_GET["project_id"];
         },
 
         edit: function(id, projectId) {
-
+            $.ajax({
+                type: "get",
+                url: "?m=timeplanning&template=view/acquisition/addedit&acquisition_planning_id="+id+"&project_id="+projectId
+            }).done(function(response) {
+                var modal = $('#acquisitionModal');
+                modal.find('h5').html('Alterar aquisição');
+                $('.acquisition-modal').html(response);
+                modal.modal();
+            });
         },
 
         save: function() {
-            console.log($('form[name=acquisitionForm]').serialize());
+            var name = $('input[name=items_to_be_acquired]').val();
+            if (!name) {
+                $.alert({
+                    title: "Erro",
+                    content: 'Preencha o item a ser adquirido'
+                });
+                return;
+            }
+
+            $.ajax({
+                method: 'POST',
+                url: "?m=timeplanning",
+                data: $('form[name=acquisitionForm]').serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "Sucesso",
+                        content: resposta,
+                        onClose: function() {
+                            window.location.reload(true);
+                        }
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
+        delete: function(id) {
+            $.confirm({
+                title: 'Excluir aquisição',
+                content: 'Você tem certeza de que quer excluir esta aquisição?',
+                buttons: {
+                    yes: {
+                        text: 'Sim',
+                        action: function () {
+                            $.ajax({
+                                method: 'POST',
+                                url: "?m=timeplanning",
+                                data: {
+                                    dosql: 'do_project_acquisition_deletion',
+                                    acquisition_planning_id: id
+                                }
+                            }).done(function(resposta) {
+                                $.alert({
+                                    title: "Sucesso",
+                                    content: resposta,
+                                    onClose: function() {
+                                        window.location.reload(true);
+                                    }
+                                });
+                            });
+                        },
+                    },
+                    no: {
+                        text: 'Não'
+                    }
+                }
+            });
         }
     }
 

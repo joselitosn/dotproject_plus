@@ -729,7 +729,7 @@
 "LBL_ACQUISION_ADD_REQUIREMENT" => "Incluir requisito",
 "LBL_ACQUISION_ADD_ROLE" => "Incluir papel/responsabilidade",
 "LBL_ACQUISITION_CONTRACT_TYPE_FIXED_PRICE" => "Preço fixo",
-"LBL_ACQUISITION_CONTRACT_TYPE_TIME_MATERIAL" => "Tempo & material",
+"LBL_ACQUISITION_CONTRACT_TYPE_TIME_MATERIAL" => "Tempo e material",
 "LBL_ACQUISITION_CONTRACT_TYPE_COST_REPAID" => "Custos reembolsáveis",
 "Gerar PDF"=> "Gerar PDF",
 "LBL_COMPLETE"=> "Completa",

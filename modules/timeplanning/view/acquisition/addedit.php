@@ -11,14 +11,13 @@
 ?>
 <form name="acquisitionForm">
     <input name="dosql" type="hidden" value="do_project_acquisition_planning" />
-    <input name="project_id" type="hidden" value="<?$projectId?>" />
+    <input name="project_id" type="hidden" value="<?=$projectId?>" />
     <input name="acquisition_planning_id" type="hidden" value="<?=$id?>" />
 
     <div class="form-group">
         <span class="required"></span>
         <?=$AppUI->_('requiredField');?>
     </div>
-
     <div class="row">
         <div class="col-md-8">
             <div class="form-group">
@@ -35,17 +34,18 @@
                 </label>
                 <?php
                 $types = array();
-                $types[0] = $AppUI->_("LBL_ACQUISITION_CONTRACT_TYPE_FIXED_PRICE");
-                $types[1] = $AppUI->_("LBL_ACQUISITION_CONTRACT_TYPE_TIME_MATERIAL");
-                $types[2] = $AppUI->_("LBL_ACQUISITION_CONTRACT_TYPE_COST_REPAID") ;
+                $types[0] = "Preço fixo";
+                $types[1] = "Tempo & material";
+                $types[2] = "Custos reembolsáveis";
                 ?>
 
                 <select name="contract_type" class="form-control form-control-sm select">
                     <?php
-                        for ($i = 0; $i < sizeof($types); $i++) {
+                        foreach ($types as $key => $type) {
+                            $selected = $object->getContractType() == $type ? ' selected' : '';
                             ?>
-                            <option value="<?php echo $types[$i] ?>" <?php echo $types[$i] == $object->getContractType() ? "selected" : ""; ?> >
-                                <?php echo $types[$i] ?>
+                            <option value="<?=$type?>" <?=$selected?>>
+                                <?=$type?>
                             </option>
                             <?php
                         }
@@ -117,10 +117,10 @@
         var col2 = $('<div class="col-md-2"></div>');
         var col3 = $('<div class="col-md-1"></div>');
 
-        var input = $('<input type="text" class="form-control form-control-sm" name="criteria" /><br>');
+        var input = $('<input type="text" class="form-control form-control-sm" name="criteria[]" /><br>');
         var btn = $('<button type="button" class="btn btn-xs btn-danger" onclick="deleteCriteria(this, '+criteriaId+')"><i class="far fa-trash-alt"></i></button>')
 
-        var select = $('<select class="form-control form-control-sm select" name="criteria_weight"></select>');
+        var select = $('<select class="form-control form-control-sm select" name="criteria_weight[]"></select>');
 
         for(i=1;i<=10;i++){
             var option = $('<option value="'+i+'">'+i+'</option>');
@@ -158,7 +158,7 @@
         var col1 = $('<div class="col-md-11"></div>');
         var col2 = $('<div class="col-md-1"></div>');
 
-        var input = $('<input type="text" class="form-control form-control-sm" name="requirement" /><br>');
+        var input = $('<input type="text" class="form-control form-control-sm" name="requirement[]" /><br>');
         var btn = $('<button type="button" class="btn btn-xs btn-danger" onclick="deleteRequirement(this, '+reqId+')"><i class="far fa-trash-alt"></i></button>')
 
         input.val(req);
@@ -181,8 +181,8 @@
         var col2 = $('<div class="col-md-6"></div>');
         var col3 = $('<div class="col-md-1"></div>');
 
-        var input1 = $('<input type="text" class="form-control form-control-sm" name="requirement" /><br>');
-        var input2 = $('<input type="text" class="form-control form-control-sm" name="requirement" /><br>');
+        var input1 = $('<input type="text" class="form-control form-control-sm" name="role[]" /><br>');
+        var input2 = $('<input type="text" class="form-control form-control-sm" name="responsability[]" /><br>');
         var btn = $('<button type="button" class="btn btn-xs btn-danger" onclick="deleteRole(this, '+id+')"><i class="far fa-trash-alt"></i></button>')
 
         input1.val(role);
