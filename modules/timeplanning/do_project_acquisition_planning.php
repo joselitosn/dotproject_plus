@@ -36,12 +36,18 @@ if (count($roles) > 0) {
 
 $controller  = new ControllerAcquisitionPlanning(); 
 $acquisitionId=$controller->sendDataToBeStored($id, $projectId, $acquisitionRoles, $supplierManagementProcess, $itemsToBeAcquired, $documentsToAcquisition, $criteriaForSelection, $contractType, $additionalRequirements);
+
+$controller->deleteCriteria($acquisitionId);
 if (count($criteriaList) > 0) {
     $controller->storeCriteria($criteriaList, $criteriaWeight, $acquisitionId);
 }
+
+$controller->deleteRequirements($acquisitionId);
 if (count($requirements) > 0) {
     $controller->storeRequirements($requirements, $acquisitionId);
 }
+
+$controller->deleteRoles($acquisitionId);
 if (count($roles) > 0) {
     $controller->storeRoles($roles, $responsabilities, $acquisitionId);
 }

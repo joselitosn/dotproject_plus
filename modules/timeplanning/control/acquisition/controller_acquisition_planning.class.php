@@ -68,7 +68,6 @@ class ControllerAcquisitionPlanning {
     }
 
     function storeRoles($roles, $responsabilities, $acquisitionId) {
-        $this->deleteRoles($acquisitionId);
         foreach($roles as $key => $role) {
             $resp = $responsabilities[$key];
             $q = new DBQuery();
@@ -81,7 +80,6 @@ class ControllerAcquisitionPlanning {
     }
 
     function storeCriteria($criterias, $weights, $acquisitionId) {
-        $this->deleteCriteria($acquisitionId);
         foreach($criterias as $key => $criteria) {
             $weight = $weights[$key];
             $q = new DBQuery();
@@ -94,7 +92,6 @@ class ControllerAcquisitionPlanning {
     }
 
     function storeRequirements($requirements, $acquisitionId) {
-        $this->deleteRequirements($acquisitionId);
         foreach($requirements as $key => $requirement) {
             $q = new DBQuery();
             $q->addTable("acquisition_planning_requirements");
@@ -110,13 +107,7 @@ class ControllerAcquisitionPlanning {
         $q->addTable("acquisition_planning_criteria", "c");
         $q->addWhere("acquisition_id =" . $acquisitionId);
         $results = db_loadHashList($q->prepare(true), "id");
-        $list= array();
-        $i=0;
-        foreach ($results as $data) {
-           $list[$i]=$data[0]."#!".$data[1]."#!".$data[2];
-           $i++;
-        }
-        return $list;
+        return $results;
     }
     
      public function loadRoles($acquisitionId){
@@ -125,13 +116,7 @@ class ControllerAcquisitionPlanning {
         $q->addTable("acquisition_planning_roles", "r");
         $q->addWhere("acquisition_id =" . $acquisitionId);
         $results = db_loadHashList($q->prepare(true), "id");
-        $list= array();
-        $i=0;
-        foreach ($results as $data) {
-           $list[$i]=$data[0]."#!".$data[1]."#!".$data[2];
-           $i++;
-        }
-        return $list;
+        return $results;
     }
     
     public function loadRequirements($acquisitionId){
@@ -140,13 +125,7 @@ class ControllerAcquisitionPlanning {
         $q->addTable("acquisition_planning_requirements", "r");
         $q->addWhere("acquisition_id =" . $acquisitionId);
         $results = db_loadHashList($q->prepare(true), "id");
-        $list= array();
-        $i=0;
-        foreach ($results as $data) {
-           $list[$i]=$data[0]."#!".$data[1];
-           $i++;
-        }
-        return $list;
+        return $results;
     }
     
 

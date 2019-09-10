@@ -8,6 +8,10 @@
         $id = -1;
     }
     $object = $controller->getAcquisitionPlanning($id);
+
+    $criteria = $controller->loadCriteria($id);
+    $requirements = $controller->loadRequirements($id);
+    $roles = $controller->loadRoles($id);
 ?>
 <form name="acquisitionForm">
     <input name="dosql" type="hidden" value="do_project_acquisition_planning" />
@@ -70,6 +74,37 @@
         <button type="button" class="btn btn-xs btn-secondary" onclick="addCriteria()"><?=$AppUI->_("LBL_ACQUISION_ADD_CRITERIA")?></button>
         <br>
         <br>
+        <?php 
+            foreach($criteria as $c) {
+                ?>
+                <div class="row">
+                    <div class="col-md-9">
+                        <input type="text" class="form-control form-control-sm" name="criteria[]" value="<?=$c['criteria']?>">
+                        <br>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-control form-control-sm select" name="criteria_weight[]">
+                            <option value="1" <?=$c['weight'] == 1 ? ' selected' : ''?>>1</option>
+                            <option value="2" <?=$c['weight'] == 2 ? ' selected' : ''?>>2</option>
+                            <option value="3" <?=$c['weight'] == 3 ? ' selected' : ''?>>3</option>
+                            <option value="4" <?=$c['weight'] == 4 ? ' selected' : ''?>>4</option>
+                            <option value="5" <?=$c['weight'] == 5 ? ' selected' : ''?>>5</option>
+                            <option value="6" <?=$c['weight'] == 6 ? ' selected' : ''?>>6</option>
+                            <option value="7" <?=$c['weight'] == 7 ? ' selected' : ''?>>7</option>
+                            <option value="8" <?=$c['weight'] == 8 ? ' selected' : ''?>>8</option>
+                            <option value="9" <?=$c['weight'] == 9 ? ' selected' : ''?>>9</option>
+                            <option value="10" <?=$c['weight'] == 10 ? ' selected' : ''?>>10</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-xs btn-danger" onclick="deleteCriteria(this, <?=$c['id']?>)">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <?php
+            }
+        ?>
     </div>
 
     <div class="form-group" id="requirementContainer">
@@ -80,6 +115,23 @@
         <button type="button" class="btn btn-xs btn-secondary" onclick="addRequirement()"><?=$AppUI->_("LBL_ACQUISION_ADD_REQUIREMENT")?></button>
         <br>
         <br>
+        <?php 
+            foreach($requirements as $req) {
+                ?>
+                <div class="row">
+                    <div class="col-md-11">
+                        <input type="text" class="form-control form-control-sm" name="requirement[]" value="<?=$req['requirement']?>">
+                        <br>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-xs btn-danger" onclick="deleteRequirement(this, <?=$req['id']?>)">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <?php
+            }
+        ?>
     </div>
 
     <div class="form-group">
@@ -97,13 +149,33 @@
         <button type="button" class="btn btn-xs btn-secondary" onclick="addRole()"><?=$AppUI->_("LBL_ACQUISION_ADD_ROLE")?></button>
         <br>
         <br>
+        <?php 
+            foreach($roles as $role) {
+                ?>
+                <div class="row">
+                    <div class="col-md-5">
+                        <input type="text" class="form-control form-control-sm" name="role[]" value="<?=$role['role']?>">
+                        <br>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control form-control-sm" name="responsability[]" value="<?=$role['responsability']?>">
+                        <br>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-xs btn-danger" onclick="deleteRole(this, <?=$role['id']?>)">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <?php
+            }
+        ?>
     </div>
 </form>
 
 <script>
     $(document).ready(function() {
         $(".select").select2({
-            allowClear: true,
             placeholder: "",
             theme: "bootstrap",
             dropdownParent: $("#acquisitionModal")
@@ -148,7 +220,6 @@
     }
 
     function deleteCriteria(element, id) {
-        // TODO ajax to delete, then 
         $(element).parent().parent().remove();
     }
 
@@ -170,7 +241,6 @@
     }
 
     function deleteRequirement(element, id) {
-        // TODO ajax to delete, then 
         $(element).parent().parent().remove();
     }
 
@@ -197,7 +267,6 @@
     }
 
     function deleteRole(element, id) {
-        // TODO ajax to delete, then 
         $(element).parent().parent().remove();
     }
 </script>
