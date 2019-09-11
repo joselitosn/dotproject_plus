@@ -8,7 +8,6 @@ $msg = '';
 
 if (!$obj->bind( $_POST )) {
 	$AppUI->setMsg( $obj->getError(), UI_MSG_ERROR );
-	$AppUI->redirect();
 }
 
 require_once(DP_BASE_DIR . '/classes/CustomFields.class.php');
@@ -41,6 +40,7 @@ if ($del) {
 
 		$AppUI->setMsg( $isNotNew ? 'Post Mortem updated' : 'Post Mortem inserted', UI_MSG_OK);
 	}
-	$AppUI->redirect();
+	// $AppUI->redirect();
 }
+exit();
 ?>

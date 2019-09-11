@@ -344,6 +344,10 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                         break;
 
                 }
+            } else if ($tab == 2) {
+
+            } else if ($tab == 3) {
+                require_once DP_BASE_DIR . '/modules/closure/addedit.php';
             }
             ?>
         </fieldset>
