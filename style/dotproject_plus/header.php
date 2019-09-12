@@ -85,17 +85,21 @@ mysql_query('SET character_set_results=utf8');
             <a class="navbar-brand mx-auto" href="#">
                 <img src="style/<?php echo $uistyle; ?>/img/logo.png" style="width: 150px;height: 40px" />
             </a>
+
+            
+            
+            
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link"
-                       href="javascript:void(0)"
-                       data-container="body"
-                       data-toggle="popover"
-                       data-placement="bottom">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" 
+                        href="javascript:void(0)" 
+                        data-toggle="dropdown">
                         <i class="far fa-bell"></i>
+                        <span class="badge badge-danger" id="feedback_count"></span>
                     </a>
-
-
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <?=require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_area.php")?>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="http://www.gqs.ufsc.br/evolution-of-dotproject/"  target="_blank">
@@ -133,26 +137,10 @@ mysql_query('SET character_set_results=utf8');
         <script>
             $(document).ready(function() {
 
-                $('.feedback').popover({
-                    html: true,
-                    content: function() {
-                        return $('#feedbackContainer').html();
-                    }
-                });
 
             });
         </script>
-        <div style="display: none;" id="feedbackContainer">
-            <div>
-                <h6><?=$AppUI->_("LBL_FEEDBACK_INSTRUCTIONAL_FEEDBACK")?></h6>
-                <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                    <label class="custom-control-label" for="customSwitch1">Toggle</label>
-                </div>
-            </div>
-        </div>
 
+        
 
-        <div style="display: none;">
-            <?=require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_area.php")?>
-        </div>
+        
