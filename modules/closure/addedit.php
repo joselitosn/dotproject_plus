@@ -12,41 +12,28 @@ $df = $AppUI->getPref('SHDATEFORMAT');
 $projectObj = new CProject();
 $projectObj->load($project_id);
 
+$row = new CClosure();
+
 $q = new DBQuery();
 $q->addTable('post_mortem_analysis');
 $q->addQuery('*');
 $q->addWhere("project_name='" . $projectObj->project_name . "'");
-$res = $q->exec();
+$res = $q->loadList();
 
-var_dump($res);
+$pma_id = 0;
 
-// exit();
+if (count($res) > 0) {
 
-
-// load the record data
-// TODO carregar pelo nome? vai facilitar a minha vida
-// // $row = new CClosure();
-// // $row->load($project_id);
-// if ($pma_id > 0 && !$row->load($pma_id)) {
-//     $AppUI->setMsg('Post Mortem');
-//     $AppUI->setMsg('invalidID', UI_MSG_ERROR, true);
-// }
-
-
-// TODO se encerramento vazio, setar os dados do projeto
+    $res = current($res);
+    $pma_id = $res['pma_id'];
+    $row->bind($res);
+}
 if ($pma_id == 0) {
-    $q = new DBQuery();
-    $q->addTable('projects');
-    $q->addQuery('project_target_budget, project_start_date, project_end_date, project_name');
-    $q->addWhere('project_id=' . $project_id);
-    $res = & $q->exec();
+    $row->planned_budget = $projectObj->project_target_budget;
+    $row->project_planned_start_date = $projectObj->project_start_date;
+    $row->project_planned_end_date = $projectObj->project_end_date;
+    $row->project_name = $projectObj->project_name;
 
-    $row->planned_budget = $res->fields['project_target_budget'];
-    $row->project_planned_start_date = $res->fields['project_start_date'];
-    $row->project_planned_end_date = $res->fields['project_end_date'];
-    $row->project_name = $res->fields['project_name'];
-
-    //$start_date = new CDate($row->project_planned_start_date);
     $end_date = intval($row->project_planned_end_date) ? new CDate($row->project_planned_end_date) : null;
     $meeting_date = new CDate();
     $start_date = new CDate($projectObj->project_start_date);
@@ -64,9 +51,9 @@ if ($pma_id == 0) {
 
 $q = new DBQuery;
 $q->addTable('contacts');
-$q->addQuery('contact_first_name, contact_last_name');
+$q->addQuery('contact_id, contact_first_name, contact_last_name');
 $res = & $q->exec();
-$pieces = explode(", ", $participants);
+$pieces = explode(",", $participants);
 ?>
 
 <h4><?=$AppUI->_("LBL_CLOSURE_POST_MORTEM_TITLE", UI_OUTPUT_HTML)?></h4>
@@ -75,8 +62,7 @@ $pieces = explode(", ", $participants);
 <form name="closureForm">
     <input type="hidden" name="dosql" value="do_closure_aed" />
     <input type="hidden" name="pma_id" value="<?php echo dPformSafe($pma_id); ?>" />
-    <input type="hidden" name='participants' id='participants' value="<?php echo dPformSafe($row->participants); ?>" /> 
-    <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
+    <input type="hidden" name="project_name" value="<?php echo $projectObj->project_name; ?>" />
 
     <div class="card">
         <div class="card-header"><?=$AppUI->_("LBL_CLOSURE_MEETING_SETTINGS")?></div>
@@ -87,19 +73,17 @@ $pieces = explode(", ", $participants);
                         <label for="LBL_CLOSURE_PARTICIPANTS">
                             <?=$AppUI->_("LBL_CLOSURE_PARTICIPANTS")?>
                         </label>
-                        <select class="form-control form-control-sm multiselect" name="list1" multiple>
+                        <select class="form-control form-control-sm multiselect" name="list1[]" multiple>
                             <?php
-                            $i = 0;
                             for ($res; !$res->EOF; $res->MoveNext()) {
                                 $contact_first_name = $res->fields['contact_first_name'];
-                                if (array_search($contact_first_name, $pieces) === false) {
+                                $val = $res->fields['contact_id'];
+                                $selected = in_array($val, $pieces) ? ' selected' : '';
                                     ?>
-                                    <option value = <?php echo $i; ?> >
+                                    <option value = <?=$val?> <?=$selected?>>
                                         <?php echo $contact_first_name; ?>
                                     </option>
                                     <?php
-                                    $i++;
-                                }
                             }
                             ?>
                         </select>
@@ -205,8 +189,7 @@ $pieces = explode(", ", $participants);
                             <?=$AppUI->_("LBL_CLOSURE_PLANNED_BUDGET")?> &nbsp;(<?php echo dPgetConfig("currency_symbol") ?>)
                         </label>
                         <input type="text" 
-                            onchange="setDateTimeHidden(this, '#project_end_date')" 
-                            class="form-control form-control-sm" 
+                            class="form-control form-control-sm budget" 
                             name="planned_budget" 
                             value="<?php echo dPformSafe($row->planned_budget) ?>" />
                     </div>
@@ -217,8 +200,7 @@ $pieces = explode(", ", $participants);
                             <?=$AppUI->_("LBL_CLOSURE_ACTUAL_BUDGET")?> &nbsp;(<?php echo dPgetConfig("currency_symbol") ?>)
                         </label>
                         <input type="text" 
-                            onchange="setDateTimeHidden(this, '#project_end_date')" 
-                            class="form-control form-control-sm" 
+                            class="form-control form-control-sm budget" 
                             name="budget" 
                             value="<?php echo dPformSafe($row->budget) ?>" />
                     </div>
@@ -286,6 +268,9 @@ $pieces = explode(", ", $participants);
             dateFormat: 'dd/mm/yy',
             constrainInput: true
         });
+
+        $(".budget").mask("000.000.000.000.000,00", {reverse: true});
+        
     });
 
     function setDateTimeHidden(calendarElement, target) {

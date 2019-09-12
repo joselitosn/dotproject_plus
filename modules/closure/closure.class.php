@@ -7,20 +7,20 @@ require_once $AppUI->getSystemClass('dp');
 require_once $AppUI->getSystemClass('query');
 
 class CClosure extends CDpObject {
-		var $pma_id = null;
+	var $pma_id = null;
     var $project_name = null;
-		var $project_start_date = null;
-	  var $project_end_date = null;
- 		var $project_planned_start_date = null;
-	  var $project_planned_end_date = null;
-		var $project_meeting_date = null;
-		var $planned_budget = 0;
-		var $budget = 0;
+	var $project_start_date = null;
+    var $project_end_date = null;
+ 	var $project_planned_start_date = null;
+    var $project_planned_end_date = null;
+	var $project_meeting_date = null;
+	var $planned_budget = 0;
+	var $budget = 0;
     var $participants = null;
-		var $project_strength = null;
-		var $project_weaknesses = null;
-		var $improvement_suggestions = null;
-		var $conclusions = null;
+	var $project_strength = null;
+	var $project_weaknesses = null;
+	var $improvement_suggestions = null;
+	var $conclusions = null;
 
   function CClosure() {
     parent::CDpObject('post_mortem_analysis', 'pma_id');

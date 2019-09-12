@@ -10,6 +10,11 @@ if (!$obj->bind( $_POST )) {
 	$AppUI->setMsg( $obj->getError(), UI_MSG_ERROR );
 }
 
+$participants = $_POST['list1'];
+if (!is_null($participants)) {
+	$obj->participants = join(',', $participants);
+}
+
 require_once(DP_BASE_DIR . '/classes/CustomFields.class.php');
 
 $del = dPgetParam( $_POST, 'del', 0 );
@@ -42,5 +47,6 @@ if ($del) {
 	}
 	// $AppUI->redirect();
 }
+echo $AppUI->getMsg();
 exit();
 ?>
