@@ -701,7 +701,7 @@ function projects_list_data($user_id=false) {
 	$all_companies = $q->loadList();
 
 	//display the select list
-	$cBuffer = '<select name="department" onchange="javascript:document.pickCompany.submit()" class="text">';
+	$cBuffer = '<select name="department" onchange="javascript:document.pickCompany.submit()" class="form-control form-sm select-company">';
 	$cBuffer .= ('<option value="company_0" style="font-weight:bold;">' . $AppUI->_('All')
 	             . '</option>'."\n");
 	$company = '';

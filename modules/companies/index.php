@@ -8,8 +8,6 @@ if (!$canAccess) {
 	$AppUI->redirect('m=public&a=access_denied');
 }
 
-$AppUI->savePlace();
-
 $valid_ordering = array('company_name', 'countp', 'inactive', 'company_type');
 
 $search_string = dPgetCleanParam($_REQUEST, 'search_string', '');
