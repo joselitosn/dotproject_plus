@@ -37,7 +37,7 @@ if (!($rows = $q->loadList())) {
     <div class="alert alert-secondary text-center" role="alert">
         <?=$AppUI->_("LBL_THERE_IS_NO_PROJECT") ?>
         <?=$AppUI->_("LBL_CLICK"); ?>
-        <a class="alert-link" href="javascript:void(0)" onclick="company.project.new()">
+        <a class="alert-link" href="javascript:void(0)" onclick="project.new()">
             <?php echo $AppUI->_("LBL_HERE"); ?>
         </a>
         <?php echo $AppUI->_("LBL_TO_CREATE_A_PROJECT"); ?>
@@ -47,7 +47,7 @@ if (!($rows = $q->loadList())) {
     ?>
     <div class="row">
         <div class="col-md-12 text-right">
-            <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="company.project.new()">
+            <a class="btn btn-sm btn-secondary" href="javascript:void(0)" onclick="project.new()">
                 Adicionar
             </a>
         </div>
@@ -110,7 +110,7 @@ if (!($rows = $q->loadList())) {
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="javascript:void(0)" onclick="company.project.edit(<?=$project_id?>)">
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="project.edit(<?=$project_id?>)">
                                     <i class="far fa-edit"></i>
                                     Alterar projeto
                                 </a>
@@ -139,7 +139,6 @@ if (!($rows = $q->loadList())) {
 <script>
     $(document).ready(function () {
         $(".card-project").on("click", function() {
-            console.log($(this).find("a.project-link").attr("href"));
             window.location.href = $(this).find("a.project-link").attr("href");
         });
     });

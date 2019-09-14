@@ -4,9 +4,8 @@ if (!defined('DP_BASE_DIR')) {
 }
 require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback.php");
 require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controller.php");
-$url = $_POST['url'];
+// $url = $_POST['url'];
 $feedback_id=$_POST["feedback_id"];
-
 //$AppUI->setMsg($feedback_list[$feedback_id]->getDescription(), '',true);
 //remove feedback from user feedback list
 session_start();
@@ -20,9 +19,9 @@ if(!$feedback_list[$feedback_id]->getGeneric()){
     $img.="<img src='./style/dotproject_plus/img/feedback/TCC_icon.png' style='width:25px; height: 25px' />";
 }
 $img.="</div><br />";
-$title="<b>:::: ". $AppUI->_("LBL_FEEDBACK_FOR_THE KNOWLEDGEAREA_OF") ." ". $feedback_list[$feedback_id]->getKnowledgeArea() ." :::: </b> <br /> <br />";
+$title="<b>". $AppUI->_("LBL_FEEDBACK_FOR_THE KNOWLEDGEAREA_OF") ." ". $feedback_list[$feedback_id]->getKnowledgeArea() ."</b> <br /> <br />";
 
-$rating= $AppUI->_("LBL_FEEDBACK_USEFUL")."<br />
+$rating= "<h6 class='text-center'>Este feedback foi útil?</h6>
 <script>
 function saveRatingFeedbackEvaluation(){
     
@@ -52,9 +51,10 @@ function saveRatingFeedbackEvaluation(){
 </form>
 ";
 
-$_SESSION["user_feedback_display_message"]=$img . $title . $feedback_list[$feedback_id]->getDescription(). "<br /><br />". $rating;
-$AppUI->redirect($url);
-
+// $_SESSION["user_feedback_display_message"]=$img . $title . $feedback_list[$feedback_id]->getDescription(). "<br /><br />". $rating;
+// $AppUI->redirect($url);
+echo $img . $title . $feedback_list[$feedback_id]->getDescription(). "<br /><br />". $rating;
+exit();
 ?>
 
 <pre>

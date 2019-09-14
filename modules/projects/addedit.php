@@ -137,10 +137,10 @@ if ($project_id == 0 && $contact_id > 0) {
             <?php echo $AppUI->_("LBL_NOME"); ?>
         </label>
         <input type="text" class="form-control form-control-sm" name="project_name"
-               value="<?php echo dPformSafe($row->project_name); ?>" size="40" maxlength="50"  onblur="company.project.setShortName();"/>
+               value="<?php echo dPformSafe($row->project_name); ?>" size="40" maxlength="50"  onblur="project.setShortName();"/>
     </div>
 
-    <div class="form-group">
+    <div class="form-group companyContainer">
         <label for="company_name" class="required">
             <?php echo $AppUI->_("Company"); ?>
         </label>
@@ -177,7 +177,7 @@ if ($project_id == 0 && $contact_id > 0) {
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row statusPriorityContainer">
         <div class="col-md-6">
             <div class="form-group">
                 <label for="project_status">
@@ -216,7 +216,7 @@ if ($project_id == 0 && $contact_id > 0) {
         </div>
     </div>
 
-    <div class="row">
+    <div class="row ownerContainet">
         <div class="col-md-6">
             <div class="form-group">
                 <label for="project_owner">
@@ -261,39 +261,39 @@ if ($project_id == 0 && $contact_id > 0) {
             allowClear: true,
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#addEditProjectModal")
+            dropdownParent: $(".companyContainer")
         });
 
         $(".project-status").select2({
             allowClear: true,
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#addEditProjectModal")
+            dropdownParent: $(".statusPriorityContainer")
         });
 
         $(".project-priority").select2({
             allowClear: true,
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#addEditProjectModal")
+            dropdownParent: $(".statusPriorityContainer")
         });
 
         $(".project-responsible").select2({
             allowClear: true,
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#addEditProjectModal")
+            dropdownParent: $(".ownerContainet")
         });
 
         $( ".datepicker" ).datepicker({
             dateFormat: 'dd/mm/yy',
-            onSelect: company.project.dateSelected
+            onSelect: project.dateSelected
         });
 
         $("#budget").mask("000.000.000.000.000,00", {reverse: true});
 
-        company.project.formatDates();
-        company.project.setShortName();
+        project.formatDates();
+        project.setShortName();
     });
 
 </script>

@@ -85,24 +85,21 @@ mysql_query('SET character_set_results=utf8');
             <a class="navbar-brand mx-auto" href="#">
                 <img src="style/<?php echo $uistyle; ?>/img/logo.png" style="width: 150px;height: 40px" />
             </a>
-
-            
-            
-            
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" 
+                    <a class="nav-link dropdown-toggle"
+                        style="text-decoration: none" 
                         href="javascript:void(0)" 
                         data-toggle="dropdown">
                         <i class="far fa-bell"></i>
                         <span class="badge badge-danger" id="feedback_count"></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <?=require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_area.php")?>
+                        <?php require_once (DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_area.php")?>
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="http://www.gqs.ufsc.br/evolution-of-dotproject/"  target="_blank">
+                    <a class="nav-link" href="http://www.gqs.ufsc.br/evolution-of-dotproject/" target="_blank">
                         <i class="far fa-question-circle"></i>
                         <?php echo $AppUI->_("Help")  ?>
                     </a>
@@ -134,12 +131,6 @@ mysql_query('SET character_set_results=utf8');
                 </li>
             </ul>
         </nav>
-        <script>
-            $(document).ready(function() {
-
-
-            });
-        </script>
 
         
 

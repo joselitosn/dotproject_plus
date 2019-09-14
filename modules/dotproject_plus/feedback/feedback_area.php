@@ -5,56 +5,50 @@
 ?>
     <!-- CSS for switch button -->
 
-    <link rel="stylesheet" type="text/css" href="./modules/dotproject_plus/feedback/switchbutton.css" />
-    <span id='cssmenu'>
-        <ul>
+    <span>
+        <ul style="width: 305px;list-style: none;padding: 0 30px;">
             <br />
-            <b>::<?php echo $AppUI->_("LBL_FEEDBACK_INSTRUCTIONAL_FEEDBACK"); ?>::</b>
-            <br /><br />
+            <h5 class="text-center">::<?php echo $AppUI->_("LBL_FEEDBACK_INSTRUCTIONAL_FEEDBACK"); ?>::</h5>
+            <br />
             <form method="post" action="?m=dotproject_plus" name="feedback_preferences">
                 <input name="dosql" type="hidden" value="do_save_feedback_preferences" />
                 <input type="hidden" name="url" value="<?php echo substr($_SERVER["REQUEST_URI"], strrpos($_SERVER["REQUEST_URI"], "?") + 1, strlen($_SERVER["REQUEST_URI"])); ?>" />
     
-                    <?php echo $AppUI->_("LBL_SEE_GENERIC_FEEDBACK"); ?><br />
-    
-    
-                    <div class="onoffswitch" >
-                            <input value="1" type="checkbox" name="generic_feedback" onclick="document.feedback_preferences.submit()" class="onoffswitch-checkbox" id="onoffswitch_generic" <?php echo $_SESSION["user_generic_feedback"] == 1 ? "checked" : "" ?>  />
-                            <label class="onoffswitch-label" for="onoffswitch_generic">
-                                <span class="onoffswitch-inner"></span>
-                                <span class="onoffswitch-switch"></span>
-                            </label>
-                        </div>
-    
-                    <br/>
-    
-    
-                    <?php echo $AppUI->_("LBL_SEE_SPECIFIC_FEEDBACK"); ?><br />
-    
-                    <div class="onoffswitch" >
-                            <input value="1"  type="checkbox" name="especific_feedback" onclick="document.feedback_preferences.submit()" class="onoffswitch-checkbox" id="onoffswitch_especific" <?php echo $_SESSION["user_especific_feedback"] == 1 ? "checked" : "" ?>  />
-                            <label class="onoffswitch-label" for="onoffswitch_especific">
-                                <span class="onoffswitch-inner"></span>
-                                <span class="onoffswitch-switch"></span>
-                            </label>
-                        </div>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" 
+                            name="generic_feedback"
+                            value="1" 
+                            class="custom-control-input" 
+                            id="onoffswitch_generic" 
+                            <?=$_SESSION["user_generic_feedback"] == 1 ? "checked" : ""?>
+                            onclick="document.feedback_preferences.submit()">
+                        <label class="custom-control-label" for="onoffswitch_generic"><?php echo $AppUI->_("LBL_SEE_GENERIC_FEEDBACK"); ?></label>
+                    </div>
+                    
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" 
+                            name="especific_feedback"
+                            value="1" 
+                            class="custom-control-input" 
+                            id="onoffswitch_especific"
+                            <?=$_SESSION["user_especific_feedback"] == 1 ? "checked" : ""?>
+                            onclick="document.feedback_preferences.submit()" 
+                            >
+                        <label class="custom-control-label" for="onoffswitch_especific"><?php echo $AppUI->_("LBL_SEE_SPECIFIC_FEEDBACK"); ?></label>
+                    </div>
                     <br />
-    
             </form>
             <hr />
             <?php
                 $feedback_count = 0;
                 foreach ($_SESSION["user_feedback"] as $feedback_id) {
                     $feedback = $feedback_list[$feedback_id];
-    
-    
                     if (($feedback->getGeneric() && $_SESSION["user_generic_feedback"] == 1) || (!$feedback->getGeneric() && $_SESSION["user_especific_feedback"] == 1) ) {
                         $feedback_count++;
                         if ($feedback_count <= 5) {
                             ?>
-    
                             <li>
-                                <a  style="line-height: 120%" href="#" onclick="document.getElementById('show_feedback_<?php echo $feedback->getId() ?>').submit()">
+                                <a style="line-height: 120%" href="#" onclick="showFeedBack(<?=$feedback->getId()?>)">
                                     <form name="show_feedback_<?php echo $feedback->getId() ?>" id="show_feedback_<?php echo $feedback->getId() ?>" method="post" action="?m=dotproject_plus">
                                         <img src="./style/dotproject_plus/img/feedback/<?php echo InstructionalFeebackManager::getIconByKnowledgeArea($feedback->getKnowledgeArea()) ?>.png" style="width:20px; height: 20px" />
                                         <b><?php echo $feedback->getKnowledgeArea(); ?></b>
@@ -84,9 +78,28 @@
             ?>
                 <script>
                     $("#feedback_count").html("<?=$feedback_count?>");
+
+                    function showFeedBack(id) {
+                        $.ajax({
+                            type: "POST",
+                            url: "?m=dotproject_plus",
+                            datatype: "json",
+                            data: {
+                                feedback_id: id,
+                                dosql: 'do_show_feedback'
+                            }
+                        }).done(function(response) {
+
+                            $.alert({
+                                title: "Feedback",
+                                content: response
+                            });
+                        });
+                    }
                 </script>
             <?php
             }
             ?>
         </ul>
     </span>
+    
