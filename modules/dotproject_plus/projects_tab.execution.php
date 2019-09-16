@@ -1,102 +1,91 @@
-<!-- include libraries for right click menu -->
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/milonic_src.js"></script> 
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/mmenudom.js"></script> 
-<script type="text/javascript" src="./modules/dotproject_plus/milonic_right_click_menu/menu_data_activities.js"></script>
-
-<!-- calendar goodies -->
-<link type="text/css" rel="stylesheet" href="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.css?random=20051112" media="screen"></link>
-<script type="text/javascript" src="./modules/timeplanning/js/jsLibraries/dhtmlgoodies_calendar/dhtmlgoodies_calendar.js?random=20060118"></script>
-
-<a href="http://www.milonic.com/" style="display: none">DHTML JavaScript Menu By Milonic.com</a>
-
 <script>
 
-function displayActivityLogPanel(activityId){
-    //document.getElementById("new_activity_log_div_"+activityId).style.display="block";
-    $("#new_activity_log_div_"+activityId).slideDown();
-}
+// function displayActivityLogPanel(activityId){
+//     //document.getElementById("new_activity_log_div_"+activityId).style.display="block";
+//     $("#new_activity_log_div_"+activityId).slideDown();
+// }
 
-function closeActivityLogPanel(activityId){
-    //document.getElementById("new_activity_log_div_"+activityId).style.display="none";
-    $("#new_activity_log_div_"+activityId).slideUp();
-}
+// function closeActivityLogPanel(activityId){
+//     //document.getElementById("new_activity_log_div_"+activityId).style.display="none";
+//     $("#new_activity_log_div_"+activityId).slideUp();
+// }
 
-function displayActivityLogList(activityId){
-    $("#list_activity_logs_"+activityId).slideToggle();
-}
+// function displayActivityLogList(activityId){
+//     $("#list_activity_logs_"+activityId).slideToggle();
+// }
 
-function validateActivityLog(activityId){
-    var result=false;
-    var dateField=document.getElementById("task_log_date_"+activityId);
-    var dateValue=dateField.value;
-    if(validateDateField(dateValue)){
-        result=true;
-    }else{
-        dateField.style.backgroundColor="#ffcccc";
-        result=false;
-    }
-    if(result){
-        document.getElementById("activity_form_"+activityId).submit();
-    }
-}
+// function validateActivityLog(activityId){
+//     var result=false;
+//     var dateField=document.getElementById("task_log_date_"+activityId);
+//     var dateValue=dateField.value;
+//     if(validateDateField(dateValue)){
+//         result=true;
+//     }else{
+//         dateField.style.backgroundColor="#ffcccc";
+//         result=false;
+//     }
+//     if(result){
+//         document.getElementById("activity_form_"+activityId).submit();
+//     }
+// }
 
 
-    function filterActivitiesByUser() {
-        document.select_human_resource_filter_form.submit();
-    }
+//     function filterActivitiesByUser() {
+//         document.select_human_resource_filter_form.submit();
+//     }
     
- /**
- * This function verifies if the value inputted in a date field is numericaly correct.
- * Empty values are consideted false.
- * This function return a boolean value.
- */
-function validateDateField(value){
-    var result=false;
-    if(value!=""){
-        var dateParts=value.split("/");
-        if(dateParts.length==3){
-            var day=dateParts[0];
-            var month=dateParts[1];
-            var year=dateParts[2];
-            if (!isNaN(parseInt(day)) && !isNaN(parseInt(month)) && !isNaN(parseInt(year)) ){
-                result=true;
-            }
-        }
-    }
-    return result;
-}
+//  /**
+//  * This function verifies if the value inputted in a date field is numericaly correct.
+//  * Empty values are consideted false.
+//  * This function return a boolean value.
+//  */
+// function validateDateField(value){
+//     var result=false;
+//     if(value!=""){
+//         var dateParts=value.split("/");
+//         if(dateParts.length==3){
+//             var day=dateParts[0];
+//             var month=dateParts[1];
+//             var year=dateParts[2];
+//             if (!isNaN(parseInt(day)) && !isNaN(parseInt(month)) && !isNaN(parseInt(year)) ){
+//                 result=true;
+//             }
+//         }
+//     }
+//     return result;
+// }
 
-   function expandControlWorkpackageActivities(id) {
-        if (document.getElementById("collapse_icon_" + id).style.display == "none") {
-            expandActivities(id);
-        } else {
-            collapseActivities(id);
-        }
-    }
+//    function expandControlWorkpackageActivities(id) {
+//         if (document.getElementById("collapse_icon_" + id).style.display == "none") {
+//             expandActivities(id);
+//         } else {
+//             collapseActivities(id);
+//         }
+//     }
     
-      function expandActivities(id) {
-        var table = document.getElementById("tb_eap");
-        for (var i = 0; i < table.rows.length; i++) {
-            row = table.rows[i];
-            if (row.id.indexOf("wbs_id_" + id) != -1) {
-                row.style.display = "none";
-            }
-        }
-        document.getElementById("collapse_icon_" + id).style.display = "inline";
-        document.getElementById("expand_icon_" + id).style.display = "none";
-    }
+//       function expandActivities(id) {
+//         var table = document.getElementById("tb_eap");
+//         for (var i = 0; i < table.rows.length; i++) {
+//             row = table.rows[i];
+//             if (row.id.indexOf("wbs_id_" + id) != -1) {
+//                 row.style.display = "none";
+//             }
+//         }
+//         document.getElementById("collapse_icon_" + id).style.display = "inline";
+//         document.getElementById("expand_icon_" + id).style.display = "none";
+//     }
 
-    function collapseActivities(id) {
-        var table = document.getElementById("tb_eap");
-        for (var i = 0; i < table.rows.length; i++) {
-            row = table.rows[i];
-            if (row.id.indexOf("wbs_id_" + id) != -1 && row.id.indexOf("activity_details_id_") == -1) {
-                row.style.display = "table-row";
-            }
-        }
-        document.getElementById("collapse_icon_" + id).style.display = "none";
-        document.getElementById("expand_icon_" + id).style.display = "inline";
-    }
+//     function collapseActivities(id) {
+//         var table = document.getElementById("tb_eap");
+//         for (var i = 0; i < table.rows.length; i++) {
+//             row = table.rows[i];
+//             if (row.id.indexOf("wbs_id_" + id) != -1 && row.id.indexOf("activity_details_id_") == -1) {
+//                 row.style.display = "table-row";
+//             }
+//         }
+//         document.getElementById("collapse_icon_" + id).style.display = "none";
+//         document.getElementById("expand_icon_" + id).style.display = "inline";
+//     }
 
 </script>
 
@@ -173,215 +162,368 @@ if ($_GET["show_external_page"] != "") {
 //start: buld hr list per role
 //end: buld hr list per role 
     ?>
-    </script>
-    <?php
-    $currentPage = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "index.php") + 9);
-    ?>
-    <br />
-    <div style="text-align:right">
-        <form name="select_human_resource_filter_form" action="<?php echo $currentPage ?>" method="post">
-            <span style="color:#000000"><?php echo $AppUI->_("LBL_FILTER"); ?>:</span>
-            <select id="project_resources_filter" name="project_resources_filter" onchange="filterActivitiesByUser()"> <!-- Filter to select activities for just a resource -->
-                <option <?php echo $_POST["project_resources_filter"] == "" ? "selected" : "" ?>   value=""><?php echo $AppUI->_("All"); ?></option>
-                <?php
-                foreach ($records as $record) {
-                    ?>
-                    <option <?php echo $_POST["project_resources_filter"] == $record[1] ? "selected" : "" ?> value="<?php echo $record[1] ?>"> 
-                    <?php echo $record[3] ?>
-                    </option>
-                    <?php
-                }
-                ?>
-            </select>
-
-            <?php
-            //verify if the is some activity defined in the entire project
-            $q = new DBQuery();
-            $q->addQuery("t.task_id");
-            $q->addTable("tasks", "t");
-            $q->addWhere("t.task_project=" . $project_id);
-            $sql = $q->prepare();
-            $records = db_loadList($sql);
-            $activitiesCount = count($records);
-            ?>
-            <input type="hidden" name="activities_count" id="activities_count" value="<?php echo $activitiesCount ?>" />
-            
-            <!-- <input class="button" type="button" value="<?php echo $AppUI->_("LBL_PROJECT_PROJECT_SEQUENCING") ?>" onclick="viewSequenceActivities()" />  -->
-        </form>
-    </div>
-    <br/>
-
-    <div id="estimation_form_error_message"> </div>
-    
-    <table id="tb_eap" class="tbl" align="center" width="100%" style="border-width: 0px">
-        <tr>
-            <th style="width:40%" colspan="2">
-                <?php echo $AppUI->_("LBL_ACTIVITY"); ?>
-            </th>
-            <th nowrap>
-                <?php echo $AppUI->_("LBL_BEGIN"); ?>
-            </th>
-            <th nowrap>
-                <?php echo $AppUI->_("LBL_END"); ?>
-            </th>
-            <th nowrap>
-                <?php echo $AppUI->_("LBL_DURATION"); ?>
-            </th>
-            <th nowrap>
-                <?php echo $AppUI->_("Human Resources"); ?>
-            </th>
-            <th nowrap>
-    <?php echo $AppUI->_("Status"); ?>
-            </th>
-        </tr>
-
-        <?php
+<?php 
         $project = new CProject();
         $project->load($project_id);
         $company_id = $project->project_company;
         $showFirstActivityCreation = false; //this variable make the controlling to showing of the message to create the first activity 
         $items = $controllerWBSItem->getWBSItems($project_id);
 
-        if (count($items) >0) {
-            $wbs_items_order = 0;
-            ?>
-            <script>
-                var wbsHasActivity = new Array();//stores WBS item id, and a boolean informing if it have or not activities
-            </script>
-            <?php
-            foreach ($items as $item) {
-                $id = $item->getId();
-                $name = $item->getName();
-                $identation = $item->getIdentation();
-                $number = $item->getNumber();
-                /* verify if wbs item is leaf: above item
-                 * 1. Above Item less identation and below more identation
-                 * 2. First and last: no above and no below
-                 * 3. Last item: no below
-                 */
+        if (count($items) == 0) {
+    ?>
+            <div class="alert alert-secondary text-center" role="alert">
+                <?php echo $AppUI->_("LBL_CLICK") ?>
+                <a href="#" onclick="wbs.new(<?=$project_id?>)">
+                    <b><u><?php echo $AppUI->_("LBL_HERE") ?></u></b>
+                </a>
+                <?php echo $AppUI->_("LBL_CREATE_NEW_WBS_ITEM") ?>
+            </div>
+    <?php
+        // WBS TREE DECLARATION
+        } else {
 
-                $i = $wbs_items_order;
-                $is_leaf = "0";
-                if ($i == 0 && count($items) == 1) { // there is just an item
-                    $is_leaf = "1";
-                } else if ($i == (count($items) - 1)) { //is the last item
-                    $is_leaf = "1";
-                } else if (($i > 0 && $i < (count($items) - 1)) && (strlen($items[$i + 1]->getIdentation()) <= strlen($identation))) { // is not the first and not the last and is a leaf
-                    $is_leaf = "1";
+            function createTree($i, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id) {
+                $tree = array();
+                foreach($i as $node) {
+                    createIndex($node->getNumber(), $tree, $node);
                 }
+                $dom = new DOMDocument('1.0');
+                $mainCard = $dom->createElement('div');
+                $dom->appendChild(createHtml($tree, $mainCard, $dom, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id));
+                echo $dom->saveHTML();
+            }
+             
+             
+            function createIndex($number, &$tree, $obj) {
+                $index = strpos($number, '.');
+                if (!$index) {
+                    $tree[$number] = $obj->toArray();
+                    $tree[$number]['parent'] = substr($obj->getNumber(), 0, strlen($obj->getNumber())-2);
+                    return;
+                }
+                $newNumber = substr($number, $index+1);
+                if (!($newNumber == '' || $newNumber == null)) {
+                    return createIndex($newNumber, $tree[substr($number, 0, $index)], $obj);
+                }
+            }
+            
+            function createHtml($tree, $mainCard, $dom, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id) {
+                foreach($tree as $branch) {
+                    if (is_array($branch)) {
+                        $isLeaf = (bool)$branch['isLeaf'];
+                        $numberOfTasks = '';
+                        if ($isLeaf) {
+                            $eapItem = new WBSItemEstimation();
+                            $id = $branch['id'];
+                            $eapItem->load($id);
+                            $ControllerWBSItemActivityRelationship = new ControllerWBSItemActivityRelationship();
+                            $tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($id);
+                            $numberOfTasks = $isLeaf ? ' (' . sizeof($tasks) . ')' : '';
+                        }
+                        $innerCard = strlen($branch['number']) > 1 ? ' inner-card' : '';
+                        $card = $dom->createElement('div');
+                        $cardClass = $dom->createAttribute('class');
+                        $cardClass->value = 'card' . $innerCard;
+                        $card->appendChild($cardClass);
 
-                $wbs_items_order++;
-                $order = $wbs_items_order;        
-                if ($is_leaf == "1") {
-                    $eapItem = new WBSItemEstimation();
-                    $eapItem->load($id);
-                    //start: code to filter workpakage activities
-                    $tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($id);
-                    $hasActivities=sizeof($tasks)>0?true:false;
-                    ?>
-                    <tr id="row_<?php echo $id ?>"  ondblclick="expandControlWorkpackageActivities(<?php echo $id ?>)" style="cursor:pointer">                       
+                        $cardBody = $dom->createElement('div');
+                        $cardBodyId = $dom->createAttribute('id');
+                        $cardBodyId->value = $branch['number'];
+                        $cardBody->appendChild($cardBodyId);
+                        $cardBodyClass = $dom->createAttribute('class');
+                        $cardBodyClass->value = 'card-body';
+                        $cardBody->appendChild($cardBodyClass);
 
-                        <td style="background-color: #E8E8E8;height:  35px;min-width:50px; " colspan="7">
-                            <span id="read_workpackage_id_<?php echo $id ?>">
-                                <span id="identation_<?php echo $id ?>" style="color: #E8E8E8"><?php echo $identation; ?></span>
-                                <!-- To enlarge the identation space -->
-                <?php echo strlen($identation) > 0 ? "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" : ""; ?>
-                                <span style="margin-left: 21px" id="div_numbering_<?php echo $id ?>">
-                                <?php echo $number ?>
-                                </span>
-                                <?php echo $name ?>
-                                &nbsp;
-                                <span style="display:<?php echo $hasActivities?"inline":"none" ?>" >
-                                    (<?php echo sizeof($tasks) ?>)
-                                    &nbsp;&nbsp;&nbsp;
-                                    <img src="./modules/dotproject_plus/images/icone_seta.png" onclick="collapseActivities(<?php echo $id ?>)" id="collapse_icon_<?php echo $id ?>" style="cursor:pointer;display:none" />
-                                    <img src="./modules/dotproject_plus/images/icone_seta_cima.png" onclick="expandActivities(<?php echo $id ?>)" id="expand_icon_<?php echo $id ?>" style="cursor:pointer" />
-                                </span>
-                            </span>
-                           
-                        </td>
-                    <script>
-                        wbsHasActivity[<?php echo $id ?>] = <?php echo sizeof($tasks) > 0 ? "true" : "false" ?>;
-                    </script>
-                    <?php
-                    if ($activitiesCount == 0 && !$showFirstActivityCreation) {
-                        $showFirstActivityCreation = true;
-                    } else {
-                        foreach ($tasks as $obj) {
-                            $task_id = $obj->task_id;
-                            $taskDescription = $obj->task_name;
-                            $projectTaskEstimation = new ProjectTaskEstimation();
-                            $projectTaskEstimation->load($task_id);
+                        $cardRow = $dom->createElement('div');
+                        $cardRowClass = $dom->createAttribute('class');
+                        $cardRowClass->value = 'row';
+                        $cardRow->appendChild($cardRowClass);
 
-                            
-                            //actual dates
-                            $activityLog=new ActivityLog();
-                            $actualDates=$activityLog->getActivitiesActualDates($task_id);
-                            $actualDuration=$activityLog->getActivityActualDuration();
-                            $startDateActualTxt = "";
-                            $endDateActualTxt = "";
-                            if(sizeof($actualDates)==2) {
-                               if($actualDates[0]!=""){
-                                    $startDateActualTxt  = date("d/m/Y", strtotime($actualDates[0]));
-                               }
-                               if($actualDates[1]!=""){
-                                   $endDateActualTxt = date("d/m/Y", strtotime($actualDates[1]));
-                               }
-                               
-                            }
-                            //duration and start/end dates.
-                            $obj = new CTask();
-                            $obj->load($task_id);
-                            $startDateTxt = "";
-                            $endDateTxt = "";
-                            if (isset($obj->task_start_date) && isset($obj->task_end_date)) {
-                                $startDateTxt = date("d/m/Y", strtotime($obj->task_start_date));
-                                $endDateTxt = date("d/m/Y", strtotime($obj->task_end_date));
-                            }
-                            $duration = "";
-                            if ($projectTaskEstimation->getDuration() != "") {
-                                $duration = "" . $projectTaskEstimation->getDuration() . " " . $AppUI->_("LBL_PROJECT_DAYS_MULT");
-                            }
+                        $carCol8 = $dom->createElement('div');
+                        $carCol8Class = $dom->createAttribute('class');
+                        $carCol8Class->value = 'col-md-8';
+                        $carCol8->appendChild($carCol8Class);
+                        $h5 = $dom->createElement('h5', $branch['number'] . ' ' . $branch['name'] . $numberOfTasks);
+                        $carCol8->appendChild($h5);
+                        
+                        $carCol4 = $dom->createElement('div');
+                        $carCol4Class = $dom->createAttribute('class');
+                        $carCol4Class->value = 'col-md-4 text-right';
+                        $carCol4->appendChild($carCol4Class);
 
-                            if ($taskDescription != "") { //start: build line for task
-                                // Get estimate roles if have some
-                                $estimatedRolesTxt = "";
-                                foreach ($projectTaskEstimation->getRoles() as $role) {
-                                    $roleId = $role->getRoleId();
-                                    $roleName = $roles[$roleId];
-                                    $roleQuantity = $role->getQuantity();
-                                    $estimatedRolesTxt .= $roleName . " (" . $roleQuantity . ") <br />";
+                        $cardRow->appendChild($carCol8);
+                        $cardRow->appendChild($carCol4);
+                        $cardBody->appendChild($cardRow);
+
+                        if ($isLeaf) {
+
+                            foreach($tasks as $task) {
+                                $task_id = $task->task_id;
+                                $taskDescription = $task->task_name;
+                                $projectTaskEstimation = new ProjectTaskEstimation();
+                                $projectTaskEstimation->load($task_id);
+
+                                //duration and start/end dates.
+                                $obj = new CTask();
+                                $obj->load($task_id);
+
+                                // Start and end dates
+                                $startDateTxt = "Não informado";
+                                $endDateTxt = "Não informado";
+                                if (isset($obj->task_start_date) && isset($obj->task_end_date)) {
+                                    $startDateTxt = date("d/m/Y", strtotime($obj->task_start_date));
+                                    $endDateTxt = date("d/m/Y", strtotime($obj->task_end_date));
                                 }
-                                //metric index is db key
-                                $effortMetrics = array();
-                                $effortMetrics[0] = $AppUI->_("LBL_EFFORT_HOURS");
-                                $effortMetrics[1] = $AppUI->_("LBL_EFFORT_MINUTES");
-                                $effortMetrics[2] = $AppUI->_("LBL_EFFORT_DAYS");
+                                $duration = "";
+                                if ($projectTaskEstimation->getDuration() != "") {
+                                    $duration = "" . $projectTaskEstimation->getDuration() . " dia(s)";
+                                }   
+                                
+                                //actual dates
+                                $activityLog=new ActivityLog();
+                                $actualDates=$activityLog->getActivitiesActualDates($task_id);
+                                $actualDuration=$activityLog->getActivityActualDuration();
+                                $startDateActualTxt = "";
+                                $endDateActualTxt = "";
+                                if(sizeof($actualDates)==2) {
+                                   if($actualDates[0]!=""){
+                                        $startDateActualTxt  = date("d/m/Y", strtotime($actualDates[0]));
+                                   }
+                                   if($actualDates[1]!=""){
+                                       $endDateActualTxt = date("d/m/Y", strtotime($actualDates[1]));
+                                   }
+                                   
+                                }
 
-                                //Get activity RHs
-                                $q = new DBQuery();
-                                $q->addQuery("u.user_username,u.user_id");
-                                $q->addTable("project_tasks_estimated_roles", "tr");
-                                $q->addJoin("human_resource_allocation", "hr_al ", "hr_al.project_tasks_estimated_roles_id=tr.id");
-                                $q->addJoin("human_resource", "hr ", " hr_al.human_resource_id=hr.human_resource_id");
-                                $q->addJoin("users", "u", " hr.human_resource_user_id=u.user_id");
-                                $q->addWhere("tr.task_id=" . $task_id);
-                                $sql = $q->prepare();
-                                $RHrecords = db_loadList($sql);
+                                // Start creating html structure
+                                $taskCard = $dom->createElement('div');
+                                $taskCardClass = $dom->createAttribute('class');
+                                $taskCardClass->value = 'card inner-card';
+                                $taskCard->appendChild($taskCardClass);
+                                $taskCardData = $dom->createAttribute('data');
+                                $taskCardData->value = $task_id;
+                                $taskCard->appendChild($taskCardData);
 
-                                //Define text for read Human resources
+                                $taskCardBody = $dom->createElement('div');
+                                $taskCardBodyId = $dom->createAttribute('id');
+                                $taskCardBodyId->value = $branch['number'];
+                                $taskCardBody->appendChild($taskCardBodyId);
+                                $taskCardBodyClass = $dom->createAttribute('class');
+                                $taskCardBodyClass->value = 'card-body shrink';
+                                $taskCardBody->appendChild($taskCardBodyClass);
+
+                                $taskCardRow = $dom->createElement('div');
+                                $taskCardRowClass = $dom->createAttribute('class');
+                                $taskCardRowClass->value = 'row';
+                                $taskCardRow->appendChild($taskCardRowClass);
+
+                                $carCol8 = $dom->createElement('div');
+                                $carCol8Class = $dom->createAttribute('class');
+                                $carCol8Class->value = 'col-md-10';
+                                $carCol8->appendChild($carCol8Class);
+                                
+                                switch ($obj->task_percent_complete) {
+                                    case 0:
+                                        $activityStatus = $dom->createElement('span', 'Iniciada');
+                                        $activityStatusClass = $dom->createAttribute('class');
+                                        $activityStatusClass->value = 'badge badge-primary';
+                                        $activityStatus->appendChild($activityStatusClass);
+                                        break;
+                                    case 100:
+                                        $activityStatus = $dom->createElement('span', 'Finalizada');
+                                        $activityStatusClass = $dom->createAttribute('class');
+                                        $activityStatusClass->value = 'badge badge-success';
+                                        $activityStatus->appendChild($activityStatusClass);
+                                        break;
+                                    default:
+                                        $activityStatus = $dom->createElement('span', 'Não iniciada');
+                                        $activityStatusClass = $dom->createAttribute('class');
+                                        $activityStatusClass->value = 'badge badge-info';
+                                        $activityStatus->appendChild($activityStatusClass);
+                                        break;
+                                }
+                                $h6 = $dom->createElement('h6', 'A.' . $activitiesIdsForDisplay[$task_id] . ' ' . $taskDescription . ' ');
+                                $h6Class = $dom->createAttribute('class');
+                                $h6Class->value = 'mouse-cursor-pointer';
+                                $h6->appendChild($h6Class);
+                                $h6Toggle = $dom->createAttribute('data-toggle');
+                                $h6Toggle->value = 'collapse';
+                                $h6->appendChild($h6Toggle);
+                                $h6Target = $dom->createAttribute('data-target');
+                                $h6Target->value = '#card_'.$task_id;
+                                $h6->appendChild($h6Target);
+                                $h6Style = $dom->createAttribute('style');
+                                $h6Style->value = 'float: left;';
+                                $h6->appendChild($h6Style);
+
+                                $icon = $dom->createElement('i', '&nbsp;');
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'fas fa-caret-down title';
+                                $icon->appendChild($iconClass);
+                                $carCol8->appendChild($h6);
+                                $carCol8->appendChild($icon);
+
+                                $carCol4 = $dom->createElement('div');
+                                $carCol4Class = $dom->createAttribute('class');
+                                $carCol4Class->value = 'col-md-2 text-right';
+                                $carCol4->appendChild($carCol4Class);
+                                $carCol4->appendChild($activityStatus);
+
+                                // Dropdown activity options
+                                $dropdown = $dom->createElement('div');
+                                $dropdownClass = $dom->createAttribute('class');
+                                $dropdownClass->value = 'dropdown';
+                                $dropdown->appendChild($dropdownClass);
+                                $dropdownStyle = $dom->createAttribute('style');
+                                $dropdownStyle->value = 'width: 20%; float: right;';
+                                $dropdown->appendChild($dropdownStyle);
+
+                                // Dropdown link
+                                $dropdownA = $dom->createElement('a');
+                                $dropdownAClass = $dom->createAttribute('class');
+                                $dropdownAClass->value = '';
+                                $dropdownA->appendChild($dropdownAClass);
+                                $dropdownAhref = $dom->createAttribute('href');
+                                $dropdownAhref->value = 'javascript:void(0)';
+                                $dropdownA->appendChild($dropdownAhref);
+                                $dropdownAToggle = $dom->createAttribute('data-toggle');
+                                $dropdownAToggle->value = 'dropdown';
+                                $dropdownA->appendChild($dropdownAToggle);
+                                $dropdownAId = $dom->createAttribute('id');
+                                $dropdownAId->value = '#dropdown_' . $branch['id'];
+                                $dropdownA->appendChild($dropdownAId);
+                                $icon = $dom->createElement('i');
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'fas fa-bars';
+                                $icon->appendChild($iconClass);
+                                $dropdownA->appendChild($icon);
+
+                                $dropdown->appendChild($dropdownA);
+
+                                $dropdownMenu = $dom->createElement('div');
+                                $dropdownMenuClass = $dom->createAttribute('class');
+                                $dropdownMenuClass->value = 'dropdown-menu dropdown-menu-right';
+                                $dropdownMenu->appendChild($dropdownMenuClass);
+                                $dropdownMenuAriaL = $dom->createAttribute('aria-labelledby');
+                                $dropdownMenuAriaL->value = 'dropdown_'.$branch['id'];
+                                $dropdownMenu->appendChild($dropdownMenuAriaL);
+
+                                // Dropdown activity options item update activity
+                                $dropdownItem = $dom->createElement('a');
+                                $dropdownItemClass = $dom->createAttribute('class');
+                                $dropdownItemClass->value = 'dropdown-item';
+                                $dropdownItem->appendChild($dropdownItemClass);
+                                $dropdownItemhref = $dom->createAttribute('href');
+                                $dropdownItemhref->value = 'javascript:void(0)';
+                                $dropdownItem->appendChild($dropdownItemhref);
+                                $dropdownItemOC = $dom->createAttribute('onclick');
+                                $dropdownItemOC->value = 'tasks.edit('.$branch['id'].','.$task_id.')';
+                                $dropdownItem->appendChild($dropdownItemOC);
+                                $icon = $dom->createElement('i');
+                                $iconClass = $dom->createAttribute('class');
+                                $iconClass->value = 'far fa-edit';
+                                $icon->appendChild($iconClass);
+                                $dropdownItem->appendChild($icon);
+                                $dropdownItemSpan = $dom->createElement('span', ' Alterar Atividade');
+                                $dropdownItem->appendChild($dropdownItemSpan);
+                                $dropdownMenu->appendChild($dropdownItem);
+
+                                $dropdown->appendChild($dropdownMenu);
+                                $carCol4->appendChild($dropdown);
+                                $taskCardRow->appendChild($carCol8);
+                                $taskCardRow->appendChild($carCol4);
+                                $taskCardBody->appendChild($taskCardRow);
+
+                                $taskCardRow = $dom->createElement('div');
+                                $taskCardRowClass = $dom->createAttribute('class');
+                                $taskCardRowClass->value = 'row';
+                                $taskCardRow->appendChild($taskCardRowClass);
+
+                                $carCol6 = $dom->createElement('div');
+                                $carCol6Class = $dom->createAttribute('class');
+                                $carCol6Class->value = 'col-md-6';
+                                $carCol6->appendChild($carCol6Class);
+
+                                // Data início
+                                $span = $dom->createElement('span', 'Início: ' . $startDateTxt);
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+                                // TODO actual
+
+                                // <td style="text-align: center; vertical-align: top" nowrap="nowrap"> 
+                                //                 <?php echo $AppUI->_("LBL_PLANNED");<br />
+                                //                 <span id="activity_date_start_read_id_<?php echo $task_id">
+                                //                     <?php echo $startDateTxt 
+                                //                 </span>
+                                //                 <br /><br />
+                                //                 <?php echo $AppUI->_("LBL_ACTUAL") . "<br />"; 
+                                //                 <?php echo $startDateActualTxt; ?
+        
+
+                                // Data fim
+                                $span = $dom->createElement('span', 'Fim: ' . $endDateTxt);
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+                                // TODO actual
+                                //             </td>                           
+                                //             <td style="text-align: center;vertical-align: top" nowrap="nowrap">
+                                //                 <?php echo $AppUI->_("LBL_PLANNED");<br />
+                                //                 <span id="activity_date_end_read_id_<?php echo $task_id ">
+                                //                     <?php echo $endDateTxt 
+                                //                 </span>
+                                //                 <br /><br />
+                                //                     <?php 
+                                //                 if($obj->task_percent_complete==100){
+                                //                     echo $AppUI->_("LBL_ACTUAL");
+                                //                     echo "<br />";
+                                //                     echo $endDateActualTxt ;
+                                //                 
+                                //                  
+                                //             </td>
+
+                                // Duração
+                                $span = $dom->createElement('span', 'Duração: ' . $duration);
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
+                                $taskCardRow->appendChild($carCol6);
+                                // TODO actual
+                                //             <td style="text-align: center;width:100px; vertical-align: top">
+                                //                 <?php echo $AppUI->_("LBL_PLANNED");><br />
+                                //                 <?php echo $duration><br /><br />
+                                //                 <?php 
+                                //                 if($actualDuration!=""){
+                                //                     echo $AppUI->_("LBL_ACTUAL")."<br />";
+                                //                     echo $actualDuration . " " . $AppUI->_("LBL_PROJECT_DAYS_MULT");
+                                //                 }
+                                //                
+                                //             </td>
+
+
+                                $carCol6 = $dom->createElement('div');
+                                $carCol6Class = $dom->createAttribute('class');
+                                $carCol6Class->value = 'col-md-6';
+                                $carCol6->appendChild($carCol6Class);
+                                $taskCardRow->appendChild($carCol6);
+
+                                // Recursos humanos
                                 $estimatedRolesTxt = "";
                                 $rolesNonGrouped = $projectTaskEstimation->getRolesNonGrouped($task_id);
                                 $totalRoles = count($rolesNonGrouped);
-                                $i = 1; //It avoid the inclusion of a comma in the text to display the human resources
-                                if ($_POST["project_resources_filter"] == "") {
-                                    $hasFilteredRH = true; //control if will be some filter in based on human resource
-                                } else {
-                                    $hasFilteredRH = false;
-                                }
+                                $i = 1;
+                                 if ($_POST["project_resources_filter"] == "") {
+                                     $hasFilteredRH = true; //controls if will be some filter based on human resource
+                                 } else {
+                                     $hasFilteredRH = false;
+                                 }
                                 foreach ($rolesNonGrouped as $role) {
                                     $role_estimated_id = $role->getQuantity(); // the quantity field is been used to store the estimated role id
-                                    $allocated_hr_id = ""; //Get the allocated HR  (maybe there is just the role without allocation, in this case write the role name)          
+                                    $allocated_hr_id = ""; //Get the allocated HR  (maybe there is just the role without allocation, in this case write the role name)
                                     //Get id of a possible old allocation to delete it
                                     $q = new DBQuery();
                                     $q->addTable("human_resource_allocation");
@@ -389,47 +531,60 @@ if ($_GET["show_external_page"] != "") {
                                     $q->addWhere("project_tasks_estimated_roles_id=" . $role_estimated_id);
                                     $sql = $q->prepare();
                                     $records = db_loadList($sql);
+
+
                                     foreach ($records as $record) {
                                         $allocated_hr_id = $record[0];
                                     }
+
                                     if ($allocated_hr_id != "") {
-                                        $estimatedRolesTxt.=$userNameByHRid[$allocated_hr_id]; //write user name
+                                        $estimatedRolesTxt.=$userNameByHRid[$allocated_hr_id];
                                     } else {
-                                        $estimatedRolesTxt.="<i style='color:red'>" . $roles[$role->getRoleId()] . "</i>";
+                                        $estimatedRolesTxt.= $roles[$role->getRoleId()];
                                     }
                                     if ($totalRoles > $i) {
                                         $estimatedRolesTxt.=", ";
                                     }
                                     $i++;
-                                    if (!$hasFilteredRH && $_POST["project_resources_filter"] == $allocated_hr_id) {
-                                        $hasFilteredRH = true;
-                                    }
+                                    // TODO Ver filtro posteriormente
+                                     if (!$hasFilteredRH && $_POST["project_resources_filter"] == $allocated_hr_id) {
+                                         $hasFilteredRH = true;
+                                     }
                                 }
+                                $span = $dom->createElement('span', 'Recursos humanos: ' . $estimatedRolesTxt);
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
 
-                                if ($hasFilteredRH) {
-                                    $rowId = "wbs_id_" . $id . "_activity_id_" . $obj->task_id;
-                                    $rowDetailsId = "activity_details_id_" . $obj->task_id . "_wbs_id_" . $id;
-                                    ?>
-                                        <tr id="<?php echo $rowId; ?>" style="cursor:pointer;height:  30px">
-                                            <td style="width:200px;min-height: 30px;height: 30px;vertical-align: top" colspan="2">
-                                                <span style="color:#FFFFFF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><!-- Identation between eap items and activities -->
-                                                <span style="color:#FFFFFF"><?php echo $identation; ?></span>
-                                              
-                                                <span style="margin-left: 21px" id="activity_code_id_<?php echo $task_id ?>"> A.<?php echo $activitiesIdsForDisplay[$task_id] ?></span>
-                                                 
-                                                <div id="activity_description_read_id_<?php echo $task_id ?>" style="width:160px;float:right">          
-                                                        <?php echo $taskDescription ?>         
-                                                </div>
-                                                <span id="activity_description_edit_id_<?php echo $task_id ?>" style="display:none;" nowrap="nowrap">
-                                                    <input name="activity_description_id_<?php echo $task_id ?>" id="activity_description_id_<?php echo $task_id ?>" class="text" style="width:200px;margin-left: 4px;margin-bottom: 4px;" type="text" value="<?php echo $taskDescription ?>" />
-                                                </span>
-                                                <br />
-                                                
-                                                
-                                                  <span style="color:#008000">+</span> <span style="font-size: 8px;font-style: italic;cursor:pointer"  id="new_activity_log_link_<?php echo $task_id ?>" onclick="displayActivityLogPanel(<?php echo $task_id; ?>)"><?php echo $AppUI->_("LBL_NEW_ACTVITY_LOG"); ?></span>                                                
-                                                <div id="new_activity_log_div_<?php echo $task_id ?>" style="border:1px solid #f0f5f5;width: fit-content;display:none">
-                                                    
-                                                    <form name="activity_form_<?php echo $obj->task_id ?>" id="activity_form_<?php echo $obj->task_id ?>" method="post" action="?m=dotproject_plus">
+                                $divCollapse = $dom->createElement('div');
+                                $divCollapseClass = $dom->createAttribute('class');
+                                $divCollapseClass->value = 'collapse';
+                                $divCollapse->appendChild($divCollapseClass);
+                                $divCollapseId = $dom->createAttribute('id');
+                                $divCollapseId->value = 'card_'.$task_id;
+                                $divCollapse->appendChild($divCollapseId);
+
+                                $divCollapse->appendChild($taskCardRow);
+                                $taskCardBody->appendChild($divCollapse);
+                                $taskCard->appendChild($taskCardBody);
+                                $cardBody->appendChild($taskCard);
+                            }
+                        }
+                        $card->appendChild($cardBody);
+                        $mainCard->appendChild($card);
+                        createHtml($branch, $cardBody, $dom, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id);
+                    }
+                }
+                return $mainCard;
+            }
+            createTree($items, $activitiesIdsForDisplay, $userNameByHRid, $roles, $project_id);
+        }
+        $projectTaskEstimation = new ProjectTaskEstimation();
+    }
+?>
+
+ <!-- <form name="activity_form_<?php echo $obj->task_id ?>" id="activity_form_<?php echo $obj->task_id ?>" method="post" action="?m=dotproject_plus">
                                                         <input name="dosql" type="hidden" value="do_new_activity_log" />
                                                         <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
                                                         <input type="hidden" name="activity_id" value="<?php echo $obj->task_id ?>" />
@@ -440,7 +595,7 @@ if ($_GET["show_external_page"] != "") {
                                                     <table >
                                                                                      <tr>
                                                                                         <td style="text-align: center" nowrap="nowrap">
-                                                                                            <?php $dateFieldId="task_log_date_" .$task_id ?>
+                                                                                        <?php $dateFieldId="task_log_date_" .$task_id ?>
                                                                                             <input type="text" class="text" name="<?php echo $dateFieldId; ?>" id="<?php echo $dateFieldId; ?>" placeholder="dd/mm/yyyy" size="12" maxlength="10" value=""  />                                                                
                                                                                         </td>                           
                                                                                         <td style="text-align: center" nowrap="nowrap"> 
@@ -477,163 +632,4 @@ if ($_GET["show_external_page"] != "") {
                                                                                         </td>
                                                                                     </tr>
                                                                     </table>
-                                                    </form>
-                                                    
-                                                </div>
-                                                <br />
-                                                  
-                                                 <?php
-                                                    $activityLog= new ActivityLog();
-                                                    $resultSet= $activityLog->getActivityLogs($task_id);
-                                                    if(sizeof($resultSet)>0){
-                                                        ?>
-                                                <br />
-                                                <span style="color:#008000">*</span> <span style="font-size: 8px;font-style: italic;cursor:pointer" onclick="displayActivityLogList(<?php echo $task_id; ?>)" ><?php echo $AppUI->_("LBL_ACTIVITY_LOG_LIST") ?> (<?php echo sizeof($resultSet) ?>)</span>
-                                                 
-                                                <div id="list_activity_logs_<?php echo $task_id?>" style="display:none">
-                                                  <table class="tbl"  >
-                                                      <tr>
-                                                           <th><?php echo $AppUI->_("LBL_DATE") ?></th>
-                                                           <th><?php echo $AppUI->_("LBL_DESCRIPTION") ?></th>
-                                                           <th><?php echo $AppUI->_("Owner") ?></th>
-                                                           <th>&nbsp;</th>
-                                                          
-                                                      </tr>
-                                                        <?php
-                                                        foreach($resultSet as $record){
-                                                  ?>
-                                                     <tr>
-                                                         <td>
-                                                             <?php echo $record[2] ?>
-                                                         </td>
-                                                         <td>
-                                                             <?php echo $record[1] ?>
-                                                         </td>
-                                                          <td>
-                                                             <?php echo $record[4] ?>&nbsp;<?php echo $record[5] ?>
-                                                         </td>
-                                                         <td>
-                                                             <form name="form_activity_log_delete_<?php echo $record[0] ?>" method="post" action="?m=dotproject_plus">
-                                                                <input name="dosql" type="hidden" value="do_delete_activity_log" />
-                                                                <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                                                                <input type="hidden" name="activity_id" value="<?php echo $obj->task_id ?>" />
-                                                                <input type="hidden" name="tab" value="<?php echo $_GET["tab"] ?>" /> 
-                                                                <input type="hidden" name="task_log_id" value="<?php echo $record[0] ?>">
-                                                                <img src="./modules/dotproject_plus/images/trash_small.gif" onclick="document.form_activity_log_delete_<?php echo $record[0] ?>.submit();" style="cursor:pointer" />
-                                                             </form>
-                                                         </td>
-                                                      </tr>
-                                                  <?php
-                                                        }
-                                                        ?>
-                                                      </table>
-                                                    </div>
-                                                      <?php
-                                                    }
-                                                  ?>
-                                                  
-                                            </td>
-                                            <td style="text-align: center; vertical-align: top" nowrap="nowrap"> 
-                                                <?php echo $AppUI->_("LBL_PLANNED"); ?><br />
-                                                <span id="activity_date_start_read_id_<?php echo $task_id ?>">
-                                                    <?php echo $startDateTxt ?> 
-                                                </span>
-                                                <br /><br />
-                                                <?php echo $AppUI->_("LBL_ACTUAL") . "<br />"; ?>
-                                                <?php echo $startDateActualTxt; ?> 
-                                                
-                                                
-                                            </td>                           
-                                            <td style="text-align: center;vertical-align: top" nowrap="nowrap">
-                                                <?php echo $AppUI->_("LBL_PLANNED"); ?><br />
-                                                <span id="activity_date_end_read_id_<?php echo $task_id ?>">
-                                                    <?php echo $endDateTxt ?>
-                                                </span>
-                                                <br /><br />
-                                                    <?php 
-                                                if($obj->task_percent_complete==100){
-                                                    echo $AppUI->_("LBL_ACTUAL");
-                                                    echo "<br />";
-                                                    echo $endDateActualTxt ;
-                                                }
-                                                ?> 
-                                            </td>
-                                            <td style="text-align: center;width:100px; vertical-align: top">
-                                                <?php echo $AppUI->_("LBL_PLANNED"); ?><br />
-                                                <?php echo $duration ?><br /><br />
-                                                <?php 
-                                                if($actualDuration!=""){
-                                                    echo $AppUI->_("LBL_ACTUAL")."<br />";
-                                                    echo $actualDuration . " " . $AppUI->_("LBL_PROJECT_DAYS_MULT");
-                                                }
-                                                ?>
-                                            </td>
-                                            <td nowrap="nowrap" style="width:200px;vertical-align: top">
-                                                <span id="activity_rh_read_id_<?php echo $task_id ?>">
-                                                    <?php
-                                                    echo $estimatedRolesTxt;
-                                                    ?> 
-                                                </span>
-                                                
-                                            </td>
-                                            <td style="text-align: center;vertical-align: top;width:100px">
-                                                
-                                                    <input type="hidden" name="task_percent_complete" value="<?php echo $obj->task_percent_complete ?>" />
-
-                                                    <?php
-                                                    $activity_status = "";
-                                                    switch ($obj->task_percent_complete) {
-                                                        case 0:
-                                                            $activity_status = $AppUI->_("LBL_ACTIVITY_STATUS_NOT_INITIATED");
-                                                            break;
-                                                        case 100:
-                                                            $activity_status = $AppUI->_("LBL_ACTIVITY_STATUS_CONCLUDED");
-                                                            break;
-                                                        default:
-                                                            $activity_status = $AppUI->_("LBL_ACTIVITY_STATUS_WORKING_ON_IT");
-                                                            ;
-                                                            break;
-                                                    }
-                                                    echo $activity_status;
-                                                
-                                ?>         
-                                            </td>
-                                        </tr> 
-                                        
-                                             
-                                    <?php
-                                    //end: build line for task
-                                }
-                            }
-                        }
-                    }
-                    //end: code to filter workpackages activities
-                } else {
-                    ?>
-                    <tr id="row_<?php echo $id ?>" title="non_leaf">
-
-                        <td colspan="7" style="background-color: #E8E8E8;height: 30px">    
-                            <span id="read_workpackage_id_<?php echo $id ?>">
-                                <span id="identation_<?php echo $id ?>" style="color:#E8E8E8" ><?php echo $identation; ?></span>
-                                <!-- To enlarge the identation space -->
-                <?php echo strlen($identation) > 0 ? "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" : ""; ?>
-                               
-                                <span style="margin-left: 21px" id="div_numbering_<?php echo $id ?>">
-                <?php echo $number ?>
-                                </span>
-                <?php echo $name ?>
-                            </span>
-                             
-                        </td>
-                    </tr>
-                    <?php
-                }
-            }
-        }
-        ?>
-    </table>
-
-    <br/>
-    <?php
-}
-?>
+                                                    </form> -->
