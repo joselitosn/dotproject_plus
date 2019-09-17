@@ -19,7 +19,7 @@ require_once (DP_BASE_DIR . '/modules/tasks/tasks.class.php');
 
 $taskLogDescription = dPgetParam($_POST,"task_log_description");
 $taskLogActivityId = dPgetParam($_POST, "activity_id");
-$taskLogDate = dPgetParam($_POST, "task_log_date_$taskLogActivityId");
+$taskLogDate = dPgetParam($_POST, "task_log_date");
 $taskLogHours = dPgetParam($_POST, "task_log_hours");
 $taskLogCreator = dPgetParam($_POST, "task_log_creator");
 $activityConcluded = dPgetParam($_POST, "activity_concluded");
@@ -58,6 +58,6 @@ $task->store();
 //6. Trabalhar o módulo de monitoring e controlling: Análise de valor agregado, tempo e custo
 
 $AppUI->setMsg($AppUI->_("LBL_ACTIVITY_TASK_LOG_REGISTERED"), UI_MSG_OK, true);
-
-$AppUI->redirect("m=projects&a=view&project_id=" . $_POST["project_id"] . "&tab=" . $_POST["tab"]);
+echo $AppUI->getMsg();
+exit();
 ?>

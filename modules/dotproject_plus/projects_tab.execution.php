@@ -277,12 +277,21 @@ if ($_GET["show_external_page"] != "") {
                                 $duration = "";
                                 if ($projectTaskEstimation->getDuration() != "") {
                                     $duration = "" . $projectTaskEstimation->getDuration() . " dia(s)";
-                                }   
+                                } else {
+                                    $duration = ' - ';
+                                }
+
                                 
                                 //actual dates
                                 $activityLog=new ActivityLog();
                                 $actualDates=$activityLog->getActivitiesActualDates($task_id);
                                 $actualDuration=$activityLog->getActivityActualDuration();
+                                if ($actualDuration != "") {
+                                    $actualDuration = $actualDuration . ' dia(s)';
+                                } else {
+                                    $actualDuration = ' - ';
+                                }
+
                                 $startDateActualTxt = "";
                                 $endDateActualTxt = "";
                                 if(sizeof($actualDates)==2) {
@@ -321,7 +330,7 @@ if ($_GET["show_external_page"] != "") {
                                 $carCol8Class = $dom->createAttribute('class');
                                 $carCol8Class->value = 'col-md-10';
                                 $carCol8->appendChild($carCol8Class);
-                                
+
                                 switch ($obj->task_percent_complete) {
                                     case 0:
                                         $activityStatus = $dom->createElement('span', 'Iniciada');
@@ -417,14 +426,14 @@ if ($_GET["show_external_page"] != "") {
                                 $dropdownItemhref->value = 'javascript:void(0)';
                                 $dropdownItem->appendChild($dropdownItemhref);
                                 $dropdownItemOC = $dom->createAttribute('onclick');
-                                $dropdownItemOC->value = 'tasks.edit('.$branch['id'].','.$task_id.')';
+                                $dropdownItemOC->value = 'taskLog.add('.$task_id.')';
                                 $dropdownItem->appendChild($dropdownItemOC);
                                 $icon = $dom->createElement('i');
                                 $iconClass = $dom->createAttribute('class');
                                 $iconClass->value = 'far fa-edit';
                                 $icon->appendChild($iconClass);
                                 $dropdownItem->appendChild($icon);
-                                $dropdownItemSpan = $dom->createElement('span', ' Alterar Atividade');
+                                $dropdownItemSpan = $dom->createElement('span', ' Novo registro de trabalho');
                                 $dropdownItem->appendChild($dropdownItemSpan);
                                 $dropdownMenu->appendChild($dropdownItem);
 
@@ -445,71 +454,32 @@ if ($_GET["show_external_page"] != "") {
                                 $carCol6->appendChild($carCol6Class);
 
                                 // Data início
-                                $span = $dom->createElement('span', 'Início: ' . $startDateTxt);
+                                $span = $dom->createElement('span', 'Início planejado: ' . $startDateTxt . ' | Início real: ' . $startDateActualTxt);
                                 $spanClass = $dom->createAttribute('class');
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
                                 $carCol6->appendChild($span);
-                                // TODO actual
-
-                                // <td style="text-align: center; vertical-align: top" nowrap="nowrap"> 
-                                //                 <?php echo $AppUI->_("LBL_PLANNED");<br />
-                                //                 <span id="activity_date_start_read_id_<?php echo $task_id">
-                                //                     <?php echo $startDateTxt 
-                                //                 </span>
-                                //                 <br /><br />
-                                //                 <?php echo $AppUI->_("LBL_ACTUAL") . "<br />"; 
-                                //                 <?php echo $startDateActualTxt; ?
-        
 
                                 // Data fim
-                                $span = $dom->createElement('span', 'Fim: ' . $endDateTxt);
-                                $spanClass = $dom->createAttribute('class');
-                                $spanClass->value = 'd-block';
-                                $span->appendChild($spanClass);
-                                $carCol6->appendChild($span);
-                                // TODO actual
-                                //             </td>                           
-                                //             <td style="text-align: center;vertical-align: top" nowrap="nowrap">
-                                //                 <?php echo $AppUI->_("LBL_PLANNED");<br />
-                                //                 <span id="activity_date_end_read_id_<?php echo $task_id ">
-                                //                     <?php echo $endDateTxt 
-                                //                 </span>
-                                //                 <br /><br />
-                                //                     <?php 
-                                //                 if($obj->task_percent_complete==100){
-                                //                     echo $AppUI->_("LBL_ACTUAL");
-                                //                     echo "<br />";
-                                //                     echo $endDateActualTxt ;
-                                //                 
-                                //                  
-                                //             </td>
-
-                                // Duração
-                                $span = $dom->createElement('span', 'Duração: ' . $duration);
+                                $span = $dom->createElement('span', 'Fim planejado: ' . $endDateTxt . ' | Fim real: ' . $endDateActualTxt);
                                 $spanClass = $dom->createAttribute('class');
                                 $spanClass->value = 'd-block';
                                 $span->appendChild($spanClass);
                                 $carCol6->appendChild($span);
                                 $taskCardRow->appendChild($carCol6);
-                                // TODO actual
-                                //             <td style="text-align: center;width:100px; vertical-align: top">
-                                //                 <?php echo $AppUI->_("LBL_PLANNED");><br />
-                                //                 <?php echo $duration><br /><br />
-                                //                 <?php 
-                                //                 if($actualDuration!=""){
-                                //                     echo $AppUI->_("LBL_ACTUAL")."<br />";
-                                //                     echo $actualDuration . " " . $AppUI->_("LBL_PROJECT_DAYS_MULT");
-                                //                 }
-                                //                
-                                //             </td>
-
-
+                                
                                 $carCol6 = $dom->createElement('div');
                                 $carCol6Class = $dom->createAttribute('class');
                                 $carCol6Class->value = 'col-md-6';
                                 $carCol6->appendChild($carCol6Class);
                                 $taskCardRow->appendChild($carCol6);
+                                
+                                // Duração
+                                $span = $dom->createElement('span', 'Duração planejada: ' . $duration . ' | Duração real: ' . $actualDuration);
+                                $spanClass = $dom->createAttribute('class');
+                                $spanClass->value = 'd-block';
+                                $span->appendChild($spanClass);
+                                $carCol6->appendChild($span);
 
                                 // Recursos humanos
                                 $estimatedRolesTxt = "";
@@ -566,6 +536,23 @@ if ($_GET["show_external_page"] != "") {
                                 $divCollapse->appendChild($divCollapseId);
 
                                 $divCollapse->appendChild($taskCardRow);
+
+                                $taskCardRow = $dom->createElement('div');
+                                $taskCardRowClass = $dom->createAttribute('class');
+                                $taskCardRowClass->value = 'row';
+                                $taskCardRow->appendChild($taskCardRowClass);
+
+                                $carCol12 = $dom->createElement('div');
+                                $carCol12Class = $dom->createAttribute('class');
+                                $carCol12Class->value = 'col-md-12';
+                                $carCol12->appendChild($carCol12Class);
+                                $carCol12Id= $dom->createAttribute('id');
+                                $carCol12Id->value = 'logContainer_'.$task_id;
+                                $carCol12->appendChild($carCol12Id);
+                                $taskCardRow->appendChild($carCol12);
+                                $divCollapse->appendChild($taskCardRow);
+
+
                                 $taskCardBody->appendChild($divCollapse);
                                 $taskCard->appendChild($taskCardBody);
                                 $cardBody->appendChild($taskCard);
@@ -584,52 +571,191 @@ if ($_GET["show_external_page"] != "") {
     }
 ?>
 
- <!-- <form name="activity_form_<?php echo $obj->task_id ?>" id="activity_form_<?php echo $obj->task_id ?>" method="post" action="?m=dotproject_plus">
-                                                        <input name="dosql" type="hidden" value="do_new_activity_log" />
-                                                        <input type="hidden" name="project_id" value="<?php echo $project_id; ?>" />
-                                                        <input type="hidden" name="activity_id" value="<?php echo $obj->task_id ?>" />
-                                                        <input type="hidden" name="task_log_creator" value="<?php echo $AppUI->user_id ?>" />
-                                                        <input type="hidden" name="tab" value="<?php echo $_GET["tab"] ?>" />
-                                                    
-                                                    <div align="center"><b><?php echo $AppUI->_("LBL_NEW_ACTVITY_LOG"); ?></b><br /><br /></div>
-                                                    <table >
-                                                                                     <tr>
-                                                                                        <td style="text-align: center" nowrap="nowrap">
-                                                                                        <?php $dateFieldId="task_log_date_" .$task_id ?>
-                                                                                            <input type="text" class="text" name="<?php echo $dateFieldId; ?>" id="<?php echo $dateFieldId; ?>" placeholder="dd/mm/yyyy" size="12" maxlength="10" value=""  />                                                                
-                                                                                        </td>                           
-                                                                                        <td style="text-align: center" nowrap="nowrap"> 
-                                                                                            <select name="task_log_hours">
-                                                                                                <option value="0.5">0:30</option>
-                                                                                                <option value="1">1:00</option>
-                                                                                                <option value="1.5">1:30</option>
-                                                                                                <option value="2">2:00</option>
-                                                                                                <option value="2.5">2:30</option>
-                                                                                                <option value="3">3:00</option>
-                                                                                                <option value="3.5">3:30</option>
-                                                                                                <option value="4">4:00</option>
-                                                                                            </select>
 
-                                                                                        </td>
-                                                                                    </tr>
+<div class="modal" tabindex="-1" role="dialog" id="modalWorkRecords">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_('LBL_ORGANIZATIONAL_POLICY')?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form name="taskLogForm">
+                    <input name="dosql" type="hidden" value="do_new_activity_log" />
+                    <input type="hidden" name="task_log_creator" value="<?=$AppUI->user_id?>" />
+                    <input type="hidden" name="project_id" value="<?=$project_id?>" />
+                    <input type="hidden" name="activity_id" value="" />
 
-                                                                                    <tr>
-                                                                                        <td colspan="2">
-                                                                                            <textarea style="width: 100%;height:60px;resize: none;" name="task_log_description"></textarea>
-                                                                                        </td>    
-                                                                                    </tr>
-                                                                                    <tr>
+                    <div class="form-group">
+                        <span class="required"></span>
+                        <?=$AppUI->_('requiredField');?>
+                    </div>
 
-                                                                                        <td colspan="2">
-                                                                                            <input type="checkbox" value="1" name="activity_concluded" /> <?php echo $AppUI->_("LBL_ACTIVITY_CONCLUDED") ?>
-                                                                                        </td>
-                                                                                    </tr>
-                                                                                    <tr>
-                                                                                        <td colspan="2" style="text-align: right">
-                                                                                            <br />
-                                                                                            <input class="button" type="button" value="<?php echo $AppUI->_("LBL_SAVE"); ?>" onclick="validateActivityLog(<?php echo $task_id ?>);" />
-                                                                                            <input class="button" type="button" value="<?php echo ucfirst($AppUI->_("LBL_CANCEL")); ?>" onclick="closeActivityLogPanel(<?php echo $task_id ?>);"  />
-                                                                                        </td>
-                                                                                    </tr>
-                                                                    </table>
-                                                    </form> -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="task_log_date" class="required">
+                                    <?php echo $AppUI->_("LBL_DATE"); ?>
+                                </label>
+                                <input type="text" class="form-control form-control-sm datepicker" name="task_log_date" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="task_log_hours" class="required">
+                                    <?php echo $AppUI->_("LBL_TIME"); ?>
+                                </label>
+                                <select name="task_log_hours" class="form-control form-control-sm select">
+                                    <option value="0.5">0:30</option>
+                                    <option value="1">1:00</option>
+                                    <option value="1.5">1:30</option>
+                                    <option value="2">2:00</option>
+                                    <option value="2.5">2:30</option>
+                                    <option value="3">3:00</option>
+                                    <option value="3.5">3:30</option>
+                                    <option value="4">4:00</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="task_log_description">
+                            <?php echo $AppUI->_("LBL_DESCRIPTION"); ?>
+                        </label>
+                        <textarea name="task_log_description" rows="4" class="form-control form-control-sm"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" name="activity_concluded" id="activity_concluded">
+                            <label class="form-check-label" for="activity_concluded">
+                            <?php echo $AppUI->_("LBL_ACTIVITY_CONCLUDED"); ?>
+                            </label>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="taskLog.save()"><?=$AppUI->_('LBL_SAVE')?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var taskLog = {
+
+        loadedLogs: [],
+
+        init: function() {
+            $('#modalWorkRecords').on('hidden.bs.modal', function() {
+                $('form[name=taskLogForm]').trigger('reset');
+                $('.select').trigger('change');
+            });
+
+            $(".select").select2({
+                allowClear: false,
+                theme: "bootstrap",
+                dropdownParent: $("#modalWorkRecords")
+            });
+
+            $( ".datepicker" ).datepicker({
+                dateFormat: 'dd/mm/yy'
+            });
+
+            $('.inner-card').find('h6').on('click', function(e) {
+                var taskId;
+                try {
+                    taskId = $(e.target).attr('data-target').split('_')[1];
+                } catch (err) {
+                    taskId = $(e.target).parent().attr('data-target').split('_')[1];
+                }
+                if ($(this).next('i').hasClass('fa-caret-down')) {
+                    $(this).next('i').removeClass('fa-caret-down');
+                    $(this).next('i').addClass('fa-caret-up');
+                    taskLog.loadLogs(taskId);
+                } else {
+                    $(this).next('i').removeClass('fa-caret-up');
+                    $(this).next('i').addClass('fa-caret-down');
+                }
+            });
+        },
+
+        add: function(taskId) {
+            var modal = $('#modalWorkRecords');
+            $('input[name=activity_id]').val(taskId);
+            modal.modal();
+        },
+
+        save: function() {
+            var date = $("input[name=task_log_date]").val();
+            var time = $("select[name=task_log_hours]").val();
+            var taskId = $('input[name=activity_id]').val();
+
+            if (!date || !time) {
+                var msg = [];
+                if (!date) msg.push("Informe a data");
+                if (!time) msg.push("Informe o período");
+                $.alert({
+                    title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
+                    content: msg.join("<br>")
+                });
+                return;
+            }
+
+            $.ajax({
+                url: "?m=dotproject_plus",
+                type: "post",
+                datatype: "json",
+                data: $("form[name=taskLogForm]").serialize(),
+                success: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        content: resposta,
+                        onClose: function() {
+                            taskLog.requestLogs(taskId);
+                        }
+                    });
+                    $("#modalWorkRecords").modal("hide");
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
+                }
+            });
+        },
+
+        loadLogs: function(taskId) {
+            if (taskLog.loadedLogs.includes(taskId)) {
+                return;
+            }
+            var element = $('#logContainer_'+taskId);
+            element.loading({
+                message: 'Carregando logs...'
+            });
+            taskLog.requestLogs(taskId);
+        },
+
+        requestLogs: function(taskId) {
+            var element = $('#logContainer_'+taskId);
+            element.load(
+                '?m=tasks&template=vw_log_short&task_id='+taskId,
+                function() {
+                    if (!taskLog.loadedLogs.includes(taskId)) {
+                        taskLog.loadedLogs.push(taskId)
+                    }
+                    element.loading('stop');
+                }
+            );
+        }
+    };
+
+    $(document).ready(taskLog.init);
+
+</script>
