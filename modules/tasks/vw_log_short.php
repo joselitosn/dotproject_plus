@@ -20,38 +20,45 @@ $q->addOrder('tl.task_log_date desc');
 $logs = $q->loadList();
 if (count($logs) > 0) {
     ?>
+    <div id="taskLogContainer_<?=$task_id?>">
         <hr>
+        <h5>Logs</h5>
+        <table class="table table-sm table-bordered text-center" id="table_log_<?=$row['task_log_id']?>">
+            <!-- Line one -->
+            <thead class="thead-dark">
+                <tr>
+                    <th width="17%"><?php echo $AppUI->_('Date'); ?></th>
+                    <th width="50%"><?php echo $AppUI->_('Description'); ?></th>
+                    <th width="25%">Responsável</th>
+                    <th width="8%"></th>
+                </tr>
+            </thead>
+            <tbody id="tableLogTask_<?=$task_id?>">
+        <?php
+        foreach ($logs as $row) {
+            $task_log_date = new CDate($row['task_log_date']);
+            $descrip = $row['task_log_description'];
+            ?>
+            
+                    <tr id="taskLogTableRow_<?=$row['task_log_id']?>">
+                        <td><?=$task_log_date->format($df)?></td>
+                        <td><?=$descrip?></td>
+                        <td><?= $AppUI->___($row['user_username']) ?></td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-xs" onclick="taskLog.delete(<?=$row['task_log_id']?>, <?=$task_id?>)">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <?php
+        }
+            ?>
+            </tbody>
+        </table>
+    </div>
     <?php
 }
 ?>
-<table class="table table-sm table-bordered text-center" id="table_log_<?=$row['task_log_id']?>">
-    <!-- Line one -->
-    <thead class="thead-dark">
-        <tr>
-            <th width="17%"><?php echo $AppUI->_('Date'); ?></th>
-            <th width="50%"><?php echo $AppUI->_('Description'); ?></th>
-            <th width="25%">Responsável</th>
-            <th width="8%"></th>
-        </tr>
-    </thead>
-    <tbody>
-<?php
-    foreach ($logs as $row) {
-        $task_log_date = new CDate($row['task_log_date']);
-        $descrip = $row['task_log_description'];
-        ?>
-        
-                <tr>
-                    <td><?=$task_log_date->format($df)?></td>
-                    <td><?=$descrip?></td>
-                    <td><?= $AppUI->___($row['user_username']) ?></td>
-                    <td>botão</td>
-                </tr>
-                <?php
-    }
-        ?>
-        </tbody>
-    </table>
     <?php
 exit();
 ?>

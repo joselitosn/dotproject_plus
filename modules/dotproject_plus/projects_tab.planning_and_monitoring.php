@@ -452,7 +452,7 @@ if ($_GET["show_external_page"] != "") {
 
                                 switch ($obj->task_percent_complete) {
                                     case 0:
-                                        $activityStatus = $dom->createElement('span', 'Iniciada');
+                                        $activityStatus = $dom->createElement('span', 'Não Iniciada');
                                         $activityStatusClass = $dom->createAttribute('class');
                                         $activityStatusClass->value = 'badge badge-primary';
                                         $activityStatus->appendChild($activityStatusClass);
@@ -464,7 +464,7 @@ if ($_GET["show_external_page"] != "") {
                                         $activityStatus->appendChild($activityStatusClass);
                                         break;
                                     default:
-                                        $activityStatus = $dom->createElement('span', 'Não iniciada');
+                                        $activityStatus = $dom->createElement('span', 'Iniciada');
                                         $activityStatusClass = $dom->createAttribute('class');
                                         $activityStatusClass->value = 'badge badge-info';
                                         $activityStatus->appendChild($activityStatusClass);

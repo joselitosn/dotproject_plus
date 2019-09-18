@@ -1,94 +1,3 @@
-<script>
-
-// function displayActivityLogPanel(activityId){
-//     //document.getElementById("new_activity_log_div_"+activityId).style.display="block";
-//     $("#new_activity_log_div_"+activityId).slideDown();
-// }
-
-// function closeActivityLogPanel(activityId){
-//     //document.getElementById("new_activity_log_div_"+activityId).style.display="none";
-//     $("#new_activity_log_div_"+activityId).slideUp();
-// }
-
-// function displayActivityLogList(activityId){
-//     $("#list_activity_logs_"+activityId).slideToggle();
-// }
-
-// function validateActivityLog(activityId){
-//     var result=false;
-//     var dateField=document.getElementById("task_log_date_"+activityId);
-//     var dateValue=dateField.value;
-//     if(validateDateField(dateValue)){
-//         result=true;
-//     }else{
-//         dateField.style.backgroundColor="#ffcccc";
-//         result=false;
-//     }
-//     if(result){
-//         document.getElementById("activity_form_"+activityId).submit();
-//     }
-// }
-
-
-//     function filterActivitiesByUser() {
-//         document.select_human_resource_filter_form.submit();
-//     }
-    
-//  /**
-//  * This function verifies if the value inputted in a date field is numericaly correct.
-//  * Empty values are consideted false.
-//  * This function return a boolean value.
-//  */
-// function validateDateField(value){
-//     var result=false;
-//     if(value!=""){
-//         var dateParts=value.split("/");
-//         if(dateParts.length==3){
-//             var day=dateParts[0];
-//             var month=dateParts[1];
-//             var year=dateParts[2];
-//             if (!isNaN(parseInt(day)) && !isNaN(parseInt(month)) && !isNaN(parseInt(year)) ){
-//                 result=true;
-//             }
-//         }
-//     }
-//     return result;
-// }
-
-//    function expandControlWorkpackageActivities(id) {
-//         if (document.getElementById("collapse_icon_" + id).style.display == "none") {
-//             expandActivities(id);
-//         } else {
-//             collapseActivities(id);
-//         }
-//     }
-    
-//       function expandActivities(id) {
-//         var table = document.getElementById("tb_eap");
-//         for (var i = 0; i < table.rows.length; i++) {
-//             row = table.rows[i];
-//             if (row.id.indexOf("wbs_id_" + id) != -1) {
-//                 row.style.display = "none";
-//             }
-//         }
-//         document.getElementById("collapse_icon_" + id).style.display = "inline";
-//         document.getElementById("expand_icon_" + id).style.display = "none";
-//     }
-
-//     function collapseActivities(id) {
-//         var table = document.getElementById("tb_eap");
-//         for (var i = 0; i < table.rows.length; i++) {
-//             row = table.rows[i];
-//             if (row.id.indexOf("wbs_id_" + id) != -1 && row.id.indexOf("activity_details_id_") == -1) {
-//                 row.style.display = "table-row";
-//             }
-//         }
-//         document.getElementById("collapse_icon_" + id).style.display = "none";
-//         document.getElementById("expand_icon_" + id).style.display = "inline";
-//     }
-
-</script>
-
 <?php
 require_once (DP_BASE_DIR . "/modules/timeplanning/model/project_task_estimation.class.php");
 require_once (DP_BASE_DIR . "/modules/dotproject_plus/model/ActivityLog.php");
@@ -173,7 +82,7 @@ if ($_GET["show_external_page"] != "") {
     ?>
             <div class="alert alert-secondary text-center" role="alert">
                 <?php echo $AppUI->_("LBL_CLICK") ?>
-                <a href="#" onclick="wbs.new(<?=$project_id?>)">
+                <a href="?m=projects&a=view&project_id=31&tab=1&subtab=0">
                     <b><u><?php echo $AppUI->_("LBL_HERE") ?></u></b>
                 </a>
                 <?php echo $AppUI->_("LBL_CREATE_NEW_WBS_ITEM") ?>
@@ -333,7 +242,7 @@ if ($_GET["show_external_page"] != "") {
 
                                 switch ($obj->task_percent_complete) {
                                     case 0:
-                                        $activityStatus = $dom->createElement('span', 'Iniciada');
+                                        $activityStatus = $dom->createElement('span', 'Não Iniciada');
                                         $activityStatusClass = $dom->createAttribute('class');
                                         $activityStatusClass->value = 'badge badge-primary';
                                         $activityStatus->appendChild($activityStatusClass);
@@ -345,7 +254,7 @@ if ($_GET["show_external_page"] != "") {
                                         $activityStatus->appendChild($activityStatusClass);
                                         break;
                                     default:
-                                        $activityStatus = $dom->createElement('span', 'Não iniciada');
+                                        $activityStatus = $dom->createElement('span', 'Iniciada');
                                         $activityStatusClass = $dom->createAttribute('class');
                                         $activityStatusClass->value = 'badge badge-info';
                                         $activityStatus->appendChild($activityStatusClass);
@@ -753,6 +662,38 @@ if ($_GET["show_external_page"] != "") {
                     element.loading('stop');
                 }
             );
+        },
+
+        delete: function(id, taskId) {
+            $.ajax({
+                url: "?m=dotproject_plus",
+                type: "post",
+                data: {
+                    task_log_id: id,
+                    dosql: 'do_delete_activity_log'
+                },
+                success: function(resposta) {
+                    $('#taskLogTableRow_'+id).remove();
+                    var totalLinesLeft = $('#tableLogTask_'+taskId).children();
+                    if (totalLinesLeft.length == 0) {
+                        $('#taskLogContainer_'+taskId).remove();
+                        var index = taskLog.loadedLogs.findIndex(function(entry){
+                            return entry === taskId;
+                        });
+                        taskLog.loadedLogs.splice(index, 1);
+                    }
+                    $.alert({
+                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                        content: resposta
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                        content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                    });
+                }
+            });
         }
     };
 

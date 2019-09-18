@@ -37,13 +37,11 @@ $task_percent_complete=50;
 if($activityConcluded=="1"){
     $task_percent_complete=100;
 }
-
-$task= new CTask();
-$task->load($taskLogActivityId);
-$task->task_percent_complete=$task_percent_complete;
-$task->store();
-//$task_hours_worked=sum das horas da tabela de activity log
-                        
+$q = new DBQuery;
+$q->addTable('tasks', 't');							
+$q->addUpdate('task_percent_complete', $task_percent_complete);	
+$q->addWhere('task_id = '.$taskLogActivityId);
+$q->exec();
 
 //1. Save a new activity log (ok)
 //2. Update the activity record (ok)

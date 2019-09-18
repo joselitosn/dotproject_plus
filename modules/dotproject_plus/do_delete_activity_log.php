@@ -14,6 +14,6 @@ $taskLog->delete();
 
 
 $AppUI->setMsg($AppUI->_("LBL_ACTIVITY_TASK_LOG_DELETED",UI_OUTPUT_HTML), UI_MSG_OK, true);
-
-$AppUI->redirect("m=projects&a=view&project_id=" . $_POST["project_id"] . "&tab=" . $_POST["tab"]);
+echo $AppUI->getMsg();
+exit();
 ?>
