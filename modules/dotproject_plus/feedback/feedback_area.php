@@ -89,10 +89,12 @@
                                 dosql: 'do_show_feedback'
                             }
                         }).done(function(response) {
-
                             $.alert({
                                 title: "Feedback",
-                                content: response
+                                content: response,
+                                onClose: function() {
+                                    window.location.reload();
+                                }
                             });
                         });
                     }
