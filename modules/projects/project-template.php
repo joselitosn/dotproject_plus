@@ -66,7 +66,9 @@
                 if (!name) msg.push("Informe o nome do projeto");
                 if (company == null) msg.push("<?=$AppUI->_('projectsBadCompany', UI_OUTPUT_JS); ?>");
                 $.alert({
-                    title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: msg.join("<br>")
                 });
                 return;
@@ -78,6 +80,8 @@
                 data: $("form[name=addEditProject]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta,
                         onClose: function() {
@@ -88,6 +92,8 @@
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });

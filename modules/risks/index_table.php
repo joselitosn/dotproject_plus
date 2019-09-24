@@ -369,6 +369,8 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
                                 }
                             }).done(function(resposta) {
                                 $.alert({
+                                    icon: "far fa-check-circle",
+                                    type: "green",
                                     title: "Sucesso",
                                     content: resposta,
                                     onClose: function() {
@@ -428,18 +430,24 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
                 msg.push('Preencha a descrição');
             }
 
-            if (!moment(dateStart, 'DD/MM/YYYY', true).isValid()) {
-                err = true;
-                msg.push('Data de início do período de vigência é inválida');
+            if (dateStart) {
+                if (!moment(dateStart, 'DD/MM/YYYY', true).isValid()) {
+                    err = true;
+                    msg.push('Data de início do período de vigência é inválida');
+                }
             }
 
-            if (!moment(dateEnd, 'DD/MM/YYYY', true).isValid()) {
-                err = true;
-                msg.push('Data de fim do período de vigência é inválida');
+            if (dateEnd) {
+                if (!moment(dateEnd, 'DD/MM/YYYY', true).isValid()) {
+                    err = true;
+                    msg.push('Data de fim do período de vigência é inválida');
+                }
             }
 
             if (err) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: msg.join('<br>')
                 });
@@ -452,6 +460,8 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
                 data: $("#riskForm").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -461,6 +471,8 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -500,6 +512,8 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
                 data: $('form[name=checklist_analisys]').serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -509,6 +523,8 @@ require_once DP_BASE_DIR . "/modules/risks/risks.class.php";;
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });

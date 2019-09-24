@@ -283,6 +283,8 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
 
             if (err) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: msg.join('<br>')
                 });
@@ -299,6 +301,8 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
                     var id = resposta.newBaselineId;
                     var dateTime = resposta.dateTime;
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta.msg,
                         onClose: function() {
@@ -340,6 +344,8 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });
@@ -366,6 +372,8 @@ $cmbBaseline = dPgetParam($_POST, 'cmbBaseline');
                             }).done(function(resposta) {
                                 resposta = JSON.parse(resposta);
                                 $.alert({
+                                    icon: "far fa-check-circle",
+                                    type: "green",
                                     title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                                     content: resposta.msg,
                                     onClose: function() {

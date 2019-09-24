@@ -251,6 +251,8 @@ if ($companyRole) {
                 data: $("form[name=form_orgonogram]").serialize(),
                 success: function(resposta) {
 //                    $.alert({
+                        // icon: "far fa-check-circle",
+                        // type: "green",
 //                        title: "<?//=$AppUI->_('Success', UI_OUTPUT_JS); ?>//",
 //                        content: resposta,
 //                        onClose: function() {
@@ -260,6 +262,8 @@ if ($companyRole) {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });

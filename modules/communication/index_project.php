@@ -369,6 +369,8 @@ $frequencies = $frequencies->loadList();
             }
             if (err) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: msg.join('<br>')
                 });
@@ -381,6 +383,8 @@ $frequencies = $frequencies->loadList();
                 data: $("#communicationForm").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -390,6 +394,8 @@ $frequencies = $frequencies->loadList();
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -415,6 +421,8 @@ $frequencies = $frequencies->loadList();
                                 }
                             }).done(function(resposta) {
                                 $.alert({
+                                    icon: "far fa-check-circle",
+                                    type: "green",
                                     title: "Sucesso",
                                     content: resposta,
                                     onClose: function() {
@@ -486,11 +494,17 @@ $frequencies = $frequencies->loadList();
                             }).done(function(resposta) {
                                 resposta = JSON.parse(resposta);
                                 var titulo = 'Erro';
+                                var icon = 'far fa-times-circle';
+                                var type = 'red';
                                 if (resposta.sucesso) {
                                     titulo = 'Sucesso';
+                                    icon = 'far fa-check-circle';
+                                    type = 'green';
                                     $('#row_channel_'+id).remove();
                                 }
                                 $.alert({
+                                    icon: icon,
+                                    type: type,
                                     title: titulo,
                                     content: resposta.msg
                                 });
@@ -515,6 +529,8 @@ $frequencies = $frequencies->loadList();
             }
             if (err) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: msg.join('<br>')
                 });
@@ -529,11 +545,15 @@ $frequencies = $frequencies->loadList();
                     resposta = JSON.parse(resposta);
                     if (resposta.erro) {
                         $.alert({
+                            icon: "far fa-times-circle",
+                            type: "red",
                             title: "Erro",
                             content: resposta.msg
                         });
                     } else {
                         $.alert({
+                            icon: "far fa-check-circle",
+                            type: "green",
                             title: "Sucesso",
                             content: resposta.msg,
                             onClose: function() {
@@ -567,6 +587,8 @@ $frequencies = $frequencies->loadList();
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -629,11 +651,17 @@ $frequencies = $frequencies->loadList();
                             }).done(function(resposta) {
                                 resposta = JSON.parse(resposta);
                                 var titulo = 'Erro';
+                                var icon = 'far fa-times-circle';
+                                var type = 'red';
                                 if (resposta.sucesso) {
                                     titulo = 'Sucesso';
+                                    icon = 'far fa-check-circle';
+                                    type = 'green';
                                     $('#row_frequency_'+id).remove();
                                 }
                                 $.alert({
+                                    icon: icon,
+                                    type: type,
                                     title: titulo,
                                     content: resposta.msg
                                 });
@@ -658,6 +686,8 @@ $frequencies = $frequencies->loadList();
             }
             if (err) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: msg.join('<br>')
                 });
@@ -672,11 +702,15 @@ $frequencies = $frequencies->loadList();
                     resposta = JSON.parse(resposta);
                     if (resposta.erro) {
                         $.alert({
+                            icon: "far fa-times-circle",
+                            type: "red",
                             title: "Erro",
                             content: resposta.msg
                         });
                     } else {
                         $.alert({
+                            icon: "far fa-check-circle",
+                            type: "green",
                             title: "Sucesso",
                             content: resposta.msg,
                             onClose: function() {
@@ -713,6 +747,8 @@ $frequencies = $frequencies->loadList();
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });

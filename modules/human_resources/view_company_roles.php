@@ -178,8 +178,7 @@ if (count($roles) === 0) {
                 title: '<?=$AppUI->_("LBL_CONFIRM", UI_OUTPUT_JS); ?>',
                 content: '<?=$AppUI->_("LBL_DELETE_MSG_ROLE", UI_OUTPUT_JS); ?>',
                 buttons: {
-                    confirmar: {
-                        btnClass: 'btn-blue',
+                    sim: {
                         action: function () {
                             $.ajax({
                                 url: "?m=human_resources",
@@ -193,6 +192,8 @@ if (count($roles) === 0) {
                                 },
                                 success: function(resposta) {
                                     $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
                                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                                         content: resposta,
                                         onClose: function() {
@@ -202,6 +203,8 @@ if (count($roles) === 0) {
                                 },
                                 error: function(resposta) {
                                     $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
                                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                                     });
@@ -209,7 +212,9 @@ if (count($roles) === 0) {
                             });
                         }
                     },
-                    cancelar: function () {},
+                    nao: {
+                        text: 'Não'
+                    },
                 }
             });
         },
@@ -250,7 +255,9 @@ if (count($roles) === 0) {
                 var msg = [];
                 if (!name) msg.push("<?=$AppUI->_('You must enter a role name', UI_OUTPUT_JS); ?>");
                 $.alert({
-                    title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: msg.join("<br>")
                 });
                 return;
@@ -262,6 +269,8 @@ if (count($roles) === 0) {
                 data: $("form[name=editfrm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta,
                         onClose: function() {
@@ -272,6 +281,8 @@ if (count($roles) === 0) {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });

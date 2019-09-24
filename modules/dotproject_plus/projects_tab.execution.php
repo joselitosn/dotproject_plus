@@ -610,7 +610,9 @@ if ($_GET["show_external_page"] != "") {
                 if (!date) msg.push("Informe a data");
                 if (!time) msg.push("Informe o período");
                 $.alert({
-                    title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: msg.join("<br>")
                 });
                 return;
@@ -623,6 +625,8 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=taskLogForm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta,
                         onClose: function() {
@@ -633,6 +637,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });
@@ -683,12 +689,16 @@ if ($_GET["show_external_page"] != "") {
                         taskLog.loadedLogs.splice(index, 1);
                     }
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta
                     });
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });

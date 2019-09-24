@@ -53,38 +53,40 @@ mysql_query('SET character_set_results=utf8');
                     $nav = $AppUI->getMenuModules();
                     $perms = & $AppUI->acl();
 
-            ?>
-            <!-- Links -->
-            <ul class="navbar-nav">
-            <?php
+                    ?>
+                    
+                    <!-- Brand/logo -->
+                    <a class="navbar-brand" href="#">
+                        <img src="style/<?php echo $uistyle; ?>/img/logo.png" style="width: 150px;height: 40px" />
+                    </a>
+                    <!-- Links -->
+                    <ul class="navbar-nav">
+                    <?php
                     foreach ($nav as $module) {
                         if ($perms->checkModule($module['mod_directory'], 'access')) {
                             if (isset($_REQUEST["m"]) and ( $_REQUEST["m"] == $module['mod_directory'])) {
-            ?>
+                            ?>
                                 <li class="nav-item">
                                     <a class="nav-link active" href="?m=<?php echo $module['mod_directory']; ?>">
                                         <?php echo $AppUI->_($module['mod_ui_name'])  ?>
                                     </a>
                                 </li>
-            <?php
+                            <?php
                             } else {
-            ?>
+                            ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="?m=<?php echo $module['mod_directory']; ?>">
                                         <?php echo $AppUI->_($module['mod_ui_name'])  ?>
                                     </a>
                                 </li>
-            <?php
+                            <?php
                             }
                         }
                     }
                 }
             ?>
             </ul>
-            <!-- Brand/logo -->
-            <a class="navbar-brand mx-auto" href="#">
-                <img src="style/<?php echo $uistyle; ?>/img/logo.png" style="width: 150px;height: 40px" />
-            </a>
+            
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle"

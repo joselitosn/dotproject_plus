@@ -1129,6 +1129,8 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=form_scope_declaration]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -1138,6 +1140,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -1162,6 +1166,8 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=form_wbs_dictionary]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -1171,6 +1177,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -1187,11 +1195,15 @@ if ($_GET["show_external_page"] != "") {
                     var resp = JSON.parse(resposta);
                     if (resp.err) {
                         $.alert({
+                            icon: "far fa-times-circle",
+                            type: "red",
                             title: "Erro",
                             content: resp.msg
                         });
                     } else {
                         $.alert({
+                            icon: "far fa-check-circle",
+                            type: "green",
                             title: "Sucesso",
                             content: resp.msg,
                             onClose: function() {
@@ -1202,6 +1214,8 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -1261,7 +1275,9 @@ if ($_GET["show_external_page"] != "") {
 
             if (err) {
                 $.alert({
-                    title: "Error",
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "Erro",
                     content: msg.join('<br>')
                 });
                 return;
@@ -1278,6 +1294,8 @@ if ($_GET["show_external_page"] != "") {
                     resposta = JSON.parse(resposta);
                     var id = resposta.newMinuteId;
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta.msg,
                         onClose: function() {
@@ -1316,7 +1334,9 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "Error",
+                        icon: "far fa-times-circle",
+                        type: "red",
+                        title: "Erro",
                         content: "Algo deu errado"
                     });
                 }
@@ -1348,6 +1368,8 @@ if ($_GET["show_external_page"] != "") {
                                 }
                             }).done(function(resposta) {
                                 $.alert({
+                                    icon: "far fa-check-circle",
+                                    type: "green",
                                     title: "Sucesso",
                                     content: resposta,
                                     onClose: function() {
@@ -1415,6 +1437,8 @@ if ($_GET["show_external_page"] != "") {
                         }
                     }).done(function(resposta) {
                         $.alert({
+                            icon: "far fa-check-circle",
+                            type: "green",
                             title: "Sucesso",
                             content: resposta,
                             onClose: function() {
@@ -1458,6 +1482,8 @@ if ($_GET["show_external_page"] != "") {
                                 }
                             }).done(function(resposta) {
                                 $.alert({
+                                    icon: "far fa-check-circle",
+                                    type: "green",
                                     title: "Sucesso",
                                     content: resposta,
                                     onClose: function() {
@@ -1509,7 +1535,9 @@ if ($_GET["show_external_page"] != "") {
             }
             if (err) {
                 $.alert({
-                    title: "Error",
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "Erro",
                     content: msg
                 });
                 return;
@@ -1523,6 +1551,8 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=wbsForm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -1533,7 +1563,9 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "Error",
+                        icon: "far fa-times-circle",
+                        type: "red",
+                        title: "Erro",
                         content: "Algo deu errado"
                     });
                 }
@@ -1597,7 +1629,9 @@ if ($_GET["show_external_page"] != "") {
             var taskName = $('#taskDescription').val();
             if (!taskName) {
                 $.alert({
-                    title: "Error",
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "Erro",
                     content: 'O nome da atividade é obrigatório'
                 });
                 return;
@@ -1614,7 +1648,9 @@ if ($_GET["show_external_page"] != "") {
 
                 if (date2 < date1) {
                     $.alert({
-                        title: "Error",
+                        icon: "far fa-times-circle",
+                        type: "red",
+                        title: "Erro",
                         content: 'A data de fim deve ser posterior a data da início'
                     });
                     return;
@@ -1644,6 +1680,8 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=taskForm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -1653,7 +1691,9 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "Error",
+                        icon: "far fa-times-circle",
+                        type: "red",
+                        title: "Erro",
                         content: "Algo deu errado"
                     });
                 }
@@ -1678,6 +1718,8 @@ if ($_GET["show_external_page"] != "") {
                 data: $("form[name=editFrm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -1687,7 +1729,9 @@ if ($_GET["show_external_page"] != "") {
                 },
                 error: function(resposta) {
                     $.alert({
-                        title: "Error",
+                        icon: "far fa-times-circle",
+                        type: "red",
+                        title: "Erro",
                         content: "Algo deu errado"
                     });
                 }
@@ -1713,6 +1757,8 @@ if ($_GET["show_external_page"] != "") {
                                  },
                                  success: function(resposta) {
                                      $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
                                          title: "Sucesso",
                                          content: resposta,
                                          onClose: function() {
@@ -1722,6 +1768,8 @@ if ($_GET["show_external_page"] != "") {
                                  },
                                  error: function(resposta) {
                                      $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
                                          title: "Erro",
                                          content: "Algo deu errado"
                                      });
@@ -1794,6 +1842,8 @@ if ($_GET["show_external_page"] != "") {
                                     }
 
                                     $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
                                         title: "Sucesso",
                                         content: resposta,
                                         onClose: function() {}
@@ -1801,6 +1851,8 @@ if ($_GET["show_external_page"] != "") {
                                 },
                                 error: function(resposta) {
                                     $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
                                         title: "Erro",
                                         content: "Algo deu errado"
                                     });

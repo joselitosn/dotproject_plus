@@ -4,7 +4,7 @@
 "LBL_ANSWER_DELETE"=>"Deletar a comunicação?",
 "LBL_PROJECT"=>"Projeto",
 "LBL_TITLE"=>"Título Comunicação",
-"LBL_COMMUNICATION"=>"Comunicação",
+"LBL_COMMUNICATION"=>"Conteúdo",
 "LBL_ISSUING"=>"Emissor",
 "LBL_RECEPTOR"=>"Receptor",
 "LBL_ADD"=>"Adicionar...",

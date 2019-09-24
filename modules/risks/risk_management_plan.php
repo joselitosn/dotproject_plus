@@ -439,6 +439,8 @@ $obj->loadDefaultValues();
 
             if (err) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: msg.join('<br>')
                 });
@@ -450,6 +452,8 @@ $obj->loadDefaultValues();
                 data: $("form[name=riskManagementPlanForm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -459,6 +463,8 @@ $obj->loadDefaultValues();
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });

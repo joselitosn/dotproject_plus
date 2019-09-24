@@ -294,12 +294,16 @@ $pieces = explode(",", $participants);
                 data: $("form[name=closureForm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta
                     });
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });

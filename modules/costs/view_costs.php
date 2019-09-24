@@ -335,6 +335,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
             if (!perc || Number.isNaN(parseInt(perc)) || parseInt(perc) < 0) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: "Percentual inválido"
                 });
@@ -347,6 +349,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                 data: $("#managReserveForm").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -356,6 +360,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -428,6 +434,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
             if (err) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: msg.join('<br>')
                 });
@@ -440,6 +448,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                 data: $("#contingencyReserveForm").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -449,6 +459,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -523,6 +535,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
                 if (err) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: msg.join('<br>')
                     });
@@ -536,6 +550,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                     data: $("#hrCostsForm").serialize(),
                     success: function(resposta) {
                         $.alert({
+                            icon: "far fa-check-circle",
+                            type: "green",
                             title: "Sucesso",
                             content: resposta,
                             onClose: function() {
@@ -545,6 +561,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                     },
                     error: function(resposta) {
                         $.alert({
+                            icon: "far fa-times-circle",
+                            type: "red",
                             title: "Erro",
                             content: "Algo deu errado"
                         });
@@ -604,6 +622,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                                     }
                                 }).done(function(resposta) {
                                     $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
                                         title: "Sucesso",
                                         content: resposta,
                                         onClose: function() {
@@ -688,6 +708,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
 
                 if (err) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: msg.join('<br>')
                     });
@@ -700,6 +722,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                     data: $("#nonHrCostForm").serialize(),
                     success: function(resposta) {
                         $.alert({
+                            icon: "far fa-check-circle",
+                            type: "green",
                             title: "Sucesso",
                             content: resposta,
                             onClose: function() {
@@ -709,6 +733,8 @@ if ($compartionDateFunction && $compartionEmptyFormat) {
                     },
                     error: function(resposta) {
                         $.alert({
+                            icon: "far fa-times-circle",
+                            type: "red",
                             title: "Erro",
                             content: "Algo deu errado"
                         });

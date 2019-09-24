@@ -208,6 +208,8 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
                 },
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta,
                         onClose: function() {
@@ -218,6 +220,8 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });
@@ -237,6 +241,8 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
 
             if (err) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: msg
                 });
@@ -250,6 +256,8 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
                 data: $("form[name=stakeholderForm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta,
                         onClose: function() {
@@ -260,6 +268,8 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });

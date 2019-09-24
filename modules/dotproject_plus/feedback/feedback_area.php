@@ -48,7 +48,7 @@
                         if ($feedback_count <= 5) {
                             ?>
                             <li>
-                                <a style="line-height: 120%" href="#" onclick="showFeedBack(<?=$feedback->getId()?>)">
+                                <a style="line-height: 120%" href="#" onclick="showFeedBack(this, <?=$feedback->getId()?>)">
                                     <form name="show_feedback_<?php echo $feedback->getId() ?>" id="show_feedback_<?php echo $feedback->getId() ?>" method="post" action="?m=dotproject_plus">
                                         <img src="./style/dotproject_plus/img/feedback/<?php echo InstructionalFeebackManager::getIconByKnowledgeArea($feedback->getKnowledgeArea()) ?>.png" style="width:20px; height: 20px" />
                                         <b><?php echo $feedback->getKnowledgeArea(); ?></b>
@@ -78,8 +78,7 @@
             ?>
                 <script>
                     $("#feedback_count").html("<?=$feedback_count?>");
-
-                    function showFeedBack(id) {
+                    function showFeedBack(event, id) {
                         $.ajax({
                             type: "POST",
                             url: "?m=dotproject_plus",
@@ -89,11 +88,16 @@
                                 dosql: 'do_show_feedback'
                             }
                         }).done(function(response) {
+                            $(event).parent().remove();
+                            var count = $("#feedback_count").html();
+                            $("#feedback_count").html(count - 1);
                             $.alert({
+                                icon: "far fa-comment",
+                                type: "blue",
                                 title: "Feedback",
                                 content: response,
                                 onClose: function() {
-                                    window.location.reload();
+                                    // window.location.reload();
                                 }
                             });
                         });

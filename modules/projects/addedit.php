@@ -183,11 +183,11 @@ if ($project_id == 0 && $contact_id > 0) {
                 <label for="project_status">
                     <?php echo $AppUI->_("Status"); ?>
                 </label>
-
                 <select class="form-control form-control-sm project-status" name="project_status">
                     <?php
+                    $status = $row->project_status != null ? $row->project_status : 1;
                     foreach ($pstatus as $key => $option) {
-                        $selected = $row->project_status == $key ? 'selected="selected"' : '';
+                        $selected = $status == $key ? 'selected="selected"' : '';
                         ?>
                         <option value="<?=$key?>" <?=$selected?>><?=$AppUI->_($option);?></option>
                         <?php

@@ -262,7 +262,9 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                 if (owner == null) msg.push("<?=$AppUI->_('companyValidOwner', UI_OUTPUT_JS); ?>");
                 if (type == null) msg.push("<?=$AppUI->_('companyValidType', UI_OUTPUT_JS); ?>");
                 $.alert({
-                    title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "Erro",
                     content: msg.join("<br>")
                 });
                 $("input[name=company_name]").focus();
@@ -274,8 +276,9 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                 datatype: "json",
                 data: $("form[name=changeclient]").serialize(),
                 success: function(resposta) {
-                    console.log(resposta);
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta,
                         onClose: function() {
@@ -286,6 +289,8 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });
@@ -297,8 +302,7 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                 title: '<?=$AppUI->_("LBL_CONFIRM", UI_OUTPUT_JS); ?>',
                 content: '<?=$AppUI->_("delete company", UI_OUTPUT_JS); ?>',
                 buttons: {
-                    confirmar: {
-                        btnClass: 'btn-blue',
+                    sim: {
                         action: function () {
                             $.ajax({
                                 url: "?m=companies",
@@ -313,6 +317,8 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                                     var resposta = JSON.parse(resp);
                                     if (!resposta.err) {
                                         $.alert({
+                                            icon: "far fa-check-circle",
+                                            type: "green",
                                             title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                                             content: resposta,
                                             onClose: function() {
@@ -321,6 +327,8 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                                         });
                                     } else {
                                         $.alert({
+                                            icon: "far fa-times-circle",
+                                            type: "red",
                                             title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                                             content: resposta.msg
                                         });
@@ -328,6 +336,8 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                                 },
                                 error: function(resposta) {
                                     $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
                                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                                     });
@@ -335,7 +345,9 @@ $owner_list = array(-1 => $AppUI->_('All', UI_OUTPUT_RAW)) + $perms->getPermitte
                             });
                         }
                     },
-                    cancelar: function () {},
+                    nao: {
+                        text: 'Não'
+                    },
                 }
             });
         },

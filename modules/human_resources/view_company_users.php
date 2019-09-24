@@ -377,13 +377,14 @@ if (!$res->fields) {
         },
 
         saveNew: function () {
-            $("#btnAddHr").off("click");
             var firstName = $("input[name=first_name]").val().trim();
             var lastName = $("input[name=last_name]").val().trim();
 
             if (firstName=="" || lastName=="") {
                 $.alert({
-                    title: "<?=$AppUI->_('Attention', UI_OUTPUT_JS); ?>",
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: "<?=$AppUI->_('VALIDATE_NEW_USER_FORM', UI_OUTPUT_JS); ?>"
                 });
                 return;
@@ -395,6 +396,8 @@ if (!$res->fields) {
                 data: $("form[name=new_user]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta,
                         onClose: function() {
@@ -405,6 +408,8 @@ if (!$res->fields) {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });
@@ -493,6 +498,8 @@ if (!$res->fields) {
                 || $sat.val() > $maxWh.val()
                 || $sun.val() > $maxWh.val()) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: "<?=$AppUI->_('Number greater than daily working hours')?>"
                 });
@@ -508,6 +515,8 @@ if (!$res->fields) {
                 data: $("form[name=editfrm]").serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                         content: resposta,
                         onClose: function() {
@@ -518,6 +527,8 @@ if (!$res->fields) {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                     });
@@ -531,8 +542,7 @@ if (!$res->fields) {
                 title: '<?=$AppUI->_("LBL_CONFIRM", UI_OUTPUT_JS); ?>',
                 content: '<?=$AppUI->_("LBL_ASK_HUMAN_RESOURCE_DELETE", UI_OUTPUT_JS); ?>',
                 buttons: {
-                    confirmar: {
-                        btnClass: 'btn-blue',
+                    sim: {
                         action: function () {
                             $.ajax({
                                 url: "?m=human_resources",
@@ -548,6 +558,8 @@ if (!$res->fields) {
                                 },
                                 success: function(resposta) {
                                     $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
                                         title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
                                         content: resposta,
                                         onClose: function() {
@@ -557,6 +569,8 @@ if (!$res->fields) {
                                 },
                                 error: function(resposta) {
                                     $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
                                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                                         content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
                                     });
@@ -564,7 +578,9 @@ if (!$res->fields) {
                             });
                         }
                     },
-                    cancelar: function () {},
+                    nao: {
+                        text: 'Não'
+                    },
                 }
             });
         },
@@ -577,6 +593,8 @@ if (!$res->fields) {
 
             if (!startDate || !endDate || !cost) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: "Preencha as datas de início e fim da vigência e a remuneração"
                 });
@@ -590,6 +608,8 @@ if (!$res->fields) {
 
             if (objStartDate > objEndDate) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                     content: "<?= $AppUI->_("LBL_DATE_BEGIN_BEFORE_DATE_END")?>"
                 });
@@ -603,6 +623,8 @@ if (!$res->fields) {
                     (cost.objEndDate >= objStartDate &&
                         cost.objEndDate <= objEndDate)){
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
                         content: "<?=$AppUI->_("LBL_DATE_INVALID_RANGE")?>"
                     });

@@ -312,6 +312,8 @@ if (!($res = db_exec($sql))) {
             var cln = $('input[name=contact_last_name]').val();
             if (!cfn || !cln) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: "O primeiro e último nome são obrigatórios"
                 });
@@ -324,6 +326,8 @@ if (!($res = db_exec($sql))) {
                 data: $("form[name=changecontact]").serialize(),
             }).done(function(resposta) {
                 $.alert({
+                    icon: "far fa-check-circle",
+                    type: "green",
                     title: "Sucesso",
                     content: resposta,
                     onClose: function() {
@@ -351,6 +355,8 @@ if (!($res = db_exec($sql))) {
                                 }
                             }).done(function(resposta) {
                                 $.alert({
+                                    icon: "far fa-check-circle",
+                                    type: "green",
                                     title: "Sucesso",
                                     content: resposta,
                                     onClose: function() {
@@ -372,6 +378,8 @@ if (!($res = db_exec($sql))) {
 
             if (file.length == 0) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: "Nenhum arquivo selecionado"
                 });
@@ -387,6 +395,8 @@ if (!($res = db_exec($sql))) {
                 contentType: false,
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -396,6 +406,8 @@ if (!($res = db_exec($sql))) {
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });

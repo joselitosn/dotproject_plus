@@ -154,6 +154,8 @@ $projectId = $_GET["project_id"];
             var name = $('input[name=items_to_be_acquired]').val();
             if (!name) {
                 $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
                     title: "Erro",
                     content: 'Preencha o item a ser adquirido'
                 });
@@ -166,6 +168,8 @@ $projectId = $_GET["project_id"];
                 data: $('form[name=acquisitionForm]').serialize(),
                 success: function(resposta) {
                     $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
                         title: "Sucesso",
                         content: resposta,
                         onClose: function() {
@@ -175,6 +179,8 @@ $projectId = $_GET["project_id"];
                 },
                 error: function(resposta) {
                     $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
                         title: "Erro",
                         content: "Algo deu errado"
                     });
@@ -199,6 +205,8 @@ $projectId = $_GET["project_id"];
                                 }
                             }).done(function(resposta) {
                                 $.alert({
+                                    icon: "far fa-check-circle",
+                                    type: "green",
                                     title: "Sucesso",
                                     content: resposta,
                                     onClose: function() {

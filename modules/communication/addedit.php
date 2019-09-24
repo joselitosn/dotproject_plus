@@ -37,9 +37,6 @@ if (null !== $communication_id) {
 <div class="alert alert-secondary" role="alert">
     <?php echo $AppUI->_("LBL_EMISSOR_RECIPTORS"); ?>
 </div>
-<div class="alert alert-secondary" role="alert">
-    <?php echo $AppUI->_("LBL_EMISSOR_RECIPTORS_AVAILABILITY"); ?>
-</div>
 
 <form name="communicationForm" id="communicationForm">
     <input type="hidden" name="dosql" value="do_communication_aed" />
@@ -67,45 +64,43 @@ if (null !== $communication_id) {
         <textarea name="communication_information" rows="2" class="form-control form-control-sm"><?=$obj->communication_information?></textarea>
     </div>
 
-    <div  style="display: <?=$communication_id > 0 ? 'block' :'none'?>">
-        <div class="row" id="selectIssuerReceptor">
-            <div class="col-md-6">
-                <div class="form-group" >
-                    <label for="issuing">
-                        <?=$AppUI->_('LBL_ISSUING')?>
-                    </label>
-                    <select class="form-control form-control-sm select-issuer-receptor" name="issuing[]" multiple="multiple">
-                        <?php
-                            foreach ($rlista as $registro) {
-                                $selected = in_array($registro['contact_id'], $issuers) ? ' selected' : '';
-                        ?>
-                                <option value="<?=$registro['contact_id']?>" <?=$selected?>>
-                                    <?=$registro['contact_first_name'] . ' ' . $registro['contact_last_name']?>
-                                </option>
-                        <?php
-                            }
-                        ?>
-                    </select>
-                </div>
+    <div class="row" id="selectIssuerReceptor">
+        <div class="col-md-6">
+            <div class="form-group" >
+                <label for="issuing">
+                    <?=$AppUI->_('LBL_ISSUING')?>
+                </label>
+                <select class="form-control form-control-sm select-issuer-receptor" name="issuing[]" multiple="multiple">
+                    <?php
+                        foreach ($rlista as $registro) {
+                            $selected = in_array($registro['contact_id'], $issuers) ? ' selected' : '';
+                    ?>
+                            <option value="<?=$registro['contact_id']?>" <?=$selected?>>
+                                <?=$registro['contact_first_name'] . ' ' . $registro['contact_last_name']?>
+                            </option>
+                    <?php
+                        }
+                    ?>
+                </select>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="receptor">
-                        <?=$AppUI->_('LBL_RECEPTOR')?>
-                    </label>
-                    <select class="form-control form-control-sm select-issuer-receptor" name="receptor[]" multiple="multiple">
-                        <?php
-                            foreach ($rlista as $registro) {
-                                $selected = in_array($registro['contact_id'], $receptors) ? ' selected' : '';
-                        ?>
-                                <option value="<?=$registro['contact_id']?>" <?=$selected?>>
-                                    <?=$registro['contact_first_name'] . ' ' . $registro['contact_last_name']?>
-                                </option>
-                        <?php
-                            }
-                        ?>
-                    </select>
-                </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="receptor">
+                    <?=$AppUI->_('LBL_RECEPTOR')?>
+                </label>
+                <select class="form-control form-control-sm select-issuer-receptor" name="receptor[]" multiple="multiple">
+                    <?php
+                        foreach ($rlista as $registro) {
+                            $selected = in_array($registro['contact_id'], $receptors) ? ' selected' : '';
+                    ?>
+                            <option value="<?=$registro['contact_id']?>" <?=$selected?>>
+                                <?=$registro['contact_first_name'] . ' ' . $registro['contact_last_name']?>
+                            </option>
+                    <?php
+                        }
+                    ?>
+                </select>
             </div>
         </div>
     </div>
