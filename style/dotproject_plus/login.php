@@ -5,22 +5,74 @@
         <meta http-equiv="Content-Type" content="text/html;charset=<?php echo isset($locale_char_set) ? $locale_char_set : 'UTF-8'; ?>" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta name="Version" content="<?php echo @$AppUI->getVersion(); ?>" />
-        <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/main.css" media="all" />
-        <style type="text/css" media="all">
-            @import "./style/<?php echo $uistyle; ?>/main.css";
-        </style>
+        <link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/bootstrap/bootstrap.css" media="all" />
+        <script type="text/javascript" src="./style/<?php echo $uistyle; ?>/jquery/jquery-3.3.1.min.js"></script>
         <link rel="shortcut icon" href="./style/<?php echo $uistyle; ?>/img/favicon.ico" type="image/ico" />
     </head>
-    <body bgcolor="#f0f0f0" onload="document.loginform.username.focus();" style="text-align: center">
+    <body>
+        <nav class="navbar bg-dark navbar-dark">
+            <a class="navbar-brand" href="#">
+                <img src="style/<?php echo $uistyle; ?>/img/logo.png" style="width: 150px;height: 40px" />
+            </a>
+            <ul class="nav navbar-nav float-right">
+                <li>
+                    <a class="" href="#">
+                        <img src="style/<?php echo $uistyle; ?>/img/brasao_UFSC_horizontal.png" style="width: 150px;height: 40px" />
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="container" style="padding-top:170px">
+            <div class="row justify-content-md-center">
+                <div class="col col-md-5" style="padding:50px; border:1px solid #d9d9d9; border-radius:4px;">
+                    
+                    <?php
+                        $err = $AppUI->getMsg();
+                        if ($err != '') {
+                            ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?=$err?>
+                            </div>
+                            <?php
+                        }
+                    ?>
 
-        <br />
-        
-        <br />
-        <br />
-        <br />
-        <div class="company_name" style="padding:0px;"><a href="<?php echo $dPconfig['base_url'] ?>"><?php echo $dPconfig['company_name'] ?></a></div>
-        <br />
-        <form method="post" action="<?php echo $loginFromPage; ?>" name="loginform">
+                    <form method="post" action="<?php echo $loginFromPage; ?>" name="loginform">
+                        <input type="hidden" name="login" value="login" />
+                        <input type="hidden" name="lostpass" value="0" />
+                        <input type="hidden" name="redirect" value="<?php echo $redirect; ?>" />
+                        <div class="form-group">
+                            <label for="username"><?=$AppUI->_('Username')?></label>
+                            <input type="text" maxlength="20" name="username" class="form-control form-control-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label for="username"><?=$AppUI->_('Password')?></label>
+                            <input type="password" maxlength="32" name="password" class="form-control form-control-sm" />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-sm btn-primary"><?=$AppUI->_('LBL_LOGIN')?></button>
+                        </div>
+                        <div class="form-group">
+                            <a href="#" onclick="f = document.loginform;f.lostpass.value = 1;f.submit();">
+                                <?=$AppUI->_('forgotPassword')?>
+                            </a>
+                        </div>
+                        <small><?php echo "* " . $AppUI->_("You must have cookies enabled in your browser"); ?></small>
+                    </form>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <?php if (@$AppUI->getVersion()) { ?>
+                                <small>Version <?php echo @$AppUI->getVersion(); ?></small>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <br /> -->
+        <!-- <form method="post" action="<?php echo $loginFromPage; ?>" name="loginform">
             <table cellpadding="0" cellspacing="0" border="0" width="300px" align="center">
                 <tr>
                     <td><img src="style/<?php echo $uistyle; ?>/img/tl.png" /></td>
@@ -32,7 +84,7 @@
                     <td bgcolor="#ffffff">
                         <img src="style/<?php echo $uistyle; ?>/img/dotproject_plus_logo.jpg" style="width: 170px;height: 50px" />
                         <table align="center" border="0" width="250" cellpadding="6" cellspacing="0" class="std">
-                            <input type="hidden" name="login" value="<?php echo time(); ?>" />
+                            <input type="hidden" name="login" value="login" />
                             <input type="hidden" name="lostpass" value="0" />
                             <input type="hidden" name="redirect" value="<?php echo $redirect; ?>" />
                             <tr>
@@ -78,6 +130,6 @@
                     <td><img src="style/<?php echo $uistyle; ?>/img/br.png" /></td>
 
                 </tr>
-            </table>
+            </table> -->
     </body>
 </html>
