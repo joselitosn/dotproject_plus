@@ -6,19 +6,79 @@
 <title><?php echo $dPconfig['company_name'];?>:: dotProject Login</title>
 <meta http-equiv="Pragma" content="no-cache" />
 <meta name="Version" content="<?php echo @$AppUI->getVersion();?>" />
-<link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle;?>/main.css" media="all" />
-<style type="text/css" media="all">
-@import "./style/<?php echo $uistyle;?>/main.css";
-</style>
-<link rel="shortcut icon" href="./style/<?php echo $uistyle;?>/img/favicon.ico" type="image/ico" />
+	<link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/bootstrap/bootstrap.css" media="all" />
+	<link rel="stylesheet" type="text/css" href="./style/<?php echo $uistyle; ?>/login.css" media="all" />
+	<script type="text/javascript" src="./style/<?php echo $uistyle; ?>/jquery/jquery-3.3.1.min.js"></script>
+	<link rel="shortcut icon" href="./style/<?php echo $uistyle; ?>/img/favicon.ico" type="image/ico" />
 </head>
-<body bgcolor="#f0f0f0" onload="document.lostpassform.checkusername.focus();">
-<center>
-<br />
-<br />
-<div class="company_name" style="padding:0px;"><a href="<?php echo $dPconfig['base_url'] ?>"><?php echo $dPconfig['company_name'] ?></a></div>
-</div>
-<br />
+<body>
+	<nav class="navbar bg-dark navbar-dark">
+            <a class="navbar-brand" href="#">
+                <img src="style/<?php echo $uistyle; ?>/img/logo.png" class="logo" />
+            </a>
+            <ul class="nav navbar-nav float-right">
+                <li>
+                    <a class="" href="#">
+                        <img src="style/<?php echo $uistyle; ?>/img/brasao_UFSC_horizontal.png" class="logo" />
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="container">
+            <div class="row justify-content-md-center">
+                <div class="col col-md-5 login-box">
+                    <span class="img-container">
+                        <img src="style/<?php echo $uistyle; ?>/img/logo-gqs.png" height="60px" />
+                    </span>
+                    <hr>
+                    <?php
+                        $err = $AppUI->getMsg();
+                        if ($err != '') {
+                            ?>
+                            <div class="alert alert-danger" role="alert">
+                                <?=$err?>
+                            </div>
+                            <?php
+                        }
+                    ?>
+
+                    <form method="post" action="<?php echo $loginFromPage; ?>" name="lostpassform">
+						<input type="hidden" name="lostpass" value="1" />
+						<input type="hidden" name="sendpass" value="end password" />
+						<input type="hidden" name="redirect" value="<?php echo $redirect;?>" />
+                        <div class="form-group">
+                            <label for="username"><?=$AppUI->_('Username')?></label>
+                            <input type="text" maxlength="20" name="checkusername" class="form-control form-control-sm" />
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" maxlength="64" name="checkemail" class="form-control form-control-sm" />
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-sm btn-primary"><?=$AppUI->_('LBL_SEND_PASSWORD')?></button>
+                        </div>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+<!-- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <form method="post" name="lostpassform">
 	<table cellpadding="0" cellspacing="0" border="0" width="300px">
 	<tr>
@@ -59,6 +119,6 @@
 	<td bgcolor="#FFFFFF"></td>
 	<td><img src="style/<?php echo $uistyle;?>/img/br.png" /></td>
 </tr>
-</table>
+</table> -->
 </body>
 </html>

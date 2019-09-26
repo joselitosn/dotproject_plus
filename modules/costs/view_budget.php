@@ -3,6 +3,7 @@ if (!defined('DP_BASE_DIR')) {
     die('You should not access this file directly.');
 }
 require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_setup.php";
+
 ?>
 
 <!-- ############################## ESTIMATIVAS CUSTOS HUMANOS ############################################ -->
@@ -14,13 +15,16 @@ require_once DP_BASE_DIR . "/modules/costs/cost_baseline_parts/cost_baseline_set
             <th width="15%"><?php echo $AppUI->_('Item'); ?></th>
             <?php
             for ($i = 0; $i <= $meses; $i++) {
-                $mes = $monthStartProject;
+                $mes = (int) $monthStartProject;
                 $monthStartProject++;
-                if ($mes == 12)
+                if ($mes == 12) {
                     $monthStartProject = 1;
+                }
+                $dateObj = DateTime::createFromFormat('!m', $mes);
+                $monthName = $dateObj->format('M');
                 ?>
                 <th>
-                    <?php echo strlen($mes) < 2 ? "0" . $mes : $mes; ?>
+                    <?php echo $AppUI->_($monthName);?>
                 </th>
                 <?php
                 $counter++;

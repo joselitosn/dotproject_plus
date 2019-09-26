@@ -74,7 +74,7 @@ if ($del) {
 	if (($msg = $obj->store())) {
 		$AppUI->setMsg($msg, UI_MSG_ERROR);
 	} else {
-		$AppUI->setMsg(@$_POST['task_log_id'] ? 'atualizado' : 'inserido', UI_MSG_OK, true);
+		$AppUI->setMsg(@$_POST['task_log_id'] ? 'atualizado' : 'inserido', UI_MSG_OK);
 	}
 }
 $task = new CTask();
@@ -96,7 +96,7 @@ if ($task->task_percent_complete >= 100 && (!($task->task_end_date)
 }
 
 if (($msg = $task->store())) {
-	$AppUI->setMsg($msg, UI_MSG_ERROR, true);
+	$AppUI->setMsg($msg, UI_MSG_ERROR);
 }
 
 $new_task_end = new CDate($task->task_end_date);

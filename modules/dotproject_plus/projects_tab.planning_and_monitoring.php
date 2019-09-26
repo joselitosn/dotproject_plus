@@ -109,7 +109,7 @@ if ($_GET["show_external_page"] != "") {
     <div class="row">
         <div class="col-md-12">
             <div class="alert alert-secondary" role="alert">
-                Para sequenciar as atividades você deve arrastar a atividade predecessora e soltar sobre a atividade sucessora.
+                Para sequenciar as atividades você deve abrir a atividade sucessora e arrastar a atividade predecessora sobre a seção "Atividades predecessoras".
             </div>
         </div>
     </div>
@@ -411,7 +411,7 @@ if ($_GET["show_external_page"] != "") {
                                 // Start creating html structure
                                 $taskCard = $dom->createElement('div');
                                 $taskCardClass = $dom->createAttribute('class');
-                                $taskCardClass->value = 'card inner-card draggable droppable';
+                                $taskCardClass->value = 'card inner-card draggable';
                                 $taskCard->appendChild($taskCardClass);
                                 $taskCardData = $dom->createAttribute('data');
                                 $taskCardData->value = $task_id;
@@ -813,17 +813,17 @@ if ($_GET["show_external_page"] != "") {
 
                                 $alert = $dom->createElement('div');
                                 $alertClass = $dom->createAttribute('class');
-                                $alertClass->value = 'alert alert-secondary';
+                                $alertClass->value = 'alert alert-secondary droppable';
                                 $alert->appendChild($alertClass);
                                 $alertRole = $dom->createAttribute('role');
                                 $alertRole->value = 'alert';
                                 $alert->appendChild($alertRole);
 
-                                if (!count($dependencies)) {
-                                    $style = $dom->createAttribute('style');
-                                    $style->value = 'display: none';
-                                    $alert->appendChild($style);
-                                }
+                                // if (!count($dependencies)) {
+                                //     $style = $dom->createAttribute('style');
+                                //     $style->value = 'display: none';
+                                //     $alert->appendChild($style);
+                                // }
 
                                 $h6 = $dom->createElement('h6', 'Atividades predecessoras');
                                 $alert->appendChild($h6);
@@ -1422,10 +1422,19 @@ if ($_GET["show_external_page"] != "") {
                     var card = $(this);
 //                    card.find('.alert').removeClass('daggable-over');
                     card.tooltip('dispose');
-                    var taskId = $(this).attr('data');
+                    var taskId = card.parent().parent().parent().parent().parent().attr('data');
                     var dependencyId = ui.draggable.attr('data');
                     var projectId = $('#projectIdHidden').val();
                     var predecessoraName = ui.draggable.find('h6').html();
+                    var li = $('<li id="'+dependencyId+'_'+taskId+'"></li>');
+                    li.html(predecessoraName+' ');
+                    var icon = $('<i class="far fa-trash-alt"></i>');
+                    var btn = $('<btn type="button" class="btn btn-danger btn-xs" onclick="tasks.deleteDependency('+dependencyId+','+taskId+')"></button>');
+                    btn.html(icon[0]);
+                    li.append(btn[0]);
+                    var ul = card.find('ul');
+                    ul.append(li[0]);
+                    ul.parent().show();
                     $.ajax({
                         method: 'POST',
                         url: "?m=timeplanning",
@@ -1434,25 +1443,24 @@ if ($_GET["show_external_page"] != "") {
                             project_id: projectId,
                             activity_id: taskId,
                             dependency_id: dependencyId
+                        },
+                        success: function(resposta) {
+                            $.alert({
+                                icon: "far fa-check-circle",
+                                type: "green",
+                                title: "Sucesso",
+                                content: resposta
+                            });
+                        },
+                        error: function(resposta) {
+                            li.remove();
+                            $.alert({
+                                icon: "far fa-times-circle",
+                                type: "red",
+                                title: "Erro",
+                                content: 'Algo deu errado'
+                            });
                         }
-                    }).done(function(resposta) {
-                        $.alert({
-                            icon: "far fa-check-circle",
-                            type: "green",
-                            title: "Sucesso",
-                            content: resposta,
-                            onClose: function() {
-                                var li = $('<li id="'+dependencyId+'_'+taskId+'"></li>');
-                                li.html(predecessoraName+' ');
-                                var icon = $('<i class="far fa-trash-alt"></i>');
-                                var btn = $('<btn type="button" class="btn btn-danger btn-xs" onclick="tasks.deleteDependency('+dependencyId+','+taskId+')"></button>');
-                                btn.html(icon[0]);
-                                li.append(btn[0]);
-                                var ul = card.find('ul');
-                                ul.append(li[0]);
-                                ul.parent().show();
-                            }
-                        });
                     });
                 }
             });
@@ -1837,10 +1845,6 @@ if ($_GET["show_external_page"] != "") {
                                 },
                                 success: function(resposta) {
                                     li.remove();
-                                    if (!ul.children().length) {
-                                        ul.parent().hide();
-                                    }
-
                                     $.alert({
                                         icon: "far fa-check-circle",
                                         type: "green",

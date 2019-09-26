@@ -94,9 +94,12 @@ if ($AppUI->doLogin()) {
 	$AppUI->loadPrefs(0);
 }
 
+// set the default ui style
+$uistyle = (($AppUI->getPref('UISTYLE')) ? $AppUI->getPref('UISTYLE') : dPgetConfig('host_style'));
+
 // check is the user needs a new password
 if (dPgetParam($_POST, 'lostpass', 0)) {
-	$uistyle = dPgetConfig('host_style');
+	// $uistyle = dPgetConfig('host_style');
 	$AppUI->setUserLocale();
 	@include_once (DP_BASE_DIR . '/locales/' . $AppUI->user_locale . '/locales.php');
 	@include_once (DP_BASE_DIR . '/locales/core.php');
@@ -136,8 +139,6 @@ if (isset($_REQUEST['login'])) {
 // supported since PHP 4.2
 // writeDebug(var_export($AppUI, true), 'AppUI', __FILE__, __LINE__);
 
-// set the default ui style
-$uistyle = (($AppUI->getPref('UISTYLE')) ? $AppUI->getPref('UISTYLE') : dPgetConfig('host_style'));
 
 // clear out main url parameters
 $m = '';

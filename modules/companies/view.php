@@ -99,7 +99,7 @@ require_once (DP_BASE_DIR . "/modules/projects/project-template.php");
                 <?=$obj->company_phone1 ? htmlspecialchars($obj->company_phone1) : 'Não informado'?>
             </small>
             <small class="float-right">
-                <a href="javascript:void(0)" data-toggle="modal" data-target="#modalCompanyPolicies">
+                <a href="javascript:void(0)" style="text-decoration:underline" data-toggle="modal" data-target="#modalCompanyPolicies">
                     <?=$AppUI->_('LBL_ORGANIZATIONAL_POLICY')?>
                 </a>
             </small>

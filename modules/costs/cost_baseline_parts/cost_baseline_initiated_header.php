@@ -48,7 +48,7 @@
     ?>
     
     <tr>
-        <th nowrap='nowrap'><?php echo $AppUI->_('Year'); ?></th>
+        <th nowrap='nowrap'></th>
         <?php
         for ($i = 0; $i <= $years; $i++) {
             ?>
