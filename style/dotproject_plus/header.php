@@ -87,7 +87,7 @@ mysql_query('SET character_set_results=utf8');
             ?>
             </ul>
             
-            <ul class="navbar-nav" style="position: relative; left: 700px;">
+            <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle"
                         style="text-decoration: none" 
