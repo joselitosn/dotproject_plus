@@ -53,10 +53,11 @@ $roles = db_loadList($sql);
         //Identation inputs
         var td = row.insertCell(2);
         td.noWrap=true;
-        var span=document.createElement("span");
-        span.id="identation_"+id;
-        span.innerHTML=identation;
-        td.appendChild(span);
+        var numSpaces = (identation.match(/&nbsp;/g) || []).length;
+        var padding = numSpaces * 10;
+        if (padding == 0) padding = 4;
+        td.style = 'padding-left:' + padding + 'px';
+
         var identation_field=document.createElement("input");
         identation_field.id="identation_field_"+id;
         identation_field.name="identation_field_"+id;
@@ -90,8 +91,15 @@ $roles = db_loadList($sql);
     }
 ?>
         combo.selectedIndex = selected;
-        td.appendChild(combo);
-
+        
+        $(combo).appendTo(td).select2({
+            placeholder: "",
+            width: '100px',
+            allowClear: false,
+            theme: "bootstrap"
+        });
+        
+        // td.appendChild(combo);
         //add a exclude button
         td = row.insertCell(3);
         td.noWrap=false;
@@ -105,14 +113,21 @@ $roles = db_loadList($sql);
     }
 
     function identation(i,type){
-        var div=document.getElementById("identation_"+i);
+        var td=$("#description_"+i).parent();
         var field = document.getElementById("identation_field_"+i); 
+        var padding = parseInt(td.css('padding-left'));
+        
         if(type==1){
-            div.innerHTML+="&nbsp;&nbsp;&nbsp;";
+            padding = padding + 30;
+            td.css('padding-left', padding + 'px');
+            // select.innerHTML+="&nbsp;&nbsp;&nbsp;";
             field.value+= "&nbsp;&nbsp;&nbsp;";
         }else{
-            div.innerHTML=div.innerHTML.replace("&nbsp;&nbsp;&nbsp;","");
-            field.value = div.innerHTML.replace("&nbsp;&nbsp;&nbsp;","");;
+            padding = padding - 30;
+            if (padding < 0) padding = 4;
+            td.css('padding-left', padding + 'px');
+            // select.innerHTML=div.innerHTML.replace("&nbsp;&nbsp;&nbsp;","");
+            field.value = field.value.replace("&nbsp;&nbsp;&nbsp;","");
         }
     }
 
@@ -125,53 +140,20 @@ $roles = db_loadList($sql);
 
     function moveRow(direction, e){
         var $row = $(e).parent().parent().parent();
-        console.log($row);
-
-
-        // var oTable = $('#tb_orgonogram')[0];
+        var tbody = $('#tbody_org')[0];
         if (direction == -1) {
             var prev = $row.prev()[0];
             if (prev) {
-                var index = prev.rowIndex;
-                console.log(index);
+                tbody.insertBefore($row[0], prev);
             }
-            // oTable.insertBefore(index);
         } else {
-            var next = $row.next()[0];
+            var next = $row.next().next()[0];
             if (next) {
-                var index = next.rowIndex;
-                console.log(index);
+                tbody.insertBefore($row[0], next);
+            } else {
+                tbody.appendChild($row[0]);
             }
-            // oTable.insertBefore(index);
         }
-
-
-
-        // var oTable = document.getElementById('tb_orgonogram');
-        // var trs = oTable.tBodies[0].getElementsByTagName("tr");
-        // var i = document.getElementById(rowId).rowIndex;
-        // var j = i+direction;
-
-        // if(j==1){
-        //     return false;
-        // }
-        // if(i >= 0 && j >= 0 && i < trs.length && j < trs.length){
-        //     if(i == j+1) {
-        //         oTable.tBodies[0].insertBefore(trs[i], trs[j]);
-        //     } else if(j == i+1) {
-        //         oTable.tBodies[0].insertBefore(trs[j], trs[i]);
-        //     } else {
-        //         var tmpNode = oTable.tBodies[0].replaceChild(trs[i], trs[j]);
-        //         if(typeof(trs[i]) != "undefined") {
-        //             oTable.tBodies[0].insertBefore(tmpNode, trs[i]);
-        //         } else {
-        //             oTable.appendChild(tmpNode);
-        //         }
-        //     }		
-        // }else{
-        //     return false;
-        // }
-
     }
 
     function saveOrgonogram(){
@@ -188,8 +170,28 @@ $roles = db_loadList($sql);
                 idsField.value +=","+id;
             }
         }
-
-        document.getElementById("form_orgonogram").submit();
+        $.ajax({
+            url: "?m=timeplanning&a=view&company_id=<?php echo $company_id; ?>",
+            type: "post",
+            datatype: "json",
+            data: $("form[name=form_orgonogram]").serialize(),
+            success: function(resposta) {
+                $.alert({
+                    icon: "far fa-check-circle",
+                    type: "green",
+                    title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                    content: resposta
+                });
+            },
+            error: function(resposta) {
+                $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS);?>",
+                    content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                });
+            }
+        });
     }
 </script>
 <h4><?=$AppUI->_("LBL_ORGONOGRAM");?></h4>
@@ -205,17 +207,17 @@ $roles = db_loadList($sql);
 <br>
 <div class="row">
     <div class="col-md-12 text-right">
-        <form action="?m=timeplanning&a=view&company_id=<?php echo $company_id; ?>" method="post" name="form_orgonogram" id="form_orgonogram">
+        <form name="form_orgonogram" id="form_orgonogram">
             <input name="dosql" type="hidden" value="do_company_aed" />
             <input name="roles_ids" id="roles_ids" type="hidden" value="">
             <input name="roles_ids_to_delete" id="roles_ids_to_delete" type="hidden" value="">
             <table class="table table-sm table-bordered text-left" id="tb_orgonogram">
                 <thead class="thead-dark">
                     <tr>
-                        <th width="8%"><?php echo $AppUI->_('LBL_ORDER'); ?></th>
-                        <th width="8%"><?php echo $AppUI->_('LBL_IDENTATION'); ?></th>
-                        <th width="80%"><?php echo $AppUI->_('LBL_ROLE'); ?></th>
-                        <th width="4%"><?php echo $AppUI->_('LBL_EXCLUSION'); ?></th>
+                        <th width="6%"><?php echo $AppUI->_('LBL_ORDER'); ?></th>
+                        <th width="7%"><?php echo $AppUI->_('LBL_IDENTATION'); ?></th>
+                        <th width="37%"><?php echo $AppUI->_('LBL_ROLE'); ?></th>
+                        <th width="50%"><?php echo $AppUI->_('LBL_EXCLUSION'); ?></th>
                     </tr>
                 </thead>
                 <tbody id="tbody_org"></tbody>
