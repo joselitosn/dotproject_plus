@@ -27,3 +27,6 @@
 "LBL_FEEDBACK_REPORT" => "Relatório de feedback instrucional por grupo",
 "LBL_CLASS_DELETED" => "Turma excluída com êxito.",
 "LBL_DELETE_CLASS" => "Excluir turma",
+"LBL_UPDATE_CLASS" => "Alterar turma",
+"LBL_VIEW_FEEDBACK_EVALUATIONS" => "Feedback de avaliação",
+"LBL_DELETE_MSG" => "Tem certeza que deseja excluir esta turma?",
