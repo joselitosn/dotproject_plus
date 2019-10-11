@@ -1,6 +1,7 @@
 <?php
 require_once DP_BASE_DIR . "/modules/initiating/initiating.class.php";
 require_once DP_BASE_DIR . "/modules/projects/projects.class.php";
+require_once DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback.php";
 //initialize user feedback messages configuration and history in the current session
 //$sid = session_id();
 

@@ -146,6 +146,10 @@ footer {
         width: 90%;
         max-width: 1200px;
     }
+    .modal-xxl {
+        width: 95%;
+        max-width: 95%;
+    }
 }
 
 .dropdown-toggle::after {

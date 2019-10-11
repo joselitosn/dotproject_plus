@@ -1,27 +1,12 @@
 <?php
 require_once DP_BASE_DIR . "/modules/dotproject_plus/feedback/user_feedback_evaluation/feedback_evaluation_statistic.class.php";
-$feedbackManager=new InstructionalFeebackManager();//imported automatically in the index.php using dotproject_plus theme
+require_once DP_BASE_DIR . "/modules/dotproject_plus/feedback/feedback_controller.php";
+$feedbackManager=new InstructionalFeebackManager();
 $kaList=$feedbackManager->getKaList();
-?>
-<style>
-    .feedback_report td{
-         vertical-align: top;
-         border-spacing: 15px;
-    }            
-</style>
 
-<a href="index.php?m=instructor_admin"><?php echo $AppUI->_("Instructor Admin") ?> </a> 
-<p style="text-align: center">
-    <?php echo $AppUI->_("LBL_FEEDBACK_EVALUATION_REPORT") ?>
-</p>
-
-<?php
 foreach ($kaList as $ka) {
     $feedbackListKa = $feedbackManager->getAllFeedbackPerKnoledgeArea($ka);
     ?>
-
-        <br />
-        <br />
         <table class="feedback_report tbl" >
         <tr>
             <th colspan="6">
@@ -61,4 +46,5 @@ foreach ($kaList as $ka) {
     </table>        
     <?php
 }
+exit();
 ?>
