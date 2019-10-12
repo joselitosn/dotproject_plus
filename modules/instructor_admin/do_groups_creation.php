@@ -86,7 +86,7 @@ for ($i = 0; $i < $n; $i++) {
     //echo $sql;
     $q->exec();
 
-    echo "Password: " . $password;
+    echo "Password: $password <br>";
 
 //5. create access rights entry
     /* gacl_aco: define access types : access, read, edit, etc.
@@ -461,6 +461,7 @@ for ($i = 0; $i < $n; $i++) {
     $q->exec();
 }
 
-$AppUI->setMsg($AppUI->_("LBL_GROUPS_WERE_SUCESSFULLY CREATE"), UI_OUTPUT_HTML, UI_MSG_OK, false);
-$AppUI->redirect();
+$AppUI->setMsg($AppUI->_("LBL_GROUPS_WERE_SUCESSFULLY CREATE"), UI_OUTPUT_HTML);
+echo $AppUI->getMsg();
+exit();
 ?>

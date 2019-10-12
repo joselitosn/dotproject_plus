@@ -54,6 +54,11 @@
                                                 <?=$AppUI->_('LBL_UPDATE_CLASS')?>
                                             </a>
                                             <a class="dropdown-item" href="javascript:void(0)"
+                                               onclick="course.viewClassGroups(<?=$class->class_id?>)">
+                                                <i class="fas fa-users-cog"></i>
+                                                <?=$AppUI->_('LBL_CLASS_DATA')?>
+                                            </a>
+                                            <a class="dropdown-item" href="javascript:void(0)"
                                                onclick="course.printCredentials(<?=$class->class_id?>)">
                                                 <i class="fas fa-print"></i>
                                                 <?=$AppUI->_('LBL_PRINT_CREDENTIALS')?>
@@ -132,6 +137,28 @@
     </div>
 </div>
 
+<div class="modal" tabindex="-1" role="dialog" id="modalClassGroups">
+    <div class="modal-dialog modal-xxl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?=$AppUI->_('LBL_CLASS_DATA')?></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="groupDetails"></div>
+                <div class="groupFeedback">feedback</div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light btn-sm btnBackToDetails" onclick="course.backToGroupDetails()">Voltar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     var course = {
 
@@ -139,8 +166,11 @@
 
             $('a[data-toggle=collapse]').on('click', course.show);
 
-            $('#modalNewClass').on('hidden.bs.modal', function() {
-               $(this).find('.modal-body').html('');
+            $('#modalClassGroups').on('hidden.bs.modal', function() {
+                $(this).find('h5').html('<?=$AppUI->_("LBL_CLASS_DATA")?>')
+                $('.groupDetails').show().html('');
+                $('.groupFeedback').hide().html('');
+                $('.btnBackToDetails').hide();
             });
         },
 
@@ -340,6 +370,151 @@
                 modal.find('.modal-body').html(response);
                 modal.modal();
             });
+        },
+
+        viewClassGroups: function (id) {
+            $.ajax({
+                type: "get",
+                url: "?m=instructor_admin&template=class_groups&class_id="+id
+            }).done(function(response) {
+                var modal = $('#modalClassGroups');
+                $('.groupFeedback').hide();
+                $('.btnBackToDetails').hide();
+                $('.groupDetails').html(response);
+                modal.modal();
+            });
+        },
+
+        saveGroups: function (classId) {
+            var number = $('input[name=number_of_groups]').val();
+
+            if (!number.trim() || number == 0) {
+                $.alert({
+                    icon: "far fa-times-circle",
+                    type: "red",
+                    title: "Erro",
+                    content: 'Informe o número de grupos. O número deve ser maior que 0.'
+                });
+                return;
+            }
+
+            $.ajax({
+                url: "?m=instructor_admin",
+                type: "post",
+                datatype: "json",
+                data: $("form[name=formNumberOfGroups]").serialize(),
+                success: function(resposta) {
+                    var element = $('#goupsTableContainer');
+                    element.loading({
+                        message: 'Carregando grupos...'
+                    });
+                    element.load(
+                        "?m=instructor_admin&template=groups_table&class_id="+classId,
+                        function () {
+                            element.loading('stop');
+                        }
+                    );
+                    $('input[name=number_of_groups]').val('');
+                    $.alert({
+                        icon: "far fa-check-circle",
+                        type: "green",
+                        title: "Sucesso",
+                        content: resposta,
+                    });
+                },
+                error: function(resposta) {
+                    $.alert({
+                        icon: "far fa-times-circle",
+                        type: "red",
+                        title: "Erro",
+                        content: "Algo deu errado"
+                    });
+                }
+            });
+        },
+
+        deleteGroup: function (classId, groupId) {
+            $.confirm({
+                title: '',
+                content: "<?=$AppUI->_('LBL_DELETE_GROUP')?>",
+                buttons: {
+                    sim: function () {
+                        $.ajax({
+                            url: "?m=instructor_admin",
+                            type: "post",
+                            datatype: "json",
+                            data: {
+                                dosql: 'do_group_deletion',
+                                class_id: classId,
+                                group_id_for_deletion: groupId
+                            },
+                            success: function(resposta) {
+                                var resp = JSON.parse(resposta);
+                                var icon = 'far fa-check-circle';
+                                var type = 'green';
+                                var title = "<?= $AppUI->_('Success', UI_OUTPUT_JS); ?>";
+                                var msg = resp.msg;
+                                if (resp.err) {
+                                    icon = 'far fa-times-circle';
+                                    type = 'red';
+                                    title = "<?= $AppUI->_('Error', UI_OUTPUT_JS); ?>";
+                                    msg = "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                                }
+                                $.alert({
+                                    icon: icon,
+                                    type: type,
+                                    title: title,
+                                    content: msg,
+                                    onClose: function () {
+                                        if (!resp.err) {
+                                            var element = $('#goupsTableContainer');
+                                            element.loading({
+                                                message: 'Carregando grupos...'
+                                            });
+                                            element.load(
+                                                "?m=instructor_admin&template=groups_table&class_id="+classId,
+                                                function () {
+                                                    element.loading('stop');
+                                                }
+                                            );
+                                        }
+                                    }
+                                });
+                            },
+                            error: function(resposta) {
+                                $.alert({
+                                    icon: "far fa-times-circle",
+                                    type: "red",
+                                    title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                                    content: "<?=$AppUI->_('Something went wrong.', UI_OUTPUT_JS); ?>"
+                                });
+                            }
+                        });
+                    },
+                    no: {
+                        text: 'Não'
+                    }
+                }
+            });
+        },
+        
+        showGroupFeedback: function (userId, projectId, classId) {
+            $.ajax({
+                type: "get",
+                url: "?m=instructor_admin&template=view_read_feedback&user_id="+userId+"&project_id="+projectId+"&class_id="+classId
+            }).done(function(response) {
+                $('#modalClassGroups').find('h5').html('<?=$AppUI->_("LBL_FEEDBACK_REPORT")?>')
+                $('.groupDetails').hide();
+                $('.btnBackToDetails').show();
+                $('.groupFeedback').html(response).show();
+            });
+        },
+
+        backToGroupDetails: function () {
+            $('#modalClassGroups').find('h5').html('<?=$AppUI->_("LBL_CLASS_DATA")?>')
+            $('.groupDetails').show();
+            $('.groupFeedback').hide();
+            $('.btnBackToDetails').hide();
         }
         
     };

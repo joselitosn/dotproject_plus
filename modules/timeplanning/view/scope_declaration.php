@@ -10,7 +10,7 @@
     ?>
     <h6><?=$AppUI->_("LBL_DESCRIPTION")?></h6>
     <div class="form-group">
-        <textarea name="scope_declaration" class="form-control input-sm" rows="20"><?=$obj->project_description ?></textarea>
+        <textarea name="scope_declaration" class="form-control input-sm" rows="12"><?=$obj->project_description ?></textarea>
     </div>
 </form>
 

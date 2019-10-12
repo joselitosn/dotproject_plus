@@ -53,7 +53,7 @@ if (isset($_GET["class_id"])) {
                 <label for="number_of_students">
                     <?=$AppUI->_('LBL_NUMBER_OF_STUDENTS')?>
                 </label>
-                <input type="text" class="form-control form-control-sm" name="number_of_students" value="<?=$class->number_of_students?>" />
+                <input type="text" class="form-control form-control-sm" name="number_of_students" value="<?=$class->number_of_students > 0 ? $class->number_of_students : ''?>" />
             </div>
         </div>
         <div class="col-md-4">

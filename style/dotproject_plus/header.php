@@ -47,7 +47,7 @@ mysql_query('SET character_set_results=utf8');
         </script>
     </head>
     <body>
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" style="position: relative">
             <?php
                 if (!$dialog) {
                     $nav = $AppUI->getMenuModules();
@@ -87,7 +87,7 @@ mysql_query('SET character_set_results=utf8');
             ?>
             </ul>
             
-            <ul class="navbar-nav">
+            <ul class="navbar-nav" style="position: absolute; right:15px;">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle"
                         style="text-decoration: none" 
