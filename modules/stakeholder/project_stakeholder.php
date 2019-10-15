@@ -142,7 +142,7 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
-                <button type="button" class="btn btn-primary btn-sm" id="btnSaveStakeholder" ><?=$AppUI->_('LBL_SAVE')?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnSaveStakeholder" onclick="stakeholder.save()"><?=$AppUI->_('LBL_SAVE')?></button>
             </div>
         </div>
     </div>
@@ -175,9 +175,6 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
             }).done(function(response) {
                 $(".stakeholder-modal").html(response);
                 $(".modal-title").html("Adicionar stakeholder");
-                $("#btnSaveStakeholder").on("click", function() {
-                    stakeholder.save();
-                })
                 $("#addEditStakeholderModal").modal();
             });
         },

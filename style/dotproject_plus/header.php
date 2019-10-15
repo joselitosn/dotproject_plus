@@ -63,6 +63,10 @@ mysql_query('SET character_set_results=utf8');
                     <ul class="navbar-nav">
                     <?php
                     foreach ($nav as $module) {
+                        //workaround for instructor admin module (not visible by student accounts):: handling access rights complicated
+                        if($module['mod_directory']=="instructor_admin" && strtolower($AppUI->user_first_name) == "grupo" ){
+                            continue;//ignore this module and goes to the next iteration
+                        }
                         if ($perms->checkModule($module['mod_directory'], 'access')) {
                             if (isset($_REQUEST["m"]) and ( $_REQUEST["m"] == $module['mod_directory'])) {
                             ?>

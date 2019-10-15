@@ -61,10 +61,10 @@
             var name = $("input[name=project_name]").val();
             var company = $("select[name=project_company]").val();
 
-            if (!name || company == null) {
+            if (!name || company == 0) {
                 var msg = [];
                 if (!name) msg.push("Informe o nome do projeto");
-                if (company == null) msg.push("<?=$AppUI->_('projectsBadCompany', UI_OUTPUT_JS); ?>");
+                if (company == 0) msg.push("Selecione a empresa");
                 $.alert({
                     icon: "far fa-times-circle",
                     type: "red",

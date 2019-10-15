@@ -115,7 +115,7 @@ if (!$res->fields) {
                 <div class="row">
                     <div class="col-md-9">
                         <h5>
-                            <a id="<?=$human_resource_id?>" data-toggle="collapse" href="#hr_details_<?=$human_resource_id?>">
+                            <a id="<?=$user_id?>" data-toggle="collapse" href="#hr_details_<?=$user_id?>">
                                 <?=$res->fields["contact_first_name"].' '.$res->fields["contact_last_name"];?>
                                 <i class="fas fa-caret-down"></i>
                             </a>
@@ -157,7 +157,7 @@ if (!$res->fields) {
                         </div>
                     </div>
                 </div>
-                <div id="hr_details_<?=$human_resource_id?>" class="collapse">
+                <div id="hr_details_<?=$user_id?>" class="collapse">
                     <div class="row">
                         <div class="col-md-12">
                             <table class="table table-sm no-border">
@@ -307,7 +307,7 @@ if (!$res->fields) {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_('LBL_CLOSE')?></button>
-                <button type="button" class="btn btn-primary btn-sm" id="btnAddHr" ><?=$AppUI->_('LBL_SAVE')?></button>
+                <button type="button" class="btn btn-primary btn-sm" id="btnAddHr"><?=$AppUI->_('LBL_SAVE')?></button>
             </div>
         </div>
     </div>
@@ -372,7 +372,7 @@ if (!$res->fields) {
         new: function () {
             $("#btnAddHr").on("click", function() {
                 hr.saveNew();
-            })
+            });
             $("#addHrModal").modal();
         },
 

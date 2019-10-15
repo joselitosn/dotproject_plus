@@ -22,7 +22,7 @@ $q->addWhere("user_username like '{$userName}'");
 $userEx = $q->loadResult();
 // If userName already exists quit with error and do nothing
 if ($userEx) {
-    $AppUI->setMsg('already exists. Try another username.', UI_MSG_ERROR, true);
+    $AppUI->setMsg('already exists. Try another username.', UI_MSG_ERROR);
     echo $AppUI->getMsg();
     exit();
 } else {
@@ -62,7 +62,7 @@ if ($userEx) {
 
 
     $msg = $AppUI->_("Human Resource") . " " . $AppUI->_("added");
-    $AppUI->setMsg($msg, UI_MSG_OK, true);
+    $AppUI->setMsg($msg, UI_MSG_OK);
     echo $AppUI->getMsg();
     exit();
 }

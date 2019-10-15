@@ -17,7 +17,7 @@ if ($not != '0')
 
 $obj = new CInitiating();
 if (!$obj->bind($_POST)) {
-    $AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
+//    $AppUI->setMsg($obj->getError(), UI_MSG_ERROR);
     $AppUI->redirect();
 }
 
@@ -98,12 +98,12 @@ if(dPgetParam($_POST, 'delete_milestone_id', 0) != "0"){
 if ($del) {
     $obj->load($initiating_id);
     if (($msg = $obj->delete())) {
-        $AppUI->setMsg($msg, UI_MSG_ERROR);
+//        $AppUI->setMsg($msg, UI_MSG_ERROR);
         $AppUI->redirect();
     } else {
         if ($not == '1')
             $obj->notify();
-        $AppUI->setMsg("deleted", UI_MSG_ALERT, true);
+//        $AppUI->setMsg("deleted", UI_MSG_ALERT, true);
         $AppUI->redirect("m=initiating");
     }
 }
@@ -167,11 +167,11 @@ if($initiating_id>0){
      
 
 if (($msg = $obj->store())) {
-    $AppUI->setMsg($msg, UI_MSG_ERROR);
+//    $AppUI->setMsg($msg, UI_MSG_ERROR);
 } else {
     $obj->load($obj->initiating_id);
     if ($not == '1')
         $obj->notify();
-    $AppUI->setMsg($AppUI->_("Project charter included"), UI_MSG_OK, true);
+//    $AppUI->setMsg($AppUI->_("Project charter included"), UI_MSG_OK, true);
 }
 $AppUI->redirect();

@@ -172,7 +172,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 <div class="container-fluid">
     <div class="row header-2 bg-primary">
         <div class="col-md-12">
-            <h4><?=$obj->project_name?></h4>
+            <h4><?=dPformSafe($obj->project_name)?></h4>
             <small>
                 <?=$AppUI->_('Start Date')?>:
                 <?=$start_date ? $start_date->format($df) : '-'?>
@@ -181,7 +181,7 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                 <?=$end_date ? $end_date->format($df) : '-'?>
                 |
                 <?=$AppUI->_('Company')?>:
-                <?='<a href="?m=companies&amp;a=view&amp;company_id=' . $obj->project_company . '">' . htmlspecialchars($obj->company_name, ENT_QUOTES) . "</a>"?>
+                <?='<a href="?m=companies&amp;a=view&amp;company_id=' . $obj->project_company . '">' . dPformSafe($obj->company_name) . "</a>"?>
                 |
                 <?=$AppUI->_('Status')?>:
                 <?=$AppUI->_($pstatus[$obj->project_status])?>

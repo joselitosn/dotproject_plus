@@ -51,7 +51,7 @@ if ($del) {
     $userObj->delete();
 
     $msg = $AppUI->_("Human Resource") . " " . $AppUI->_("deleted");
-    $AppUI->setMsg($msg, UI_MSG_OK, false);
+    $AppUI->setMsg($msg, UI_MSG_OK);
     echo $AppUI->getMsg();
     exit();
 } else {
@@ -82,8 +82,8 @@ if ($del) {
                 $human_resource_roles->store($role_id, $obj->human_resource_id);
             }
         }
-        $msg = $AppUI->_("Human Resource") . " " . $AppUI->_($_POST["human_resource_id"] ? "updated" : "added");
-        $AppUI->setMsg($msg, UI_MSG_OK, true);
+        $msg = $AppUI->_("Human Resource") . " " . $AppUI->_("updated");
+        $AppUI->setMsg($msg, UI_MSG_OK);
     }
     echo $AppUI->getMsg();
     exit();
