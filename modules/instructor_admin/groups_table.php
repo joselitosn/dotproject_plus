@@ -115,9 +115,17 @@ if (isset($_GET["class_id"])) {
                     </a>
                 </td>
                 <td>
+            <?php
+                if ($project_id != -1) {
+                    ?>
                     <a href="javascript:void(0)" onclick="course.showGroupFeedback(<?=$userId?>, <?=$project_id?>, <?=$class_id?>)">
                         <?php echo $AppUI->_("LBL_VIEW_READ_FEEDBACK") ?>
                     </a>
+                    <?php
+                } else {
+                    echo $AppUI->_("LBL_PROJECT_NOT_CREATED");
+                }
+                ?>
                 </td>
                 <td>
                     <button type="button" class="btn btn-xs btn-danger"

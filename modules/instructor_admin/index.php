@@ -27,7 +27,7 @@
                     <div class="card inner-card" id="card_<?=$class->class_id?>">
                         <div class="card-body shrink">
                             <div class="row">
-                                <div class="col-md-10">
+                                <div class="col-md-4">
                                     <h5 class="courset-card">
                                         <a id="<?=$class->class_id?>" data-toggle="collapse"
                                            href="#course_details_<?=$class->class_id?>">
@@ -35,6 +35,11 @@
                                             <i class="fas fa-caret-down"></i>
                                         </a>
                                     </h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <?= $AppUI->_('LBL_INSTRUCTOR') ?>: <?=$class->instructor?>
+                                    &nbsp;|&nbsp;
+                                    <?= $AppUI->_('LBL_DISCIPLIN') ?>: <?=$class->disciplin?>
                                 </div>
                                 <div class="col-md-2 text-right">
                                     <span class="badge badge-primary">

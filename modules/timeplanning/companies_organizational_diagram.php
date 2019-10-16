@@ -2,7 +2,6 @@
 if (!defined('DP_BASE_DIR')) {
     die('You should not access this file directly.');
 }
-$AppUI->savePlace();
 require_once (DP_BASE_DIR . "/modules/timeplanning/control/controller_company_role.class.php");
 $controllerCompanyRole = new ControllerCompanyRole();
 $company_id = intval(dPgetParam($_GET, 'company_id', 0));
@@ -94,7 +93,7 @@ $roles = db_loadList($sql);
         
         $(combo).appendTo(td).select2({
             placeholder: "",
-            width: '100px',
+            width: '50%',
             allowClear: false,
             theme: "bootstrap"
         });
@@ -216,8 +215,8 @@ $roles = db_loadList($sql);
                     <tr>
                         <th width="6%"><?php echo $AppUI->_('LBL_ORDER'); ?></th>
                         <th width="7%"><?php echo $AppUI->_('LBL_IDENTATION'); ?></th>
-                        <th width="37%"><?php echo $AppUI->_('LBL_ROLE'); ?></th>
-                        <th width="50%"><?php echo $AppUI->_('LBL_EXCLUSION'); ?></th>
+                        <th width="50%"><?php echo $AppUI->_('LBL_ROLE'); ?></th>
+                        <th width="37%"><?php echo $AppUI->_('LBL_EXCLUSION'); ?></th>
                     </tr>
                 </thead>
                 <tbody id="tbody_org"></tbody>

@@ -790,24 +790,18 @@ if ($_GET["show_external_page"] != "") {
                                     $liId->value = $depId.'_'.$task_id;
                                     $li->appendChild($liId);
 
-                                    $btn = $dom->createElement('button');
-                                    $btnT = $dom->createAttribute('type');
-                                    $btnT->value = 'button';
-                                    $btn->appendChild($btnT);
-                                    $btnOC = $dom->createAttribute('onclick');
-                                    $btnOC->value = 'tasks.deleteDependency('.$depId.','.$task_id.')';
-                                    $btnC = $dom->createAttribute('class');
-                                    $btnC->value = 'btn btn-danger btn-xs';
-                                    $btn->appendChild($btnC);
-                                    $btn->appendChild($btnOC);
-
                                     $i = $dom->createElement('i');
                                     $iClass = $dom->createAttribute('class');
                                     $iClass->value = 'far fa-trash-alt';
+                                    $iOC = $dom->createAttribute('onclick');
+                                    $iOC->value = 'tasks.deleteDependency('.$depId.','.$task_id.')';
                                     $i->appendChild($iClass);
+                                    $i->appendChild($iOC);
+                                    $stl = $dom->createAttribute('style');
+                                    $stl->value = 'color: red; cursor: pointer;';
+                                    $i->appendChild($stl);
 
-                                    $btn->appendChild($i);
-                                    $li->appendChild($btn);
+                                    $li->appendChild($i);
                                     $ul->appendChild($li);
                                 }
 

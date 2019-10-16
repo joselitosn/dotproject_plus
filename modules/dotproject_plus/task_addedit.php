@@ -240,6 +240,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
             $('.datepicker').datepicker({
                 dateFormat: 'dd/mm/yy'
             });
+            $('.datepicker').datepicker('setDate', 'today');
 
             $('#btnAddResource').on('click', form.addResource);
 

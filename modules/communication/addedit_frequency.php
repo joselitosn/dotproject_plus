@@ -32,7 +32,7 @@ if ($frequencyId) {
         <div class="col-md-8">
             <div class="form-group">
                 <label for="communication_frequency" class="required">
-                    Descrição da freqência
+                    Descrição da frequência
                 </label>
                 <input type="text" maxlength="255" class="form-control form-control-sm" name="communication_frequency" value="<?=$obj->communication_frequency?>" />
             </div>

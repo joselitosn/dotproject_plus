@@ -16,11 +16,11 @@ foreach ($kaList as $ka) {
                     <table class="table table-sm table-bordered table-responsive-md">
                         <thead class="thead-dark">
                             <tr>
-                                <th width="35%"><?php echo $AppUI->_("LBL_FEEDBACK_SHORT_FORMAT"); ?></th>
+                                <th width="32%"><?php echo $AppUI->_("LBL_FEEDBACK_SHORT_FORMAT"); ?></th>
                                 <th width="45%"><?php echo $AppUI->_("Feedback"); ?></th>
                                 <th width="5%"><?php echo $AppUI->_("LBL_FEADBACK_TOTAL_EVALUATIONS"); ?></th>
                                 <th width="5%"><?php echo $AppUI->_("LBL_FEEDBACK_AVERAGE_EVALUATION"); ?></th>
-                                <th width="5%"><?php echo $AppUI->_("LBL_FEEDBACK_STDV_EVALUATION"); ?></th>
+                                <th width="8%"><?php echo $AppUI->_("LBL_FEEDBACK_STDV_EVALUATION"); ?></th>
                             </tr>
                         </thead>
                         <tboody>
