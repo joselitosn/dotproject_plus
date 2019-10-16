@@ -64,14 +64,27 @@ class ControllerWBSItem {
 		// Workaround. needs to recalculate the sort order in the database for each item.
         // This is not reliable as the sort order is used to create new items.
         // Temporary for user display only.
-        $j=0;
-        foreach ($items as $item) {
-            $number = explode(".", $item['number']);
-            $items[$j]['sort_order'] = array_sum($number);
-            $j++;
-        }
-
-        usort($items, 'sortWBSItemsByOrder');
+//        $j=0;
+//        foreach ($items as $item) {
+//            $number = explode(".", $item['number']);
+//            $items[$j]['sort_order'] = array_sum($number);
+//
+//            $q = new DBQuery();
+//            $q->addTable('project_eap_items');
+//            $q->addUpdate('sort_order', array_sum($number));
+//            $q->addWhere('id = ' . $item['id']);
+//            $q->exec();
+//            $q->clear();
+//
+//            $j++;
+//        }
+//        die('done');
+//
+//
+//
+//
+//
+//        usort($items, 'sortWBSItemsByOrder');
 
         $i=0;
         foreach ($items as $item) {

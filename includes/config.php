@@ -11,7 +11,7 @@ if (!defined('DP_BASE_DIR')) {
 $dPconfig['dbtype'] = 'mysql';
 $dPconfig['dbhost'] = '172.17.0.3:3306';
 $dbName=explode("/" , $baseDir); //On linux "/" ; //On windows "\\"
-$dPconfig['dbname'] = 'dot_project';//"dotproject_g6";//
+$dPconfig['dbname'] = 'dotproject_plus';//"dotproject_g6";//
 $dPconfig['dbprefix'] = 'dotp_';
 $dPconfig['dbuser'] = 'root';
 $dPconfig['dbpass'] = '123456';
