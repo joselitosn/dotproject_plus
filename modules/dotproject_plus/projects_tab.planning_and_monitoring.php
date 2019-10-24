@@ -1416,7 +1416,7 @@ if ($_GET["show_external_page"] != "") {
                     var predecessoraName = ui.draggable.find('h6').html();
                     var li = $('<li id="'+dependencyId+'_'+taskId+'"></li>');
                     li.html(predecessoraName+' ');
-                    var icon = $('<i class="far fa-trash-alt" style="color: red; cursor: pointer;" onclick="tasks.deleteDependency(\'+dependencyId+\',\'+taskId+\')"></i>');
+                    var icon = $('<i class="far fa-trash-alt" style="color: red; cursor: pointer;" onclick="tasks.deleteDependency('+dependencyId+','+taskId+')"></i>');
                     li.append(icon[0]);
                     var ul = card.find('ul');
                     ul.append(li[0]);
