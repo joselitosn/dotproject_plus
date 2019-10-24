@@ -106,7 +106,7 @@ require_once (DP_BASE_DIR . "/modules/projects/project-template.php");
 						<div class="card inner-card">
 							<div class="card-body shrink">
 								<div class="row">
-									<div class="col-md-10 mouse-cursor-pointer"> 
+									<div class="col-md-10">
 										<h5 class="project-card" data="<?=$id?>">
 											<a id="<?=$id?>" data-toggle="collapse"
 												href="#project_details_<?=$id?>">
@@ -190,7 +190,6 @@ require_once (DP_BASE_DIR . "/modules/projects/project-template.php");
 				theme: "bootstrap"
 			});
 
-//			$('.btnGoToProject').on('click', main.redirect);
 			$('a[data-toggle=collapse]').on('click', main.show);
 		},
 		
