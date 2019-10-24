@@ -17,7 +17,7 @@
 "Backup"=>"Backup",
 "Birthday"=>"Aniversario",
 "Calendar"=>"Calendario",
-"Change User Password"=>"Alterar Senha de Usuario",
+"Change User Password"=>"Alterar Senha",
 "City"=>"Cidade",
 "Client"=>"Cliente",
 "Clients"=>"Clientes",
@@ -2536,6 +2536,7 @@
 "LBL_RUGULATIONS" => "Regulamentação",
 "LBL_DOTPROJECT_PLUS_DESCRIPTION" => "Uma Ferramenta Educacional para o Gerenciamento de Projetos",
 "LBL_MY_DATA" => "Meus dados",
+
 "LBL_MY_SCHEDULE" => "Agenda",
 "LBL_EXIT" => "Sair",
 "LBL_WHAT_AUDIT" => "O que audita",

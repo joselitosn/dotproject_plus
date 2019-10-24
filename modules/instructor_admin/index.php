@@ -61,7 +61,7 @@
                                             <a class="dropdown-item" href="javascript:void(0)"
                                                onclick="course.viewClassGroups(<?=$class->class_id?>)">
                                                 <i class="fas fa-users-cog"></i>
-                                                <?=$AppUI->_('LBL_CLASS_DATA')?>
+                                                <?=$AppUI->_('LBL_SEE_GROUPS')?>
                                             </a>
                                             <a class="dropdown-item" href="javascript:void(0)"
                                                onclick="course.printCredentials(<?=$class->class_id?>)">

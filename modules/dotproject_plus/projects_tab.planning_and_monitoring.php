@@ -108,7 +108,8 @@ if ($_GET["show_external_page"] != "") {
 
     <div class="row">
         <div class="col-md-12">
-            <div class="alert alert-secondary" role="alert">
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-info-circle"></i>
                 Para sequenciar as atividades você deve abrir a atividade sucessora e arrastar a atividade predecessora sobre a seção "Atividades predecessoras".
             </div>
         </div>
@@ -1384,7 +1385,6 @@ if ($_GET["show_external_page"] != "") {
             $( ".draggable" ).draggable({
                 axis: "y",
                 revert: true,
-//                zIndex: 1000,
                 handle: "i",
                 snap: true,
                 refreshPositions: true,
@@ -1395,9 +1395,6 @@ if ($_GET["show_external_page"] != "") {
                 activeClass: 'draggable-active',
                 hoverClass: 'daggable-over',
                 over: function (event, ui) {
-//                    $(this).removeClass('daggable-over');
-//                    $(this).find('.alert').addClass('daggable-over');
-//                    $(this).find('.collapse').collapse('toggle');
 
                     var taskName = $(this).find('h6').html();
                     var predecessoraName = ui.draggable.find('h6').html();
@@ -1409,12 +1406,9 @@ if ($_GET["show_external_page"] != "") {
                 },
                 out: function (event, ui) {
                     $(this).tooltip('dispose');
-//                    $(this).find('.collapse').collapse('hide');
-//                    $(this).find('.alert').removeClass('daggable-over');
                 },
                 drop: function(event, ui) {
                     var card = $(this);
-//                    card.find('.alert').removeClass('daggable-over');
                     card.tooltip('dispose');
                     var taskId = card.parent().parent().parent().parent().parent().attr('data');
                     var dependencyId = ui.draggable.attr('data');
@@ -1422,10 +1416,8 @@ if ($_GET["show_external_page"] != "") {
                     var predecessoraName = ui.draggable.find('h6').html();
                     var li = $('<li id="'+dependencyId+'_'+taskId+'"></li>');
                     li.html(predecessoraName+' ');
-                    var icon = $('<i class="far fa-trash-alt"></i>');
-                    var btn = $('<btn type="button" class="btn btn-danger btn-xs" onclick="tasks.deleteDependency('+dependencyId+','+taskId+')"></button>');
-                    btn.html(icon[0]);
-                    li.append(btn[0]);
+                    var icon = $('<i class="far fa-trash-alt" style="color: red; cursor: pointer;" onclick="tasks.deleteDependency(\'+dependencyId+\',\'+taskId+\')"></i>');
+                    li.append(icon[0]);
                     var ul = card.find('ul');
                     ul.append(li[0]);
                     ul.parent().show();

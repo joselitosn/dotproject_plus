@@ -57,7 +57,7 @@ foreach ($kaList as $ka) {
                                     $short = $feedback->getShort();
                                     $description = $feedback->getDescription();
                                     $wasTriggered= $feedback->getIsTriggerFiredForCurrentUser();
-                                    $wasRead = isset($readFeeback[$id])?$readFeeback[$id]:"-----";
+                                    $wasRead = isset($readFeeback[$id])?date( 'd/m/Y H:i:s', strtotime($readFeeback[$id])):"-----";
                                     ?>
                                     <tr>
                                         <td><?php echo $short ?></td>

@@ -17,6 +17,7 @@
 "LBL_CLASSES_USING_DPP"=> "Turmas utilizando o dotProject+",
 "LBL_USERS_FOR_THIS_CLASS" => "Visão geral dos grupos desta turma",
 "LBL_CLASS_DATA" => "Detalhes da turma",
+"LBL_SEE_GROUPS" => "Ver grupos",
 "LBL_EDIT_CLASS" => "Alterar turma",
 "LBL_ADD_NEW_GROUPS_FOR_THIS_CLASS" => "Adicionar novos grupos para esta turma",
 "Instructor Admin" =>"Gerência de turma",

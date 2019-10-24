@@ -13,7 +13,7 @@
 
 <div class="alert alert-secondary" role="alert">
     <h4 class="alert-heading"><?=$class->course?></h4>
-    <p><?=$class->disciplin .' - '.$class->year . '/' . $class->semester?></p>
+    <p><?=$class->disciplin .' - '.$class->year . '/' . $class->semester . ' | ' . $class->instructor?></p>
 </div>
 <div class="card inner-card">
     <div class="card-header"><?=$AppUI->_("LBL_ADD_NEW_GROUPS_FOR_THIS_CLASS")?></div>

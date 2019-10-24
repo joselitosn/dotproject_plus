@@ -13,7 +13,7 @@ mysql_query('SET character_set_results=utf8');
 
 <html lang="en">
     <head>
-        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
         <title>dotProject+</title>
         <meta name="description" content="The HTML5 Herald">
@@ -44,6 +44,96 @@ mysql_query('SET character_set_results=utf8');
             } else {
                 var languageCode = "en";
             }
+
+            var header = {
+
+                init: function () {
+                    $('#changePasswdModal').on('hidden.bs.modal', function() {
+                       var form = $('form[name=formChangePasswd]');
+                       if (form) {
+                           form[0].reset();
+                       }
+                    });
+                },
+
+                savePasswd: function () {
+
+                    var old_pwd = $('input[name=old_pwd]').val().trim();
+                    var new_pwd1 = $('input[name=new_pwd1]').val().trim();
+                    var new_pwd2 = $('input[name=new_pwd2]').val().trim();
+                    var msg = [];
+                    var err = false;
+                    if (!old_pwd) {
+                        err = true;
+                        msg.push('Favor informar a senha atual');
+                    }
+                    if (!new_pwd1) {
+                        err = true;
+                        msg.push('Favor informar a nova senha');
+                    }
+                    if (!new_pwd2) {
+                        err = true;
+                        msg.push('Favor informar a confirmação da nova senha');
+                    }
+                    if (old_pwd && new_pwd1 && new_pwd2) {
+                        if (new_pwd1.length < <?=dPgetConfig('password_min_len')?>) {
+                            err = true;
+                            msg.push("<?=$AppUI->_('chgpwValidNew', UI_OUTPUT_JS)?> com no mínimo " + <?=dPgetConfig('password_min_len')?> + ' caracteres');
+                        }
+                        if (new_pwd1 != new_pwd2) {
+                            err = true;
+                            msg.push('Nova senha não confere com a confirmação da nova senha');
+                        }
+                    }
+
+                    if (err) {
+                        $.alert({
+                            icon: "far fa-times-circle",
+                            type: "red",
+                            title: "Erro",
+                            content: msg.join('<br>')
+                        });
+                        return;
+                    }
+
+                    $.ajax({
+                        method: 'POST',
+                        url: "?m=public",
+                        data: $("form[name=formChangePasswd]").serialize(),
+                        success: function(resposta) {
+                            var resp = JSON.parse(resposta);
+                            if (resp.err) {
+                                $.alert({
+                                    icon: "far fa-times-circle",
+                                    type: "red",
+                                    title: "Erro",
+                                    content: resp.msg
+                                });
+                            } else {
+                                $.alert({
+                                    icon: "far fa-check-circle",
+                                    type: "green",
+                                    title: "Sucesso",
+                                    content: resp.msg,
+                                    onClose: function() {
+                                        $('#changePasswdModal').modal('hide');
+                                    }
+                                });
+                            }
+                        },
+                        error: function(resposta) {
+                            $.alert({
+                                icon: "far fa-times-circle",
+                                type: "red",
+                                title: "Erro",
+                                content: "Algo deu errado"
+                            });
+                        }
+                    });
+                }
+            }
+
+            $(document).ready(header.init);
         </script>
     </head>
     <body>
@@ -117,14 +207,21 @@ mysql_query('SET character_set_results=utf8');
                         <i class="fas fa-caret-down"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="./index.php?m=admin&amp;a=viewuser&amp;user_id=<?php echo $AppUI->user_id ?>">
+<!--                        <a class="dropdown-item" href="./index.php?m=admin&amp;a=viewuser&amp;user_id=--><?php //echo $AppUI->user_id ?><!--">-->
+                        <a class="dropdown-item" href="javascript:void(0)" data-toggle="modal" data-target="#changePasswdModal">
                             <i class="far fa-user"></i>
-                            <?php echo $AppUI->_("LBL_MY_DATA")  ?>
+                            <?php echo $AppUI->_("Change User Password")  ?>
                         </a>
+                        <?php
+                            if (false) {
+                        ?>
                         <a class="dropdown-item" href="./index.php?m=calendar&amp;a=day_view&amp;date=<?php echo $date = date('Ymd', time()); ?>">
                             <i class="far fa-calendar-alt"></i>
                             <?php echo $AppUI->_("LBL_MY_SCHEDULE")  ?>
                         </a>
+                        <?php
+                        }
+                        ?>
                         <a class="dropdown-item" href="https://docs.google.com/forms/d/1ZaJAQrIOI93_wlFkIdJZbEq2uQiISas2w4aE72Qd5q4/viewform" target="_blank">
                             <i class="fas fa-bug"></i>
                             <?php echo $AppUI->_("LBL_BUG_REPORT")  ?>
@@ -137,7 +234,56 @@ mysql_query('SET character_set_results=utf8');
                 </li>
             </ul>
         </nav>
+        <!-- MODAL CHANGE PASSWORD -->
+        <div id="changePasswdModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><?=$AppUI->_("Change User Password")?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="<?=$AppUI->_("LBL_CLOSE")?>">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form name="formChangePasswd">
+                            <input type="hidden" name="user_id" value="<?=$AppUI->user_id?>">
+                            <input type="hidden" name="dosql" value="do_changePasswd">
 
+                            <div class="form-group">
+                                <span class="required"></span>
+                                <?=$AppUI->_('requiredField');?>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="company_name" class="required">
+                                    <?php echo $AppUI->_('Current Password'); ?>
+                                </label>
+                                <input type="password" class="form-control form-control-sm" name="old_pwd" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="company_name" class="required">
+                                    <?php echo $AppUI->_('New Password'); ?>
+                                </label>
+                                <input type="password" class="form-control form-control-sm" name="new_pwd1" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="company_name" class="required">
+                                    <?php echo $AppUI->_('Repeat New Password'); ?>
+                                </label>
+                                <input type="password" class="form-control form-control-sm" name="new_pwd2" />
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?=$AppUI->_("LBL_CLOSE")?></button>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="header.savePasswd()"><?=$AppUI->_("LBL_SAVE")?></button>
+                    </div>
+                </div>
+            </div>
+        </div>
         
 
         

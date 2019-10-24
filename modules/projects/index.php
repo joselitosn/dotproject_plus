@@ -62,6 +62,7 @@ require_once (DP_BASE_DIR . "/modules/projects/project-template.php");
 		<div class="row">
 			<div class="col-md-12">
 				<?php
+                    $numberOfProjects = count($projects);
 					foreach($projects as $project) {
 						$id = $project['project_id'];
 						$startDate = new CDate($project["project_start_date"]);
@@ -110,7 +111,7 @@ require_once (DP_BASE_DIR . "/modules/projects/project-template.php");
 											<a id="<?=$id?>" data-toggle="collapse"
 												href="#project_details_<?=$id?>">
 												<?=$project_name?>
-												<i class="fas fa-caret-down"></i>
+												<i class="fas<?=$numberOfProjects <= 5 ? ' fa-caret-up' : ' fa-caret-down'?>"></i>
 											</a>
 										</h5>
 									</div>
@@ -130,37 +131,41 @@ require_once (DP_BASE_DIR . "/modules/projects/project-template.php");
 										</div>
 									</div>
 								</div>
-								<div id="project_details_<?= $id ?>" class="collapse">
-									<div class="row">
-										<table class="table table-sm no-border">
-											<tr>
-												<th class="text-right" width="15%"><?=$AppUI->_('Company')?>:</th>
-												<td><?=$project['company_name']?></td>
-												<th class="text-right" width="15%">% <?=$AppUI->_('LBL_COMPLETE')?>:</th>
-												<td><?=$percentComplete?></td>
-											</tr>
-											
-											<tr>
-												<th class="text-right" width="15%"><?=$AppUI->_('Start')?>:</th>
-												<td><?=$startDateFormated?></td>
-												<th class="text-right" width="15%"><?=$AppUI->_('End')?>:</th>
-												<td><?=$endDateFormated?></td>
-											</tr>
-											
-											<tr>
-												<th class="text-right" width="15%"><?=$AppUI->_('Actual')?>:</th>
-												<td><?=$actualEndDateFormated?></td>
-												<th class="text-right" width="15%"><?=$AppUI->_('Owner')?>:</th>
-												<td><?=$responsible?></td>
-											</tr>
-											
-											<tr>
-												<th class="text-right" width="15%"><?=$AppUI->_('Tasks') . ' ('. $AppUI->_('My') . ')'?>:</th>
-												<td><?=$project['total_tasks'] . ($project['my_tasks'] ? ' ('.$project['my_tasks'].')' : '')?></td>
-											</tr>
-										</table>
-									</div>
-								</div>
+								<div id="project_details_<?= $id ?>" class="collapse<?=$numberOfProjects <= 5 ? ' show' : ''?>">
+                                    <table class="table table-sm no-border">
+                                        <tr>
+                                            <th class="text-right" width="15%"><?=$AppUI->_('Company')?>:</th>
+                                            <td><?=$project['company_name']?></td>
+                                            <th class="text-right" width="15%">% <?=$AppUI->_('LBL_COMPLETE')?>:</th>
+                                            <td><?=$percentComplete?></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th class="text-right" width="15%"><?=$AppUI->_('Start')?>:</th>
+                                            <td><?=$startDateFormated?></td>
+                                            <th class="text-right" width="15%"><?=$AppUI->_('End')?>:</th>
+                                            <td><?=$endDateFormated?></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th class="text-right" width="15%"><?=$AppUI->_('Actual')?>:</th>
+                                            <td><?=$actualEndDateFormated?></td>
+                                            <th class="text-right" width="15%"><?=$AppUI->_('Owner')?>:</th>
+                                            <td><?=$responsible?></td>
+                                        </tr>
+
+                                        <tr>
+                                            <th class="text-right" width="15%"><?=$AppUI->_('Tasks') . ' ('. $AppUI->_('My') . ')'?>:</th>
+                                            <td><?=$project['total_tasks'] . ($project['my_tasks'] ? ' ('.$project['my_tasks'].')' : '')?></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="4" class="text-right">
+                                                <button class="btn btn-primary btn-sm" type="button" onclick="main.redirect(<?=$id?>)">Acessar projeto</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
 							</div>
 						</div>
 						<?php
@@ -185,15 +190,11 @@ require_once (DP_BASE_DIR . "/modules/projects/project-template.php");
 				theme: "bootstrap"
 			});
 
-			$('.project-card').on('click', main.redirect);
+//			$('.btnGoToProject').on('click', main.redirect);
 			$('a[data-toggle=collapse]').on('click', main.show);
 		},
 		
-		redirect: function(e) {
-			if ($(e.target).is('a')) {
-				return;
-			}
-			const projectId = $(e.target).attr('data');
+		redirect: function(projectId) {
 			window.location.href = '?m=projects&a=view&project_id=' + projectId;
 		},
 
