@@ -43,7 +43,7 @@
                                 <label for="button" class="d-block">
                                     &nbsp;
                                 </label>
-                                <button type="button" class="btn btn-primary btn-sm" onclick="course.saveGroups(<?=$class_id?>)"><?=$AppUI->_("LBL_CREATE_GROUPS_ACCOUNTS")?></button>
+                                <button type="button" class="btn btn-primary btn-sm" id="btn_newGroups" onclick="course.saveGroups(<?=$class_id?>)"><?=$AppUI->_("LBL_CREATE_GROUPS_ACCOUNTS")?></button>
                             </div>
                         </div>
                     </div>

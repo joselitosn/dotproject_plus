@@ -9,6 +9,19 @@ if (isset($_GET["class_id"])) {
     $class_id = $_GET["class_id"];
     $class->load($class_id);
 }
+$q = new DBQuery();
+$q->addTable("dpp_classes_users");
+$q->addQuery("user_login,user_password,user_company,user_id");
+$q->addWhere("class_id=" . $class_id);
+$sql = $q->prepare();
+//echo $sql;
+$records = db_loadList($sql);
+
+if (count($records) == 0) {
+    ?>
+    <p>Nenhuma grupo registrado para esta turma</p>
+    <?php
+} else {
 ?>
 
 <table class="table table-sm table-bordered table-responsive-md">
@@ -26,13 +39,7 @@ if (isset($_GET["class_id"])) {
     </thead>
     <tbody>
         <?php
-        $q = new DBQuery();
-        $q->addTable("dpp_classes_users");
-        $q->addQuery("user_login,user_password,user_company,user_id");
-        $q->addWhere("class_id=" . $class_id);
-        $sql = $q->prepare();
-        //echo $sql;
-        $records = db_loadList($sql);
+
         require_once DP_BASE_DIR . "/modules/initiating/initiating.class.php";
 
         foreach ($records as $record) {
@@ -140,4 +147,5 @@ if (isset($_GET["class_id"])) {
     </tbody>
 </table>
 <?php
-    exit();
+}
+exit();

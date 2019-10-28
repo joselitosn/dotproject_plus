@@ -126,6 +126,12 @@ require_once (DP_BASE_DIR . "/modules/stakeholder/stakeholder.class.php");
         }
     ?>
 <?php
+} else {
+    ?>
+    <div class="alert alert-secondary text-center" role="alert">
+        Antes de registrar os stakeholders do projeto deve-se iniciar a elaboração do termo de abertura.
+    </div>
+    <?php
 }
 ?>
 <div class="modal" id="addEditStakeholderModal" tabindex="-1" role="dialog">

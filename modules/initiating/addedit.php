@@ -41,8 +41,20 @@ $q->addWhere("con.contact_company=".$projectObj->project_company);
 $owners = $q->loadHashList();
 // format dates
 $df = $AppUI->getPref('SHDATEFORMAT');
+
+if (null === $obj->initiating_start_date) {
+    $obj->initiating_start_date = $projectObj->project_start_date;
+};
+if (null === $obj->initiating_end_date) {
+    $obj->initiating_end_date = $projectObj->project_end_date;
+};
 $start_date = new CDate($obj->initiating_start_date);
 $end_date = new CDate($obj->initiating_end_date);
+
+if (null === $obj->initiating_budget || $obj->initiating_budget == 0) {
+    $obj->initiating_budget = $projectObj->project_target_budget;
+};
+
 ?>
 <script type="text/javascript" src="./modules/initiating/libraries/jquery/jquery.maskMoney.js"></script>
 <?php
@@ -207,7 +219,7 @@ function authorize() {
 }
     
 </script>
-
+<div class="container-fluid">
 
 <h4><?=$AppUI->_("LBL_OPEN_PROJECT_CHARTER",UI_OUTPUT_HTML)?></h4>
 <hr>
@@ -244,7 +256,7 @@ function authorize() {
                 </select>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="initiating_start_date"><?=$AppUI->_("Start Date")?></label>
                 <input type="hidden" name="initiating_start_date" value="<?=$start_date->format(FMT_TIMESTAMP_DATE)?>" />
@@ -256,7 +268,7 @@ function authorize() {
                        <?=$formReadOnly?> />
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="initiating_start_date"><?=$AppUI->_("End Date")?></label>
                 <input type="hidden" name="initiating_end_date" value="<?=$end_date->format(FMT_TIMESTAMP_DATE)?>" />
@@ -319,10 +331,10 @@ function authorize() {
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="initiating_budget">
-                        <?=$AppUI->_('Budget')?> (<?=dPgetConfig("currency_symbol")?>)
+                    <label for="initiating_success">
+                        <?=$AppUI->_('Criteria for success')?>
                     </label>
-                    <textarea rows="4" class="form-control form-control-sm" name="initiating_budget" <?=$formReadOnly?>><?=$obj->initiating_budget?></textarea>
+                    <textarea rows="4" class="form-control form-control-sm" name="initiating_success"  <?=$formReadOnly?>><?=str_replace("\n", "<br />", $obj->initiating_success)?></textarea>
                 </div>
             </div>
         </div>
@@ -330,13 +342,12 @@ function authorize() {
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="initiating_success">
-                        <?=$AppUI->_('Criteria for success')?>
+                    <label for="initiating_budget">
+                        <?=$AppUI->_('Budget')?> (<?=dPgetConfig("currency_symbol")?>)
                     </label>
-                    <textarea rows="4" class="form-control form-control-sm" name="initiating_success"  <?=$formReadOnly?>><?=str_replace("\n", "<br />", $obj->initiating_success)?></textarea>
+                    <input type="text" class="form-control form-control-sm" id="budget" name="initiating_budget" value="<?=$obj->initiating_budget?>" maxlength="10"  <?=$formReadOnly?> />
                 </div>
             </div>
-
         </div>
 
         <div class="row">
@@ -500,7 +511,7 @@ function authorize() {
 
 <?php require_once DP_BASE_DIR . "/modules/initiating/authorization_workflow.php" ?>
 <br>
-
+</div>
 <script>
 
     var initiating = {
@@ -529,6 +540,8 @@ function authorize() {
             } else {
                 $('#btnSave').hide();
             }
+
+            $("#budget").mask("000.000.000.000.000,00", {reverse: true});
         },
 
         complete: function () {

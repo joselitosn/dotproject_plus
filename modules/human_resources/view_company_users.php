@@ -395,16 +395,26 @@ if (!$res->fields) {
                 datatype: "json",
                 data: $("form[name=new_user]").serialize(),
                 success: function(resposta) {
-                    $.alert({
-                        icon: "far fa-check-circle",
-                        type: "green",
-                        title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
-                        content: resposta,
-                        onClose: function() {
-                            window.location.reload(true);
-                        }
-                    });
-                    $("#addEditRoleModal").modal("hide");
+                    var resp = JSON.parse(resposta);
+                    if (resp.err) {
+                        $.alert({
+                            icon: "far fa-times-circle",
+                            type: "red",
+                            title: "<?=$AppUI->_('Error', UI_OUTPUT_JS); ?>",
+                            content: resp.msg
+                        });
+                    } else {
+                        $.alert({
+                            icon: "far fa-check-circle",
+                            type: "green",
+                            title: "<?=$AppUI->_('Success', UI_OUTPUT_JS); ?>",
+                            content: resp.msg,
+                            onClose: function() {
+                                window.location.reload(true);
+                            }
+                        });
+                        $("#addEditRoleModal").modal("hide");
+                    }
                 },
                 error: function(resposta) {
                     $.alert({

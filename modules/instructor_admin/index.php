@@ -403,12 +403,15 @@
                 return;
             }
 
+            var btn = $('#btn_newGroups');
+            btn.html('Aguarde...').prop('disabled', true);
             $.ajax({
                 url: "?m=instructor_admin",
                 type: "post",
                 datatype: "json",
                 data: $("form[name=formNumberOfGroups]").serialize(),
                 success: function(resposta) {
+                    btn.html('Criar grupos').prop('disabled', false);
                     var element = $('#goupsTableContainer');
                     element.loading({
                         message: 'Carregando grupos...'

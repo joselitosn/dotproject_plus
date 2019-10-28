@@ -9,6 +9,12 @@ $del = intval(dPgetParam($_POST, 'del', 0));
 $completed = intval(dPgetParam($_POST, 'initiating_completed', 0));
 $approved = intval(dPgetParam($_POST, 'initiating_approved', 0));
 $authorized = intval(dPgetParam($_POST, 'initiating_authorized', 0));
+if (isset($_POST['initiating_budget'])) {
+
+    $_POST['initiating_budget'] = str_replace('.', '', $_POST['initiating_budget']);
+    $_POST['initiating_budget'] = str_replace(',', '.', $_POST['initiating_budget']);
+}
+
 global $db, $AppUI;
 
 $not = dPgetParam($_POST, 'notify', '0');

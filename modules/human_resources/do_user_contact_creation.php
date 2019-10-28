@@ -19,11 +19,15 @@ $q = new DBQuery;
 $q->addTable('users', 'u');
 $q->addQuery('user_username');
 $q->addWhere("user_username like '{$userName}'");
+$q->addWhere("user_company = {$companyId}");
 $userEx = $q->loadResult();
 // If userName already exists quit with error and do nothing
+
+$resposta = array('err' => false, 'msg' => '');
 if ($userEx) {
-    $AppUI->setMsg('already exists. Try another username.', UI_MSG_ERROR);
-    echo $AppUI->getMsg();
+    $resposta['err'] = true;
+    $resposta['msg'] = 'Usuário já existe. Tente outro nome de usuário.';
+    echo json_encode($resposta);
     exit();
 } else {
     $companyObj = new CCompany();
@@ -33,7 +37,7 @@ if ($userEx) {
     $q = new DBQuery();
     $q->addTable('contacts', 'c');
     $q->addQuery('contact_id');
-    $q->addWhere("contact_first_name= '{$userFirstName}' and contact_last_name='{$userLastName}'");
+    $q->addWhere("contact_first_name= '{$userFirstName}' and contact_last_name='{$userLastName}' and contact_company = {$companyId}");
     $sql = $q->prepare();
     $contactId = -1;
     $contacts = db_loadList($sql);
@@ -62,8 +66,11 @@ if ($userEx) {
 
 
     $msg = $AppUI->_("Human Resource") . " " . $AppUI->_("added");
-    $AppUI->setMsg($msg, UI_MSG_OK);
-    echo $AppUI->getMsg();
+
+
+    $resposta['err'] = false;
+    $resposta['msg'] = $msg;
+    echo json_encode($resposta);
     exit();
 }
 ?>

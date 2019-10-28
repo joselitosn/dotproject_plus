@@ -108,9 +108,12 @@ if ($_GET["show_external_page"] != "") {
 
     <div class="row">
         <div class="col-md-12">
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <i class="fas fa-info-circle"></i>
                 Para sequenciar as atividades você deve abrir a atividade sucessora e arrastar a atividade predecessora sobre a seção "Atividades predecessoras".
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
         </div>
     </div>
@@ -1431,12 +1434,12 @@ if ($_GET["show_external_page"] != "") {
                             dependency_id: dependencyId
                         },
                         success: function(resposta) {
-                            $.alert({
-                                icon: "far fa-check-circle",
-                                type: "green",
-                                title: "Sucesso",
-                                content: resposta
-                            });
+//                            $.alert({
+//                                icon: "far fa-check-circle",
+//                                type: "green",
+//                                title: "Sucesso",
+//                                content: resposta
+//                            });
                         },
                         error: function(resposta) {
                             li.remove();
@@ -1520,12 +1523,17 @@ if ($_GET["show_external_page"] != "") {
 
         save: function () {
             var description = $('input[name=wbs_item_description]').val();
+            var size = $('input[name=wbs_item_size]').val();
 
             var err = false;
             var msg = '';
             if (!description.trim()) {
                 err = true;
                 msg = 'A descrição é obrigatória';
+            }
+            if (size.trim() != '' && !size.match(/\d+/g)) {
+                err = true;
+                msg = 'O tamanho deve ser numérico';
             }
             if (err) {
                 $.alert({
@@ -1831,13 +1839,13 @@ if ($_GET["show_external_page"] != "") {
                                 },
                                 success: function(resposta) {
                                     li.remove();
-                                    $.alert({
-                                        icon: "far fa-check-circle",
-                                        type: "green",
-                                        title: "Sucesso",
-                                        content: resposta,
-                                        onClose: function() {}
-                                    });
+//                                    $.alert({
+//                                        icon: "far fa-check-circle",
+//                                        type: "green",
+//                                        title: "Sucesso",
+//                                        content: resposta,
+//                                        onClose: function() {}
+//                                    });
                                 },
                                 error: function(resposta) {
                                     $.alert({

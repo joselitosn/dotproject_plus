@@ -35,7 +35,7 @@ $q->addTable('contacts','con');
 $q->addQuery('user_id');
 $q->addQuery('CONCAT_WS(", ",contact_last_name,contact_first_name)');
 $q->addOrder('contact_last_name');
-$q->addWhere('u.user_contact = con.contact_id');
+$q->addWhere("u.user_contact = con.contact_id and u.user_company = {$company_id}");
 $users = $q->loadHashList();
 
 // load the record data
@@ -239,7 +239,7 @@ if ($project_id == 0 && $contact_id > 0) {
         <div class="col-md-6">
             <div class="form-group">
                 <label for="budget">
-                    <?php echo $AppUI->_("Target Budget"); ?>
+                    <?=$AppUI->_('Budget')?>
                 </label>
                 <input type="text" class="form-control form-control-sm" id="budget" name="project_target_budget" value="<?=$row->project_target_budget?>" maxlength="10" />
             </div>

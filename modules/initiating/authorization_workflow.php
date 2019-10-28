@@ -1,9 +1,9 @@
 <div align="center">
-    <div align="center" style="width:100%;">
+    <div>
         <br />
         <span style="color:#000"><?php echo $AppUI->_("Authorization workflow") ?></span>
         <br /><br />
-        <canvas id="authorization_workflow" width="950px" height="120px" align="center" style="border:1px solid #cecece; border-radius: 4px; padding:30px;">
+        <canvas id="authorization_workflow" width="800px" height="120px" align="center" style="border:1px solid #cecece; border-radius: 4px; padding:30px;">
 
         </canvas>
         <br />
