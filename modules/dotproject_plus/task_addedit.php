@@ -71,7 +71,8 @@ $effortMetrics[0] = 'Pessoas/Hora';
 $effortMetrics[1] = 'Pessoas/Minuto';
 $effortMetrics[2] = 'Pessoas/Dia';
 
-
+$startDate = $obj->task_start_date != null ? date("d/m/Y", strtotime($obj->task_start_date)) : date("d/m/Y");
+$endDate = $obj->task_end_date != null ? date("d/m/Y", strtotime($obj->task_end_date)) : date("d/m/Y");
 ?>
 <form name="taskForm">
 
@@ -98,7 +99,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
                    class="form-control form-control-sm datepicker"
                    id="planned_start_date_activity"
                    placeholder="dd/mm/yyyy"
-                   value="<?=date("d/m/Y", strtotime($obj->task_start_date))?>" />
+                   value="<?=$startDate?>" />
             </div>
         </div>
         <div class="col-md-6">
@@ -109,7 +110,7 @@ $effortMetrics[2] = 'Pessoas/Dia';
                     class="form-control form-control-sm datepicker"
                     id="planned_end_date_activity"
                     placeholder="dd/mm/yyyy"
-                    value="<?=date("d/m/Y", strtotime($obj->task_end_date))?>" />
+                    value="<?=$endDate?>" />
             </div>
         </div>
     </div>
@@ -240,7 +241,13 @@ $effortMetrics[2] = 'Pessoas/Dia';
             $('.datepicker').datepicker({
                 dateFormat: 'dd/mm/yy'
             });
-            $('.datepicker').datepicker('setDate', 'today');
+
+//            if (!$('input[name=planned_start_date_activity]').val()) {
+//                $('input[name=planned_start_date_activity]').datepicker('setDate', 'today');
+//            }
+//            if (!$('input[name=planned_start_end_activity]').val()) {
+//                $('input[name=planned_start_end_activity]').datepicker('setDate', 'today');
+//            }
 
             $('#btnAddResource').on('click', form.addResource);
 

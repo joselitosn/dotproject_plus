@@ -12,39 +12,42 @@ $projects = $project->getAllowedRecords($AppUI->user_id, 'project_id,project_nam
 $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projects);
 
 ?>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-primary btn-sm" onclick="risks.new(<?=$project_id?>)">
+                <?=$AppUI->_("LBL_NEW")?>
+            </button>
 
-<div class="row">
-    <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openRisksManagementPlan(<?=$project_id?>)">
+                <?=$AppUI->_("LBL_RISK_MANAGEMENT_PLAN")?>
+            </button>
 
-        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openRisksManagementPlan(<?=$project_id?>)">
-            <?=$AppUI->_("LBL_RISK_MANAGEMENT_PLAN")?>
-        </button>
-
-        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openChecklistAnalisis(<?=$project_id?>)">
-            <?=$AppUI->_("LBL_CHECKLIST_ANALYSIS")?>
-        </button>
-
-        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openWatchList(<?=$project_id?>)">
-            <?=$AppUI->_("LBL_WATCHLIST")?>
-        </button>
-
-        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openShortTimeResponseList(<?=$project_id?>)">
-            <?=$AppUI->_("LBL_NEARTERM")?>
-        </button>
-
-        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openLessonLearntList(<?=$project_id?>)">
-            <?=$AppUI->_("LBL_LESSONS_LIST")?>
-        </button>
-
-        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openResponsesList(<?=$project_id?>)">
-            <?=$AppUI->_("LBL_STRATEGYS_LIST")?>
-        </button>
-
-        <button type="button" class="btn btn-sm btn-secondary" onclick="risks.new(<?=$project_id?>)">
-            <?=$AppUI->_("LBL_NEW")?>
-        </button>
+            <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openChecklistAnalisis(<?=$project_id?>)">
+                <?=$AppUI->_("LBL_CHECKLIST_ANALYSIS")?>
+            </button>
+        </div>
     </div>
-</div>
+    <br>
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openWatchList(<?=$project_id?>)">
+                <?=$AppUI->_("LBL_WATCHLIST")?>
+            </button>
+
+            <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openShortTimeResponseList(<?=$project_id?>)">
+                <?=$AppUI->_("LBL_NEARTERM")?>
+            </button>
+
+            <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openLessonLearntList(<?=$project_id?>)">
+                <?=$AppUI->_("LBL_LESSONS_LIST")?>
+            </button>
+
+            <button type="button" class="btn btn-sm btn-secondary" onclick="risks.openResponsesList(<?=$project_id?>)">
+                <?=$AppUI->_("LBL_STRATEGYS_LIST")?>
+            </button>
+        </div>
+    </div>
 
 <!-- MODAL RISK MANAGEMENT PLAN -->
 <div id="riskManagementPlanModal" class="modal" tabindex="-1" role="dialog">
@@ -182,7 +185,8 @@ $projects = arrayMerge(array('0' => $AppUI->_('LBL_ALL', UI_OUTPUT_JS)), $projec
 
 
 
-
 <?php
     include("index_table.php");
 ?>
+
+</div>

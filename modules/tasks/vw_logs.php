@@ -54,7 +54,7 @@ $hrs = 0;
 
         $link = '-';
         if (!empty($row['task_log_related_url'])) {
-            $link = '<a target="_blank" href="' . @$row['task_log_related_url'] . '" title="' . @$row['task_log_related_url'] . '">' . $AppUI->_('URL') . '</a>';
+            $link = '<a target="_blank" href="http://' . @$row['task_log_related_url'] . '" title="' . @$row['task_log_related_url'] . '">' . $AppUI->_('URL') . '</a>';
         }
 
         $hours = '-';

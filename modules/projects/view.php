@@ -221,8 +221,9 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 
         <ul class="list-unstyled components">
             <li class="<?=$tab == 0 ? '' : '' ?>">
-                <a href="#iniciacaoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <a id="linkInitiation" href="#iniciacaoSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <?=$AppUI->_("1initiation", UI_OUTPUT_HTML);?>
+                    <i id="iconIni" class="fas <?=$tab == 0 ? ' fa-angle-up' : ' fa-angle-down'?> float-right"></i>
                 </a>
                 <ul class="collapse list-unstyled<?=$tab == 0 ? ' show' : ' hide'?>" id="iniciacaoSubmenu">
                     <li class="<?=$subtab == 0 ? 'active' : '' ?>">
@@ -238,8 +239,9 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
                 </ul>
             </li>
             <li class="<?=$tab == 1 ? '' : '' ?>">
-                <a href="#pmSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                <a id="linkPlaning" href="#pmSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                     <?=$AppUI->_("Planning and monitoring", UI_OUTPUT_HTML);?>
+                    <i id="iconPla" class="fas <?=$tab == 1 ? ' fa-angle-up' : ' fa-angle-down'?> float-right"></i>
                 </a>
                 <ul class="collapse list-unstyled<?=$tab == 1 ? ' show' : ' hide'?>" id="pmSubmenu">
                     <li class="<?=$tab == 1 && $subtab == 0 ? 'active' : '' ?>">
@@ -355,6 +357,25 @@ $style = ((($actual_end_date > $end_date) && !empty($end_date)) ? 'style="color:
 
     <script type="text/javascript">
         $(document).ready(function(e) {
+
+            $('#linkInitiation').on('click', function() {
+                if ($('#iconIni').hasClass('fa-angle-down')) {
+                    $('#iconIni').removeClass('fa-angle-down');
+                    $('#iconIni').addClass('fa-angle-up');
+                } else {
+                    $('#iconIni').removeClass('fa-angle-up');
+                    $('#iconIni').addClass('fa-angle-down');
+                }
+            });
+            $('#linkPlaning').on('click', function() {
+                if ($('#iconPla').hasClass('fa-angle-down')) {
+                    $('#iconPla').removeClass('fa-angle-down');
+                    $('#iconPla').addClass('fa-angle-up');
+                } else {
+                    $('#iconPla').removeClass('fa-angle-up');
+                    $('#iconPla').addClass('fa-angle-down');
+                }
+            });
 
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');

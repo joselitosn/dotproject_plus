@@ -260,15 +260,15 @@ $quality_planning_id = $object->getId();
                                     <div class="col-md-12">
                                         <span>
                                             <?=$AppUI->_("LBL_GQM_GOAL_OBJECT")?>
-                                            <b><?=$gqm_goal_object?></b>
+                                            <b><?=strtolower($gqm_goal_object)?></b>
                                             <?=$AppUI->_("LBL_GQM_GOAL_PURPOSE")?>
-                                            <b><?=$gqm_goal_propose?></b>
+                                            <b><?=strtolower($gqm_goal_propose)?></b>
                                             <?=$AppUI->_("LBL_GQM_GOAL_RESPECT_TO")?>
-                                            <b><?=$gqm_goal_respect_to?></b>
+                                            <b><?=strtolower($gqm_goal_respect_to)?></b>
                                             <?=$AppUI->_("LBL_GQM_GOAL_POINT_OF_VIEW")?>
-                                            <b><?=$gqm_goal_point_of_view?></b>
+                                            <b><?=strtolower($gqm_goal_point_of_view)?></b>
                                             <?=$AppUI->_("LBL_GQM_GOAL_CONTEXT")?>
-                                            <b><?=$gqm_goal_context?></b>
+                                            <b><?=strtolower($gqm_goal_context)?></b>
                                         </span>
                                     </div>
                                 </div>
@@ -723,15 +723,25 @@ $quality_planning_id = $object->getId();
                 url: "?m=timeplanning",
                 data: $("form[name="+formName+"]").serialize(),
                 success: function(resposta) {
-                    $.alert({
-                        icon: "far fa-check-circle",
-                        type: "green",
-                        title: "Sucesso",
-                        content: resposta,
-                        onClose: function() {
-                            window.location.reload(true);
-                        }
-                    });
+                    var resp = JSON.parse(resposta);
+                    if (resp.err) {
+                        $.alert({
+                            icon: "far fa-times-circle",
+                            type: "red",
+                            title: "Erro",
+                            content: resp.msg
+                        });
+                    } else {
+                        $.alert({
+                            icon: "far fa-check-circle",
+                            type: "green",
+                            title: "Sucesso",
+                            content: resp.msg,
+                            onClose: function() {
+                                window.location.reload(true);
+                            }
+                        });
+                    }
                 },
                 error: function(resposta) {
                     $.alert({
@@ -776,15 +786,26 @@ $quality_planning_id = $object->getId();
                                     form_section: 'quality_assurance'
                                 }
                             }).done(function(resposta) {
-                                $.alert({
-                                    icon: "far fa-check-circle",
-                                    type: "green",
-                                    title: "Sucesso",
-                                    content: resposta,
-                                    onClose: function() {
-                                        window.location.reload(true);
-                                    }
-                                });
+                                var resp = JSON.parse(resposta);
+                                if (!resp.err) {
+                                    $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
+                                        title: "Sucesso",
+                                        content: resp.msg,
+                                        onClose: function() {
+                                            window.location.reload(true);
+                                        }
+                                    });
+                                } else {
+                                    $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
+                                        title: "Erro",
+                                        content: resp.msg
+                                    });
+                                }
+
                             });
                         },
                     },
@@ -831,15 +852,25 @@ $quality_planning_id = $object->getId();
                                     form_section: 'quality_requirement'
                                 }
                             }).done(function(resposta) {
-                                $.alert({
-                                    icon: "far fa-check-circle",
-                                    type: "green",
-                                    title: "Sucesso",
-                                    content: resposta,
-                                    onClose: function() {
-                                        window.location.reload(true);
-                                    }
-                                });
+                                var resp = JSON.parse(resposta);
+                                if (!resp.err) {
+                                    $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
+                                        title: "Sucesso",
+                                        content: resp.msg,
+                                        onClose: function() {
+                                            window.location.reload(true);
+                                        }
+                                    });
+                                } else {
+                                    $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
+                                        title: "Erro",
+                                        content: resp.msg
+                                    });
+                                }
                             });
                         },
                     },
@@ -875,15 +906,25 @@ $quality_planning_id = $object->getId();
                                     form_section: 'quality_goal'
                                 }
                             }).done(function(resposta) {
-                                $.alert({
-                                    icon: "far fa-check-circle",
-                                    type: "green",
-                                    title: "Sucesso",
-                                    content: resposta,
-                                    onClose: function() {
-                                        window.location.reload(true);
-                                    }
-                                });
+                                var resp = JSON.parse(resposta);
+                                if (!resp.err) {
+                                    $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
+                                        title: "Sucesso",
+                                        content: resp.msg,
+                                        onClose: function() {
+                                            window.location.reload(true);
+                                        }
+                                    });
+                                } else {
+                                    $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
+                                        title: "Erro",
+                                        content: resp.msg
+                                    });
+                                }
                             });
                         },
                     },
@@ -948,15 +989,25 @@ $quality_planning_id = $object->getId();
                                     form_section: 'quality_analisys_question'
                                 }
                             }).done(function(resposta) {
-                                $.alert({
-                                    icon: "far fa-check-circle",
-                                    type: "green",
-                                    title: "Sucesso",
-                                    content: resposta,
-                                    onClose: function() {
-                                        window.location.reload(true);
-                                    }
-                                });
+                                var resp = JSON.parse(resposta);
+                                if (!resp.err) {
+                                    $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
+                                        title: "Sucesso",
+                                        content: resp.msg,
+                                        onClose: function() {
+                                            window.location.reload(true);
+                                        }
+                                    });
+                                } else {
+                                    $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
+                                        title: "Erro",
+                                        content: resp.msg
+                                    });
+                                }
                             });
                         },
                     },
@@ -995,15 +1046,25 @@ $quality_planning_id = $object->getId();
                                     form_section: 'quality_metric'
                                 }
                             }).done(function (resposta) {
-                                $.alert({
-                                    icon: "far fa-check-circle",
-                                    type: "green",
-                                    title: "Sucesso",
-                                    content: resposta,
-                                    onClose: function () {
-                                        window.location.reload(true);
-                                    }
-                                });
+                                var resp = JSON.parse(resposta);
+                                if (!resp.err) {
+                                    $.alert({
+                                        icon: "far fa-check-circle",
+                                        type: "green",
+                                        title: "Sucesso",
+                                        content: resp.msg,
+                                        onClose: function() {
+                                            window.location.reload(true);
+                                        }
+                                    });
+                                } else {
+                                    $.alert({
+                                        icon: "far fa-times-circle",
+                                        type: "red",
+                                        title: "Erro",
+                                        content: resp.msg
+                                    });
+                                }
                             });
                         },
                     },
