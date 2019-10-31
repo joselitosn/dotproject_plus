@@ -10,18 +10,13 @@ if (!defined('DP_BASE_DIR')) {
 
 $dPconfig['dbtype'] = 'mysql';
 $dPconfig['dbhost'] = '172.17.0.3:3306';
-$dbName=explode("/" , $baseDir); //On linux "/" ; //On windows "\\"
-$dPconfig['dbname'] = 'dotproject_plus';//"dotproject_g6";//
+$dbName=explode("/" , $baseDir);
+$dPconfig['dbname'] = 'dotproject_plus';
 $dPconfig['dbprefix'] = 'dotp_';
 $dPconfig['dbuser'] = 'root';
 $dPconfig['dbpass'] = '123456';
 $dPconfig['dbpersist'] = false;
 $dPconfig['root_dir'] = $baseDir;
-//$dPconfig['base_url'] = $baseUrl;
-//Fix to login work at 2_1_8.
 $dPconfig['root_dir'] = $baseDir;
 if(substr($dPconfig['root_dir'],-1) != '/') $dPconfig['root_dir'] .= '/';
-
-
-
 ?>

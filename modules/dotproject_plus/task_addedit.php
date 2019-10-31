@@ -225,6 +225,7 @@ $endDate = $obj->task_end_date != null ? date("d/m/Y", strtotime($obj->task_end_
     <input name="roles_human_resources" type="hidden" value='<?=$resources ? json_encode($resources) : ''?>' id="rolesHrHidden"/>
     <input type="hidden" id="taskWbsItemId" name="item_id" value="<?=$itemId?>" />
     <input type="hidden" id="taskId" name="task_id" value="<?=$taskId?>" />
+    <input type="hidden" id="taskId" name="project_id" value="<?=$projectId?>" />
 </form>
 <?php
 ?>

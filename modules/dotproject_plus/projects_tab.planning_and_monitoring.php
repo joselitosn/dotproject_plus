@@ -24,7 +24,6 @@ if ($_GET["show_external_page"] != "") {
     $controllerCompanyRole = new ControllerCompanyRole();
 
     $rolesArr = $controllerCompanyRole->getCompanyRoles($project->project_company);
-
     $i = 0;
     foreach ($rolesArr as $role) {
         $roles[$role->getId()] = $role->getDescription();
@@ -737,7 +736,6 @@ if ($_GET["show_external_page"] != "") {
                                     $q->addWhere("project_tasks_estimated_roles_id=" . $role_estimated_id);
                                     $sql = $q->prepare();
                                     $records = db_loadList($sql);
-
 
                                     foreach ($records as $record) {
                                         $allocated_hr_id = $record[0];

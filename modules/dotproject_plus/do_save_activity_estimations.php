@@ -77,6 +77,7 @@ if ($taskId) {
     $obj->task_owner = $owner_id;
     $obj->task_order = $activity_order;
     $obj->task_percent_complete=$task_percent_complete;
+    $obj->task_project = $project_id;
     $obj->store();
 
     // Remove old relation
@@ -125,6 +126,7 @@ if ($taskId) {
     $obj->task_owner = $owner_id;
     $obj->task_order = $activity_order;
     $obj->task_percent_complete=$task_percent_complete;
+    $obj->task_project = $project_id;
     $obj->store();
 
     $taskId = $obj->task_id;

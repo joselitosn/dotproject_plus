@@ -174,11 +174,12 @@ if (null !== $communication_id) {
             <option value=""></option>
             <?php
                 foreach ($rlista as $registro) {
-                    $value = $obj->communication_responsible_authorization;
+                    $value = $obj->communication_responsible_authorization ? $obj->communication_responsible_authorization : -1;
+
                     $selected = $registro['contact_id'] == $value ? ' selected="selected"' : '';
             ?>
                     <option value="<?=$registro['contact_id']?>" <?=$selected?>>
-                        <?=$$registro['contact_first_name'] . ' ' . $registro['contact_last_name']?>
+                        <?=$registro['contact_first_name'] . ' ' . $registro['contact_last_name']?>
                     </option>
             <?php
                 }

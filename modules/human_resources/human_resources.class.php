@@ -100,7 +100,6 @@ class CHumanResourceAllocation extends CDpObject {
 			$q->exec();
 			$q->clear();
 		}
-		// It is filing here and I have no idea why...
 //		return parent::store();
 		// Workaround
         $q->addTable('human_resource_allocation');
