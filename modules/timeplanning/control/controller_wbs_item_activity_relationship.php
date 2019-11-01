@@ -18,14 +18,27 @@ class ControllerWBSItemActivityRelationship{
 		$WBSItemActivityRelationship->delete($id);
 	}
 	
-	function getActivitiesByWorkPackage($WBSItemId){
+	function getActivitiesByWorkPackage($WBSItemId, $allocatedHrId = null){
 		$list= array();
 		$q = new DBQuery();
 		$q->addQuery('t.task_id');
 		$q->addTable('tasks_workpackages', 't');
 		$q->addTable('tasks', 'pt');
+		if ($allocatedHrId !== null && $allocatedHrId != -1) {
+            $q->addJoin('project_tasks_estimated_roles', 'pter', 'pter.task_id = t.task_id');
+            $q->addJoin('human_resource_allocation', 'hra', 'hra.project_tasks_estimated_roles_id = pter.id ');
+            $q->addWhere("hra.human_resource_id = $allocatedHrId");
+        }
 		$q->addWhere('eap_item_id = '.$WBSItemId .' and pt.task_id=t.task_id and pt.task_milestone<>1 order by t.activity_order');
 		$sql = $q->prepare();
+
+
+        /**
+         *
+        left join `dotp_project_tasks_estimated_roles` as pter on pter.task_id = t.task_id
+        left join `dotp_human_resource_allocation` as hra on hra.project_tasks_estimated_roles_id = pter.id
+         */
+
 		$tasks = db_loadList($sql);
 		foreach ($tasks as $task) {
             $obj = new CTask();

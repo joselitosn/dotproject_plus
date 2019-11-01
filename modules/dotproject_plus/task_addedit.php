@@ -43,6 +43,7 @@ $hr = db_loadList($sql);
 
 $obj = new CTask();
 $tasksEstimations = array('effort' => '', 'effort_unit' => '');
+$taskOrder = -1;
 if ($taskId) {
     $obj->task_id = $taskId;
     $obj->load();
@@ -64,6 +65,16 @@ if ($taskId) {
     $q->addWhere("r.task_id= " . $taskId);
     $sql = $q->prepare();
     $resources = db_loadList($sql);
+
+
+    $q = new DBQuery();
+    $q->addQuery("t.activity_order");
+    $q->addTable("tasks_workpackages", "t");
+    $q->addWhere("t.task_id= " . $taskId);
+    $sql = $q->prepare();
+    $taskOrder = db_loadList($sql);
+    $taskOrder = current($taskOrder);
+    $taskOrder = $taskOrder['activity_order'];
 }
 
 $effortMetrics = array();
@@ -225,7 +236,8 @@ $endDate = $obj->task_end_date != null ? date("d/m/Y", strtotime($obj->task_end_
     <input name="roles_human_resources" type="hidden" value='<?=$resources ? json_encode($resources) : ''?>' id="rolesHrHidden"/>
     <input type="hidden" id="taskWbsItemId" name="item_id" value="<?=$itemId?>" />
     <input type="hidden" id="taskId" name="task_id" value="<?=$taskId?>" />
-    <input type="hidden" id="taskId" name="project_id" value="<?=$projectId?>" />
+    <input type="hidden" name="project_id" value="<?=$projectId?>" />
+    <input type="hidden" name="task_order" value="<?=$taskOrder?>" />
 </form>
 <?php
 ?>

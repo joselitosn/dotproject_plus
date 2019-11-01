@@ -27,22 +27,6 @@ if ($_GET["show_external_page"] != "") {
     $i = 0;
     foreach ($rolesArr as $role) {
         $roles[$role->getId()] = $role->getDescription();
-
-        $q = new DBQuery();
-        $q->addTable('contacts', 'c');
-        $q->addQuery('user_id, h.human_resource_id, contact_id,u.user_username');
-        $q->innerJoin('users', 'u', 'u.user_contact = c.contact_id');
-        $q->innerJoin('human_resource', 'h', 'h.human_resource_user_id = u.user_id');
-        $q->innerJoin('human_resource_roles', 'hr_roles', 'hr_roles.human_resource_id =h.human_resource_id and hr_roles.human_resources_role_id=' . $role->getId());
-        $q->addWhere('c.contact_company = ' . $project->project_company);
-        $q->addOrder("u.user_username");
-        $sql = $q->prepare();
-        $records = db_loadList($sql);
-        $j = 0;
-        foreach ($records as $record) {
-            $userNameByHRid[$record[1]] = $record[3];
-            $j++;
-        }
         $i++;
     }
 
@@ -55,9 +39,11 @@ if ($_GET["show_external_page"] != "") {
     $q->addOrder("u.user_username");
     $sql = $q->prepare();
     $hr = db_loadList($sql);
+    foreach ($hr as $record) {
+        $userNameByHRid[$record[1]] = $record[3];
+    }
 
     $currentPage = substr($_SERVER["REQUEST_URI"], strpos($_SERVER["REQUEST_URI"], "index.php") + 9);
-
     ?>
 
     <h4><?=$AppUI->_("LBL_WBS",UI_OUTPUT_HTML)?></h4>
@@ -71,7 +57,7 @@ if ($_GET["show_external_page"] != "") {
                     <select id="project_resources_filter"
                         name="project_resources_filter"
                         class="form-control form-control-sm">
-                        <option <?=$_POST["project_resources_filter"] == "" ? "selected" : "" ?>   value=""><?=$AppUI->_("All"); ?></option>
+                        <option value="-1">Todos</option>
                         <?php
                             foreach ($hr as $record) {
                         ?>
@@ -207,7 +193,7 @@ if ($_GET["show_external_page"] != "") {
                             $id = $branch['id'];
                             $eapItem->load($id);
                             $ControllerWBSItemActivityRelationship = new ControllerWBSItemActivityRelationship();
-                            $tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($id);
+                            $tasks = $ControllerWBSItemActivityRelationship->getActivitiesByWorkPackage($id, $_POST["project_resources_filter"]);
                             $numberOfTasks = $isLeaf ? ' (' . sizeof($tasks) . ')' : '';
                         }
                         $innerCard = strlen($branch['number']) > 1 ? ' inner-card' : '';
@@ -721,15 +707,9 @@ if ($_GET["show_external_page"] != "") {
                                 $rolesNonGrouped = $projectTaskEstimation->getRolesNonGrouped($task_id);
                                 $totalRoles = count($rolesNonGrouped);
                                 $i = 1;
-                                 if ($_POST["project_resources_filter"] == "") {
-                                     $hasFilteredRH = true; //controls if will be some filter based on human resource
-                                 } else {
-                                     $hasFilteredRH = false;
-                                 }
                                 foreach ($rolesNonGrouped as $role) {
-                                    $role_estimated_id = $role->getQuantity(); // the quantity field is been used to store the estimated role id
-                                    $allocated_hr_id = ""; //Get the allocated HR  (maybe there is just the role without allocation, in this case write the role name)
-                                    //Get id of a possible old allocation to delete it
+                                    $role_estimated_id = $role->getQuantity();
+                                    $allocated_hr_id = "";
                                     $q = new DBQuery();
                                     $q->addTable("human_resource_allocation");
                                     $q->addQuery("human_resource_id");
@@ -737,9 +717,8 @@ if ($_GET["show_external_page"] != "") {
                                     $sql = $q->prepare();
                                     $records = db_loadList($sql);
 
-                                    foreach ($records as $record) {
-                                        $allocated_hr_id = $record[0];
-                                    }
+                                    $rhId = current($records);
+                                    $allocated_hr_id = $rhId[0];
 
                                     if ($allocated_hr_id != "") {
                                         $estimatedRolesTxt.=$userNameByHRid[$allocated_hr_id];
@@ -750,10 +729,6 @@ if ($_GET["show_external_page"] != "") {
                                         $estimatedRolesTxt.=", ";
                                     }
                                     $i++;
-                                    // TODO Ver filtro posteriormente
-                                     if (!$hasFilteredRH && $_POST["project_resources_filter"] == $allocated_hr_id) {
-                                         $hasFilteredRH = true;
-                                     }
                                 }
                                 $span = $dom->createElement('span', 'Recursos humanos: ' . $estimatedRolesTxt);
                                 $spanClass = $dom->createAttribute('class');
@@ -814,12 +789,6 @@ if ($_GET["show_external_page"] != "") {
                                 $alertRole = $dom->createAttribute('role');
                                 $alertRole->value = 'alert';
                                 $alert->appendChild($alertRole);
-
-                                // if (!count($dependencies)) {
-                                //     $style = $dom->createAttribute('style');
-                                //     $style->value = 'display: none';
-                                //     $alert->appendChild($style);
-                                // }
 
                                 $h6 = $dom->createElement('h6', 'Atividades predecessoras');
                                 $alert->appendChild($h6);
@@ -1073,7 +1042,7 @@ if ($_GET["show_external_page"] != "") {
                 placeholder: 'Filtrar por recurso humano',
                 allowClear: true,
                 theme: "bootstrap",
-            }).on('select2:select', function (e) {
+            }).on('change', function (e) {
                 document.select_human_resource_filter_form.submit();
             });
 

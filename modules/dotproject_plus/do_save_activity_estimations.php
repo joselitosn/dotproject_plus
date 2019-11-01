@@ -21,6 +21,7 @@ $effortUnit = $_POST["planned_effort_unit"];
 $startDate = $_POST["planned_start_date_activity"];
 $endDate = $_POST["planned_end_date_activity"];
 $task_percent_complete=$_POST["task_percent_complete"];
+$activity_order=$_POST["task_order"];
 
 
 $rolesHr = $_POST['roles_human_resources'];
@@ -29,7 +30,6 @@ $rolesHr = json_decode($rolesHr, true);
 $rolesIds = array();
 
 $taskWbsRelation = new ControllerWBSItemActivityRelationship();
-$activity_order=sizeof($taskWbsRelation->getActivitiesByWorkPackage($work_package))+1;
 
 $duration;
 if ($taskId) {
@@ -92,6 +92,8 @@ if ($taskId) {
     $duration = 0;
     $obj->task_percent_complete=$task_percent_complete;
     $calculateDuratation = true;
+
+    $activity_order=sizeof($taskWbsRelation->getActivitiesByWorkPackage($work_package))+1;
     if ($startDate != "") {
         $dateStart = new DateTime();
         $dateParts = explode("/", $startDate);
@@ -159,15 +161,13 @@ foreach ($rolesHr as $line) {
         $sql = $q->prepare();
         $q->clear();
         $records = db_loadList($sql);
-//        $allocationRoleHR->human_resource_id = $line['hr'];
-//        $allocationRoleHR->project_tasks_estimated_roles_id=$records[0][0];
         $userId=getUserIdByHR($line['hr']);
         $allocationRoleHR->store($taskId, $userId, $line['hr'], $records[0][0]);
     }
 
 }
 
-$AppUI->setMsg($AppUI->_("LBL_THE_ACTIVITY"). " ($description) ". $AppUI->_("LBL_WAS_SAVED"), UI_MSG_OK, true);
+$AppUI->setMsg($AppUI->_("LBL_THE_ACTIVITY"). " ($description) ". $AppUI->_("LBL_WAS_SAVED"), UI_MSG_OK);
 echo $AppUI->getMsg();
 exit();
 ?>
