@@ -31,7 +31,7 @@
                 <input type="text" class="form-control form-control-sm" name="items_to_be_acquired" value="<?=$object->getItemsToBeAcquired()?>" />
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 contract-type">
             <div class="form-group">
                 <label for="contract_type">
                     <?=$AppUI->_("LBL_CONTRACT_TYPE")?>
@@ -43,7 +43,7 @@
                 $types[2] = "Custos reembolsáveis";
                 ?>
 
-                <select name="contract_type" class="form-control form-control-sm select">
+                <select name="contract_type" class="form-control form-control-sm select-contract-type">
                     <?php
                         foreach ($types as $key => $type) {
                             $selected = $object->getContractType() == $type ? ' selected' : '';
@@ -66,7 +66,7 @@
         <textarea class="form-control form-control-sm" name="documents_to_acquisition"><?php echo $object->getDocumentsToAcquisition() ?></textarea>
     </div>
 
-    <div class="form-group" id="criteriaContainer">
+    <div class="form-group criteria" id="criteriaContainer">
         <label for="LBL_CRITERIA_TO_SUPPLIERS_SELECTION">
             <?=$AppUI->_("LBL_CRITERIA_TO_SUPPLIERS_SELECTION")?>
         </label>
@@ -83,7 +83,7 @@
                         <br>
                     </div>
                     <div class="col-md-2">
-                        <select class="form-control form-control-sm select" name="criteria_weight[]">
+                        <select class="form-control form-control-sm select-criteria" name="criteria_weight[]">
                             <option value="1" <?=$c['weight'] == 1 ? ' selected' : ''?>>1</option>
                             <option value="2" <?=$c['weight'] == 2 ? ' selected' : ''?>>2</option>
                             <option value="3" <?=$c['weight'] == 3 ? ' selected' : ''?>>3</option>
@@ -175,10 +175,17 @@
 
 <script>
     $(document).ready(function() {
-        $(".select").select2({
+
+        $(".select-contract-type").select2({
             placeholder: "",
             theme: "bootstrap",
-            dropdownParent: $("#acquisitionModal")
+            dropdownParent: $(".contract-type")
+        });
+
+        $(".select-criteria").select2({
+            placeholder: "",
+            theme: "bootstrap",
+            dropdownParent: $(".criteria")
         });
     });
 

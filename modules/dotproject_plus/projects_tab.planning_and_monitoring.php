@@ -416,9 +416,6 @@ if ($_GET["show_external_page"] != "") {
                                 $taskCardBodyClass = $dom->createAttribute('class');
                                 $taskCardBodyClass->value = 'card-body shrink';
                                 $taskCardBody->appendChild($taskCardBodyClass);
-//                                $taskCardBodyStyle = $dom->createAttribute('style');
-//                                $taskCardBodyStyle->value = 'padding: 10px 20px 1px 20px';
-//                                $taskCardBody->appendChild($taskCardBodyStyle);
 
                                 $taskCardRow = $dom->createElement('div');
                                 $taskCardRowClass = $dom->createAttribute('class');
@@ -427,7 +424,7 @@ if ($_GET["show_external_page"] != "") {
 
                                 $carCol1Icon = $dom->createElement('i');
                                 $carCol1IconClass = $dom->createAttribute('class');
-                                $carCol1IconClass->value = 'fas fa-grip-vertical';
+                                $carCol1IconClass->value = 'fas fa-grip-vertical icon-draggable';
                                 $carCol1Icon->appendChild($carCol1IconClass);
                                 $carCol1IconStyle = $dom->createAttribute('style');
                                 $carCol1IconStyle->value = 'float: left;margin-right: 10px;color: #cecece;cursor: crosshair;';
@@ -1355,7 +1352,7 @@ if ($_GET["show_external_page"] != "") {
             $( ".draggable" ).draggable({
                 axis: "y",
                 revert: true,
-                handle: "i",
+                handle: $(".icon-draggable"),
                 snap: true,
                 refreshPositions: true,
                 stack: '.draggable'

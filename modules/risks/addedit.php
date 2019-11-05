@@ -168,14 +168,18 @@ $vw = dPgetParam($_GET, "vw");
                 </label>
                 <div class="row">
                     <div class="col-md-6">
-                        <input type="hidden" name="risk_period_start_date" id="riskStartDate" value="<?=dPformSafe(@$obj->risk_period_start_date)?>" />
+                        <?php
+                            $periodStartDate = ($obj->risk_period_start_date && $obj->risk_period_start_date != '0000-00-00') ? $obj->risk_period_start_date : '';
+                            $periodEndDate = ($obj->risk_period_end_date != '0000-00-00') ? $obj->risk_period_end_date : '';
+                        ?>
+                        <input type="hidden" name="risk_period_start_date" id="riskStartDate" value="<?=$periodStartDate?>" />
                         <input type="text"
                            class="form-control form-control-sm datepicker-start"
                            name="risk_start_date"
                            onchange="formatStartDate()" />
                     </div>
                     <div class="col-md-6">
-                        <input type="hidden" name="risk_period_end_date" id="riskEndDate" value="<?=dPformSafe(@$obj->risk_period_end_date)?>" />
+                        <input type="hidden" name="risk_period_end_date" id="riskEndDate" value="<?=$periodEndDate?>" />
                         <input type="text"
                            class="form-control form-control-sm datepicker-end"
                            name="risk_end_date"
