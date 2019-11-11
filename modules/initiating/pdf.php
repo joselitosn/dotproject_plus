@@ -148,8 +148,6 @@ $htmlCode=str_ireplace("&aacute;", "á", $htmlCode);
 //tmlCode=str_ireplace("&agrave;", "à", $htmlCode);
 //$htmlCode=html_entity_decode($htmlCode,0);//convert HTML chars (e.g. &nbsp;) to the real characters
 //$htmlCode=str_ireplace("&Atilde;&copy;", "é", $htmlCode);
-echo $htmlCode;
-exit();
 $dompdf = new DOMPDF();
 $dompdf->load_html($htmlCode);
 $dompdf->render();
