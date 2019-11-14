@@ -461,7 +461,7 @@ for ($i = 0; $i < $n; $i++) {
     $q->exec();
 }
 
-$AppUI->setMsg($AppUI->_("LBL_GROUPS_WERE_SUCESSFULLY CREATE"), UI_OUTPUT_HTML);
+$AppUI->setMsg($AppUI->_("LBL_GROUPS_WERE_SUCESSFULLY CREATE"), UI_OUTPUT_HTML, UI_MSG_OK, false);
 echo $AppUI->getMsg();
 exit();
 ?>
