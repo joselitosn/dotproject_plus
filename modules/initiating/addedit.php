@@ -487,11 +487,17 @@ function authorize() {
         <?php } ?>
     </div>
     <div class="col-md-7 text-right">
-        <a href="?m=initiating&a=pdf&id=<?=$initiating_id?>&suppressHeaders=1"
-           target="_blank"
-           class="btn btn-sm btn-secondary">
-            <?=$AppUI->_("Gerar PDF")?>
-        </a>
+        <?php
+            if ($initiating_id) {
+            ?>
+                <a href="?m=initiating&a=pdf&id=<?=$initiating_id?>&suppressHeaders=1"
+                target="_blank"
+                class="btn btn-sm btn-secondary">
+                    <?=$AppUI->_("Gerar PDF")?>
+                </a>
+            <?php
+            } 
+        ?>
 
         <button type="button" class="btn btn-sm btn-primary" id="btnSave" onclick="submitIt()"><?=$AppUI->_('LBL_SAVE')?></button>
 
