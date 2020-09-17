@@ -59,7 +59,7 @@ $q->clear();
 
 //display the select list
 $cBuffer = '<select name="department" onchange="javascript:document.pickCompany.submit()" class="text">';
-$cBuffer .= ('<option value="company_0" style="font-weight:bold;">' . $AppUI->_('All') 
+$cBuffer .= ('<option value="0" style="font-weight:bold;">' . $AppUI->_('All') 
 	             . '</option>'."\n");
 $company = '';
 foreach ($rows as $row) {
