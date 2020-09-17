@@ -702,7 +702,7 @@ function projects_list_data($user_id=false) {
 
 	//display the select list
 	$cBuffer = '<select name="department" onchange="javascript:document.pickCompany.submit()" class="form-control form-sm select-company">';
-	$cBuffer .= ('<option value="company_0" style="font-weight:bold;">' . $AppUI->_('All')
+	$cBuffer .= ('<option value="0" style="font-weight:bold;">' . $AppUI->_('All')
 	             . '</option>'."\n");
 	$company = '';
 
