@@ -106,7 +106,7 @@ $htmlCode.=(("<br /><b>".$AppUI->_("Premises").": </b><br />" .  formatListField
 $htmlCode.=('<br />');
 $htmlCode.=(("<br /><b>".($AppUI->_("Restrictions",UI_OUTPUT_HTML)). ":</b><br />" .  formatListField($obj->initiating_restrictions)));
 $htmlCode.=('<br />');
-$htmlCode.=(("<br /><b>".($AppUI->_("Budget",UI_OUTPUT_HTML)). " (R$): </b><br />" .  number_format($obj->initiating_budget, 2, ',', '.')));
+$htmlCode.=(("<br /><b>".($AppUI->_("Budget",UI_OUTPUT_HTML)). " (R$): </b><br />" .  number_format(($obj->initiating_budget)/100, 2, ',', '.')));
 $htmlCode.=('<br />');
 
 $dateStart = new CDate($obj->initiating_start_date);
