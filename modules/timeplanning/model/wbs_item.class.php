@@ -83,7 +83,7 @@ class WBSItem {
         $q->addTable('project_eap_items');
         $q->addWhere('project_id =' . $projectId);
         $q->addWhere("substring(number, 1, $numberLength) = '$number'");
-        $q->addWhere("char_length(number) - 2 = char_length('$number')");
+        $q->addWhere("((length(number) - length(replace(number, '.', '') ) ) -1) = (length('$number') - length(replace('$number', '.', '')))");
         $q->addOrder('sort_order desc');
         return $q->loadResult();
     }

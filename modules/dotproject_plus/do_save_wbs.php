@@ -51,7 +51,7 @@ if (!$update) {
         } else {
             // Gets the prefix of the number
             // Extracts the last digit and adds 1 to it
-            $lastDigit = (int) substr($lastChildNumber, -1) + 1;
+            $lastDigit = (int) substr(strrchr($lastChildNumber, '.'), 1) + 1;
             // Generates the next number
             $number  = $parentNumber . '.' . $lastDigit;
             $sortOrder = array_sum(explode('.', $number));

@@ -49,10 +49,10 @@ class ControllerWBSItem {
 	function getWBSItems($projectId){
 		$list=array();
 		$q = new DBQuery();
-		$q->addQuery('t.id, t.item_name,t.identation,t.number,t.is_leaf,t.sort_order, ie.size, ie.size_unit');
+		$q->addQuery('t.id, t.item_name,t.identation,t.number,t.is_leaf,t.sort_order, ie.size, ie.size_unit, CAST(number AS UNSIGNED) AS int_number');
 		$q->addTable('project_eap_items', 't');
         $q->addJoin('eap_item_estimations', 'ie', 'ie.eap_item_id = t.id');
-		$q->addWhere('project_id = '.$projectId .' order by number');
+		$q->addWhere('project_id = '.$projectId .' order by int_number');
 		$sql = $q->prepare();
 		$items = db_loadList($sql);
 
